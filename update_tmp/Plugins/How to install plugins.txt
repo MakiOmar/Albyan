@@ -1,0 +1,9 @@
+You need to go to the “Admin Panel/ Settings/ Update/ Update with Zip file” and select the
+“plugin_bundle.zip” file that is available inside the downloaded package (Plugins folder) and
+click on the “Update” button.
+You will get a confirmation message after installation.
+
+Note: You might be asked for “License Activation” after installation so you need to contact us in
+CRM and get your license file and install it.
+
+Note: It is important to ensure that the version of the plugin bundle you use matches the version of your website to avoid any compatibility issues.

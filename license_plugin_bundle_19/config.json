@@ -1,0 +1,33 @@
+{
+    "name" : "plugin_bundle_license",
+
+    "unique_identifier" : "rocket_lms_plugin_bundle",
+
+    "version" : "1.7.2",
+
+    "minimum_item_version" : "1.7.2",
+
+    "product_version" : "1.7.2",
+
+    "files"     :
+    [
+       
+        {
+            "root_directory"    : "/assignments/lists.blade.php",
+            "update_directory"  : "resources/views/admin/webinars/assignments/lists.blade.php"
+        },
+        {
+            "root_directory"    : "/bundles/lists.blade.php",
+            "update_directory"  : "resources/views/admin/bundles/lists.blade.php"
+        },
+        {
+            "root_directory"    : "/installment/settings/index.blade.php",
+            "update_directory"  : "resources/views/admin/financial/installments/settings/index.blade.php"
+        },
+        {
+            "root_directory"    : "/registration_bonus/index.blade.php",
+            "update_directory"  : "resources/views/admin/registration_bonus/settings/index.blade.php"
+        }
+
+    ]
+}

@@ -1,0 +1,5 @@
+To get support ,free installation and license activation please refer to:
+https://crm.rocket-soft.org/index.php/tickets
+
+Note: It is important to ensure that the version of the plugin bundle you use matches the version of your website to avoid any compatibility issues.
+
