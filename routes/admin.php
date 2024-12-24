@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseGroupController;
 use App\Http\Controllers\WebinarController;
 
-
 $prefix = getAdminPanelUrlPrefix();
 
 Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web', 'admin_locale']], function () use ($prefix) {
@@ -57,25 +56,23 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
         });
         Route::prefix('course-group')->group(function () {
             Route::get('/manage/{webinarId}', [CourseGroupController::class, 'listGroups'])->name('course-group.manage');
-            
+
             Route::get('/webinar-groups/', [CourseGroupController::class, 'listWebinarsWithGroups'])->name('webinar-groups.manage');
-            
+
             Route::get('/create', [CourseGroupController::class, 'showCreateForm'])->name('course-group.create-form');
             Route::post('/store', [CourseGroupController::class, 'createGroup'])->name('course-group.store');
             Route::get('/student', [CourseGroupController::class, 'studentGroups'])->name('course-group.student');
-            
+
             Route::delete('/course-group/{group}/student/{student}', [CourseGroupController::class, 'removeStudent'])->name('group.student.remove');
-            
+
             Route::post('/student/add', [CourseGroupController::class, 'addStudent'])->name('course-group.student.add');
-            
+
             Route::post('/{group}/add-student', [CourseGroupController::class, 'addStudent'])->name('group.student.add');
-            
+
             Route::get('/ajax/webinar/{webinar}/students', [CourseGroupController::class, 'getStudents']);
-
-
         });
 
-        
+
         Route::group(['prefix' => 'staffs'], function () {
             Route::get('/', 'UserController@staffs');
         });
@@ -499,7 +496,6 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
         Route::group(['prefix' => 'consultants'], function () {
             Route::get('/', 'ConsultantsController@index');
             Route::get('/excel', 'ConsultantsController@exportExcel');
-
         });
 
         Route::group(['prefix' => 'appointments'], function () {
@@ -1156,7 +1152,6 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             });
 
             Route::post("/{form_id}/submissions/{id}/update", 'FormSubmissionsController@update');
-
         });
 
         Route::group(['prefix' => 'ai-contents'], function () {
@@ -1174,7 +1169,6 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
                 Route::get('/{id}/delete', 'AIContentTemplatesController@delete');
                 Route::get('/{id}/statusToggle', 'AIContentTemplatesController@statusToggle');
             });
-
         });
 
         Route::group(['prefix' => 'purchase_notifications'], function () {

@@ -9,7 +9,7 @@ use App\Models\Webinar;
 
 class CourseGroup extends Model
 {
-    protected $fillable = [
+    protected $fillable = array(
         'webinar_id',
         'instructor_id',
         'meeting_id',
@@ -17,8 +17,7 @@ class CourseGroup extends Model
         'meeting_end_time',
         'meeting_duration',
         'meeting_recurring',
-    ];
-
+    );
     public function webinar()
     {
         return $this->belongsTo(Webinar::class, 'webinar_id');
@@ -34,4 +33,3 @@ class CourseGroup extends Model
         return $this->hasMany(GroupMember::class, 'group_id');
     }
 }
-
