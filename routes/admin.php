@@ -60,6 +60,8 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/webinar-groups/', [CourseGroupController::class, 'listWebinarsWithGroups'])->name('webinar-groups.manage');
 
             Route::get('/create', [CourseGroupController::class, 'showCreateForm'])->name('course-group.create-form');
+            Route::delete('/{group}', [CourseGroupController::class, 'destroy'])->name('course-group.destroy');
+
             Route::post('/store', [CourseGroupController::class, 'createGroup'])->name('course-group.store');
             Route::get('/student', [CourseGroupController::class, 'studentGroups'])->name('course-group.student');
 

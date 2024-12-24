@@ -35,6 +35,18 @@
 
 @section('content')
 <section class="section">
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="section-header">
         <h1>المجموعات لـ {{ $webinar->title }}</h1>
         <div class="section-header-breadcrumb">
@@ -50,7 +62,7 @@
             <div id="groupsAccordion">
                 @foreach ($webinar->groups as $group)
                 <div class="card">
-                    <div class="card-header" id="heading{{ $group->id }}">
+                    <div class="card-header d-flex justify-content-between" id="heading{{ $group->id }}">
                         <h2 class="mb-0">
                             <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse{{ $group->id }}" aria-expanded="false" aria-controls="collapse{{ $group->id }}">
                                 المجموعة: {{ $group->id }} - معرف الاجتماع: {{ $group->meeting_id }}
@@ -59,6 +71,15 @@
                                 إضافة طالب
                             </button>
                         </h2>
+
+                        <!-- Delete Button -->
+                        <form method="POST" class="m-0" action="{{ route('course-group.destroy', ['group' => $group->id]) }}" style="display: inline-block;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('هل أنت متأكد أنك تريد حذف هذه المجموعة؟')">
+                                حذف المجموعة
+                            </button>
+                        </form>
                     </div>
                     <div id="collapse{{ $group->id }}" class="collapse" aria-labelledby="heading{{ $group->id }}" data-parent="#groupsAccordion">
                         <div class="card-body">

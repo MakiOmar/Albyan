@@ -333,11 +333,6 @@ class CourseGroupController extends Controller
         // Delete the course group itself
         $courseGroup->delete();
 
-        return response()->json(
-            array(
-                'message' => 'CourseGroup and related members deleted successfully.',
-            ),
-            200
-        );
+        return redirect()->back()->with('success', 'تم حذف المجموعة بنجاح.');
     }
 }
