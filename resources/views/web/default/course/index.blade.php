@@ -3,6 +3,45 @@
 @push('styles_top')
     <link rel="stylesheet" href="/assets/default/css/css-stars.css">
     <link rel="stylesheet" href="/assets/default/vendors/video/video-js.min.css">
+    <style>
+        h1 {
+            margin-top: 20px;
+            font-size: 2rem;
+            color: #333;
+        }
+        #countdown {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .counter {
+            background-color: #ffc107; /* Warning background */
+            color: #fff;
+            border-radius: 10px;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .counter span {
+            display: block;
+            text-align: center;
+        }
+        #countdown .number {
+            font-size: 1.8rem;
+            line-height: 1.2;
+        }
+        #countdown .label {
+            font-size: 0.9rem;
+            line-height: 1.2;
+        }
+    </style>
 @endpush
 
 
@@ -278,7 +317,33 @@
                             </div>
 
                         </form>
-
+                        <div class="mt-20 d-flex flex-column">
+                            @if($joinUrl)
+                                <a href="{{ $joinUrl }}" class="btn btn-primary">إنضم للجلسة</a>
+                            @endif
+                            @if($nextStartTime)
+                            <div id="countdown">
+                                <div class="counter">
+                                    <span class="number" id="days"></span>
+                                    <span class="label">Days</span>
+                                </div>
+                                <div class="counter">
+                                    <span class="number" id="hours"></span>
+                                    <span class="label">Hours</span>
+                                </div>
+                                <div class="counter">
+                                    <span class="number" id="minutes"></span>
+                                    <span class="label">Minutes</span>
+                                </div>
+                                <div class="counter">
+                                    <span class="number" id="seconds"></span>
+                                    <span class="label">Seconds</span>
+                                </div>
+                            </div>
+                            @else
+                                <p>ليس لديك جلسات قادمة</p>
+                            @endif
+                        </div>
                         @if(!empty(getOthersPersonalizationSettings('show_guarantee_text')) and getOthersPersonalizationSettings('show_guarantee_text'))
                             <div class="mt-20 d-flex align-items-center justify-content-center text-gray">
                                 <i data-feather="thumbs-up" width="20" height="20"></i>
@@ -571,7 +636,36 @@
     <script src="/assets/default/vendors/video/video.min.js"></script>
     <script src="/assets/default/vendors/video/youtube.min.js"></script>
     <script src="/assets/default/vendors/video/vimeo.js"></script>
+    @if( $nextStartTime )
+    <script>
+        // Set the countdown date from PHP
+        const nextSessionTime = new Date("{{ $nextStartTime }}").getTime();
 
+        // Update the countdown every second
+        const countdownInterval = setInterval(() => {
+            const now = new Date().getTime(); // Get current time
+            const timeRemaining = nextSessionTime - now; // Calculate remaining time
+
+            if (timeRemaining <= 0) {
+                clearInterval(countdownInterval); // Stop the countdown when it reaches zero
+                document.getElementById("countdown").innerHTML = "بدأت الجلسة!";
+                return;
+            }
+
+            // Calculate days, hours, minutes, and seconds
+            const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+            // Display the countdown
+            document.getElementById("days").innerText = days;
+            document.getElementById("hours").innerText = hours;
+            document.getElementById("minutes").innerText = minutes;
+            document.getElementById("seconds").innerText = seconds;
+        }, 1000);
+    </script>
+    @endif
     <script>
         var webinarDemoLang = '{{ trans('webinars.webinar_demo') }}';
         var replyLang = '{{ trans('panel.reply') }}';
