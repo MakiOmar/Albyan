@@ -17,6 +17,7 @@ class CourseGroup extends Model
         'meeting_end_time',
         'meeting_duration',
         'meeting_recurring',
+        'meeting_json'
     );
     public function webinar()
     {

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CourseGroupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,6 +13,9 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!.
 |
 */
+
+Route::get('/zoom/{group}', [CourseGroupController::class, 'zoomSession'])->name('course-group.session');
+
 Route::group(['prefix' => 'my_api', 'namespace' => 'Api\Panel', 'middleware' => 'signed', 'as' => 'my_api.web.'], function () {
     Route::get('checkout/{user}', 'CartController@webCheckoutRender')->name('checkout');
     Route::get('/charge/{user}', 'PaymentsController@webChargeRender')->name('charge');

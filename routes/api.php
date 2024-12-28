@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CourseGroupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,8 +33,6 @@ Route::group(['prefix' => '/development'], function () {
     });
 
     Route::prefix('instructor')->middleware(['api.auth', 'api.level-access:teacher'])->namespace('Instructor')->group(base_path('routes/api/instructor.php'));
-
-
-
-
 });
+
+Route::post('/get-zoom-signature', [CourseGroupController::class, 'getZoomSignature']);

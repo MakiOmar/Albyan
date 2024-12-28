@@ -8,4 +8,9 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    resolve: {
+        alias: {
+            '@zoomus/websdk': 'node_modules/@zoomus/websdk',
+        },
+    },
 });

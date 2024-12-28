@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-
 Route::group(['namespace' => 'Auth', 'middleware' => ['api.request.type']], function () {
 
     Route::post('/register/step/{step}', ['as' => 'register', 'uses' => 'RegisterController@stepRegister']);
@@ -15,9 +14,7 @@ Route::group(['namespace' => 'Auth', 'middleware' => ['api.request.type']], func
     Route::get('/facebook', ['as' => 'google', 'uses' => 'SocialiteController@redirectToFacebook']);
     Route::post('/google/callback', ['as' => 'google_callback', 'uses' => 'SocialiteController@handleGoogleCallback']);
     Route::post('/facebook/callback', ['as' => 'facebook_callback', 'uses' => 'SocialiteController@handleFacebookCallback']);
-
    // Route::get('/reff/{code}', 'ReferralController@referral');
-
 });
 
 Route::post('/logout', ['as' => 'logout', 'uses' => 'Auth\LoginController@logout', 'middleware' => ['api.auth']]);

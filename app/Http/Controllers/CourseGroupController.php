@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\LOG;
 use Illuminate\Support\MessageBag;
 use App\Models\Sale;
+use Firebase\JWT\JWT;
+use Illuminate\Support\Facades\Auth;
 
 class CourseGroupController extends Controller
 {
@@ -84,6 +86,199 @@ class CourseGroupController extends Controller
         return response()->json($students);
     }
 
+
+    public function removeStudent($groupId, $studentId)
+    {
+        $groupMember = GroupMember::where('group_id', $groupId)
+                                    ->where('student_id', $studentId)
+                                    ->first();
+
+        if ($groupMember) {
+            $groupMember->delete();
+            return redirect()->back()->with('success', 'Student removed from the group successfully.');
+        }
+
+        return redirect()->back()->withErrors('Failed to remove the student from the group.');
+    }
+
+    /**
+     * Create a new group for a webinar.
+     */
+    public function createGroup(Request $request)
+    {
+        $validated = $request->validate(
+            array(
+                'webinar_id'         => 'required|exists:webinars,id',
+                'meeting_start_time' => 'required|date',
+                'meeting_end_time'   => 'required|date',
+                'meeting_duration'   => 'required|integer',
+                'meeting_recurring'  => 'required|boolean',
+                'student_ids'        => 'required|array',
+                'student_ids.*'      => 'exists:users,id',
+            )
+        );
+        $webinar   = Webinar::find($validated['webinar_id']);
+
+        if ($webinar) {
+            $instructor = User::findOrFail($webinar->teacher_id);
+        } else {
+            return redirect()->back()->with('Error', 'No constructor specified');
+        }
+
+        // Generate Zoom Meeting
+        $zoomMeetingResponse = $this->createZoomMeeting($instructor, $validated);
+
+        // Check if the Zoom meeting creation was successful
+        if (! $zoomMeetingResponse['success']) {
+            return redirect()->back()->withErrors(array( 'zoom_meeting' => $zoomMeetingResponse['error'] ));
+        }
+
+        $zoomMeeting = $zoomMeetingResponse['data'];
+
+        // Create the course group in the database
+        $group = CourseGroup::create(
+            array(
+                'webinar_id'         => $validated['webinar_id'],
+                'instructor_id'      => $webinar->teacher_id,
+                'meeting_id'         => $zoomMeeting['id'], // Use Zoom's meeting ID
+                'meeting_start_time' => $validated['meeting_start_time'],
+                'meeting_end_time'   => $validated['meeting_end_time'],
+                'meeting_duration'   => $validated['meeting_duration'],
+                'meeting_recurring'  => $validated['meeting_recurring'],
+                'meeting_json'       => json_encode($zoomMeeting)
+            )
+        );
+
+        // Attach students to the group
+        foreach ($validated['student_ids'] as $studentId) {
+            GroupMember::create(
+                array(
+                    'group_id'   => $group->id,
+                    'student_id' => $studentId,
+                )
+            );
+        }
+
+        return redirect()->route('course-group.manage', $validated['webinar_id'])
+            ->with('success', 'Group and Zoom meeting created successfully!');
+    }
+
+
+
+    /**
+     * Show the form to create a new group for a webinar.
+     */
+    public function showCreateForm()
+    {
+        $webinars    = Webinar::all(); // Fetch all webinars
+        $instructors = User::where('role_id', 4)->get(); // Replace 'role' with your actual logic
+        $students    = User::where('role_id', 1)->get();
+
+        return view('course_groups.admin.create', compact('webinars', 'instructors', 'students'));
+    }
+
+    /**
+     * Display the groups for a student.
+     */
+    public function studentGroups()
+    {
+        $groups = GroupMember::where('student_id', auth()->id())
+            ->with('group.webinar', 'group.instructor')
+            ->get();
+
+        return view('course-group.student', compact('groups'));
+    }
+
+    /**
+     * Remove the specified CourseGroup from storage.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy($id)
+    {
+        // Find the course group by ID
+        $courseGroup = CourseGroup::find($id);
+
+        // Check if the CourseGroup exists
+        if (! $courseGroup) {
+            return response()->json(
+                array(
+                    'message' => 'CourseGroup not found.',
+                ),
+                404
+            );
+        }
+
+        // Delete related group members first
+        $courseGroup->members()->delete();
+
+        // Delete the course group itself
+        $courseGroup->delete();
+
+        return redirect()->back()->with('success', 'تم حذف المجموعة بنجاح.');
+    }
+
+    public function generateZoomMeetingSignature($meetingNumber, $role)
+    {
+        $sdkKey = env('ZOOM_SDK_KEY');
+        $sdkSecret = env('ZOOM_SDK_SECRET');
+        $iat = time(); // Current timestamp in seconds
+        $exp = $iat + 3600; // Token valid for 1 hour
+        $payload = [
+            'appKey' => $sdkKey,
+            'sdkKey' => $sdkKey,
+            'mn' => $meetingNumber,
+            'role' => $role,
+            'iat' => $iat,
+            'exp' => $exp,
+            'tokenExp' => $exp
+        ];
+        return JWT::encode($payload, $sdkSecret, 'HS256');
+    }
+
+    public function getZoomSignature(Request $request)
+    {
+        $meetingNumber = $request->input('meeting_number');
+        $role = $request->input('role');
+        return response()->json(['signature' => $this->generateZoomMeetingSignature($meetingNumber, $role)]);
+    }
+
+
+    public function zoomSession($group)
+    {
+
+        $currentUser = auth()->user();
+        $courseGroup = CourseGroup::find($group);
+        if ($courseGroup) {
+            $instructorDetails = $courseGroup->instructor; // This fetches the instructor related to the course group
+            // Display instructor details
+            if ($instructorDetails &&  $currentUser->isTeacher() && $instructorDetails->id === $currentUser->id) {
+                $role = 1;// 0 for attendee, 1 for host
+                $userName = $instructorDetails->email;
+                $userEmail = $instructorDetails->email;
+                $meetingPassword = '123456';
+                $meetingNumber = $courseGroup->meeting_id;
+                $zoomSignature = $this->generateZoomMeetingSignature($meetingNumber, $role);
+                $zoomSdkKey  = env('ZOOM_SDK_KEY');
+                return view(
+                    'course_groups.front.zoom',
+                    compact(
+                        'group',
+                        'role',
+                        'meetingNumber',
+                        'userName',
+                        'userEmail',
+                        'meetingPassword',
+                        'zoomSignature',
+                        'zoomSdkKey'
+                    )
+                );
+            }
+        }
+        abort(404);
+    }
+
     private function getZoomAccessToken()
     {
         $clientId     = getFeaturesSettings('zoom_client_id');
@@ -109,28 +304,6 @@ class CourseGroupController extends Controller
         // Access token will expire in 1 hour; you may store it temporarily
         return $data['access_token'];
     }
-    public function listWebinarsWithGroups()
-    {
-        $webinars = Webinar::with('groups') // Load groups relationship
-        ->has('groups') // Only include webinars with at least one group
-        ->get();
-
-        return view('course_groups.admin.webninars_groups', compact('webinars'));
-    }
-    public function removeStudent($groupId, $studentId)
-    {
-        $groupMember = GroupMember::where('group_id', $groupId)
-                                    ->where('student_id', $studentId)
-                                    ->first();
-
-        if ($groupMember) {
-            $groupMember->delete();
-            return redirect()->back()->with('success', 'Student removed from the group successfully.');
-        }
-
-        return redirect()->back()->withErrors('Failed to remove the student from the group.');
-    }
-
     /**
      * Create a Zoom meeting for the specified instructor.
      *
@@ -217,122 +390,12 @@ class CourseGroupController extends Controller
             'data'    => $response->json(), // Return the response as an array
         );
     }
-
-
-    /**
-     * Create a new group for a webinar.
-     */
-    public function createGroup(Request $request)
+    public function listWebinarsWithGroups()
     {
-        $validated = $request->validate(
-            array(
-                'webinar_id'         => 'required|exists:webinars,id',
-                'meeting_start_time' => 'required|date',
-                'meeting_end_time'   => 'required|date',
-                'meeting_duration'   => 'required|integer',
-                'meeting_recurring'  => 'required|boolean',
-                'student_ids'        => 'required|array',
-                'student_ids.*'      => 'exists:users,id',
-            )
-        );
-        $webinar   = Webinar::find($validated['webinar_id']);
+        $webinars = Webinar::with('groups') // Load groups relationship
+        ->has('groups') // Only include webinars with at least one group
+        ->get();
 
-        if ($webinar) {
-            $instructor = User::findOrFail($webinar->teacher_id);
-        } else {
-            return redirect()->back()->with('Error', 'No constructor specified');
-        }
-
-        // Generate Zoom Meeting
-        $zoomMeetingResponse = $this->createZoomMeeting($instructor, $validated);
-
-        // Check if the Zoom meeting creation was successful
-        if (! $zoomMeetingResponse['success']) {
-            return redirect()->back()->withErrors(array( 'zoom_meeting' => $zoomMeetingResponse['error'] ));
-        }
-
-        $zoomMeeting = $zoomMeetingResponse['data'];
-
-        // Create the course group in the database
-        $group = CourseGroup::create(
-            array(
-                'webinar_id'         => $validated['webinar_id'],
-                'instructor_id'      => $webinar->teacher_id,
-                'meeting_id'         => $zoomMeeting['id'], // Use Zoom's meeting ID
-                'meeting_start_time' => $validated['meeting_start_time'],
-                'meeting_end_time'   => $validated['meeting_end_time'],
-                'meeting_duration'   => $validated['meeting_duration'],
-                'meeting_recurring'  => $validated['meeting_recurring'],
-            )
-        );
-
-        // Attach students to the group
-        foreach ($validated['student_ids'] as $studentId) {
-            GroupMember::create(
-                array(
-                    'group_id'   => $group->id,
-                    'student_id' => $studentId,
-                )
-            );
-        }
-
-        return redirect()->route('course-group.manage', $validated['webinar_id'])
-            ->with('success', 'Group and Zoom meeting created successfully!');
-    }
-
-
-
-    /**
-     * Show the form to create a new group for a webinar.
-     */
-    public function showCreateForm()
-    {
-        $webinars    = Webinar::all(); // Fetch all webinars
-        $instructors = User::where('role_id', 4)->get(); // Replace 'role' with your actual logic
-        $students    = User::where('role_id', 1)->get();
-
-        return view('course_groups.admin.create', compact('webinars', 'instructors', 'students'));
-    }
-
-    /**
-     * Display the groups for a student.
-     */
-    public function studentGroups()
-    {
-        $groups = GroupMember::where('student_id', auth()->id())
-            ->with('group.webinar', 'group.instructor')
-            ->get();
-
-        return view('course-group.student', compact('groups'));
-    }
-
-    /**
-     * Remove the specified CourseGroup from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function destroy($id)
-    {
-        // Find the course group by ID
-        $courseGroup = CourseGroup::find($id);
-
-        // Check if the CourseGroup exists
-        if (! $courseGroup) {
-            return response()->json(
-                array(
-                    'message' => 'CourseGroup not found.',
-                ),
-                404
-            );
-        }
-
-        // Delete related group members first
-        $courseGroup->members()->delete();
-
-        // Delete the course group itself
-        $courseGroup->delete();
-
-        return redirect()->back()->with('success', 'تم حذف المجموعة بنجاح.');
+        return view('course_groups.admin.webninars_groups', compact('webinars'));
     }
 }
