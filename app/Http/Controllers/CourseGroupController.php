@@ -19,11 +19,23 @@ class CourseGroupController extends Controller
     /**
      * Display the groups for a specific webinar.
      */
-    public function listGroups($webinarId)
+    public function getGroups($webinarId)
     {
         $webinar     = Webinar::with(array( 'groups.members.student', 'groups.instructor' ))->findOrFail($webinarId);
         $instructors = User::where('role_id', 4)->get(); // Replace 'role' with your actual logic
         $students    = User::where('role_id', 1)->get();
+
+        return array($webinar, $instructors, $students);
+    }
+    /**
+     * Display the groups for a specific webinar.
+     */
+    public function listGroups($webinarId)
+    {
+        $getGroups = $this->getGroups($webinarId);
+        $webinar     = $getGroups['webinar'];
+        $instructors = $getGroups['instructors']; // Replace 'role' with your actual logic
+        $students    = $getGroups['students'];
 
         return view('course_groups.admin.index', compact('webinar', 'instructors', 'students'));
     }
@@ -145,7 +157,7 @@ class CourseGroupController extends Controller
                 'meeting_end_time'   => $validated['meeting_end_time'],
                 'meeting_duration'   => $validated['meeting_duration'],
                 'meeting_recurring'  => $validated['meeting_recurring'],
-                'meeting_json'       => json_encode($zoomMeeting)
+                'meeting_json'       => json_encode($zoomMeeting),
             )
         );
 
@@ -221,27 +233,27 @@ class CourseGroupController extends Controller
 
     public function generateZoomMeetingSignature($meetingNumber, $role)
     {
-        $sdkKey = env('ZOOM_SDK_KEY');
+        $sdkKey    = env('ZOOM_SDK_KEY');
         $sdkSecret = env('ZOOM_SDK_SECRET');
-        $iat = time(); // Current timestamp in seconds
-        $exp = $iat + 3600; // Token valid for 1 hour
-        $payload = [
-            'appKey' => $sdkKey,
-            'sdkKey' => $sdkKey,
-            'mn' => $meetingNumber,
-            'role' => $role,
-            'iat' => $iat,
-            'exp' => $exp,
-            'tokenExp' => $exp
-        ];
+        $iat       = time(); // Current timestamp in seconds
+        $exp       = $iat + 3600; // Token valid for 1 hour
+        $payload   = array(
+            'appKey'   => $sdkKey,
+            'sdkKey'   => $sdkKey,
+            'mn'       => $meetingNumber,
+            'role'     => $role,
+            'iat'      => $iat,
+            'exp'      => $exp,
+            'tokenExp' => $exp,
+        );
         return JWT::encode($payload, $sdkSecret, 'HS256');
     }
 
     public function getZoomSignature(Request $request)
     {
         $meetingNumber = $request->input('meeting_number');
-        $role = $request->input('role');
-        return response()->json(['signature' => $this->generateZoomMeetingSignature($meetingNumber, $role)]);
+        $role          = $request->input('role');
+        return response()->json(array( 'signature' => $this->generateZoomMeetingSignature($meetingNumber, $role) ));
     }
 
 
@@ -253,14 +265,14 @@ class CourseGroupController extends Controller
         if ($courseGroup) {
             $instructorDetails = $courseGroup->instructor; // This fetches the instructor related to the course group
             // Display instructor details
-            if ($instructorDetails &&  $currentUser->isTeacher() && $instructorDetails->id === $currentUser->id) {
-                $role = 1;// 0 for attendee, 1 for host
-                $userName = $instructorDetails->email;
-                $userEmail = $instructorDetails->email;
+            if ($instructorDetails && $currentUser->isTeacher() && $instructorDetails->id === $currentUser->id) {
+                $role            = 1;// 0 for attendee, 1 for host
+                $userName        = $instructorDetails->email;
+                $userEmail       = $instructorDetails->email;
                 $meetingPassword = '123456';
-                $meetingNumber = $courseGroup->meeting_id;
-                $zoomSignature = $this->generateZoomMeetingSignature($meetingNumber, $role);
-                $zoomSdkKey  = env('ZOOM_SDK_KEY');
+                $meetingNumber   = $courseGroup->meeting_id;
+                $zoomSignature   = $this->generateZoomMeetingSignature($meetingNumber, $role);
+                $zoomSdkKey      = env('ZOOM_SDK_KEY');
                 return view(
                     'course_groups.front.zoom',
                     compact(
@@ -277,32 +289,6 @@ class CourseGroupController extends Controller
             }
         }
         abort(404);
-    }
-
-    private function getZoomAccessToken()
-    {
-        $clientId     = getFeaturesSettings('zoom_client_id');
-        $clientSecret = getFeaturesSettings('zoom_client_secret');
-        $account_id   = getFeaturesSettings('zoom_account_id');
-        if (empty($clientId) || empty($clientSecret) || empty($account_id)) {
-            abort(500, 'Zoom is not configured properly');
-        }
-        $response = Http::asForm()->withBasicAuth($clientId, $clientSecret)->post(
-            'https://zoom.us/oauth/token',
-            array(
-                'grant_type' => 'account_credentials',
-                'account_id' => $account_id,
-            )
-        );
-
-        if ($response->failed()) {
-            abort(500, 'Failed to retrieve Zoom access token: ' . $response->body());
-        }
-
-        $data = $response->json();
-
-        // Access token will expire in 1 hour; you may store it temporarily
-        return $data['access_token'];
     }
     /**
      * Create a Zoom meeting for the specified instructor.
@@ -346,8 +332,7 @@ class CourseGroupController extends Controller
         $accessToken = $this->getZoomAccessToken(); // Retrieve OAuth access token
 
         $zoomBaseUrl = env('ZOOM_BASE_URL', 'https://api.zoom.us/v2');
-        // Retrieve the Laravel application time zone
-        $laravelTimeZone = config('app.timezone');
+
         // Zoom API endpoint for creating a meeting
         $zoomUrl = $zoomBaseUrl . "/users/{$instructor->email}/meetings";
 
@@ -390,11 +375,168 @@ class CourseGroupController extends Controller
             'data'    => $response->json(), // Return the response as an array
         );
     }
-    public function listWebinarsWithGroups()
+    /**
+     * Retrieve the Zoom OAuth access token.
+     *
+     * This function uses client credentials to authenticate with the Zoom API
+     * and retrieve an OAuth access token. The access token is valid for 1 hour.
+     *
+     * @return string The Zoom OAuth access token.
+     *
+     * @throws \Illuminate\Http\Client\RequestException If the request to Zoom API fails.
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException If Zoom is not configured properly.
+     */
+    private function getZoomAccessToken()
     {
-        $webinars = Webinar::with('groups') // Load groups relationship
+        /**
+         * @var string $clientId
+         */
+        $clientId     = getFeaturesSettings('zoom_client_id');
+        /**
+         * @var string $clientSecret
+         */
+        $clientSecret = getFeaturesSettings('zoom_client_secret');
+        /**
+         * @var string $account_id
+         */
+        $account_id   = getFeaturesSettings('zoom_account_id');
+
+        if (empty($clientId) || empty($clientSecret) || empty($account_id)) {
+            abort(500, 'Zoom is not configured properly');
+        }
+
+        $response = Http::asForm()->withBasicAuth($clientId, $clientSecret)->post(
+            'https://zoom.us/oauth/token',
+            array(
+                'grant_type' => 'account_credentials',
+                'account_id' => $account_id,
+            )
+        );
+
+        if ($response->failed()) {
+            abort(500, 'Failed to retrieve Zoom access token: ' . $response->body());
+        }
+
+        $data = $response->json();
+
+        // Access token will expire in 1 hour; you may store it temporarily
+        return $data['access_token'];
+    }
+
+    /**
+     * Fetch Zoom meetings for a specific instructor.
+     *
+     * This function retrieves a list of Zoom meetings for a given instructor using the Zoom API.
+     * Optional query parameters can be provided to filter or paginate results.
+     *
+     * @param \App\Models\Instructor $instructor The instructor whose meetings are to be fetched.
+     * @param array                  $queryParams Optional query parameters for the API request.
+     *
+     * @return array|false The response from Zoom API as an associative array, or false on failure.
+     */
+    public function fetchUserMeetings($instructor, $queryParams = array())
+    {
+        $accessToken = $this->getZoomAccessToken(); // Retrieve OAuth access token
+        $zoomBaseUrl = env('ZOOM_BASE_URL', 'https://api.zoom.us/v2');
+
+        // Zoom API endpoint for fetching meetings
+        $zoomUrl = $zoomBaseUrl . "/users/{$instructor->email}/meetings";
+
+        // Make API request to Zoom
+        $response = Http::withToken($accessToken)
+        ->get($zoomUrl, $queryParams);
+
+        if ($response->failed()) {
+            return false;
+        }
+
+        return $response->json();
+    }
+    /**
+     * Fetch recordings for a recurring Zoom meeting by its meeting ID.
+     *
+     * This function retrieves all cloud recordings for a specific recurring meeting.
+     *
+     * @param string $meetingId The Zoom meeting ID.
+     *
+     * @return array|false The response from Zoom API as an associative array, or false on failure.
+     */
+    public function fetchMeetingRecordings($meetingId)
+    {
+        $accessToken = $this->getZoomAccessToken(); // Retrieve OAuth access token
+        LOG::info('test', [$accessToken]);
+        $zoomBaseUrl = env('ZOOM_BASE_URL', 'https://api.zoom.us/v2');
+
+        // Zoom API endpoint for fetching recordings
+        $zoomUrl = $zoomBaseUrl . "/meetings/{$meetingId}/recordings";
+
+        // Make API request to Zoom
+        $response = Http::withToken($accessToken)->get($zoomUrl);
+
+        if ($response->failed()) {
+            return false;
+        }
+
+        return $response->json();
+    }
+    /**
+     * Handle AJAX request to fetch Zoom recordings by meeting ID.
+     *
+     * @param \Illuminate\Http\Request $request The incoming HTTP request.
+     * @return \Illuminate\Http\JsonResponse The JSON response containing recordings or an error message.
+     */
+    public function getMeetingRecordings(Request $request)
+    {
+        // Validate the meeting ID from the request
+        $validated = $request->validate([
+        'meeting_id' => 'required|string',
+        ]);
+
+        // Fetch recordings using the meeting ID
+        $meetingId = $validated['meeting_id'];
+        $recordings = $this->fetchMeetingRecordings($meetingId);
+
+        if ($recordings === false) {
+            return response()->json([
+            'success' => false,
+            'message' => 'لا توجد تسجيلات.',
+            ], 500);
+        }
+
+        return response()->json([
+        'success' => true,
+        'data' => $recordings,
+        ]);
+    }
+
+    /**
+     * List webinars with their associated groups.
+     *
+     * This function retrieves all webinars that are associated with at least one group.
+     * It loads the "groups" relationship for each webinar and returns a view for displaying the data.
+     *
+     * @return \Illuminate\Contracts\View\View The view displaying webinars with their associated groups.
+     */
+    public function getWebinarsWithGroups()
+    {
+        return Webinar::with('groups') // Load groups relationship
         ->has('groups') // Only include webinars with at least one group
         ->get();
+
+        return view('course_groups.admin.webninars_groups', compact('webinars'));
+    }
+
+    /**
+     * List webinars with their associated groups.
+     *
+     * This function retrieves all webinars that are associated with at least one group.
+     * It loads the "groups" relationship for each webinar and returns a view for displaying the data.
+     *
+     * @return \Illuminate\Contracts\View\View The view displaying webinars with their associated groups.
+     */
+    public function listWebinarsWithGroups()
+    {
+        $webinars = $this->getWebinarsWithGroups();
 
         return view('course_groups.admin.webninars_groups', compact('webinars'));
     }

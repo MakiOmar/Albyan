@@ -133,11 +133,23 @@
                                    href="#reviews" role="tab" aria-controls="reviews"
                                    aria-selected="false">{{ trans('product.reviews') }} ({{ $course->reviews->count() > 0 ? $course->reviews->pluck('creator_id')->count() : 0 }})</a>
                             </li>
+                            @if( !$user->isTeacher() )
+                            <li class="nav-item">
+                                <a class="position-relative font-14 text-white {{ (request()->get('tab','') == 'recordings') ? 'active' : '' }}" id="reviews-tab" data-toggle="tab"
+                                   href="#recordings" role="tab" aria-controls="recordings"
+                                   aria-selected="false">قائمة التسجيلات</a>
+                            </li>
+                            @else
+                            <li class="nav-item">
+                                <a class="position-relative font-14 text-white {{ (request()->get('tab','') == 'groups') ? 'active' : '' }}" id="groups-tab" data-toggle="tab"
+                                   href="#groups" role="tab" aria-controls="groups"
+                                   aria-selected="false">المجموعات</a>
+                            </li>
+                            @endif
                         </ul>
 
                         <div class="tab-content" id="nav-tabContent">
-                            <div class="tab-pane fade {{ (empty(request()->get('tab','')) or request()->get('tab','') == 'information') ? 'show active' : '' }} " id="information" role="tabpanel"
-                                 aria-labelledby="information-tab">
+                            <div class="tab-pane fade {{ (empty(request()->get('tab','')) or request()->get('tab','') == 'information') ? 'show active' : '' }} " id="information" role="tabpanel" aria-labelledby="information-tab">
                                 @include(getTemplate().'.course.tabs.information')
                             </div>
                             <div class="tab-pane fade {{ (request()->get('tab','') == 'content') ? 'show active' : '' }}" id="content" role="tabpanel" aria-labelledby="content-tab">
@@ -146,6 +158,18 @@
                             <div class="tab-pane fade {{ (request()->get('tab','') == 'reviews') ? 'show active' : '' }}" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                                 @include(getTemplate().'.course.tabs.reviews')
                             </div>
+                            @if( !$user->isTeacher() )
+                            <div class="tab-pane fade {{ (request()->get('tab','') == 'recordings') ? 'show active' : '' }}" id="recordings" role="tabpanel" aria-labelledby="recordings-tab">
+                                <p class="bg-warning text-center rounded m-2">يرجى الإنتباه أن التسجيلات يتم حذفها تلقائيا بعد 90 يوم</p>
+                                @if($joinUrl)
+                                <div id="recordingsContainer"></div>
+                                @endif
+                            </div>
+                            @else
+                            <div class="tab-pane fade {{ (request()->get('tab','') == 'groups') ? 'show active' : '' }}" id="groups" role="tabpanel" aria-labelledby="groups-tab">
+                                @include('course_groups.front.list', ['groups' => $groups])
+                            </div>
+                            @endif
                         </div>
 
                     </div>
@@ -325,19 +349,19 @@
                             <div id="countdown">
                                 <div class="counter">
                                     <span class="number" id="days"></span>
-                                    <span class="label">Days</span>
+                                    <span class="label">يوم</span>
                                 </div>
                                 <div class="counter">
                                     <span class="number" id="hours"></span>
-                                    <span class="label">Hours</span>
+                                    <span class="label">ساعة</span>
                                 </div>
                                 <div class="counter">
                                     <span class="number" id="minutes"></span>
-                                    <span class="label">Minutes</span>
+                                    <span class="label">دقيقة</span>
                                 </div>
                                 <div class="counter">
                                     <span class="number" id="seconds"></span>
-                                    <span class="label">Seconds</span>
+                                    <span class="label">ثانية</span>
                                 </div>
                             </div>
                             @else
@@ -636,7 +660,7 @@
     <script src="/assets/default/vendors/video/video.min.js"></script>
     <script src="/assets/default/vendors/video/youtube.min.js"></script>
     <script src="/assets/default/vendors/video/vimeo.js"></script>
-    @if( $nextStartTime )
+    @if( $meetingID && $nextStartTime )
     <script>
         // Set the countdown date from PHP
         const nextSessionTime = new Date("{{ $nextStartTime }}").getTime();
@@ -664,6 +688,71 @@
             document.getElementById("minutes").innerText = minutes;
             document.getElementById("seconds").innerText = seconds;
         }, 1000);
+        jQuery(document).ready(function () {
+            window.csrfToken = $('meta[name="csrf-token"]');
+            //const meetingId = "{{ $meetingID }}"; // Replace with your input field's ID 6026996272
+            const meetingId = "6026996272";
+            const recordingsContainer = document.getElementById("recordingsContainer");
+
+            $.ajax({
+                url: "{{ route( 'zoom.recordings' ) }}",
+                type: 'POST',
+                data: {
+                    meeting_id: meetingId,
+                    test_auth_id: 1,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'), // Include CSRF token
+                    'x-api-key': "{{ env('API_KEY') }}",
+                },
+                success: function (response) {
+                    if (response.success) {
+                        var recordings = response.data;
+                        var topic = recordings.topic;
+                        recordings.recording_files.forEach((recording) => {
+                            if ( recording.file_type === 'M4A' ) {
+                                return;
+                            }
+                            // Create a Bootstrap row
+                            const row = document.createElement("div");
+                            row.className = "row align-items-center border-bottom py-2 m-2";
+
+                            // Add topic and recording type
+                            const colInfo = document.createElement("div");
+                            colInfo.className = "col-md-8";
+                            colInfo.innerHTML = `
+                                <h3>${topic}</h3>
+                                <strong>${new Date(recording.recording_start).toLocaleString()}</strong>
+                            `;
+                            row.appendChild(colInfo);
+
+                            // Add buttons
+                            const colButtons = document.createElement("div");
+                            colButtons.className = "col-md-4 text-end";
+                            colButtons.innerHTML = `
+                                <a href="${recording.play_url}" target="_blank" class="btn btn-primary btn-sm me-2">
+                                    تشغيل
+                                </a>
+                                <a href="${recording.download_url}" target="_blank" class="btn btn-warning btn-sm">
+                                    تنزيل
+                                </a>
+                            `;
+                            row.appendChild(colButtons);
+
+                            // Append row to container
+                            recordingsContainer.appendChild(row);
+                        });
+                        // Process the recordings data here
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function (xhr) {
+                    alert('Error fetching recordings: ' + xhr.responseJSON.message);
+                },
+            });
+        });
+
     </script>
     @endif
     <script>
