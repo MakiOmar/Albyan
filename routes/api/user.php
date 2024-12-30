@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Panel\UsersController;
+use App\Http\Controllers\CourseGroupController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([], function () {
@@ -266,3 +267,7 @@ Route::group([], function () {
     });
     Route::get('/offline', ['uses' => 'WebinarsController@offlinePurchases']);
 });
+
+
+Route::post('/zoom/recordings', [CourseGroupController::class, 'getMeetingRecordings'])->name('zoom.recordings');
+//Route::post('/zoom/getrecordings', [CourseGroupController::class, 'getMeetingRecordings'])->name('getzoom.recordings');
