@@ -349,19 +349,19 @@
                             <div id="countdown">
                                 <div class="counter">
                                     <span class="number" id="days"></span>
-                                    <span class="label">يوم</span>
+                                    <span class="label">{{ trans('update.day') }}</span>
                                 </div>
                                 <div class="counter">
                                     <span class="number" id="hours"></span>
-                                    <span class="label">ساعة</span>
+                                    <span class="label">{{ trans('update.hour') }}</span>
                                 </div>
                                 <div class="counter">
                                     <span class="number" id="minutes"></span>
-                                    <span class="label">دقيقة</span>
+                                    <span class="label">{{ trans('update.minute') }}</span>
                                 </div>
                                 <div class="counter">
                                     <span class="number" id="seconds"></span>
-                                    <span class="label">ثانية</span>
+                                    <span class="label">{{ trans('update.second') }}</span>
                                 </div>
                             </div>
                             @else

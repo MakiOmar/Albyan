@@ -25,7 +25,7 @@ class CourseGroupController extends Controller
         $instructors = User::where('role_id', 4)->get(); // Replace 'role' with your actual logic
         $students    = User::where('role_id', 1)->get();
 
-        return array($webinar, $instructors, $students);
+        return array('webinar' => $webinar, 'instructors' => $instructors, 'students' => $students);
     }
     /**
      * Display the groups for a specific webinar.

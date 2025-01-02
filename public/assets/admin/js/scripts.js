@@ -60,7 +60,8 @@ $(function () {
     let sidebar_nicescroll_opts = {
         cursoropacitymin: 0,
         cursoropacitymax: .8,
-        zindex: 892
+        zindex: 892,
+        railalign: 'left',
     }, now_layout_class = null;
 
     var sidebar_sticky = function () {

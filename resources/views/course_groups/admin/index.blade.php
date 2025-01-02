@@ -85,7 +85,10 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center flex-wrap border-style">
                                 <div class="flex-item px-3">
-                                    <strong>وقت بدء الاجتماع:</strong> {{ $group->meeting_start_time }}
+                                    <strong>وقت بدء الدورة:</strong> {{ $group->meeting_start_time }}
+                                </div>
+                                <div class="flex-item px-3">
+                                    <strong>وقت نهاية الدورة:</strong> {{ $group->meeting_end_time }}
                                 </div>
                                 <div class="flex-item px-3">
                                     <strong>المحاضر:</strong> {{ $group->instructor->full_name }}
