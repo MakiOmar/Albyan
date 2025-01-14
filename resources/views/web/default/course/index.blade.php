@@ -744,11 +744,11 @@
                         });
                         // Process the recordings data here
                     } else {
-                        alert(response.message);
+                       
                     }
                 },
                 error: function (xhr) {
-                    alert('Error fetching recordings: ' + xhr.responseJSON.message);
+                    console.log('Error fetching recordings: ' + xhr.responseJSON.message);
                 },
             });
         });
