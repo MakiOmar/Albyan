@@ -13,6 +13,7 @@ use Illuminate\Support\MessageBag;
 use App\Models\Sale;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 
 class CourseGroupController extends Controller
 {
@@ -221,7 +222,14 @@ class CourseGroupController extends Controller
                 404
             );
         }
+        $zoomMeetingId = $courseGroup->meeting_id;
 
+        if ($zoomMeetingId) {
+            $zoomDeletionResponse = $this->deleteZoomMeeting($zoomMeetingId);
+            if (!$zoomDeletionResponse['success']) {
+                LOG::info('Zoom errors', ['zoom_meeting' => $zoomDeletionResponse['error']]);
+            }
+        }
         // Delete related group members first
         $courseGroup->members()->delete();
 
@@ -229,6 +237,29 @@ class CourseGroupController extends Controller
         $courseGroup->delete();
 
         return redirect()->back()->with('success', 'تم حذف المجموعة بنجاح.');
+    }
+    private function deleteZoomMeeting($meetingId)
+    {
+        $accessToken = $this->getZoomAccessToken(); // Retrieve OAuth access token
+        $zoomBaseUrl = env('ZOOM_BASE_URL', 'https://api.zoom.us/v2');
+
+        // Zoom API endpoint for deleting a meeting
+        $zoomUrl = $zoomBaseUrl . "/meetings/{$meetingId}";
+
+        // Make API request to delete the meeting
+        $response = Http::withToken($accessToken)->delete($zoomUrl);
+
+        if ($response->failed()) {
+            return [
+                'success' => false,
+                'error'   => 'Failed to delete Zoom meeting: ' . $response->body(),
+            ];
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Zoom meeting deleted successfully.',
+        ];
     }
 
     public function generateZoomMeetingSignature($meetingNumber, $role)
@@ -340,9 +371,9 @@ class CourseGroupController extends Controller
         $meetingData = array(
             'topic'      => "Meeting for Webinar ID {$data['webinar_id']}",
             'type'       => $data['meeting_recurring'] ? 8 : 2, // 8 for recurring, 2 for scheduled
-            'start_time' => $data['meeting_start_time'],
+            'start_time' => Carbon::parse($data['meeting_start_time'], 'Asia/Dubai')->format('Y-m-d\TH:i:s'),
             'duration'   => $data['meeting_duration'], // Minutes
-            'timezone'   => $instructor->timezone,
+            'timezone'   => 'Asia/Dubai',
             'settings'   => array(
                 'host_video'        => true,
                 'participant_video' => true,
@@ -357,7 +388,7 @@ class CourseGroupController extends Controller
             $meetingData['recurrence'] = array(
                 'type'            => 1, // Daily
                 'repeat_interval' => 1, // Every day
-                'end_date_time'   => $data['meeting_end_time'] ?? null, // Optional end date for recurrence
+                'end_date_time'   => Carbon::parse($data['meeting_end_time'], 'Asia/Dubai')->format('Y-m-d\TH:i:s') ?? null, // Optional end date for recurrence
             );
         }
         // Make API request to Zoom
