@@ -690,8 +690,8 @@
         }, 1000);
         jQuery(document).ready(function () {
             window.csrfToken = $('meta[name="csrf-token"]');
-            //const meetingId = "{{ $meetingID }}"; // Replace with your input field's ID 6026996272
-            const meetingId = "6026996272";
+            const meetingId = "{{ $meetingID }}"; // Replace with your input field's ID 6026996272
+            //const meetingId = "6026996272";
             const recordingsContainer = document.getElementById("recordingsContainer");
 
             $.ajax({
