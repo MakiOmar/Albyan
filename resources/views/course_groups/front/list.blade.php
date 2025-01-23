@@ -1,4 +1,5 @@
 <div id="groupsAccordion">
+    @if ( $groups )
     @foreach ($groups as $group)
     <div class="card">
         <div class="card-header d-flex justify-content-between" id="heading{{ $group->id }}">
@@ -23,4 +24,5 @@
         </div>
     </div>
     @endforeach
+    @endif
 </div>
