@@ -119,17 +119,25 @@ class CourseGroupController extends Controller
      */
     public function createGroup(Request $request)
     {
-        $validated = $request->validate(
-            array(
-                'webinar_id'         => 'required|exists:webinars,id',
-                'meeting_start_time' => 'required|date',
-                'meeting_end_time'   => 'required|date',
-                'meeting_duration'   => 'required|integer',
-                'meeting_recurring'  => 'required|boolean',
-                'student_ids'        => 'required|array',
-                'student_ids.*'      => 'exists:users,id',
-            )
-        );
+        $validated = $request->validate([
+            'webinar_id'         => 'required|exists:webinars,id', // Ensure webinar exists
+            'meeting_start_time' => 'required|date', // Validate start time
+            'meeting_end_time'   => 'required_if:meeting_recurring,1|date', // Required only if recurring
+            'meeting_duration'   => 'required|integer|min:1', // Minimum duration 1 minute
+            'meeting_recurring'  => 'required|in:0,1', // Ensure value is 0 or 1
+            'recurrence_type'    => 'required_if:meeting_recurring,1|in:1,2,3', // Validate type: 1=Daily, 2=Weekly, 3=Monthly
+            'recurrence_interval' => 'required_if:meeting_recurring,1|integer|min:1',
+            'weekly_days'        => 'required_if:recurrence_type,2|array', // Required if weekly recurrence
+            'weekly_days.*'      => 'in:1,2,3,4,5,6,7', // Validate each day is a valid weekday
+            'monthly_day'        => 'nullable|required_if:recurrence_type,3|integer|min:1|max:31', // Required if monthly recurrence
+            'participant_video'  => 'required|in:0,1', // Validate participant video toggle
+            'host_video'         => 'required|in:0,1', // Validate host video toggle
+            'audio_option'       => 'required|in:both,voip,telephony', // Ensure audio option is valid
+            'student_ids'        => 'required|array|min:1', // At least one student must be selected
+            'student_ids.*'      => 'exists:users,id', // Validate each student ID
+        ]);
+
+
         $webinar   = Webinar::find($validated['webinar_id']);
 
         if ($webinar) {
@@ -360,52 +368,57 @@ class CourseGroupController extends Controller
      */
     private function createZoomMeeting($instructor, $data)
     {
-        $accessToken = $this->getZoomAccessToken(); // Retrieve OAuth access token
-
+        $accessToken = $this->getZoomAccessToken();
         $zoomBaseUrl = env('ZOOM_BASE_URL', 'https://api.zoom.us/v2');
-
-        // Zoom API endpoint for creating a meeting
         $zoomUrl = $zoomBaseUrl . "/users/{$instructor->email}/meetings";
 
-        // Prepare meeting data
-        $meetingData = array(
+        $meetingData = [
             'topic'      => "Meeting for Webinar ID {$data['webinar_id']}",
-            'type'       => $data['meeting_recurring'] ? 8 : 2, // 8 for recurring, 2 for scheduled
+            'type'       => $data['meeting_recurring'] ? 8 : 2,
             'start_time' => Carbon::parse($data['meeting_start_time'], 'Asia/Dubai')->format('Y-m-d\TH:i:s'),
-            'duration'   => $data['meeting_duration'], // Minutes
+            'duration'   => $data['meeting_duration'],
             'timezone'   => 'Asia/Dubai',
-            'settings'   => array(
-                'host_video'        => true,
-                'participant_video' => true,
+            'settings'   => [
+                'host_video'        => (bool) $data['host_video'],
+                'participant_video' => (bool) $data['participant_video'],
+                'audio'             => $data['audio_option'],
                 'join_before_host'  => false,
                 'mute_upon_entry'   => true,
-                'approval_type'     => 1, // Automatically approve
-            ),
-        );
+                'approval_type'     => 0,
+            ],
+        ];
 
-        // Add recurrence settings for recurring meetings
         if ($data['meeting_recurring']) {
-            $meetingData['recurrence'] = array(
-                'type'            => 1, // Daily
-                'repeat_interval' => 1, // Every day
-                'end_date_time'   => Carbon::parse($data['meeting_end_time'], 'Asia/Dubai')->format('Y-m-d\TH:i:s') ?? null, // Optional end date for recurrence
-            );
+            $recurrence = [
+                'type'            => (int) $data['recurrence_type'], // 1: Daily, 2: Weekly, 3: Monthly
+                'repeat_interval' => $data['recurrence_interval'], // Interval from form
+            ];
+
+            // Additional settings for weekly or monthly recurrence
+            if ($data['recurrence_type'] == 2) { // Weekly
+                $recurrence['weekly_days'] = implode(',', $data['weekly_days']); // e.g., "1,3,5"
+            } elseif ($data['recurrence_type'] == 3) { // Monthly
+                $recurrence['monthly_day'] = $data['monthly_day'];
+            }
+
+            $meetingData['recurrence'] = $recurrence;
         }
-        // Make API request to Zoom
-        $response = Http::withToken($accessToken)
-            ->post($zoomUrl, $meetingData);
+
+        $response = Http::withToken($accessToken)->post($zoomUrl, $meetingData);
+
         if ($response->failed()) {
-            return array(
+            return [
                 'success' => false,
                 'error'   => 'Failed to create Zoom meeting: ' . $response->body(),
-            );
+            ];
         }
 
-        return array(
+        return [
             'success' => true,
-            'data'    => $response->json(), // Return the response as an array
-        );
+            'data'    => $response->json(),
+        ];
     }
+
     /**
      * Retrieve the Zoom OAuth access token.
      *
@@ -495,7 +508,6 @@ class CourseGroupController extends Controller
     public function fetchMeetingRecordings($meetingId)
     {
         $accessToken = $this->getZoomAccessToken(); // Retrieve OAuth access token
-        LOG::info('test', [$accessToken]);
         $zoomBaseUrl = env('ZOOM_BASE_URL', 'https://api.zoom.us/v2');
 
         // Zoom API endpoint for fetching recordings
