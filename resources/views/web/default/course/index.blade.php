@@ -133,7 +133,7 @@
                                    href="#reviews" role="tab" aria-controls="reviews"
                                    aria-selected="false">{{ trans('product.reviews') }} ({{ $course->reviews->count() > 0 ? $course->reviews->pluck('creator_id')->count() : 0 }})</a>
                             </li>
-                            @if( !$user->isTeacher() )
+                            @if( $user && !$user->isTeacher() )
                             <li class="nav-item">
                                 <a class="position-relative font-14 text-white {{ (request()->get('tab','') == 'recordings') ? 'active' : '' }}" id="reviews-tab" data-toggle="tab"
                                    href="#recordings" role="tab" aria-controls="recordings"
@@ -158,7 +158,7 @@
                             <div class="tab-pane fade {{ (request()->get('tab','') == 'reviews') ? 'show active' : '' }}" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                                 @include(getTemplate().'.course.tabs.reviews')
                             </div>
-                            @if( !$user->isTeacher() )
+                            @if( $user && !$user->isTeacher() )
                             <div class="tab-pane fade {{ (request()->get('tab','') == 'recordings') ? 'show active' : '' }}" id="recordings" role="tabpanel" aria-labelledby="recordings-tab">
                                 <p class="bg-warning text-center rounded m-2">يرجى الإنتباه أن التسجيلات يتم حذفها تلقائيا بعد 90 يوم</p>
                                 @if($joinUrl)
