@@ -333,7 +333,7 @@ if (function_exists('apache_get_modules')) {
    
 
     <h1>Server Requirements.</h1>
-    <p>Rocket LMS Version : 1.9.7 (Full version)</p>
+    <p>Albyan Institute Version : 1.9.7 (Full version)</p>
     <br/>
 
     <p>
