@@ -345,7 +345,7 @@
                     </a>
                 </li>
             @endcan
-
+                {{--
             @can('admin_appointments_lists')
                 <li class="{{ (request()->is(getAdminPanelUrl('/appointments', false))) ? 'active' : '' }}">
                     <a class="nav-link" href="{{ getAdminPanelUrl() }}/appointments">
@@ -354,6 +354,7 @@
                     </a>
                 </li>
             @endcan
+            --}}
             @if($authUser->can('admin_users') or
                 $authUser->can('admin_roles') or
                 $authUser->can('admin_users_not_access_content') or
