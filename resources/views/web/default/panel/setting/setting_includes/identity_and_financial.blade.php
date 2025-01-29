@@ -10,7 +10,7 @@
 
     <div class="row mt-20">
         <div class="col-12 col-lg-4">
-
+            {{--
             <div class="form-group">
                 <label class="input-label">{{ trans('financial.select_account_type') }}</label>
                 <select name="bank_id" class="js-user-bank-input form-control @error('bank_id')  is-invalid @enderror" {{ ($user->financial_approval) ? 'disabled' : '' }}>
@@ -27,7 +27,7 @@
                 </div>
                 @enderror
             </div>
-
+            --}}
             <div class="js-bank-specifications-card">
                 @if(!empty($user) and !empty($user->selectedBank) and !empty($user->selectedBank->bank))
                     @foreach($user->selectedBank->bank->specifications as $specification)

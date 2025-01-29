@@ -65,7 +65,7 @@
                 <img src="/assets/default/img/icons/{{ $step['icon'] }}.svg" class="img-cover" alt="">
             </a>
 
-            <div class="ml-10 {{ $key == $currentStep ? '' : 'd-lg-none' }}">
+            <div class="ml-10">
                 <h4 class="font-16 text-secondary font-weight-bold">{{ trans($step['lang']) }}</h4>
             </div>
         </div>

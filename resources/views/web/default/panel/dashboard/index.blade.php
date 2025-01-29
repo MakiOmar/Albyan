@@ -56,6 +56,7 @@
 
     <section class="dashboard">
         <div class="row">
+            {{--
             <div class="col-12 col-lg-3 mt-35">
                 <div class="bg-white account-balance rounded-sm panel-shadow py-15 py-md-30 px-10 px-md-20">
                     <div class="text-center">
@@ -81,7 +82,7 @@
                     </div>
                 </div>
             </div>
-
+            --}}
             <div class="col-12 col-lg-3 mt-35">
                 <a href="@if($authUser->isUser()) /panel/webinars/purchases @else /panel/meetings/requests @endif" class="dashboard-stats rounded-sm panel-shadow p-10 p-md-20 d-flex align-items-center">
                     <div class="stat-icon requests">
@@ -103,7 +104,7 @@
                     </div>
                 </a>
             </div>
-
+            
             <div class="col-12 col-lg-3 mt-35">
                 <a href="/panel/support" class="dashboard-stats rounded-sm panel-shadow p-10 p-md-20 d-flex align-items-center">
                     <div class="stat-icon support-messages">
@@ -165,7 +166,7 @@
 
                 </div>
             </div>
-
+            {{--
             <div class="col-12 col-lg-6 mt-35">
                 <div class="bg-white monthly-sales-card rounded-sm panel-shadow py-10 py-md-20 px-15 px-md-30">
                     <div class="d-flex align-items-center justify-content-between">
@@ -179,6 +180,7 @@
                     </div>
                 </div>
             </div>
+            --}}
         </div>
     </section>
 

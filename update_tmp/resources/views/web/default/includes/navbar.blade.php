@@ -101,7 +101,7 @@
                     @endif
                 </ul>
             </div>
-
+            {{--
             <div class="nav-icons-or-start-live navbar-order d-flex align-items-center justify-content-end">
 
                 @if(!empty($navBtnUrl))
@@ -134,6 +134,7 @@
                 </div>
 
             </div>
+            --}}
         </div>
     </div>
 </nav>

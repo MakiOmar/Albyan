@@ -466,7 +466,7 @@
                 </li>
             @endcan()
             --}}
-
+            {{--
             @can('admin_become_instructors_list')
                 <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/users/become-instructors*', false))) ? 'active' : '' }}">
                     <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
@@ -488,7 +488,7 @@
                     </ul>
                 </li>
             @endcan()
-
+            --}}
             @can('admin_delete_account_requests')
                 <li class="nav-item {{ (request()->is(getAdminPanelUrl('/users/delete-account-requests*', false))) ? 'active' : '' }}">
                     <a href="{{ getAdminPanelUrl() }}/users/delete-account-requests" class="nav-link">

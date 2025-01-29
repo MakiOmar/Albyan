@@ -600,7 +600,7 @@
             </li>
         @endcan
 
-
+        {{--
         @if(!$authUser->isUser() or (!empty($referralSettings) and $referralSettings['status'] and $authUser->affiliate) or (!empty(getRegistrationBonusSettings('status')) and $authUser->enable_registration_bonus))
             @can('panel_marketing')
                 <li class="sidenav-item {{ (request()->is('panel/marketing') or request()->is('panel/marketing/*')) ? 'sidenav-item-active' : '' }}">
@@ -662,7 +662,7 @@
                 </li>
             @endcan
         @endif
-
+        --}}
 
         @if(getFeaturesSettings('forums_status'))
             @can('panel_forums')

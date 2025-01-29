@@ -215,12 +215,14 @@
             @endforeach
 
         @else
+        {{--
             @include(getTemplate() . '.includes.no-result',[
                 'file_name' => 'webinar.png',
                 'title' => trans('panel.you_not_have_any_webinar'),
                 'hint' =>  trans('panel.no_result_hint') ,
                 'btn' => ['url' => '/panel/webinars/new','text' => trans('panel.create_a_webinar') ]
             ])
+                --}}
         @endif
 
     </section>
