@@ -27,10 +27,10 @@
 
     <section class="container mt-10 mt-md-40">
         <div class="row">
-            <div class="col-12 col-lg-8">
+            <div class="col-12">
                 <div class="row">
                     @foreach($blog as $post)
-                        <div class="col-12 col-md-4 col-lg-6">
+                        <div class="col-12 col-md-4 col-lg-4">
                             <div class="mt-30">
                                 @include('web.default.blog.grid-list',['post' => $post])
                             </div>
@@ -38,7 +38,7 @@
                     @endforeach
                 </div>
             </div>
-
+            {{--
             <div class="col-12 col-lg-4">
 
                 <div class="p-20 mt-30 rounded-sm shadow-lg border border-gray300">
@@ -75,6 +75,7 @@
                 </div>
 
             </div>
+            --}}
         </div>
 
         <div class="mt-20 mt-md-50 pt-30">

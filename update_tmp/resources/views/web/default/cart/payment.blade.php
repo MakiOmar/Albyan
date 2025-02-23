@@ -59,7 +59,7 @@
                         @endif
                     @endforeach
                 @endif
-
+                {{--
                 <div class="col-6 col-lg-4 mb-40 charge-account-radio">
                     <input type="radio" @if(empty($userCharge) or ($total > $userCharge)) disabled @endif name="gateway" id="offline" value="credit">
                     <label for="offline" class="rounded-sm p-20 p-lg-45 d-flex flex-column align-items-center justify-content-center">
@@ -73,6 +73,7 @@
                         <span class="mt-5">{{ handlePrice($userCharge) }}</span>
                     </label>
                 </div>
+                --}}
             </div>
 
             @if(!empty($invalidChannels) and empty(getFinancialSettings("hide_disabled_payment_gateways")))

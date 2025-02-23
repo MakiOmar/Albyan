@@ -6,14 +6,16 @@
 
 
 @section('content')
-    <section class="site-top-banner search-top-banner opacity-04 position-relative">
-        <img src="{{ $contactSettings['background'] }}" class="img-cover" alt="{{ $pageTitle ?? '' }}"/>
 
+    <section class="search-top-banner opacity-04 position-relative">
+            {{--
+        <img src="{{ $contactSettings['background'] }}" class="img-cover" alt="{{ $pageTitle ?? '' }}"/>
+            --}}
         <div class="container h-100">
-            <div class="row contact-us-head h-100 justify-content-center text-center">
+            <div class="row p-4 h-100 justify-content-center text-center">
                 <div class="col-12 col-md-9 col-lg-7">
                     <div class="top-search-categories-form">
-                        <h1 class="text-white font-30 mb-15">{{ trans('site.contact_us') }}</h1>
+                        <h1 class="font-30 mb-15">{{ trans('site.contact_us') }}</h1>
                     </div>
                 </div>
             </div>
@@ -21,7 +23,9 @@
     </section>
 
     <div class="container">
+        {{--
         <section class="">
+            
             @if(!empty($contactSettings['latitude']) and !empty($contactSettings['longitude']))
                 <div class="contact-map" id="contactMap"
                      data-latitude="{{ $contactSettings['latitude'] }}"
@@ -29,7 +33,6 @@
                      data-zoom="{{ $contactSettings['map_zoom'] ?? 12 }}"
                 ></div>
             @endif
-
 
             <div class="row">
                 <div class="col-12 col-md-4">
@@ -78,93 +81,126 @@
                 </div>
             </div>
         </section>
-
-        <section class="mt-30 mt-md-50">
-            <h2 class="font-16 font-weight-bold text-secondary">{{ trans('site.send_your_message_directly') }}</h2>
-
-            @if(!empty(session()->has('msg')))
-                <div class="alert alert-success my-25 d-flex align-items-center">
-                    <i data-feather="check-square" width="50" height="50" class="mr-2"></i>
-                    {{ session()->get('msg') }}
-                </div>
-            @endif
-
-            <form action="/contact/store" method="post" class="mt-20">
-                {{ csrf_field() }}
-
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group">
-                            <label class="input-label font-weight-500">{{ trans('site.your_name') }}</label>
-                            <input type="text" name="name" value="{{ old('name') }}" class="form-control @error('name')  is-invalid @enderror"/>
-                            @error('name')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
+        --}}
+        <div class="row">
+            <div class="col-12 contact-us-about">
+                <p>
+                    في قلب دبي، يعمل فريق <strong>معهد البيان للخدمات التعليمية</strong> بلا كلل لتحقيق أعلى معايير الجودة في تقديم الدبلومات والدورات التعليمية.
+                    وبفضل جهودهم الدؤوبة، يقدم المعهد برامج مبتكرة ومتطورة تحت إشراف نخبة من الأطباء المتخصصين في مختلف المجالات، مما يمنح شهادات معتمدة من قبل 
+                    <strong>هيئة المعرفة الإنسانية في دبي</strong>.
+                </p>
+            
+                <p>
+                    كل عام، يعد المعهد مؤسسة ضخمة لتخريج الطلاب، حيث يحصل كل طالب على ميدالية ذهبية وبطاقة عضوية، كجزء من المجتمع المتميز للمعهد.
+                    وبفضل هذا التفاني، يفخر المعهد بتخريج أكثر من <strong>3000 طالب جامعي</strong>، محققًا رسالته في نشر التعليم والتميز.
+                </p>
+            
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-6 p-3">
+                <section class="mt-30 mt-md-50">
+                    <h2 class="font-16 font-weight-bold text-secondary">{{ trans('site.send_your_message_directly') }}</h2>
+        
+                    @if(!empty(session()->has('msg')))
+                        <div class="alert alert-success my-25 d-flex align-items-center">
+                            <i data-feather="check-square" width="50" height="50" class="mr-2"></i>
+                            {{ session()->get('msg') }}
                         </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group">
-                            <label class="input-label font-weight-500">{{ trans('public.email') }}</label>
-                            <input type="text" name="email" value="{{ old('email') }}" class="form-control @error('email')  is-invalid @enderror"/>
-                            @error('email')
-                            <div class="invalid-feedback">
-                                {{ $message }}
+                    @endif
+        
+                    <form action="/contact/store" method="post" class="mt-20">
+                        {{ csrf_field() }}
+        
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label class="input-label font-weight-500">{{ trans('site.your_name') }}</label>
+                                    <input type="text" name="name" value="{{ old('name') }}" class="form-control @error('name')  is-invalid @enderror"/>
+                                    @error('name')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
                             </div>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group">
-                            <label class="input-label font-weight-500">{{ trans('site.phone_number') }}</label>
-                            <input type="text" name="phone" value="{{ old('phone') }}" class="form-control @error('phone')  is-invalid @enderror"/>
-                            @error('phone')
-                            <div class="invalid-feedback">
-                                {{ $message }}
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label class="input-label font-weight-500">{{ trans('public.email') }}</label>
+                                    <input type="text" name="email" value="{{ old('email') }}" class="form-control @error('email')  is-invalid @enderror"/>
+                                    @error('email')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
                             </div>
-                            @enderror
                         </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group">
-                            <label class="input-label font-weight-500">{{ trans('site.subject') }}</label>
-                            <input type="text" name="subject" value="{{ old('subject') }}" class="form-control @error('subject')  is-invalid @enderror"/>
-                            @error('subject')
-                            <div class="invalid-feedback">
-                                {{ $message }}
+        
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label class="input-label font-weight-500">{{ trans('site.phone_number') }}</label>
+                                    <input type="text" name="phone" value="{{ old('phone') }}" class="form-control @error('phone')  is-invalid @enderror"/>
+                                    @error('phone')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
                             </div>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label class="input-label font-weight-500">{{ trans('site.message') }}</label>
-                            <textarea name="message" id="" rows="10" class="form-control @error('message')  is-invalid @enderror">{{ old('message') }}</textarea>
-                            @error('message')
-                            <div class="invalid-feedback">
-                                {{ $message }}
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label class="input-label font-weight-500">{{ trans('site.subject') }}</label>
+                                    <input type="text" name="subject" value="{{ old('subject') }}" class="form-control @error('subject')  is-invalid @enderror"/>
+                                    @error('subject')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
                             </div>
-                            @enderror
                         </div>
+        
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="input-label font-weight-500">{{ trans('site.message') }}</label>
+                                    <textarea name="message" id="" rows="10" class="form-control @error('message')  is-invalid @enderror">{{ old('message') }}</textarea>
+                                    @error('message')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                @include('web.default.includes.captcha_input')
+                            </div>
+                        </div>
+        
+                        <button type="submit" class="btn btn-primary mt-20">{{ trans('site.send_message') }}</button>
+                    </form>
+                </section>
+            </div>
+            <div class="col-12 col-md-6 p-3">
+                <section class="mt-30 mt-md-50">
+                    <h2 class="font-16 font-weight-bold text-secondary mb-2">اتصل بنا</h3>
+                    <ul class="list-unstyled mb-2">
+                        <li>📞 <a href="tel:+971569001020">971569001020+</a></li>
+                        <li>📞 <a href="tel:+97143931889">971043931889+</a></li>
+                        <li>📧 <a href="mailto:info@albayaninstitute.org">info@albayaninstitute.org</a></li>
+                    </ul>
+                    <div class="map-container text-center pb-1">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d14432.980440036239!2d55.3405061!3d25.2623388!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f5d12c2143dbf%3A0x59ed5335a90de4ba!2z2YXYudmH2K8g2KfZhNio2YrYp9mGINmE2YTYrtiv2YXYp9iqINin2YTYqti52YTZitmF2YrYqSAtIEFMQllBTiBJTlNUSVRVVEUgRURVQ0FUSU9OIFNVUFBPUlQgU0VSVklDRVM!5e0!3m2!1sen!2seg!4v1739955859681!5m2!1sen!2seg" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        @include('web.default.includes.captcha_input')
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary mt-20">{{ trans('site.send_message') }}</button>
-            </form>
-        </section>
+                </section>
+            </div>
+        </div>
+        
 
     </div>
 @endsection

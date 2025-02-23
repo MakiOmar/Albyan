@@ -56,6 +56,7 @@
 
     <section class="dashboard">
         <div class="row">
+            {{--
             <div class="col-12 col-lg-3 mt-35">
                 <div class="bg-white account-balance rounded-sm panel-shadow py-15 py-md-30 px-10 px-md-20">
                     <div class="text-center">
@@ -81,7 +82,7 @@
                     </div>
                 </div>
             </div>
-
+            --}}
             <div class="col-12 col-lg-3 mt-35">
                 <a href="@if($authUser->isUser()) /panel/webinars/purchases @else /panel/meetings/requests @endif" class="dashboard-stats rounded-sm panel-shadow p-10 p-md-20 d-flex align-items-center">
                     <div class="stat-icon requests">

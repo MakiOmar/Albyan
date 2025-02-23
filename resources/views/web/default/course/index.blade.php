@@ -333,11 +333,11 @@
                                         @endif
                                     </a>
                                 @endif
-
+                                {{--
                                 @if($canSale and $course->subscribe)
                                     <a href="/subscribes/apply/{{ $course->slug }}" class="btn btn-outline-primary btn-subscribe mt-20 @if(!$canSale) disabled @endif">{{ trans('public.subscribe') }}</a>
                                 @endif
-
+                                --}}
                             </div>
 
                         </form>

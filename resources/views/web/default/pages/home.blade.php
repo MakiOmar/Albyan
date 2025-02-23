@@ -26,7 +26,7 @@
 
                 <div class="mask"></div>
             @endif
-
+            {{--
             <div class="container user-select-none">
 
                 @if($heroSection == "2")
@@ -68,17 +68,18 @@
                     </div>
                 @endif
             </div>
+            --}}
         </section>
     @endif
 
 
-    {{-- Statistics --}}
+    {{-- Statistics 
     @include('web.default.pages.includes.home_statistics')
-
+    --}}
 
     @foreach($homeSections as $homeSection)
-
         @if($homeSection->name == \App\Models\HomeSection::$featured_classes and !empty($featureWebinars) and !$featureWebinars->isEmpty())
+       
             <section class="home-sections home-sections-swiper container">
                 <div class="px-20 px-md-0">
                     <h2 class="section-title">{{ trans('home.featured_classes') }}</h2>
@@ -354,7 +355,9 @@
                 </div>
             </section>
         @endif
-
+        @php
+        
+        @endphp
         @if($homeSection->name == \App\Models\HomeSection::$discount_classes and !empty($hasDiscountWebinars) and !$hasDiscountWebinars->isEmpty())
             <section class="home-sections container">
                 <div class="d-flex justify-content-between">

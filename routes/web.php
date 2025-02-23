@@ -403,5 +403,12 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
     Route::get('/forms/{url}', 'FormsController@index');
     Route::post('/forms/{url}/store', 'FormsController@store');
 
+    Route::get('/our-instructors', function () {
+        return view('web.default.pages.instructors_custom');
+    });
+    Route::get('/Reviews', function () {
+        return view('web.default.pages.reviews');
+    });
+
 });
 

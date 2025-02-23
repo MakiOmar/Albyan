@@ -39,26 +39,53 @@
     @php
         $columns = ['first_column','second_column','third_column','forth_column'];
     @endphp
+    <style>
+        .info-section {
+            padding: 20px;
+            border-radius: 5px;
+            color: white;
+        }
+        .info-section a{
+            color: white;
+        }
 
+        .info-section h3 {
+            padding-bottom: 10px;
+        }
+        .info-section li {
+            padding-bottom: 8px;
+        }
+    </style>
     <div class="container">
         <div class="row">
-
-            @foreach($columns as $column)
-                <div class="col-6 col-md-3">
-                    @if(!empty($footerColumns[$column]))
-                        @if(!empty($footerColumns[$column]['title']))
-                            <span class="header d-block text-white font-weight-bold">{{ $footerColumns[$column]['title'] }}</span>
-                        @endif
-
-                        @if(!empty($footerColumns[$column]['value']))
-                            <div class="mt-20">
-                                {!! $footerColumns[$column]['value'] !!}
-                            </div>
-                        @endif
-                    @endif
+            <div class="col-md-4 info-section">
+                <h3>اتصل بنا</h3>
+                <ul class="list-unstyled">
+                    <li>📞 <a href="tel:+971569001020">971569001020+</a></li>
+                    <li>📞 <a href="tel:+97143931889">971043931889+</a></li>
+                    <li>📧 <a href="mailto:info@albayaninstitute.org">info@albayaninstitute.org</a></li>
+                </ul>
+                <div class="map-container text-center pb-1">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d14432.980440036239!2d55.3405061!3d25.2623388!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f5d12c2143dbf%3A0x59ed5335a90de4ba!2z2YXYudmH2K8g2KfZhNio2YrYp9mGINmE2YTYrtiv2YXYp9iqINin2YTYqti52YTZitmF2YrYqSAtIEFMQllBTiBJTlNUSVRVVEUgRURVQ0FUSU9OIFNVUFBPUlQgU0VSVklDRVM!5e0!3m2!1sen!2seg!4v1739955859681!5m2!1sen!2seg" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
-            @endforeach
-
+            </div>
+            <div class="col-md-5 info-section">
+              <h3>معلومات عنا</h3>
+                <p>ALBAYAN INSTITUTE هو نظام إدارة تعلم كامل الميزات يساعدك على إدارة أعمالك التعليمية في عدة ساعات. تساعد هذه المنصة المعلمين على إنشاء مواد تعليمية احترافية وتساعد الطلاب على التعلم من أفضل المدربين.</p>
+            </div>
+            <div class="col-md-3 info-section">
+                <h3>روابط هامة</h3>
+                <ul class="list-unstyled">
+                    <li><a href="#">تسجيل الدخول</a></li>
+                    <li><a href="#">تسجيل</a></li>
+                    <li><a href="#">مقالات</a></li>
+                    <li><a href="#">اتصل بنا</a></li>
+                    <li><a href="#">التحقق من صحة الشهادة</a></li>
+                    <li><a href="#">أصبح مدربا</a></li>
+                    <li><a href="#">الشروط والقواعد</a></li>
+                    <li><a href="#">معلومات عنا</a></li>
+                </ul>
+            </div>
         </div>
 
         <div class="mt-40 border-blue py-25 d-flex align-items-center justify-content-between">

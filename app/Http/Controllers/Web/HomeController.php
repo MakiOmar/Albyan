@@ -172,7 +172,6 @@ class HomeController extends Controller
                 ->toArray();
 
             $webinarIdsHasDiscount = array_merge($specialOffersWebinarIds, $webinarIdsHasDiscount);
-
             $hasDiscountWebinars = Webinar::whereIn('id', array_unique($webinarIdsHasDiscount))
                 ->where('status', Webinar::$active)
                 ->where('private', false)

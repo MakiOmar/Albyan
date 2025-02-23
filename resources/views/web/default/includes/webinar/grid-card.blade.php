@@ -64,11 +64,12 @@
                 </div>
 
                 <div class="vertical-line mx-15"></div>
-
+                {{--
                 <div class="d-flex align-items-center">
                     <i data-feather="calendar" width="20" height="20" class="webinar-icon"></i>
                     <span class="date-published font-14 ml-5">{{ dateTimeFormat(!empty($webinar->start_date) ? $webinar->start_date : $webinar->created_at,'j M Y') }}</span>
                 </div>
+                --}}
             </div>
 
             <div class="webinar-price-box mt-25">
