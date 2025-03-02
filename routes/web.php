@@ -410,5 +410,9 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
         return view('web.default.pages.reviews');
     });
 
+    Route::get('/about', function () {
+        return view('web.default.pages.about');
+    });
+
 });
 

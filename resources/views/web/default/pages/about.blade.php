@@ -5,6 +5,7 @@
     /* Styling for the Albyan Gallery */
     .albyan-gallery {
         max-width: 1200px;
+        height: 440px;
         margin: auto;
         padding: 20px;
         overflow: hidden;
@@ -37,8 +38,50 @@
 
 
 @section('content')
+<div class="container">
 
-@include('web.default.pages.includes.gallery')
+<div class="row">
+    @include('web.default.pages.includes.gallery')
+    @include('web.default.pages.includes.about_text')
+    <h1 class="text-center w-100 mt-2 mb-2">تحصل على أربع شهادات من معهد البيان وبطاقة عضوية</h1>
+    <!-- Swiper Carousel -->
+    <div class="albyan-gallery" style="height: 320px">
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <a href="/store/1/certs/333.jpg" data-lightbox="gallery">
+                        <img src="/store/1/certs/333.jpg" alt="Slide 1">
+                    </a>
+                </div>
+                <div class="swiper-slide">
+                    <a href="/store/1/certs/dsgdsfd898.jpg" data-lightbox="gallery">
+                        <img src="/store/1/certs/dsgdsfd898.jpg" alt="Slide 2">
+                    </a>
+                </div>
+                <div class="swiper-slide">
+                    <a href="/store/1/certs/1copy.jpg" data-lightbox="gallery">
+                        <img src="/store/1/certs/1copy.jpg" alt="Slide 2">
+                    </a>
+                </div>
+                <div class="swiper-slide">
+                    <a href="/store/1/certs/fsfsdflkl.jpg" data-lightbox="gallery">
+                        <img src="/store/1/certs/fsfsdflkl.jpg" alt="Slide 4">
+                    </a>
+                </div>
+                <div class="swiper-slide">
+                    <a href="store/1/certs/foi87.png" data-lightbox="gallery">
+                        <img src="store/1/certs/foi87.png" alt="Slide 4">
+                    </a>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</div>
+
+</div>
 
 @endsection
 
@@ -67,7 +110,7 @@
                 breakpoints: {
                     640: { slidesPerView: 1, spaceBetween: 10 },  // Mobile: 1 slide
                     768: { slidesPerView: 2, spaceBetween: 20 },  // Tablet: 2 slides
-                    1024: { slidesPerView: 4, spaceBetween: 30 }  // Desktop: 4 slides
+                    1024: { slidesPerView: 3, spaceBetween: 30 }  // Desktop: 4 slides
                 }
             });
         });

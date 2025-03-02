@@ -23,6 +23,7 @@
                         <div class="card-header">
                             @can('admin_testimonials_create')
                                 <a href="{{ getAdminPanelUrl() }}/testimonials/create" class="btn btn-primary">{{ trans('admin/main.add_new') }}</a>
+                                <a href="{{ route( "admin.testimonials.fetchGoogleReviews" ) }}" class="btn btn-primary">Pull Google reviews</a>
                             @endcan
                         </div>
 

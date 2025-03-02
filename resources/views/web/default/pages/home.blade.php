@@ -469,6 +469,7 @@
                                 @foreach($testimonials as $testimonial)
                                     <div class="swiper-slide">
                                         <div class="testimonials-card position-relative py-15 py-lg-30 px-10 px-lg-20 rounded-sm shadow bg-white text-center">
+                                            <img class="google-icon" src="/store/1/icons/google.png">
                                             <div class="d-flex flex-column align-items-center">
                                                 <div class="testimonials-user-avatar">
                                                     <img src="{{ $testimonial->user_avatar }}" alt="{{ $testimonial->user_name }}" class="img-cover rounded-circle">
@@ -477,8 +478,20 @@
                                                 <span class="d-block font-14 text-gray">{{ $testimonial->user_bio }}</span>
                                                 @include('web.default.includes.webinar.rate',['rate' => $testimonial->rate, 'dontShowRate' => true])
                                             </div>
-
-                                            <p class="mt-25 text-gray font-14">{!! nl2br($testimonial->comment) !!}</p>
+                                            @php
+                                                $comment = $testimonial->comment;
+                                                $words = explode(' ', $comment);
+                                                $maxWords = 25; // Set max words to display initially
+                                                $visibleText = implode(' ', array_slice($words, 0, $maxWords));
+                                                $hiddenText = implode(' ', array_slice($words, $maxWords));
+                                            @endphp
+                                            <p class="mt-25 text-gray font-14">
+                                                {!! nl2br(e($visibleText)) !!}
+                                                @if(!empty($hiddenText))
+                                                    <span class="hidden-text d-none">{!! nl2br(e($hiddenText)) !!}</span>
+                                                    <button class="show-more-btn text-blue" onclick="toggleText(this)">... عرض المزيد</button>
+                                                @endif
+                                            </p>
 
                                             <div class="bottom-gradient"></div>
                                         </div>
@@ -500,6 +513,30 @@
 
                 <div id="parallax3" class="ltr">
                     <div data-depth="0.8" class="gradient-box bottom-gradient-box"></div>
+                </div>
+            </div>
+            <div class="container position-relative home-sections">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card text-center p-4 shadow-lg">
+                            <h5 class="fw-bold">معهد البيان للخدمات التعليمية</h5>
+                        
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div class="ms-2">
+                                    @include('web.default.includes.webinar.rate',['rate' => $rating_reviews['rating'], 'dontShowRate' => false])
+                                </div>
+                            </div>
+                        
+                            <p class="text-muted mb-2">بناءً على {{ $rating_reviews['reviews'] }} مراجعة</p>
+                            @php
+                            $plac_id = env('GOOGLE_PLACE_ID');
+                            @endphp
+                            <a href="https://www.google.com/maps/place/?q=place_id:{{ $plac_id }}" class="btn btn-primary">
+                                <i class="fab fa-google"></i> قيمنا على جوجل
+                            </a>
+                        </div>
+                        
+                    </div>
                 </div>
             </div>
         @endif
@@ -919,4 +956,27 @@
     <script src="/assets/default/vendors/owl-carousel2/owl.carousel.min.js"></script>
     <script src="/assets/default/vendors/parallax/parallax.min.js"></script>
     <script src="/assets/default/js/parts/home.min.js"></script>
+    <script>
+        function toggleText(button) {
+            let hiddenText = button.previousElementSibling;
+            if (hiddenText.classList.contains('d-none')) {
+                hiddenText.classList.remove('d-none');
+                button.textContent = "... إغلاق";
+            } else {
+                hiddenText.classList.add('d-none');
+                button.textContent = "... عرض المزيد";
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".swiper-slide").forEach(slide => {
+                slide.addEventListener("click", function () {
+                    let showMoreBtn = this.querySelector(".show-more-btn");
+                    if (showMoreBtn) {
+                        showMoreBtn.click();
+                    }
+                });
+            });
+        });
+
+    </script>
 @endpush

@@ -23,6 +23,8 @@ use App\Models\Testimonial;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
@@ -281,6 +283,11 @@ class HomeController extends Controller
         }
 
         if (in_array(HomeSection::$testimonials, $selectedSectionsName)) {
+            $data = $this->getGoogleReviews();
+            $rating_reviews = [
+                'rating' => $data['result']['rating'] ?? 0,
+                'reviews' => $data['result']['user_ratings_total'] ?? 0,
+            ];
             $testimonials = Testimonial::where('status', 'active')->get();
         }
 
@@ -367,6 +374,7 @@ class HomeController extends Controller
             'trendCategories' => $trendCategories ?? [],
             'instructors' => $instructors ?? [],
             'testimonials' => $testimonials ?? [],
+            'rating_reviews' => $rating_reviews ?? [],
             'subscribes' => $subscribes ?? [],
             'blog' => $blog ?? [],
             'organizations' => $organizations ?? [],
@@ -383,7 +391,20 @@ class HomeController extends Controller
 
         return view(getTemplate() . '.pages.home', $data);
     }
-
+    public function getGoogleReviews() {
+        $cacheKey = 'google_reviews';
+        $cacheDuration = now()->addDays(3); // Store for 3 days
+    
+        return Cache::remember($cacheKey, $cacheDuration, function () {
+            $apiKey = env('GOOGLE_API_KEY');
+            $placeId = env('GOOGLE_PLACE_ID'); // Your actual Place ID
+        
+            $url = "https://maps.googleapis.com/maps/api/place/details/json?place_id={$placeId}&fields=rating,user_ratings_total&key={$apiKey}";
+        
+            $response = Http::get($url);
+            return $response->json();
+        });
+    }
     private function getHomeDefaultStatistics()
     {
         $skillfulTeachersCount = User::where('role_name', Role::$teacher)

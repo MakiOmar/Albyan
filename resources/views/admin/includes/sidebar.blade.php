@@ -971,7 +971,6 @@
                     </ul>
                 </li>
             @endcan
-            {{--
             @can('admin_testimonials')
                 <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/testimonials*', false))) ? 'active' : '' }}">
                     <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
@@ -993,7 +992,7 @@
                     </ul>
                 </li>
             @endcan
-
+            {{--
             @can('admin_tags')
                 <li class="{{ (request()->is(getAdminPanelUrl('/tags', false))) ? 'active' : '' }}">
                     <a href="{{ getAdminPanelUrl() }}/tags" class="nav-link">

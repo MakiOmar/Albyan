@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Testimonial;
 use App\Models\Translation\TestimonialTranslation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class TestimonialsController extends Controller
 {
@@ -24,6 +25,46 @@ class TestimonialsController extends Controller
 
         return view('admin.testimonials.lists', $data);
     }
+    public function fetchGoogleReviews()
+    {
+        $apiKey = env('GOOGLE_API_KEY');
+        $placeId = env('GOOGLE_PLACE_ID');
+        $url = "https://maps.googleapis.com/maps/api/place/details/json?place_id={$placeId}&fields=reviews&key={$apiKey}&language=ar";
+
+        $response = Http::get($url);
+        $data = $response->json();
+        $reviews = $data['result']['reviews'] ?? [];
+        $locale = app()->getLocale(); // Get current language (e.g., 'ar')
+
+        foreach ($reviews as $review) {
+            // Check if a testimonial from the same user already exists
+            $existingTestimonial = TestimonialTranslation::where('user_name', $review['author_name'])
+                ->where('comment', $review['text']) // Ensure exact same review is not duplicated
+                ->exists();
+
+            if (!$existingTestimonial) {
+                // Insert into testimonials table
+                $testimonial = Testimonial::create([
+                    'user_avatar' => $review['profile_photo_url'] ?? 'default.png',
+                    'rate' => $review['rating'],
+                    'status' => 'disable',
+                    'created_at' => time(),
+                ]);
+
+                // Insert into testimonial_translations table
+                TestimonialTranslation::create([
+                    'testimonial_id' => $testimonial->id,
+                    'locale' => $locale,
+                    'user_name' => $review['author_name'],
+                    'user_bio' => 'طالب', // Empty for now, can be updated later
+                    'comment' => $review['text'],
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Google reviews updated successfully!');
+    }
+
 
     public function create()
     {
@@ -70,7 +111,7 @@ class TestimonialsController extends Controller
             ]);
         }
 
-        return redirect(getAdminPanelUrl().'/testimonials');
+        return redirect(getAdminPanelUrl() . '/testimonials');
     }
 
 
@@ -124,7 +165,7 @@ class TestimonialsController extends Controller
 
         removeContentLocale();
 
-        return redirect(getAdminPanelUrl().'/testimonials');
+        return redirect(getAdminPanelUrl() . '/testimonials');
     }
 
     public function delete($id)
@@ -135,6 +176,6 @@ class TestimonialsController extends Controller
 
         $testimonial->delete();
 
-        return redirect(getAdminPanelUrl().'/testimonials');
+        return redirect(getAdminPanelUrl() . '/testimonials');
     }
 }

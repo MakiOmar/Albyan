@@ -776,6 +776,8 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/{id}/edit', 'TestimonialsController@edit');
             Route::post('/{id}/update', 'TestimonialsController@update');
             Route::get('/{id}/delete', 'TestimonialsController@delete');
+            Route::get('/fetch-google-reviews', 'TestimonialsController@fetchGoogleReviews')
+            ->name('admin.testimonials.fetchGoogleReviews');
         });
 
         Route::group(['prefix' => 'contacts'], function () {
