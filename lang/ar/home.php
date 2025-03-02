@@ -28,17 +28,17 @@ return [
     'happy_students' => 'طالبا سعيدا',
     'happy_students_hint' => 'منضمون لفصولنا ومستمتعون بالتعلم.',
 
-    'offline_courses' => 'دورات فيديو',
+    'offline_courses' => 'دبلومات فيديو',
     'offline_courses_hint' => 'تعلم بدون عوائق الوقت او المكان.',
 
     'hours' => 'ساعات',
 
-    'featured_classes' => 'دورات رائجة',
-    'featured_webinars' => 'دورات رائجة',
-    'featured_classes_hint' => 'اكتشف افضل الدورات واستمتع بالتعلم',
+    'featured_classes' => 'دبلومات رائجة',
+    'featured_webinars' => 'دبلومات رائجة',
+    'featured_classes_hint' => 'اكتشف افضل الدبلومات واستمتع بالتعلم',
 
-    'latest_classes' => 'أحدث الدورات',
-    'latest_webinars' => 'احدث الدورات',
+    'latest_classes' => 'أحدث الدبلومات',
+    'latest_webinars' => 'احدث الدبلومات',
     'latest_webinars_hint' => '#فصول تم نشرها مؤخرا',
 
     'featured' => 'رائجة',
@@ -49,10 +49,10 @@ return [
     'trending_categories' => 'فئات رائجة',
     'trending_categories_hint' => 'إطلع على اشهر مواضيع التعلم',
 
-    'best_sellers' => 'الدورات الاكثر طلبا',
-    'best_sellers_hint' => 'تعلم مع اكثر الدورات طلبا',
+    'best_sellers' => 'الدبلومات الاكثر طلبا',
+    'best_sellers_hint' => 'تعلم مع اكثر الدبلومات طلبا',
 
-    'best_rates' => 'افضل الدورات تقييما',
+    'best_rates' => 'افضل الدبلومات تقييما',
     'best_rates_hint' => 'تمتع بالأعلى جودة والافضل تقييما',
 
     'discount_classes' => 'فصول بتخفيضات',

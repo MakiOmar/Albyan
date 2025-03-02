@@ -248,7 +248,7 @@ return [
     'noticeboard_success_send' => 'تم ارسال الاشعار الجديد بنجاح',
     'noticeboard_success_send_to' => 'تم ارسال الاشعار الجديد بنجاح لعدد :users_count',
     'more_info' => 'مزيد من المعلومات',
-    'partner_instructor_hint' => 'سيتمكن الأستاذ الشريك من الوصول إلى محتوى الدورة وسيتم عرض ملفه الشخصي على صفحة الدورة.',
+    'partner_instructor_hint' => 'سيتمكن الأستاذ الشريك من الوصول إلى محتوى الدبلوم وسيتم عرض ملفه الشخصي على صفحة الدبلوم.',
   	'affiliate' => 'إنتساب',
     'affiliates' => 'إنتساب',
     'affiliates_page' => 'التسويق بالإنتساب',
@@ -265,5 +265,5 @@ return [
     'your_affiliate_code' => 'رمز الإنتساب الخاص بك',
     'affiliate_url' => 'رابط الإنتساب الخاص بك',
 	'content_defined' => 'تم تعريف المحتوى',
-  	'purchased_courses' => 'الدورات المشتراه',
+  	'purchased_courses' => 'الدبلومات المشتراه',
 ];
