@@ -219,7 +219,7 @@ return [
     'inactive' => 'غير نشط',
     'name' => 'الاسم',
     'special_offers' => 'عروض خاصة',
-    'special_offer' => 'غرض خاص',
+    'special_offer' => 'عرض خاص',
     'show_only_active_special_offers' => 'اظهر فقط العروض الخاصة النشطة',
     'offline_title' => 'تفعيل شارة الاوفلاين',
     'offline_message' => 'رسالة اوفلاين',

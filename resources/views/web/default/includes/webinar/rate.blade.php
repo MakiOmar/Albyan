@@ -1,4 +1,4 @@
-<div class="stars-card d-flex align-items-center {{ $className ?? ' mt-15' }}">
+<div class="stars-card d-flex align-items-center {{ $className ?? '' }}">
     @php
         $i = 5;
     @endphp

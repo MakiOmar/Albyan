@@ -522,7 +522,8 @@
                             <h5 class="fw-bold">معهد البيان للخدمات التعليمية</h5>
                         
                             <div class="d-flex justify-content-center align-items-center">
-                                <div class="ms-2">
+                                <div class="ms-2 d-flex">
+                                    <img class="google-icon" src="/store/1/icons/google.png">
                                     @include('web.default.includes.webinar.rate',['rate' => $rating_reviews['rating'], 'dontShowRate' => false])
                                 </div>
                             </div>
@@ -531,7 +532,7 @@
                             @php
                             $plac_id = env('GOOGLE_PLACE_ID');
                             @endphp
-                            <a href="https://www.google.com/maps/place/?q=place_id:{{ $plac_id }}" class="btn btn-primary">
+                            <a href="https://g.page/r/CbrkDak1U-1ZEAE/review" target="_blank" style="width: 170px;margin: auto;" class="btn btn-primary">
                                 <i class="fab fa-google"></i> قيمنا على جوجل
                             </a>
                         </div>
