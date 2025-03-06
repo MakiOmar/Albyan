@@ -14,6 +14,13 @@ use App\Models\Sale;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
+use App\Mail\SendNotifications;
+use App\Models\Notification;
+use App\Models\NotificationStatus;
+use App\Models\Api\UserFirebaseSessions;
+use App\Models\Role;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Carbon\CarbonPeriod;
 
 class CourseGroupController extends Controller
 {
@@ -26,14 +33,18 @@ class CourseGroupController extends Controller
         $instructors = User::where('role_id', 4)->get(); // Replace 'role' with your actual logic
         $students    = User::where('role_id', 1)->get();
 
-        return array('webinar' => $webinar, 'instructors' => $instructors, 'students' => $students);
+        return array(
+            'webinar'     => $webinar,
+            'instructors' => $instructors,
+            'students'    => $students,
+        );
     }
     /**
      * Display the groups for a specific webinar.
      */
     public function listGroups($webinarId)
     {
-        $getGroups = $this->getGroups($webinarId);
+        $getGroups   = $this->getGroups($webinarId);
         $webinar     = $getGroups['webinar'];
         $instructors = $getGroups['instructors']; // Replace 'role' with your actual logic
         $students    = $getGroups['students'];
@@ -119,26 +130,27 @@ class CourseGroupController extends Controller
      */
     public function createGroup(Request $request)
     {
-        $validated = $request->validate([
-            'webinar_id'         => 'required|exists:webinars,id', // Ensure webinar exists
-            'meeting_start_time' => 'required|date', // Validate start time
-            'meeting_end_time'   => 'required_if:meeting_recurring,1|date', // Required only if recurring
-            'meeting_duration'   => 'required|integer|min:1', // Minimum duration 1 minute
-            'meeting_recurring'  => 'required|in:0,1', // Ensure value is 0 or 1
-            'recurrence_type'    => 'required_if:meeting_recurring,1|in:1,2,3', // Validate type: 1=Daily, 2=Weekly, 3=Monthly
-            'recurrence_interval' => 'required_if:meeting_recurring,1|integer|min:1',
-            'weekly_days'        => 'required_if:recurrence_type,2|array', // Required if weekly recurrence
-            'weekly_days.*'      => 'in:1,2,3,4,5,6,7', // Validate each day is a valid weekday
-            'monthly_day'        => 'nullable|required_if:recurrence_type,3|integer|min:1|max:31', // Required if monthly recurrence
-            'participant_video'  => 'required|in:0,1', // Validate participant video toggle
-            'host_video'         => 'required|in:0,1', // Validate host video toggle
-            'audio_option'       => 'required|in:both,voip,telephony', // Ensure audio option is valid
-            'student_ids'        => 'required|array|min:1', // At least one student must be selected
-            'student_ids.*'      => 'exists:users,id', // Validate each student ID
-        ]);
+        $validated = $request->validate(
+            array(
+                'webinar_id'          => 'required|exists:webinars,id', // Ensure webinar exists
+                'meeting_start_time'  => 'required|date', // Validate start time
+                'meeting_end_time'    => 'required_if:meeting_recurring,1|date', // Required only if recurring
+                'meeting_duration'    => 'required|integer|min:1', // Minimum duration 1 minute
+                'meeting_recurring'   => 'required|in:0,1', // Ensure value is 0 or 1
+                'recurrence_type'     => 'required_if:meeting_recurring,1|in:1,2,3', // Validate type: 1=Daily, 2=Weekly, 3=Monthly
+                'recurrence_interval' => 'required_if:meeting_recurring,1|integer|min:1',
+                'weekly_days'         => 'required_if:recurrence_type,2|array', // Required if weekly recurrence
+                'weekly_days.*'       => 'in:1,2,3,4,5,6,7', // Validate each day is a valid weekday
+                'monthly_day'         => 'nullable|required_if:recurrence_type,3|integer|min:1|max:31', // Required if monthly recurrence
+                'participant_video'   => 'required|in:0,1', // Validate participant video toggle
+                'host_video'          => 'required|in:0,1', // Validate host video toggle
+                'audio_option'        => 'required|in:both,voip,telephony', // Ensure audio option is valid
+                'student_ids'         => 'required|array|min:1', // At least one student must be selected
+                'student_ids.*'       => 'exists:users,id', // Validate each student ID
+            )
+        );
 
-
-        $webinar   = Webinar::find($validated['webinar_id']);
+        $webinar = Webinar::find($validated['webinar_id']);
 
         if ($webinar) {
             $instructor = User::findOrFail($webinar->teacher_id);
@@ -169,7 +181,12 @@ class CourseGroupController extends Controller
                 'meeting_json'       => json_encode($zoomMeeting),
             )
         );
-
+        // Calculate duration
+        $startDate        = Carbon::parse($validated['meeting_start_time']);
+        $endDate          = Carbon::parse($validated['meeting_end_time']);
+        $durationInWeeks  = $startDate->diffInWeeks($endDate);
+        $durationInMonths = $startDate->diffInMonths($endDate);
+        $webinarURL       = $webinar->getUrl();
         // Attach students to the group
         foreach ($validated['student_ids'] as $studentId) {
             GroupMember::create(
@@ -178,13 +195,163 @@ class CourseGroupController extends Controller
                     'student_id' => $studentId,
                 )
             );
+
+            // Send Email Notification
+            $student    = \App\User::where('id', $studentId)->first();
+            $userLocale = ! empty($student) ? $student->locale : app()->getLocale(); // Get user's locale
+            $instructor = \App\User::where('id', $webinar->teacher_id)->first();
+                    // Determine duration text dynamically
+            if ($durationInMonths >= 1) {
+                $durationText = trans_choice('public.duration_months', $durationInMonths, array( 'count' => $durationInMonths ), $userLocale);
+            } else {
+                $durationText = trans_choice('public.duration_weeks', $durationInWeeks, array( 'count' => $durationInWeeks ), $userLocale);
+            }
+            // Send Notification to Student
+            Notification::create(
+                array(
+                    'user_id'    => $studentId,
+                    'group_id'   => null,
+                    'webinar_id' => $validated['webinar_id'],
+                    'sender_id'  => auth()->id(),
+                    'title'      => trans('public.new_course_group_title', array(), $userLocale),
+                    'message'    => trans(
+                        'public.new_course_group_message',
+                        array(
+                            'course'     => $webinar->title,
+                            'instructor' => $instructor->full_name ?? trans('public.the_instructor', array(), $userLocale),
+                            'duration'   => $durationText,
+                            'interval'   => trans('public.interval_' . $validated['recurrence_type'], array(), $userLocale),
+                            'link'       => $webinarURL,
+                        ),
+                        $userLocale
+                    ),
+
+                    'sender'     => Notification::$AdminSender,
+                    'type'       => 'single',
+                    'created_at' => time(),
+                )
+            );
+            $msg_array = array(
+                'type'    => 'single',
+                'title'   => trans('public.new_course_group_title', array(), $userLocale),
+                'message' => trans(
+                    'public.new_course_group_message',
+                    array(
+                        'course'     => $webinar->title,
+                        'instructor' => $instructor->full_name ?? trans('public.the_instructor', array(), $userLocale),
+                        'duration'   => $durationText,
+                        'interval'   => trans('public.interval_' . $validated['recurrence_type'], array(), $userLocale),
+                        'link'       => $webinarURL,
+                    ),
+                    $userLocale
+                ),
+            );
+            if (! empty($student) && ! empty($student->email)) {
+                try {
+                    \Mail::to($student->email)->send(new SendNotifications($msg_array));
+                } catch (\Exception $exception) {
+                    // Handle email exception
+                }
+            }
+
+            // Send Firebase Message (Push Notification)
+            $this->handleFirebaseMessages($msg_array, $studentId, null, $validated['webinar_id']);
         }
 
         return redirect()->route('course-group.manage', $validated['webinar_id'])
             ->with('success', 'Group and Zoom meeting created successfully!');
     }
 
+    private function handleFirebaseMessages($data, $user_id, $group_id, $webinar_id)
+    {
+        $fcmTokensQuery = UserFirebaseSessions::query();
 
+        if ($data['type'] === 'single') {
+            if (empty($user_id)) {
+                return true;
+            }
+
+            $fcmTokensQuery->where('user_id', $user_id);
+        }
+
+        if ($data['type'] === 'all_users') {
+        }
+
+        if ($data['type'] === 'students') {
+            $usersIds = User::query()->where('role_id', Role::getUserRoleId())
+                ->pluck('id')->toArray();
+
+            $fcmTokensQuery->whereIn('user_id', $usersIds);
+        }
+
+        if ($data['type'] === 'instructors') {
+            $usersIds = User::query()->where('role_id', Role::getTeacherRoleId())
+                ->pluck('id')->toArray();
+
+            $fcmTokensQuery->whereIn('user_id', $usersIds);
+        }
+
+        if ($data['type'] === 'organizations') {
+            $usersIds = User::query()->where('role_id', Role::getOrganizationRoleId())
+                ->pluck('id')->toArray();
+
+            $fcmTokensQuery->whereIn('user_id', $usersIds);
+        }
+
+        $fcmTokensQuery->orderBy('created_at', 'desc');
+
+        $fcmTokens    = $fcmTokensQuery->get();
+        $deviceTokens = array();
+
+        foreach ($fcmTokens as $fcmToken) {
+            if ($fcmToken->fcm_token && strlen($fcmToken->fcm_token) > 0) {
+                $deviceTokens[] = $fcmToken->fcm_token;
+            }
+        }
+
+        if (count($deviceTokens) > 0) {
+            $messageFCM = app('firebase.messaging');
+
+            foreach ($deviceTokens as $fcmToken) {
+                $fcmMessage = CloudMessage::new();
+                $fcmMessage = $fcmMessage->withChangedTarget('token', $fcmToken);
+                $fcmMessage = $fcmMessage->withData(
+                    array(
+                        'user_id'    => $user_id,
+                        'group_id'   => $group_id,
+                        'webinar_id' => $webinar_id,
+                        'sender_id'  => auth()->id(),
+                        'title'      => $data['title'],
+                        'message'    => preg_replace('/<[^>]*>/', '', $data['message']),
+                        'sender'     => Notification::$AdminSender,
+                        'type'       => $data['type'],
+                        'created_at' => time(),
+                    )
+                );
+
+                $fcmMessage = $fcmMessage->withNotification(\Kreait\Firebase\Messaging\Notification::create($data['title'], preg_replace('/<[^>]*>/', '', $data['message'])));
+
+                $fcmMessage = $fcmMessage->withAndroidConfig(
+                    \Kreait\Firebase\Messaging\AndroidConfig::fromArray(
+                        array(
+                            'ttl'          => '3600s',
+                            'priority'     => 'high',
+                            'notification' => array(
+                                'color' => '#f45342',
+                                'sound' => 'default',
+                            ),
+                        )
+                    )
+                );
+
+                try {
+                    $messageFCM->send($fcmMessage);
+                } catch (\Exception $exception) {
+                    // dd($exception);
+                }
+            }
+        }
+    }
 
     /**
      * Show the form to create a new group for a webinar.
@@ -234,8 +401,8 @@ class CourseGroupController extends Controller
 
         if ($zoomMeetingId) {
             $zoomDeletionResponse = $this->deleteZoomMeeting($zoomMeetingId);
-            if (!$zoomDeletionResponse['success']) {
-                LOG::info('Zoom errors', ['zoom_meeting' => $zoomDeletionResponse['error']]);
+            if (! $zoomDeletionResponse['success']) {
+                LOG::info('Zoom errors', array( 'zoom_meeting' => $zoomDeletionResponse['error'] ));
             }
         }
         // Delete related group members first
@@ -258,16 +425,16 @@ class CourseGroupController extends Controller
         $response = Http::withToken($accessToken)->delete($zoomUrl);
 
         if ($response->failed()) {
-            return [
+            return array(
                 'success' => false,
                 'error'   => 'Failed to delete Zoom meeting: ' . $response->body(),
-            ];
+            );
         }
 
-        return [
+        return array(
             'success' => true,
             'message' => 'Zoom meeting deleted successfully.',
-        ];
+        );
     }
 
     public function generateZoomMeetingSignature($meetingNumber, $role)
@@ -370,29 +537,29 @@ class CourseGroupController extends Controller
     {
         $accessToken = $this->getZoomAccessToken();
         $zoomBaseUrl = env('ZOOM_BASE_URL', 'https://api.zoom.us/v2');
-        $zoomUrl = $zoomBaseUrl . "/users/{$instructor->email}/meetings";
+        $zoomUrl     = $zoomBaseUrl . "/users/{$instructor->email}/meetings";
 
-        $meetingData = [
+        $meetingData = array(
             'topic'      => "Meeting for Webinar ID {$data['webinar_id']}",
             'type'       => $data['meeting_recurring'] ? 8 : 2,
             'start_time' => Carbon::parse($data['meeting_start_time'], 'Asia/Dubai')->format('Y-m-d\TH:i:s'),
             'duration'   => $data['meeting_duration'],
             'timezone'   => 'Asia/Dubai',
-            'settings'   => [
+            'settings'   => array(
                 'host_video'        => (bool) $data['host_video'],
                 'participant_video' => (bool) $data['participant_video'],
                 'audio'             => $data['audio_option'],
                 'join_before_host'  => false,
                 'mute_upon_entry'   => true,
                 'approval_type'     => 0,
-            ],
-        ];
+            ),
+        );
 
         if ($data['meeting_recurring']) {
-            $recurrence = [
+            $recurrence = array(
                 'type'            => (int) $data['recurrence_type'], // 1: Daily, 2: Weekly, 3: Monthly
                 'repeat_interval' => $data['recurrence_interval'], // Interval from form
-            ];
+            );
 
             // Additional settings for weekly or monthly recurrence
             if ($data['recurrence_type'] == 2) { // Weekly
@@ -407,16 +574,16 @@ class CourseGroupController extends Controller
         $response = Http::withToken($accessToken)->post($zoomUrl, $meetingData);
 
         if ($response->failed()) {
-            return [
+            return array(
                 'success' => false,
                 'error'   => 'Failed to create Zoom meeting: ' . $response->body(),
-            ];
+            );
         }
 
-        return [
+        return array(
             'success' => true,
             'data'    => $response->json(),
-        ];
+        );
     }
 
     /**
@@ -435,7 +602,7 @@ class CourseGroupController extends Controller
         /**
          * @var string $clientId
          */
-        $clientId     = getFeaturesSettings('zoom_client_id');
+        $clientId = getFeaturesSettings('zoom_client_id');
         /**
          * @var string $clientSecret
          */
@@ -443,7 +610,7 @@ class CourseGroupController extends Controller
         /**
          * @var string $account_id
          */
-        $account_id   = getFeaturesSettings('zoom_account_id');
+        $account_id = getFeaturesSettings('zoom_account_id');
 
         if (empty($clientId) || empty($clientSecret) || empty($account_id)) {
             abort(500, 'Zoom is not configured properly');
@@ -531,25 +698,32 @@ class CourseGroupController extends Controller
     public function getMeetingRecordings(Request $request)
     {
         // Validate the meeting ID from the request
-        $validated = $request->validate([
-        'meeting_id' => 'required|string',
-        ]);
+        $validated = $request->validate(
+            array(
+                'meeting_id' => 'required|string',
+            )
+        );
 
         // Fetch recordings using the meeting ID
-        $meetingId = $validated['meeting_id'];
+        $meetingId  = $validated['meeting_id'];
         $recordings = $this->fetchMeetingRecordings($meetingId);
 
         if ($recordings === false) {
-            return response()->json([
-            'success' => false,
-            'message' => 'لا توجد تسجيلات.',
-            ], 500);
+            return response()->json(
+                array(
+                    'success' => false,
+                    'message' => 'لا توجد تسجيلات.',
+                ),
+                500
+            );
         }
 
-        return response()->json([
-        'success' => true,
-        'data' => $recordings,
-        ]);
+        return response()->json(
+            array(
+                'success' => true,
+                'data'    => $recordings,
+            )
+        );
     }
 
     /**
