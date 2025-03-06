@@ -8,7 +8,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'webinars_list_page_title' => 'قائمة الفصول',
+    'webinars_list_page_title' => 'قائمة الدبلومات',
     'webinar' => 'مناقشة',
     'webinars' => 'المناقشات',
     'courses' => 'دبلومات',
@@ -55,7 +55,7 @@ return [
     'admin_webinars_edit' => 'تعديل المناقشات',
     'admin_webinars_delete' => 'حذف المناقشات',
 
-    'feature_webinars' => 'فصول الرائجة',
+    'feature_webinars' => 'دبلومات الرائجة',
     'feature_webinar_create' => 'انشاء مناقشة رائجة',
     'page' => 'صفحة',
     'select_page' => 'اختر صفحة',

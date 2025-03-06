@@ -66,7 +66,7 @@ return [
     'new_factor' => 'عامل جديد',
 
     'sales_page_title' => 'بيع',
-    'webinar' => 'فصل مباشر',
+    'webinar' => 'دبلوم مباشر',
     'type_account' => 'نوع الحساب',
     'item_purchased' => 'العنصر المشترى',
     'asset' => 'أصل',

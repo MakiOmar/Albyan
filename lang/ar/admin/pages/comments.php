@@ -8,7 +8,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'classes_comments' => 'تعليقات الفصول',
+    'classes_comments' => 'تعليقات الدبلومات',
     'blog_comments' => 'تعليقات المدونة',
     'comments' => 'التعليقات',
     'comment' => 'تعليق',
@@ -29,8 +29,8 @@ return [
     'edit_comment' => 'تعديل التعليق',
 
     'reports' => 'البلاغات',
-    'classes_comments_reports' => 'تعليقات الفصل',
-    'classes_reports' => 'بلاغات الفصل',
+    'classes_comments_reports' => 'تعليقات الدبلوم',
+    'classes_reports' => 'بلاغات الدبلوم',
     'blog_comments_reports' => 'بلاغات تعليقات المدونة',
     'comments_reports' => 'بلاغات التعليق',
     'reported_comment' => 'التعلبقات التي تم الابلاغ عنها',

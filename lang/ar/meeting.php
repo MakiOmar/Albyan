@@ -35,5 +35,5 @@ return [
     'finish_reserve_modal_success_hint' => 'تم انهاء الجلسة بنجاح',
     'finish_reserve_modal_fail' => 'عطل',
     'finish_reserve_modal_fail_hint' => 'لم يتم انهاء الجلسة الرجاء التحدث للدعم الفني.',
-    'meeting_disabled' => 'تم تعطيل الفصل المباشر',
+    'meeting_disabled' => 'تم تعطيل الدبلوم المباشر',
 ];

@@ -8,8 +8,8 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'webinars_list_page_title' => 'قائمة الفصول المباشرة',
-    'webinars_purchases_page_title' => 'قائمة الفصول مباشرة المشتراه',
+    'webinars_list_page_title' => 'قائمة الدبلومات المباشرة',
+    'webinars_purchases_page_title' => 'قائمة الدبلومات مباشرة المشتراه',
     'new_page_title' => 'حصة جديدة',
     'new_page_title_step' => 'حصة جديد - مرحلة :step',
     'webinar' => 'حصة مباشر',
@@ -31,7 +31,7 @@ return [
     'select_teacher' => 'اختر الأستاذ',
     'select_student' => 'اختر الطالب',
     'select_status' => 'تغيير الحالة',
-    'webinars_count' => 'عدد الفصول مباشرة',
+    'webinars_count' => 'عدد الدبلومات مباشرة',
     'image_cover' => 'صورة الغلاف',
     'choose_image_cover' => 'تحميل صورة غلاف',
     'choose_video_demo' => 'تحميل فيديو تجريبي',
@@ -46,11 +46,11 @@ return [
     'new_page_lead' => 'تستطيع انشاء حصة جديدة.',
     'page_lists_lead' => 'قائمة الحصص تستطيع تعديل وحذف اي صف.',
 
-    'admin_webinars' => ' فصول مباشرة للإدارة',
-    'admin_webinars_list' => 'قائمة فصول مباشرة الادمن',
-    'admin_webinars_create' => 'انشاء فصول مباشرة ادمن',
-    'admin_webinars_edit' => 'تعديل فصول مباشرة الادمن',
-    'admin_webinars_delete' => 'حذف فصول مباشرة الادمن',
+    'admin_webinars' => ' دبلومات مباشرة للإدارة',
+    'admin_webinars_list' => 'قائمة دبلومات مباشرة الادمن',
+    'admin_webinars_create' => 'انشاء دبلومات مباشرة ادمن',
+    'admin_webinars_edit' => 'تعديل دبلومات مباشرة الادمن',
+    'admin_webinars_delete' => 'حذف دبلومات مباشرة الادمن',
 
     'this_webinar_includes' => ':classes تشمل:',
     'downloadable_content' => 'محتوي قابل للتنزيل',
@@ -125,7 +125,7 @@ return [
 
     'show_only_subscribe' => 'اظهر المشتركين فقط',
     'show_only_certificate_included' => 'اظهر الشهادات المضمنة فقط',
-    'show_only_with_quiz' => 'اظهر فقط الفصول التي تحتوي علي اختبارات',
+    'show_only_with_quiz' => 'اظهر فقط الدبلومات التي تحتوي علي اختبارات',
     'show_only_featured' => 'اظهر الفئات المميزة فقط',
 
     'private' => 'خاص',

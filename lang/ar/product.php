@@ -17,7 +17,7 @@ return [
     'review' => 'مراجعة',
     'reviews' => 'مراجعات',
 
-    'Webinar_description' => 'عن هذا الفصل',
+    'Webinar_description' => 'عن هذا الدبلوم',
 
     'post_comment' => 'نشر تعليق',
     'post_review' => 'نشر مراجعة',

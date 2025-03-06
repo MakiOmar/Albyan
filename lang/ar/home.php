@@ -13,7 +13,7 @@ return [
     'slider_heading' => 'استمتع بالتعليم الرقمي',
     'slider_hint' => "التعليم عبر الأننرنت هو الخيار الافضل للتعلم مع افضل الأساتذة",
 
-    'slider_search_placeholder' => 'ابحث عن أستاذ او فصل او معهد',
+    'slider_search_placeholder' => 'ابحث عن أستاذ او دبلوم او معهد',
     'find' => 'بحث',
 
     'view_all' => 'مشاهدة الكل',
@@ -26,7 +26,7 @@ return [
     'live_classes_hint' => 'طور مهاراتك عن طريق أفضل طرق التعليم.',
 
     'happy_students' => 'طالبا سعيدا',
-    'happy_students_hint' => 'منضمون لفصولنا ومستمتعون بالتعلم.',
+    'happy_students_hint' => 'منضمون لدبلوماتنا ومستمتعون بالتعلم.',
 
     'offline_courses' => 'دبلومات فيديو',
     'offline_courses_hint' => 'تعلم بدون عوائق الوقت او المكان.',
@@ -39,7 +39,7 @@ return [
 
     'latest_classes' => 'أحدث الدبلومات',
     'latest_webinars' => 'احدث الدبلومات',
-    'latest_webinars_hint' => '#فصول تم نشرها مؤخرا',
+    'latest_webinars_hint' => '#دبلومات تم نشرها مؤخرا',
 
     'featured' => 'رائجة',
     'downloadable' => 'قابلة للتنزيل',
@@ -55,10 +55,10 @@ return [
     'best_rates' => 'افضل الدبلومات تقييما',
     'best_rates_hint' => 'تمتع بالأعلى جودة والافضل تقييما',
 
-    'discount_classes' => 'فصول بتخفيضات',
-    'discount_classes_hint' => 'إنضم للفصول بسعر مناسب',
+    'discount_classes' => 'دبلومات بتخفيضات',
+    'discount_classes_hint' => 'إنضم للدبلومات بسعر مناسب',
 
-    'free_classes' => 'فصول مجانية',
+    'free_classes' => 'دبلومات مجانية',
     'free_classes_hint' => 'لم ننس اهمية التعليم المجاني',
 
     'testimonials' => 'الاراء',
