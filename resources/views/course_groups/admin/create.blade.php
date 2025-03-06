@@ -35,7 +35,7 @@
             <div class="form-group col-md-3 col-12">
                 <label for="webinar_id">Select Webinar</label>
                 <small class="form-text text-muted">Choose the webinar for which you want to create a group.</small>
-                <select name="webinar_id" id="webinar_id" class="form-control">
+                <select name="webinar_id" id="webinar_id" class="form-control select2">
                     @foreach ($webinars as $webinar)
                         <option value="{{ $webinar->id }}">{{ $webinar->title }}</option>
                     @endforeach
