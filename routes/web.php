@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseGroupController;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
+use App\Models\Testimonial;
 
 /*
 |--------------------------------------------------------------------------
@@ -407,7 +410,24 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
         return view('web.default.pages.instructors_custom');
     });
     Route::get('/Reviews', function () {
-        return view('web.default.pages.reviews');
+        $cacheKey = 'google_reviews';
+        $cacheDuration = now()->addDays(3); // Store for 3 days
+    
+        $data = Cache::remember($cacheKey, $cacheDuration, function () {
+            $apiKey = env('GOOGLE_API_KEY');
+            $placeId = env('GOOGLE_PLACE_ID'); // Your actual Place ID
+        
+            $url = "https://maps.googleapis.com/maps/api/place/details/json?place_id={$placeId}&fields=rating,user_ratings_total&key={$apiKey}";
+        
+            $response = Http::get($url);
+            return $response->json();
+        });
+        $rating_reviews = [
+            'rating' => $data['result']['rating'] ?? 0,
+            'reviews' => $data['result']['user_ratings_total'] ?? 0,
+        ];
+        $testimonials = Testimonial::where('status', 'active')->get();
+        return view('web.default.pages.reviews', compact(  'testimonials', 'rating_reviews'));
     });
 
     Route::get('/about', function () {
