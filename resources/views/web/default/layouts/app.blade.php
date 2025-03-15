@@ -140,6 +140,15 @@
     @endif
 
     {!! !empty(getCustomCssAndJs('js')) ? getCustomCssAndJs('js') : '' !!}
+    $('body').on('click', '.js-course-add-to-cart-btn', function (e) {
+        const $this = $(this);
+        $this.addClass('loadingbar primary').prop('disabled', true);
+
+        const $form = $this.closest('form');
+        $form.attr('action', '/cart/store');
+
+        $form.trigger('submit');
+    });
 </script>
 </body>
 </html>
