@@ -74,7 +74,42 @@
                 </form>
             </div>
         </div>
+        @php
+            $socials = getSocials();
+            
+            if (!empty($socials) and count($socials)) {
+                $socials = collect($socials)->sortBy('order')->values()->toArray();
 
+                foreach ($socials as $id => $social) {
+                    if ($social['title'] == 'Facebook') {
+                        $socials[$id]['image'] = '/store/1/icons/icons8-facebook.svg';
+                    } elseif ($social['title'] == 'Twitter') {
+                        $socials[$id]['image'] = '/store/1/icons/icons8-x.svg';
+                    } elseif ($social['title'] == 'Instagram') {
+                        $socials[$id]['image'] = '/store/1/icons/icons8-instagram.svg';
+                    } elseif ($social['title'] == 'Whatsapp') {
+                        $socials[$id]['image'] = '/store/1/icons/icons8-whatsapp.svg';
+                    } elseif ($social['title'] == 'Snapchat') {
+                        $socials[$id]['image'] = '/store/1/icons/icons8-snapchat-circled-logo.svg';
+                    } elseif ($social['title'] == 'Linkedin') {
+                        $socials[$id]['image'] = '/store/1/icons/icons8-linkedin.svg';
+                    } elseif ($social['title'] == 'Tik Tok') {
+                        $socials[$id]['image'] = '/store/1/icons/icons8-tiktok-black.svg';
+                    } elseif ($social['title'] == 'Youtube') {
+                        $socials[$id]['image'] = '/store/1/icons/youtube-svgrepo-com.svg';
+                    }
+                }
+            }
+        @endphp
+        <div class="footer-social d-flex align-items-center">
+            @if(!empty($socials) and count($socials))
+                @foreach($socials as $social)
+                    <a href="{{ $social['link'] }}" target="_blank">
+                        <img style="height:28px" src="{{ $social['image'] }}" alt="{{ $social['title'] }}" class="mr-15">
+                    </a>
+                @endforeach
+            @endif
+        </div>
         <div class="xs-w-100 d-flex align-items-center justify-content-between ">
             <div class="d-flex">
 
