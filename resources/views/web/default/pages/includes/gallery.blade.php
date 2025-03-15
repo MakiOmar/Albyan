@@ -1,3 +1,4 @@
+<h1 class="w-100 d-block mt-4" style="text-align:center;font-weight:bold;font-size: 35px;">حفلة تخرج طلاب البيان 2023/2024</h1>
 <!-- Swiper Carousel -->
 <div class="albyan-gallery">
     <div class="swiper mySwiper">
