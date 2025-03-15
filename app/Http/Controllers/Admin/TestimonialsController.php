@@ -29,7 +29,7 @@ class TestimonialsController extends Controller
     {
         $apiKey = env('GOOGLE_API_KEY');
         $placeId = env('GOOGLE_PLACE_ID');
-        $url = "https://maps.googleapis.com/maps/api/place/details/json?place_id={$placeId}&fields=reviews&key={$apiKey}&language=ar";
+        $url = "https://maps.googleapis.com/maps/api/place/details/json?place_id={$placeId}&fields=reviews&key={$apiKey}&language=ar&reviews_sort=newest";
 
         $response = Http::get($url);
         $data = $response->json();
