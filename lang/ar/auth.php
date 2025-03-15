@@ -25,7 +25,7 @@ return [
     'password_repeat' => 'اعد كتابة كلمة المرور',
     'login' => 'تسجيل الدخول',
     'signup' => 'انشاء حساب',
-    'register' => 'تسجيل',
+    'register' => 'عضو جديد',
     'remember_me' => 'تذكرني',
     'forget_password' => 'استعادة كلمة المرور',
     'forget_your_password' => 'نسيت كلمة المرور?',
