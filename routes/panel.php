@@ -75,7 +75,8 @@ Route::group(['namespace' => 'Panel', 'prefix' => 'panel', 'middleware' => ['imp
             Route::get('/{id}/delete', 'CoursePersonalNotesController@delete');
         });
     });
-
+    Route::get('/my-groups', 'MyGroupsController@index');
+    Route::get('/my-groups/view/{id}', 'MyGroupsController@view')->name('course-group.view');
     Route::group(['prefix' => 'upcoming_courses'], function () {
         Route::group(['middleware' => 'user.not.access'], function () {
             Route::get('/', 'UpcomingCoursesController@index');

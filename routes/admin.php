@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseGroupController;
 use App\Http\Controllers\WebinarController;
+use App\Http\Controllers\WebinarCertificateController;
 
 $prefix = getAdminPanelUrlPrefix();
 
@@ -1245,7 +1246,12 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get("/", "TranslatorController@index");
             Route::post("/translate", "TranslatorController@translate");
         });
-
+        Route::get('users/webinar-certificates', [WebinarCertificateController::class, 'index'])->name('webinar-certificates.index');
+        Route::post('users/webinar-certificates', [WebinarCertificateController::class, 'store'])->name('webinar-certificates.store');
+        Route::get('users/webinar-certificates/{id}', [WebinarCertificateController::class, 'show'])->name('webinar-certificates.show');
+        Route::put('users/webinar-certificates/{id}', [WebinarCertificateController::class, 'update'])->name('webinar-certificates.update');
+        Route::delete('users/webinar-certificates/{id}', [WebinarCertificateController::class, 'destroy'])->name('webinar-certificates.destroy');
+        Route::get('users/webinar-certificates/student/{studentId}', [WebinarCertificateController::class, 'listByStudent'])->name('webinar-certificates.listByStudent');
         /* End Admin Middleware */
     });
 });

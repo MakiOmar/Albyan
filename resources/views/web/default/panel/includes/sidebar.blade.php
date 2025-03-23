@@ -71,6 +71,14 @@
                 <span class="font-14 text-dark-blue font-weight-500">{{ trans('panel.dashboard') }}</span>
             </a>
         </li>
+        <li class="sidenav-item {{ (request()->is('my-groups')) ? 'sidenav-item-active' : '' }}">
+            <a href="/panel/my-groups" class="d-flex align-items-center">
+                <span class="sidenav-item-icon mr-10">
+                    @include('web.default.panel.includes.sidebar_icons.webinars')
+                </span>
+                <span class="font-14 text-dark-blue font-weight-500">{{ trans('panel.my_groups') }}</span>
+            </a>
+        </li>
 
         @if($authUser->isOrganization())
 

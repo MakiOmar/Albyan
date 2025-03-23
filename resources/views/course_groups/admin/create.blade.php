@@ -32,7 +32,7 @@
 
         <div class="row">
             <!-- Select Webinar -->
-            <div class="form-group col-md-3 col-12">
+            <div class="form-group col-md-4 col-12">
                 <label for="webinar_id">Select Webinar</label>
                 <small class="form-text text-muted">Choose the webinar for which you want to create a group.</small>
                 <select name="webinar_id" id="webinar_id" class="form-control select2">
@@ -41,30 +41,42 @@
                     @endforeach
                 </select>
             </div>
-
+            <!-- Select Instructor -->
+            <div class="form-group col-md-4 col-12">
+                <label for="instructor_id">Select Instructor</label>
+                <small class="form-text text-muted">Choose the instructor for this group.</small>
+                <select name="teacher_id" id="teacher_id" class="form-control select2">
+                    <option value="">-- Select Instructor --</option>
+                    @foreach ($instructors as $instructor)
+                        <option value="{{ $instructor->id }}">{{ $instructor->full_name }}</option>
+                    @endforeach
+                </select>
+            </div>
             <!-- Duration -->
-            <div class="form-group col-md-3 col-12">
+            <div class="form-group col-md-4 col-12">
                 <label for="meeting_duration">Duration (minutes)</label>
                 <small class="form-text text-muted">Enter the duration of the meeting in minutes.</small>
                 <input type="number" name="meeting_duration" id="meeting_duration" class="form-control" value="30" required>
             </div>
+        </div>
 
+        <div class="row">
             <!-- Recurring Meeting -->
-            <div class="form-group col-md-3 col-12">
+            <div class="form-group col-md-6 col-12">
                 <label for="meeting_recurring">Recurring</label>
+                
                 <small class="form-text text-muted">Is this a recurring meeting?</small>
                 <select name="meeting_recurring" id="meeting_recurring" class="form-control">
                     <option value="0">No</option>
                     <option value="1" selected>Yes</option>
                 </select>
             </div>
-            <div class="form-group col-md-3 col-12">
+            <div class="form-group col-md-6 col-12">
                 <label for="recurrence_interval">Recurrence Interval</label>
                 <small class="form-text text-muted">Enter the number of intervals (e.g., every 2 days for daily recurrence).</small>
                 <input type="number" name="recurrence_interval" id="recurrence_interval" class="form-control" value="1" required>
             </div>
-        </div>
-
+        </div>        
         <div class="row">
             <!-- Start Time -->
             <div class="form-group col-md-6 col-12">

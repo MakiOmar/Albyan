@@ -34,7 +34,7 @@ return [
     'log_out' => 'Log out',
     'create_a_class' => 'Create a course',
     'create_a_webinar' => 'Create a course',
-
+    'my_groups' => 'Study groups',
     'invited_classes' => 'Invited courses',
     'invited_teacher' => 'Invited instrcutor',
     'invited_by' => 'Invited by',

@@ -217,6 +217,7 @@ return [
     'not_assign_any_webinar' => 'غير مسجل في اي فئة',
     'active' => 'نشط',
     'inactive' => 'غير نشط',
+    'my_groups' => 'المجموعات الدراسية',
     'name' => 'الاسم',
     'special_offers' => 'عروض خاصة',
     'special_offer' => 'عرض خاص',

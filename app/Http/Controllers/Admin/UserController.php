@@ -37,6 +37,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\WebinarCertificate;
 
 class UserController extends Controller
 {
@@ -656,7 +657,7 @@ class UserController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
         }
-
+        $certificates = WebinarCertificate::where('student_id', $user->id)->get();
         $data = [
             'pageTitle' => trans('admin/pages/users.edit_page_title'),
             'user' => $user,
@@ -676,6 +677,7 @@ class UserController extends Controller
             'formFieldsHtml' => $formFieldsHtml,
             'becomeInstructorFormFieldValues' => $becomeInstructorFormFieldValues,
             'userLoginHistories' => $userLoginHistories,
+            'certificates' => $certificates,
         ];
 
         // Purchased Classes Data

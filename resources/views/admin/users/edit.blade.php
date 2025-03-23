@@ -96,6 +96,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" id="topics-tab" data-toggle="tab" href="#topics" role="tab" aria-controls="topics" aria-selected="true">{{ trans('update.forum_topics') }}</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="certificates-tab" data-toggle="tab" href="#certificates" role="tab" aria-controls="certificates" aria-selected="true">الشهادات</a>
+                                </li>
 
                                 <li class="nav-item">
                                     <a class="nav-link {{ (request()->get('tab') == "loginHistory") ? 'active' : '' }}" href="{{ getAdminPanelUrl("/users/{$user->id}/edit?tab=loginHistory") }}" role="tab" aria-controls="loginHistory" aria-selected="true">{{ trans('update.login_history') }}</a>
@@ -143,6 +146,8 @@
 
                                 @include('admin.users.editTabs.topics')
 
+                                @include('admin.users.editTabs.certificates')
+
                                 @include('admin.users.editTabs.login_history')
 
                             </div>
@@ -164,4 +169,11 @@
 
     <script src="/assets/default/js/admin/webinar_students.min.js"></script>
     <script src="/assets/default/js/admin/user_edit.min.js"></script>
+    <script src="{{ asset('vendor/unisharp/laravel-filemanager/js/filemanager.js') }}"></script>
+<script>
+    // Initialize the file manager for certificates input
+    $('#lfm').filemanager('image', {
+        multiple: true  // Allow multiple file selection
+    });
+</script>
 @endpush
