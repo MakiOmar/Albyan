@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\WebinarCertificate;
+use App\Models\CourseGroup;
 
 class UserController extends Controller
 {
@@ -658,6 +659,10 @@ class UserController extends Controller
                 ->paginate(10);
         }
         $certificates = WebinarCertificate::where('student_id', $user->id)->get();
+        $groups = CourseGroup::where('instructor_id', $user->id)
+        ->with('webinar') // eager load the webinar relation
+        ->orderBy('meeting_start_time', 'desc')
+        ->get();
         $data = [
             'pageTitle' => trans('admin/pages/users.edit_page_title'),
             'user' => $user,
@@ -678,6 +683,7 @@ class UserController extends Controller
             'becomeInstructorFormFieldValues' => $becomeInstructorFormFieldValues,
             'userLoginHistories' => $userLoginHistories,
             'certificates' => $certificates,
+            'groups' => $groups,
         ];
 
         // Purchased Classes Data

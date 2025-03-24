@@ -96,9 +96,18 @@
                                 <li class="nav-item">
                                     <a class="nav-link" id="topics-tab" data-toggle="tab" href="#topics" role="tab" aria-controls="topics" aria-selected="true">{{ trans('update.forum_topics') }}</a>
                                 </li>
+                                
+                                @if(!empty($user) and ! $user->isTeacher())
                                 <li class="nav-item">
                                     <a class="nav-link" id="certificates-tab" data-toggle="tab" href="#certificates" role="tab" aria-controls="certificates" aria-selected="true">الشهادات</a>
                                 </li>
+                                @endif
+
+                                @if(!empty($user) and $user->isTeacher())
+                                <li class="nav-item">
+                                    <a class="nav-link" id="groups-tab" data-toggle="tab" href="#groups" role="tab" aria-controls="groups" aria-selected="true">المواعيد</a>
+                                </li>
+                                @endif
 
                                 <li class="nav-item">
                                     <a class="nav-link {{ (request()->get('tab') == "loginHistory") ? 'active' : '' }}" href="{{ getAdminPanelUrl("/users/{$user->id}/edit?tab=loginHistory") }}" role="tab" aria-controls="loginHistory" aria-selected="true">{{ trans('update.login_history') }}</a>
@@ -147,6 +156,10 @@
                                 @include('admin.users.editTabs.topics')
 
                                 @include('admin.users.editTabs.certificates')
+
+                                @if(!empty($user) and $user->isTeacher())
+                                    @include('admin.users.editTabs.groups')
+                                @endif
 
                                 @include('admin.users.editTabs.login_history')
 
