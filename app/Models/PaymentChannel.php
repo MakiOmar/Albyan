@@ -16,7 +16,7 @@ class PaymentChannel extends Model
         'Mollie', 'Ngenius', 'Payfort', 'Payhere', 'Payku', 'Paylink', 'Paypal',
         'Paysera', 'Paystack', 'Paytm', 'Payu', 'Razorpay', 'Robokassa', 'Sslcommerz',
         'Stripe', 'Toyyibpay', 'Voguepay', 'Zarinpal', 'JazzCash', 'IPay88',
-        'Redsys', 'Xendit', 'Paytabs', 'Paymob', 'Cintepay', 'TapPayment', 'Paytr', 'Telebirr'
+        'Redsys', 'Xendit', 'Paytabs', 'Paymob', 'Cintepay', 'TapPayment', 'Paytr', 'Telebirr', 'Tabby'
     ];
 
     static $gatewayIgnoreRedirect = [
@@ -53,6 +53,7 @@ class PaymentChannel extends Model
     static $alipay = 'Alipay';
     static $braintree = 'Braintree';
     static $izipay = 'Izipay';
+    static $tabby = 'Tabby';
     static $paylink = 'Paylink';
     static $jazzCash = 'JazzCash';
     static $redsys = 'Redsys';

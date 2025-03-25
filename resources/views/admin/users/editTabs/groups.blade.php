@@ -8,6 +8,7 @@
                 <th>تاريخ الانتهاء</th>
                 <th>نوع التكرار</th>
                 <th>التكرار</th>
+                <th>الخيارات</th>
             </tr>
         </thead>
         <tbody>
@@ -71,6 +72,7 @@
                             -
                         @endif
                     </td>
+                    <td><a href="{{ route('course-group.edit', $group->id) }}">عرض</a></td>
                 </tr>
             @endforeach
         </tbody>

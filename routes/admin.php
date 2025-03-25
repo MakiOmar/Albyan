@@ -57,6 +57,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
         });
         Route::prefix('course-group')->group(function () {
             Route::get('/manage/{webinarId}', [CourseGroupController::class, 'listGroups'])->name('course-group.manage');
+            Route::get('/edit/{groupId}', [CourseGroupController::class, 'editGroup'])->name('course-group.edit');
 
             Route::get('/webinar-groups/', [CourseGroupController::class, 'listWebinarsWithGroups'])->name('webinar-groups.manage');
 

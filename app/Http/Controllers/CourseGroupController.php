@@ -730,6 +730,12 @@ class CourseGroupController extends Controller {
 		return view( 'course_groups.admin.webninars_groups', compact( 'webinars' ) );
 	}
 
+	public function editGroup( $groupId ){
+		$group    = CourseGroup::with(['webinar', 'instructor', 'members'])->find($groupId);
+		$students = User::where( 'role_id', 1 )->get();
+		return view( 'course_groups.admin.group', compact( 'group', 'students' ) );
+	}
+
 	/**
 	 * List webinars with their associated groups.
 	 *
