@@ -3,7 +3,13 @@
 @push('libraries_top')
 
 @endpush
-
+@push('styles_top')
+<style>
+    #groupsModalContent .fade{
+        opacity: 1;
+    }
+</style>
+@endpush
 @php
     $values = !empty($setting) ? $setting->value : null;
 
@@ -176,6 +182,23 @@
     
     
 </div>
+<!-- Modal -->
+<div class="modal fade" id="instructorGroupsModal" tabindex="-1" aria-labelledby="instructorGroupsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="instructorGroupsModalLabel">مجموعات المدرّس</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="groupsModalContent">
+          <!-- سيتم تحميل المحتوى هنا -->
+        </div>
+      </div>
+    </div>
+  </div>
+  
 @endsection
 @push('scripts_bottom')
 <script>
@@ -196,6 +219,38 @@
     });
 
     $(document).ready(function () {
+        var ajaxInit = false;
+        const getGroupsRoute = "{{ route('instructor.groups', ['instructor' => 'INSTRUCTOR_ID']) }}";
+            $('#teacher_id').on('change', function () {
+                if ( ajaxInit ) {
+                    return;
+                }
+                ajaxInit = true;
+                const instructorId = $(this).val();
+                
+                if (!instructorId) return;
+
+                const url = getGroupsRoute.replace('INSTRUCTOR_ID', instructorId);
+                $('.loading-overlay').css('display', 'flex');
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (response) {
+                        console.log(response);
+                        $('#groupsModalContent').html(response);
+                        const modal = new bootstrap.Modal(document.getElementById('instructorGroupsModal'));
+                        modal.show();
+                    },
+                    complete: function(){
+                        $('.loading-overlay').css('display', 'none');
+                        ajaxInit = false;
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('حدث خطأ أثناء تحميل المجموعات:', error);
+                        ajaxInit = false;
+                    }
+                });
+            });
         $('#webinar_id').on('change', function () {
             const webinarId = $(this).val();
             const $studentSelect = $('#student_ids');

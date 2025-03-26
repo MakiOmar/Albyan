@@ -33,6 +33,53 @@
 
         {!! getThemeColorsSettings(true) !!}
     </style>
+    <style>
+        /* Loading overlay styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: none;
+        }
+
+        /* Spinner styles */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Optional: Add some text below the spinner */
+        .loading-text {
+            color: white;
+            margin-top: 15px;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        /* Container for spinner and text to center them together */
+        .loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
 </head>
 <body class="@if($isRtl) rtl @endif">
 
@@ -123,7 +170,13 @@
 
 @stack('styles_bottom')
 @stack('scripts_bottom')
-
+<!-- Loading Overlay -->
+<div class="loading-overlay">
+    <div class="loading-content">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+</div>  
 <script>
     var deleteAlertTitle = '{{ trans('public.are_you_sure') }}';
     var deleteAlertHint = '{{ trans('public.deleteAlertHint') }}';
