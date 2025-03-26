@@ -27,7 +27,7 @@
         </div>
     @endif
 
-    <form action="{{ route('course-group.store') }}" method="POST">
+    <form id="create-group-form" action="{{ route('course-group.store') }}" method="POST">
         @csrf
 
         <div class="row">
@@ -171,7 +171,7 @@
                 </select>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary mt-3">Create Group</button>
+        <button type="submit" id="create-group-submit-btn" class="btn btn-primary mt-3">Create Group</button>
     </form>
     
     
@@ -179,6 +179,11 @@
 @endsection
 @push('scripts_bottom')
 <script>
+    document.getElementById('create-group-form').addEventListener('submit', function(e) {
+        const btn = document.getElementById('create-group-submit-btn');
+        btn.disabled = true;
+        btn.innerText = 'Submitting...';
+    });
     document.addEventListener('DOMContentLoaded', function () {
         const recurrenceType = document.getElementById('recurrence_type');
         const weeklyDaysWrapper = document.getElementById('weekly_days_wrapper');
