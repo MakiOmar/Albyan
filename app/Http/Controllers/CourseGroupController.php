@@ -577,7 +577,56 @@ class CourseGroupController extends Controller {
 			'data'    => $response->json(),
 		);
 	}
-
+	private function updateZoomMeeting($meetingId, $data) {
+		$accessToken = $this->getZoomAccessToken();
+		$zoomBaseUrl = env('ZOOM_BASE_URL', 'https://api.zoom.us/v2');
+		$zoomUrl     = $zoomBaseUrl . "/meetings/{$meetingId}";
+	
+		$meetingData = array(
+			'topic'      => "Updated Meeting for Webinar ID {$data['webinar_id']}",
+			'start_time' => Carbon::parse($data['meeting_start_time'], 'Asia/Dubai')->format('Y-m-d\TH:i:s'),
+			'duration'   => $data['meeting_duration'],
+			'timezone'   => 'Asia/Dubai',
+			'settings'   => array(
+				'host_video'        => (bool) $data['host_video'],
+				'participant_video' => (bool) $data['participant_video'],
+				'audio'             => $data['audio_option'],
+				'join_before_host'  => false,
+				'mute_upon_entry'   => true,
+				'approval_type'     => 0,
+			),
+		);
+	
+		if ($data['meeting_recurring']) {
+			$recurrence = array(
+				'type'            => (int) $data['recurrence_type'],
+				'repeat_interval' => $data['recurrence_interval'],
+			);
+	
+			if ($data['recurrence_type'] == 2) {
+				$recurrence['weekly_days'] = implode(',', $data['weekly_days']);
+			} elseif ($data['recurrence_type'] == 3) {
+				$recurrence['monthly_day'] = $data['monthly_day'];
+			}
+	
+			$meetingData['recurrence'] = $recurrence;
+		}
+	
+		$response = Http::withToken($accessToken)->patch($zoomUrl, $meetingData);
+	
+		if ($response->failed()) {
+			return [
+				'success' => false,
+				'error'   => 'Failed to update Zoom meeting: ' . $response->body(),
+			];
+		}
+	
+		return [
+			'success' => true,
+			'data'    => $response->json(),
+		];
+	}
+	
 	/**
 	 * Retrieve the Zoom OAuth access token.
 	 *
