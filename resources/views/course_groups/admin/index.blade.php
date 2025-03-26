@@ -173,6 +173,9 @@
 @push('scripts_bottom')
 <script>
     $(document).ready(function () {
+        $('#studentSelect').select2({
+            dropdownParent: $('#addStudentModal')
+        });
         // فتح النافذة وتعيين معرف المجموعة
         $('.add-student-btn').on('click', function () {
             const groupId = $(this).data('group-id');
