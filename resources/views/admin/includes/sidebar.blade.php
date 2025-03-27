@@ -77,8 +77,8 @@
                             <li class="{{ (request()->is(getAdminPanelUrl('/webinars/create', false))) ? 'active' : '' }}">
                                 <a class="nav-link" href="{{ getAdminPanelUrl() }}/webinars/create">{{ trans('admin/main.new') }}</a>
                             </li>
-                            <li class="{{ (request()->is(getAdminPanelUrl('/webinar-groups', false)) and request()->get('type') == 'manage') ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ route('webinar-groups.manage') }}">Groups</a>
+                            <li class="{{ request()->is(getAdminPanelUrl('/list-groups', false))  ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('course-group.list') }}">Groups</a>
                             </li>
                             <li class="{{ (request()->is(getAdminPanelUrl('/course-group', false)) and request()->get('type') == 'manage') ? 'active' : '' }}">
                                 <a class="nav-link" href="{{ route('course-group.create-form') }}">New Group</a>

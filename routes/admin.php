@@ -56,7 +56,8 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/{id}/delete', 'RoleController@destroy');
         });
         Route::prefix('course-group')->group(function () {
-            Route::get('/manage/{webinarId}', [CourseGroupController::class, 'listGroups'])->name('course-group.manage');
+            Route::get('/manage/{webinarId}', [CourseGroupController::class, 'listWebinarGroups'])->name('course-group.manage');
+            Route::get('/list-groups', [CourseGroupController::class, 'listInstructorGroups'])->name('course-group.list');
             Route::get('/edit/{groupId}', [CourseGroupController::class, 'editGroup'])->name('course-group.edit');
 
             Route::get('/webinar-groups/', [CourseGroupController::class, 'listWebinarsWithGroups'])->name('webinar-groups.manage');

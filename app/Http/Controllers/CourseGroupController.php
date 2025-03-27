@@ -27,7 +27,25 @@ class CourseGroupController extends Controller
     /**
      * Display the groups for a specific webinar.
      */
-    public function getGroups(Request $request, $webinarId)
+    public function getGroups(Request $request)
+    {
+        $instructorId = $request->query('instructor_id');
+
+        $groups = CourseGroup::with('webinar')->where('instructor_id', $instructorId)->get();
+
+        $instructors = User::where('role_id', 4)->get();
+        $students    = User::where('role_id', 1)->get();
+
+        return [
+            'groups'      => $groups,
+            'instructors' => $instructors,
+            'students'    => $students,
+        ];
+    }
+    /**
+     * Display the groups for a specific webinar.
+     */
+    public function getWebinarGroups(Request $request, $webinarId)
     {
         $instructorId = $request->query('instructor_id');
 
@@ -69,14 +87,26 @@ class CourseGroupController extends Controller
     /**
      * Display the groups for a specific webinar.
      */
-    public function listGroups(Request $request, $webinarId)
+    public function listWebinarGroups(Request $request, $webinarId)
     {
-        $getGroups   = $this->getGroups($request, $webinarId);
-        $webinar     = $getGroups['webinar'];
-        $instructors = $getGroups['instructors']; // Replace 'role' with your actual logic
-        $students    = $getGroups['students'];
+        $getWebinarGroups   = $this->getWebinarGroups($request, $webinarId);
+        $webinar     = $getWebinarGroups['webinar'];
+        $instructors = $getWebinarGroups['instructors']; // Replace 'role' with your actual logic
+        $students    = $getWebinarGroups['students'];
 
         return view('course_groups.admin.index', compact('webinar', 'instructors', 'students'));
+    }
+    /**
+     * Display the groups for a specific webinar.
+     */
+    public function listInstructorGroups(Request $request)
+    {
+        $getInstructorGroups      = $this->getGroups($request);
+        $groups      = $getInstructorGroups['groups'];
+        $instructors = $getInstructorGroups['instructors'];
+        $students    = $getInstructorGroups['students'];
+
+        return view('course_groups.admin.instructor_groups', compact('groups', 'instructors', 'students'));
     }
     public function addStudent(Request $request, $groupId)
     {
