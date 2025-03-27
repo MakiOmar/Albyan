@@ -27,32 +27,51 @@ class CourseGroupController extends Controller
     /**
      * Display the groups for a specific webinar.
      */
-    public function getGroups($webinarId)
+    public function getGroups(Request $request, $webinarId)
     {
-        $webinar     = Webinar::with(array( 'groups.members.student', 'groups.instructor' ))->findOrFail($webinarId);
-        $instructors = User::where('role_id', 4)->get(); // Replace 'role' with your actual logic
+        $instructorId = $request->query('instructor_id');
+
+        // تحميل الـ Webinar دائمًا
+        $webinar = Webinar::findOrFail($webinarId);
+
+        // تحميل الـ Groups فقط لو فيه instructor_id
+        if ($instructorId) {
+            $webinar->load([
+                'groups' => function ($query) use ($instructorId) {
+                    $query->where('instructor_id', $instructorId)
+                        ->with(['members.student', 'instructor']);
+                }
+            ]);
+        } else {
+            // نحط مجموعة فاضية يدويًا
+            $webinar->setRelation('groups', collect());
+        }
+
+        $instructors = User::where('role_id', 4)->get();
         $students    = User::where('role_id', 1)->get();
 
-        return array(
+        return [
             'webinar'     => $webinar,
             'instructors' => $instructors,
             'students'    => $students,
-        );
+        ];
     }
 
-	// GroupController.php
-	public function getInstructorGroups($instructor_id)
-	{
-		$groups = CourseGroup::with('webinar')->where('instructor_id', $instructor_id)->get();
 
-		return view('admin.users.editTabs.groups', compact('groups'))->render();
-	}
+
+    // GroupController.php
+    public function getInstructorGroups($instructor_id)
+    {
+        $groups = CourseGroup::with('webinar')->where('instructor_id', $instructor_id)->get();
+
+        return view('admin.users.editTabs.groups', compact('groups'))->render();
+    }
     /**
      * Display the groups for a specific webinar.
      */
-    public function listGroups($webinarId)
+    public function listGroups(Request $request, $webinarId)
     {
-        $getGroups   = $this->getGroups($webinarId);
+        $getGroups   = $this->getGroups($request, $webinarId);
         $webinar     = $getGroups['webinar'];
         $instructors = $getGroups['instructors']; // Replace 'role' with your actual logic
         $students    = $getGroups['students'];

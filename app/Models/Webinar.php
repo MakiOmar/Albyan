@@ -75,6 +75,12 @@ class Webinar extends Model implements TranslatableContract
     {
         return $this->hasMany(CourseGroup::class, 'webinar_id', 'id');
     }
+    public function groupsForInstructor($instructorId)
+    {
+        return $this->hasMany(CourseGroup::class, 'webinar_id', 'id')
+                    ->where('instructor_id', $instructorId);
+    }
+
     public function creator()
     {
         return $this->belongsTo('App\User', 'creator_id', 'id');

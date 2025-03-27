@@ -34,7 +34,7 @@
 @endpush
 
 @section('content')
-<section class="section">
+<section class="section" id="webinar-groups-list">
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -54,11 +54,23 @@
             <div class="breadcrumb-item"><a href="/admin/course-group/webinar-groups">الدورات مع المجموعات</a></div>
         </div>
     </div>
+    <div class="card">
+        <div class="card-body">
+            <label for="instructor_id">Select Instructor</label>
+            <select name="teacher_id" id="teacher_id" class="form-control select2">
+                <option value="">-- Select Instructor --</option>
+                @foreach ($instructors as $instructor)
+                    <option value="{{ $instructor->id }}">{{ $instructor->full_name }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
 
     <div class="card">
         <div class="card-body">
             <!-- المجموعات -->
             <h5>المجموعات</h5>
+            @if ( $webinar->groups->isNotEmpty() )
             <div id="groupsAccordion">
                 @foreach ($webinar->groups as $group)
                 <div class="card">
@@ -135,6 +147,9 @@
                 </div>
                 @endforeach
             </div>
+            @else
+            <p class="bg-info p-4 rounded text-white fw-bold">No Groups found, Please select another instructor.</p>
+            @endif
         </div>
     </div>
 </section>
@@ -171,6 +186,23 @@
 
 @endsection
 @push('scripts_bottom')
+<script>
+    $(document).ready(function () {
+        $('#teacher_id').on('change', function () {
+            const instructorId = $(this).val();
+            const currentUrl = window.location.origin + window.location.pathname;
+
+            if (instructorId) {
+                // Redirect with instructor_id as query param
+                window.location.href = currentUrl + '?instructor_id=' + instructorId;
+            } else {
+                // Remove query param if nothing selected
+                window.location.href = currentUrl;
+            }
+        });
+    });
+</script>
+
 <script>
     $(document).ready(function () {
         $('#studentSelect').select2({
