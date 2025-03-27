@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\InstructorFileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +78,10 @@ Route::group(['namespace' => 'Panel', 'prefix' => 'panel', 'middleware' => ['imp
     });
     Route::get('/my-groups', 'MyGroupsController@index');
     Route::get('/my-groups/view/{id}', 'MyGroupsController@view')->name('course-group.view');
+    Route::get('/instructor-files', [InstructorFileController::class, 'create'])->name('instructor-files.create');
+    Route::post('/instructor-files', [InstructorFileController::class, 'store'])->name('instructor-files.store');
+    Route::delete('/instructor-files/{id}', [InstructorFileController::class, 'destroy'])->name('instructor-files.destroy');
+    
     Route::group(['prefix' => 'upcoming_courses'], function () {
         Route::group(['middleware' => 'user.not.access'], function () {
             Route::get('/', 'UpcomingCoursesController@index');
