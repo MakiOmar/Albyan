@@ -3,10 +3,20 @@
 @push('styles_top')
     <link rel="stylesheet" href="/assets/default/vendors/swiper/swiper-bundle.min.css">
     <link rel="stylesheet" href="/assets/default/vendors/owl-carousel2/owl.carousel.min.css">
+    <style>
+        .slider-heading{
+            display: flex;justify-content:center;align-items:center;padding:20px;position: absolute;z-index: 999;background-color: #ffffffa6;bottom: 0;
+        }
+        @media screen and ( max-width:480px ){
+            .slider-heading{
+                font-size: 16px;
+                padding: 10px
+            }
+        }
+    </style>
 @endpush
 
 @section('content')
-
     @if(!empty($heroSectionData))
 
         @if(!empty($heroSectionData['has_lottie']) and $heroSectionData['has_lottie'] == "1")
@@ -16,7 +26,7 @@
         @endif
 
         <section class="slider-container  {{ ($heroSection == "2") ? 'slider-hero-section2' : '' }}" @if(empty($heroSectionData['is_video_background'])) style="background-image: url('{{ $heroSectionData['hero_background'] }}')" @endif>
-
+            <h1 class="slider-heading">حفلة تخرج طلاب البيان 2023/2024</h1>
             @if($heroSection == "1")
                 @if(!empty($heroSectionData['is_video_background']))
                     <video playsinline autoplay muted loop id="homeHeroVideoBackground" class="img-cover">
@@ -239,6 +249,7 @@
                 </div>
 
                 <div class="mt-10 position-relative">
+                    {{--
                     <div class="swiper-container latest-webinars-swiper px-12">
                         <div class="swiper-wrapper py-20">
                             @foreach($latestWebinars as $latestWebinar)
@@ -252,6 +263,17 @@
 
                     <div class="d-flex justify-content-center">
                         <div class="swiper-pagination latest-webinars-swiper-pagination"></div>
+                    </div>
+                    --}}
+                    <div class="px-12">
+                        <div class="row py-20">
+                            @foreach($latestWebinars as $latestWebinar)
+                                <div class="col-12 col-sm-6 col-lg-4 mb-3">
+                                    @include('web.default.includes.webinar.grid-card',['webinar' => $latestWebinar])
+                                </div>
+                            @endforeach
+
+                        </div>
                     </div>
                 </div>
             </section>
@@ -285,7 +307,7 @@
                 </div>
             </section>
         @endif
-
+        {{--
         @if($homeSection->name == \App\Models\HomeSection::$trend_categories and !empty($trendCategories) and !$trendCategories->isEmpty())
             <section class="home-sections home-sections-swiper container">
                 <h2 class="section-title">{{ trans('home.trending_categories') }}</h2>
@@ -319,7 +341,7 @@
                 </div>
             </section>
         @endif
-
+        --}}
         {{-- Ads Bannaer --}}
         @if($homeSection->name == \App\Models\HomeSection::$full_advertising_banner and !empty($advertisingBanners1) and count($advertisingBanners1))
             <div class="home-sections container">
