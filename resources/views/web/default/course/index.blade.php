@@ -343,7 +343,9 @@
                         </form>
                         <div class="mt-20 d-flex flex-column">
                             @if($joinUrl)
-                                <a href="{{ $joinUrl }}" class="btn btn-primary">إنضم للجلسة</a>
+                            <a href="{{ $joinUrl }}" class="btn btn-primary disabled" id="joinButton" tabindex="-1" aria-disabled="true">
+                                {{ trans('public.join_meeting') }}
+                            </a>
                             @endif
                             @if($nextStartTime)
                             <div id="countdown">
@@ -662,6 +664,7 @@
     <script src="/assets/default/vendors/video/vimeo.js"></script>
     @if( $meetingID && $nextStartTime )
     <script>
+        const joinButton = document.getElementById("joinButton");
         // Set the countdown date from PHP
         const nextSessionTime = new Date("{{ $nextStartTime }}").getTime();
 
@@ -672,6 +675,12 @@
 
             if (timeRemaining <= 0) {
                 clearInterval(countdownInterval); // Stop the countdown when it reaches zero
+                // Show the Join Meeting button
+                if (joinButton) {
+                    joinButton.classList.remove("disabled");
+                    joinButton.removeAttribute("tabindex");
+                    joinButton.removeAttribute("aria-disabled");
+                }
                 document.getElementById("countdown").innerHTML = "بدأت الجلسة!";
                 return;
             }
