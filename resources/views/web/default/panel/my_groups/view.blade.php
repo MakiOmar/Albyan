@@ -54,7 +54,7 @@
                             </h2>
                             <div class="mt-20 d-flex flex-column">
                                 @if($joinUrl)
-                                    <a href="{{ $joinUrl }}" class="btn btn-primary">إنضم للجلسة</a>
+                                    <a href="{{ $joinUrl }}" class="btn btn-primary">{{ trans('public.join_meeting') }}</a>
                                 @endif
                                 @if($nextStartTime)
                                 <div id="countdown">
