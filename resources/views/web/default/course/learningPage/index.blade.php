@@ -19,6 +19,16 @@
             <div class="learning-page-tabs show">
                 <ul class="nav nav-tabs py-15 d-flex align-items-center justify-content-around" id="tabs-tab" role="tablist">
                     <li class="nav-item">
+                        <a class="position-relative font-14 d-flex align-items-center" id="meetings-tab" data-toggle="tab"
+                           href="#meetings" role="tab" aria-controls="meetings"
+                           aria-selected="false">
+                            <i class="learning-page-tabs-icons mr-5">
+                                @include('web.default.panel.includes.sidebar_icons.certificate')
+                            </i>
+                            <span class="learning-page-tabs-link-text">{{ trans('panel.meetings') }}</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="position-relative font-14 d-flex align-items-center active" id="content-tab"
                            data-toggle="tab" href="#content" role="tab" aria-controls="content"
                            aria-selected="true">
@@ -66,6 +76,10 @@
                     <div class="pb-20 tab-pane fade  h-100" id="certificates" role="tabpanel"
                          aria-labelledby="certificates-tab">
                         @include('web.default.course.learningPage.components.certificate_tab.index')
+                    </div>
+                    <div class="pb-20 tab-pane fade  h-100" id="meetings" role="tabpanel"
+                         aria-labelledby="meetings-tab">
+                        @include('web.default.course.learningPage.meetings')
                     </div>
                 </div>
             </div>
