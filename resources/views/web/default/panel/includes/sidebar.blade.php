@@ -71,6 +71,7 @@
                 <span class="font-14 text-dark-blue font-weight-500">{{ trans('panel.dashboard') }}</span>
             </a>
         </li>
+        @if ($authUser->isTeacher())
         <li class="sidenav-item {{ (request()->is('my-groups')) ? 'sidenav-item-active' : '' }}">
             <a href="/panel/my-groups" class="d-flex align-items-center">
                 <span class="sidenav-item-icon mr-10">
@@ -79,6 +80,8 @@
                 <span class="font-14 text-dark-blue font-weight-500">{{ trans('panel.my_groups') }}</span>
             </a>
         </li>
+        @endif
+        
 
         @if($authUser->isOrganization())
 
@@ -508,7 +511,7 @@
                 </li>
             @endcan
         @endif
-
+        {{--
         @can('panel_financial')
             <li class="sidenav-item {{ (request()->is('panel/financial') or request()->is('panel/financial/*')) ? 'sidenav-item-active' : '' }}">
                 <a class="d-flex align-items-center" data-toggle="collapse" href="#financialCollapse" role="button" aria-expanded="false" aria-controls="financialCollapse">
@@ -572,7 +575,7 @@
                 </div>
             </li>
         @endcan
-
+        --}}
         @can('panel_support')
             <li class="sidenav-item {{ (request()->is('panel/support') or request()->is('panel/support/*')) ? 'sidenav-item-active' : '' }}">
                 <a class="d-flex align-items-center" data-toggle="collapse" href="#supportCollapse" role="button" aria-expanded="false" aria-controls="supportCollapse">
