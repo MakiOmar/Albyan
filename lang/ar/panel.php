@@ -136,6 +136,7 @@ return [
     'noticeboards' => 'الملاحظات',
     'not_verified_alert' => 'لم يتم التحقق من هويتك وذلك قد يؤدي الي التأخر في احتساب الارباح يرجي تأكيد هويتك لتفادي ذلك',
     'this_link' => 'الاعدادات',
+    'meetings' => 'المحاضرات',
     // Conversations
     'conversations' => 'المحادثات',
     'create_support_message' => 'رسالة دعم جديدة',
