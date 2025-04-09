@@ -1,5 +1,29 @@
 @extends(getTemplate().'.layouts.app')
-
+@push('styles_top')
+<style>
+    #certificateModal{
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        margin:
+        auto;
+        background-color: #fff;
+        z-index: 999;
+        max-width: 500px;
+        max-height: 500px;
+        border-radius:20px;
+        -webkit-box-shadow:
+        0px 0px 5px 2px rgba(0,0,0,0.29);
+        -moz-box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.29);
+        box-shadow: 0px 0px 5px 2px rgba(0,0,0,0.29);
+        text-align: center;
+        padding:
+        20px;
+    }
+</style>
+@endpush
 @section('content')
     <div class="container">
         <div class="row login-container">
@@ -14,7 +38,7 @@
                     <p class="font-14 text-gray mt-15">{{ trans('site.certificate_validation_hint') }}</p>
 
 
-                    <form method="post" action="/certificate_validation/validate" class="mt-35">
+                    <form method="post" action="{{ route('certificates.search') }}" class="mt-35" id="certificateSearchForm">
                         {{ csrf_field() }}
 
 
@@ -41,7 +65,7 @@
                             </div>
                         </div>
 
-                        <button type="button" id="formSubmit" class="btn btn-primary btn-block mt-20">{{ trans('cart.validate') }}</button>
+                        <input type="submit" class="btn btn-primary btn-block mt-20" value="{{ trans('cart.validate') }}">
 
                     </form>
 
@@ -68,7 +92,7 @@
                 </div>
 
                 <div class="mt-10 d-flex justify-content-between">
-                    <span class="text-gray font-weight-bold">{{ trans('webinars.webinar') }}:</span>
+                    <span class="text-gray font-weight-bold">{{ trans('main.webinar_title') }}:</span>
                     <span class="text-gray"><span class="modal-webinar"></span></span>
                 </div>
             </div>
@@ -80,7 +104,7 @@
     </div>
 
 @endsection
-
+{{--
 @push('scripts_bottom')
     <script>
         var certificateNotFound = '{{ trans('site.certificate_not_found') }}';
@@ -88,4 +112,77 @@
     </script>
 
     <script src="/assets/default/js/parts/certificate_validation.min.js"></script>
+@endpush
+--}}
+
+@push('scripts_bottom')
+    <script>
+        var certificateNotFound = '{{ trans('site.certificate_not_found') }}';
+        var close = '{{ trans('public.close') }}';
+
+        $(document).ready(function () {
+            function loadCaptcha() {
+                $('#captchaImageComment').attr('src', '/captcha?'+Math.random());
+            }
+
+            loadCaptcha();
+
+            $('#refreshCaptcha').on('click', function () {
+                loadCaptcha();
+            });
+
+            $('#certificateSearchForm').on('submit', function (e) {
+                e.preventDefault();
+
+                let form = $(this);
+                let url = form.attr('action');
+                let data = form.serialize();
+
+                // تنظيف الأخطاء السابقة
+                form.find('.invalid-feedback').text('');
+                form.find('.is-invalid').removeClass('is-invalid');
+
+                $.post(url, data, function (response) {
+                    if (response.code === 422) {
+                        // أخطاء التحقق
+                        $.each(response.errors, function (field, messages) {
+                            let input = form.find('[name="' + field + '"]');
+                            input.addClass('is-invalid');
+                            input.next('.invalid-feedback').text(messages[0]);
+                        });
+                        loadCaptcha();
+                    } else {
+                        // عرض بيانات الشهادة
+                        let cert = response.certificates[0];
+                        if (cert) {
+                            $('.modal-student').text(cert.student_name ?? '');
+                            $('.modal-date').text(cert.created_at ?? '');
+                            $('.modal-webinar').text(cert.webinar_title ?? '');
+
+                            $('#certificateModal').removeClass('d-none');
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: certificateNotFound,
+                                confirmButtonText: close,
+                            });
+                        }
+                        loadCaptcha();
+                    }
+                }).fail(function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'حدث خطأ ربما رقم الشهادة أو رمز الأمان غير صحيح',
+                        confirmButtonText: close,
+                    });
+                    loadCaptcha();
+                });
+            });
+
+            // إغلاق المودال
+            $('.close-swl').on('click', function () {
+                $('#certificateModal').addClass('d-none');
+            });
+        });
+    </script>
 @endpush

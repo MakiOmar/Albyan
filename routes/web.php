@@ -5,6 +5,7 @@ use App\Http\Controllers\CourseGroupController;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Testimonial;
+use App\Http\Controllers\Web\WebinarCertificateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -433,6 +434,7 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
     Route::get('/about', function () {
         return view('web.default.pages.about');
     });
+    Route::post('/certificates/search', [WebinarCertificateController::class, 'search'])->name('certificates.search');
 
 });
 

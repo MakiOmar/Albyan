@@ -21,7 +21,6 @@ class CertificateValidationController extends Controller
             'pageDescription' => $pageDescription,
             'pageRobot' => $pageRobot,
         ];
-
         return view(getTemplate() . '.auth.certificate_validation', $data);
     }
 
