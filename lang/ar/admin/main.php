@@ -927,6 +927,7 @@ return [
     'live_classes' => 'الدبلومات المباشرة',
     'text_courses' => 'الدبلومات الكتابية',
     'webinar_title' => 'عنوان الدبلوم',
+    'certificate_id' => 'رقم الشهادة',
     'webinar_status' => 'حالة الدبلوم',
     'start_date' => 'تاريخ البدأ',
     'end_date' => 'تاريخ النهاية',
