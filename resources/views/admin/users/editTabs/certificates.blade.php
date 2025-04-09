@@ -15,7 +15,7 @@
                     <input type="text" name="webinar_title" class="form-control" maxlength="255">
                 </div>
 
-                <!-- Certificates (File input for certificates) -->
+                <!-- Certificates (File input for certificates)  -->
                 <div class="input-group">
                     <span class="input-group-btn">
                       <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-primary">
@@ -39,6 +39,7 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
+                        <th>{{ trans('admin/main.certificate_id') }}</th>
                         <th>{{ trans('admin/main.webinar_title') }}</th>
                         <th>{{ trans('admin/main.certificates') }}</th>
                     </tr>
@@ -46,6 +47,7 @@
                 <tbody>
                     @foreach ($certificates as $certificate)
                     <tr>
+                        <td>{{ \Carbon\Carbon::parse($certificate->created_at)->timestamp }}</td>
                         <td>{{ $certificate->webinar_title }}</td>
                         <td style="display:flex;justify-content:space-around;height:auto">
                             @php
