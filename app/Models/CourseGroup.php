@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\GroupMember;
 use App\User;
 use App\Models\Webinar;
+use App\Models\InstructorFile;
 
 class CourseGroup extends Model
 {
@@ -32,5 +33,9 @@ class CourseGroup extends Model
     public function members()
     {
         return $this->hasMany(GroupMember::class, 'group_id');
+    }
+    public function instructorFiles()
+    {
+        return $this->hasMany(InstructorFile::class, 'group_id');
     }
 }

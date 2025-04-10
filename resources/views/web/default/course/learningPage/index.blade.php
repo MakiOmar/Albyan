@@ -63,6 +63,10 @@
                 </ul>
 
                 <div class="tab-content h-100" id="nav-tabContent">
+                    <div class="pb-20 tab-pane fade  h-100" id="meetings" role="tabpanel"
+                         aria-labelledby="meetings-tab">
+                        @include('web.default.course.learningPage.meetings')
+                    </div>
                     <div class="pb-20 tab-pane fade show active h-100" id="content" role="tabpanel"
                          aria-labelledby="content-tab">
                         @include('web.default.course.learningPage.components.content_tab.index')
@@ -77,10 +81,7 @@
                          aria-labelledby="certificates-tab">
                         @include('web.default.course.learningPage.components.certificate_tab.index')
                     </div>
-                    <div class="pb-20 tab-pane fade  h-100" id="meetings" role="tabpanel"
-                         aria-labelledby="meetings-tab">
-                        @include('web.default.course.learningPage.meetings')
-                    </div>
+                    
                 </div>
             </div>
         </div>

@@ -14,6 +14,7 @@ use App\Models\CourseNoticeboard;
 use Illuminate\Http\Request;
 use App\Models\GroupMember;
 use App\Models\CourseGroup;
+use Illuminate\Support\Carbon;
 
 class LearningPageController extends Controller
 {
@@ -95,12 +96,12 @@ class LearningPageController extends Controller
     {
         $userId = auth()->id();
 
-        $groups = CourseGroup::where('webinar_id', $webinarId)
+        $groups = CourseGroup::with('instructorFiles') // تحميل الملفات المرتبطة
+            ->where('webinar_id', $webinarId)
             ->whereHas('members', function ($query) use ($userId) {
                 $query->where('student_id', $userId);
             })
             ->get();
-
         return $groups;
     }
     public function groupNextTime($courseGroup, &$joinUrl, &$meetingID, $role = 'teacher')

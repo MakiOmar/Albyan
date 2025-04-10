@@ -1,5 +1,5 @@
 <div class="content-tab p-15 pb-50">
-
+{{--
     @if(
         (empty($sessionsWithoutChapter) or !count($sessionsWithoutChapter)) and
         (empty($textLessonsWithoutChapter) or !count($textLessonsWithoutChapter)) and
@@ -38,6 +38,46 @@
         @if(!empty($course->chapters) and count($course->chapters))
             @include('web.default.course.learningPage.components.content_tab.chapter')
         @endif
-
+        
     @endif
+    --}}
+        @php
+        
+        @endphp
+        @foreach($groups as $group)
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <strong>المجموعة رقم: {{ $group->id }}</strong>
+            </div>
+            <div class="card-body">
+
+                @if($group->instructorFiles->isEmpty())
+                    <p class="text-muted">لا توجد ملفات مرفقة من المدرّب.</p>
+                @else
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>العنوان</th>
+                                <th>التحميل</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($group->instructorFiles as $file)
+                                <tr>
+                                    <td>{{ $file->title }}</td>
+                                    <td>
+                                        <a href="{{ asset($file->path) }}" target="_blank" class="btn btn-sm btn-primary">
+                                            تحميل
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+
+            </div>
+        </div>
+    @endforeach
 </div>
+
