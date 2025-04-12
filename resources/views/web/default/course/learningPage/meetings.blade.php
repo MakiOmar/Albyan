@@ -11,7 +11,7 @@
                     <div class="card-body">
                         <p class="card-text">
                             <strong>{{ trans( 'public.start_time' ) }}:</strong> {{ \Carbon\Carbon::parse($occurrence->start_time)->setTimezone($meetings->timezone)->format('Y-m-d h:i A') }}<br>
-                            <strong>{{ trans( 'public.the_duration' ) }}:</strong> {{ $occurrence->duration }} {{ trans( 'public.hours' ) }}<br>
+                            <strong>{{ trans( 'public.the_duration' ) }}:</strong> {{ $occurrence->duration }} {{ trans( 'public.minutes' ) }}<br>
                             <strong>{{ trans( 'public.time_zone' ) }}:</strong> {{ $meetings->timezone }}
                         </p>
                         <a href="{{ $meetings->join_url }}" class="btn btn-primary" target="_blank">{{ trans( 'public.join_meeting' ) }}</a>
