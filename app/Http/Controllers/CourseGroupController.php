@@ -210,6 +210,7 @@ class CourseGroupController extends Controller
                 'student_ids'         => 'required|array|min:1', // At least one student must be selected
                 'student_ids.*'       => 'exists:users,id', // Validate each student ID
                 'teacher_id'          => 'required|exists:users,id', // Ensure teacher exists
+                'end_times'           => 'required', // Number of meetings
             )
         );
 
@@ -325,6 +326,64 @@ class CourseGroupController extends Controller
         return redirect()->route('course-group.manage', $validated['webinar_id'])
             ->with('success', 'Group and Zoom meeting created successfully!');
     }
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+        'webinar_id'          => 'required|exists:webinars,id',
+        'meeting_start_time'  => 'required|date',
+        'meeting_end_time'    => 'required_if:meeting_recurring,1|date',
+        'meeting_duration'    => 'required|integer|min:1',
+        'meeting_recurring'   => 'required|in:0,1',
+        'recurrence_type'     => 'required_if:meeting_recurring,1|in:1,2,3',
+        'recurrence_interval' => 'required_if:meeting_recurring,1|integer|min:1',
+        'weekly_days'         => 'required_if:recurrence_type,2|array',
+        'weekly_days.*'       => 'in:1,2,3,4,5,6,7',
+        'monthly_day'         => 'nullable|required_if:recurrence_type,3|integer|min:1|max:31',
+        'participant_video'   => 'required|in:0,1',
+        'host_video'          => 'required|in:0,1',
+        'audio_option'        => 'required|in:both,voip,telephony',
+        'student_ids'         => 'required|array|min:1',
+        'student_ids.*'       => 'exists:users,id',
+        'teacher_id'          => 'required|exists:users,id',
+        'end_times'           => 'required',
+        ]);
+
+        $group = CourseGroup::findOrFail($id);
+        $instructor = User::findOrFail($validated['teacher_id']);
+
+        // ✅ تحديث اجتماع Zoom
+        $zoomUpdateResponse = $this->updateZoomMeeting($group->meeting_id, $instructor, $validated);
+        if (! $zoomUpdateResponse['success']) {
+            return redirect()->back()->withErrors(['zoom_meeting' => $zoomUpdateResponse['error']]);
+        }
+
+        $updatedMeeting = $zoomUpdateResponse['data'];
+
+        // ✅ تحديث بيانات المجموعة
+        $group->update([
+        'webinar_id'         => $validated['webinar_id'],
+        'instructor_id'      => $validated['teacher_id'],
+        'meeting_start_time' => $validated['meeting_start_time'],
+        'meeting_end_time'   => $validated['meeting_end_time'],
+        'meeting_duration'   => $validated['meeting_duration'],
+        'meeting_recurring'  => $validated['meeting_recurring'],
+        'meeting_json'       => json_encode($updatedMeeting),
+        ]);
+
+        // ✅ تحديث الأعضاء
+        GroupMember::where('group_id', $group->id)->delete();
+        foreach ($validated['student_ids'] as $studentId) {
+            GroupMember::create([
+            'group_id'   => $group->id,
+            'student_id' => $studentId,
+            'webinar_id' => $validated['webinar_id'],
+            ]);
+        }
+
+        return redirect()->route('course-group.manage', $validated['webinar_id'])
+        ->with('success', 'Group and Zoom meeting updated successfully!');
+    }
+
 
     private function handleFirebaseMessages($data, $user_id, $group_id, $webinar_id)
     {
@@ -417,17 +476,21 @@ class CourseGroupController extends Controller
         }
     }
 
-    /**
-     * Show the form to create a new group for a webinar.
-     */
-    public function showCreateForm()
+    public function showCreateForm($groupId = null)
     {
-        $webinars    = Webinar::all(); // Fetch all webinars
-        $instructors = User::where('role_id', 4)->get(); // Replace 'role' with your actual logic
-        $students    = User::where('role_id', 1)->get();
+        $webinars    = Webinar::all();
+        $instructors = User::where('role_id', 4)->get(); // المدرسين
+        $allStudents = User::where('role_id', 1)->get(); // جميع الطلاب
+        $group    = null;
+        $students = [];
 
-        return view('course_groups.admin.create', compact('webinars', 'instructors', 'students'));
+        if ($groupId) {
+            $group = CourseGroup::with('members')->findOrFail($groupId);
+            $students = User::whereIn('id', $group->members->pluck('student_id'))->get(); // فقط طلاب المجموعة
+        }
+        return view('course_groups.admin.create', compact('webinars', 'instructors', 'allStudents', 'students', 'group'));
     }
+
 
     /**
      * Display the groups for a student.
@@ -623,6 +686,7 @@ class CourseGroupController extends Controller
             $recurrence = array(
                 'type'            => (int) $data['recurrence_type'], // 1: Daily, 2: Weekly, 3: Monthly
                 'repeat_interval' => $data['recurrence_interval'], // Interval from form
+                'end_times' => $data['end_times'],
             );
 
             // Additional settings for weekly or monthly recurrence
@@ -649,32 +713,34 @@ class CourseGroupController extends Controller
             'data'    => $response->json(),
         );
     }
-    private function updateZoomMeeting($meetingId, $data)
+    private function updateZoomMeeting($meetingId, $instructor, $data)
     {
         $accessToken = $this->getZoomAccessToken();
         $zoomBaseUrl = env('ZOOM_BASE_URL', 'https://api.zoom.us/v2');
-        $zoomUrl     = $zoomBaseUrl . "/meetings/{$meetingId}";
+        $zoomUpdateUrl = $zoomBaseUrl . "/meetings/{$meetingId}";
+        $zoomGetUrl    = $zoomUpdateUrl; // same endpoint
 
-        $meetingData = array(
-            'topic'      => "Updated Meeting for Webinar ID {$data['webinar_id']}",
-            'start_time' => Carbon::parse($data['meeting_start_time'], 'Asia/Dubai')->format('Y-m-d\TH:i:s'),
-            'duration'   => $data['meeting_duration'],
-            'timezone'   => 'Asia/Dubai',
-            'settings'   => array(
-                'host_video'        => (bool) $data['host_video'],
-                'participant_video' => (bool) $data['participant_video'],
-                'audio'             => $data['audio_option'],
-                'join_before_host'  => false,
-                'mute_upon_entry'   => true,
-                'approval_type'     => 0,
-            ),
-        );
+        $meetingData = [
+        'topic'      => "Updated Meeting for Webinar ID {$data['webinar_id']}",
+        'start_time' => Carbon::parse($data['meeting_start_time'], 'Asia/Dubai')->format('Y-m-d\TH:i:s'),
+        'duration'   => $data['meeting_duration'],
+        'timezone'   => 'Asia/Dubai',
+        'settings'   => [
+            'host_video'        => (bool) $data['host_video'],
+            'participant_video' => (bool) $data['participant_video'],
+            'audio'             => $data['audio_option'],
+            'join_before_host'  => false,
+            'mute_upon_entry'   => true,
+            'approval_type'     => 0,
+        ],
+        ];
 
         if ($data['meeting_recurring']) {
-            $recurrence = array(
+            $recurrence = [
                 'type'            => (int) $data['recurrence_type'],
                 'repeat_interval' => $data['recurrence_interval'],
-            );
+                'end_times' => $data['end_times'],
+            ];
 
             if ($data['recurrence_type'] == 2) {
                 $recurrence['weekly_days'] = implode(',', $data['weekly_days']);
@@ -685,20 +751,33 @@ class CourseGroupController extends Controller
             $meetingData['recurrence'] = $recurrence;
         }
 
-        $response = Http::withToken($accessToken)->patch($zoomUrl, $meetingData);
+        // 1️⃣ تحديث الاجتماع
+        $updateResponse = Http::withToken($accessToken)->patch($zoomUpdateUrl, $meetingData);
 
-        if ($response->failed()) {
+        if ($updateResponse->failed()) {
             return [
-                'success' => false,
-                'error'   => 'Failed to update Zoom meeting: ' . $response->body(),
+            'success' => false,
+            'error'   => 'Failed to update Zoom meeting: ' . $updateResponse->body(),
+            ];
+        }
+
+        // 2️⃣ جلب البيانات المحدثة
+        $getResponse = Http::withToken($accessToken)->get($zoomGetUrl);
+
+        if ($getResponse->failed()) {
+            return [
+            'success' => false,
+            'error'   => 'Zoom meeting updated, but failed to fetch updated details: ' . $getResponse->body(),
             ];
         }
 
         return [
-            'success' => true,
-            'data'    => $response->json(),
+        'success' => true,
+        'data'    => $getResponse->json(),
         ];
     }
+
+
 
     /**
      * Retrieve the Zoom OAuth access token.

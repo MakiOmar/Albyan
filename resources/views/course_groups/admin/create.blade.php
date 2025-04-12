@@ -16,7 +16,10 @@
     if (!empty($values)) {
         $values = json_decode($values, true);
     }
+    $isEdit = isset($group);
+    $meetingJson = $isEdit ? json_decode($group->meeting_json, true) : null;
 @endphp
+
 
 @section('content')
 <div class="container">
@@ -33,8 +36,11 @@
         </div>
     @endif
 
-    <form id="create-group-form" action="{{ route('course-group.store') }}" method="POST">
+    <form id="create-group-form" action="{{ $isEdit ? route('course-group.update', $group->id) : route('course-group.store') }}" method="POST">
         @csrf
+        @if($isEdit)
+            @method('PUT')
+        @endif
 
         <div class="row">
             <!-- Select Webinar -->
@@ -43,7 +49,8 @@
                 <small class="form-text text-muted">Choose the webinar for which you want to create a group.</small>
                 <select name="webinar_id" id="webinar_id" class="form-control select2">
                     @foreach ($webinars as $webinar)
-                        <option value="{{ $webinar->id }}">{{ $webinar->title }}</option>
+                    <option value="{{ $webinar->id }}" {{ $isEdit && $group->webinar_id == $webinar->id ? 'selected' : '' }}>
+                        {{ $webinar->title }}</option>
                     @endforeach
                 </select>
             </div>
@@ -58,7 +65,8 @@
                 <select name="teacher_id" id="teacher_id" class="form-control select2">
                     <option value="">-- Select Instructor --</option>
                     @foreach ($instructors as $instructor)
-                        <option value="{{ $instructor->id }}">{{ $instructor->full_name }}</option>
+                    <option value="{{ $instructor->id }}" {{ $isEdit && $group->instructor_id == $instructor->id ? 'selected' : '' }}>
+                        {{ $instructor->full_name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -66,25 +74,31 @@
             <div class="form-group col-md-4 col-12">
                 <label for="meeting_duration">Duration (minutes)</label>
                 <small class="form-text text-muted">Enter the duration of the meeting in minutes.</small>
-                <input type="number" name="meeting_duration" id="meeting_duration" class="form-control" value="30" required>
+                <input type="number" name="meeting_duration" id="meeting_duration" class="form-control" value="{{ old('meeting_duration', $isEdit ? $group->meeting_duration : 30) }}" required>
             </div>
         </div>
 
         <div class="row">
             <!-- Recurring Meeting -->
-            <div class="form-group col-md-6 col-12">
+            <div class="form-group col-md-4 col-12">
                 <label for="meeting_recurring">Recurring</label>
                 
-                <small class="form-text text-muted">Is this a recurring meeting?</small>
+                <small class="form-text text-muted">Is this a recurring <br>meeting?</small>
                 <select name="meeting_recurring" id="meeting_recurring" class="form-control">
-                    <option value="0">No</option>
-                    <option value="1" selected>Yes</option>
+                    <option value="0" {{ $isEdit && $group->meeting_recurring == 0 ? 'selected' : '' }}>No</option>
+                    <option value="1" {{ $isEdit && $group->meeting_recurring == 1 ? 'selected' : '' }}>Yes</option>
                 </select>
             </div>
-            <div class="form-group col-md-6 col-12">
+            <div class="form-group col-md-4 col-12">
                 <label for="recurrence_interval">Recurrence Interval</label>
                 <small class="form-text text-muted">Enter the number of intervals (e.g., every 2 days for daily recurrence).</small>
-                <input type="number" name="recurrence_interval" id="recurrence_interval" class="form-control" value="1" required>
+                <input type="number" name="recurrence_interval" id="recurrence_interval" class="form-control" value="{{ old('recurrence_interval', $isEdit ? ($meetingJson['recurrence']['repeat_interval'] ?? 1) : 1) }}" required>
+            </div>
+
+            <div class="form-group col-md-4 col-12">
+                <label for="end_times">Number of meetings</label>
+                <small class="form-text text-muted">Enter the number of meetings (e.g., 6 for six meetings between the specificed dates).</small>
+                <input type="number" name="end_times" id="end_times" class="form-control" value="{{ old('end_times', $isEdit ? ($meetingJson['recurrence']['end_times'] ?? 1) : 1) }}" required>
             </div>
         </div>        
         <div class="row">
@@ -92,14 +106,14 @@
             <div class="form-group col-md-6 col-12">
                 <label for="meeting_start_time">Start Time</label>
                 <small class="form-text text-muted">Set the date and time for the meeting to start.</small>
-                <input type="datetime-local" name="meeting_start_time" id="meeting_start_time" class="form-control" value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}" required>
-            </div>
+                <input type="datetime-local" name="meeting_start_time" id="meeting_start_time" class="form-control" value="{{ old('meeting_start_time', $isEdit ? \Carbon\Carbon::parse($group->meeting_start_time)->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i')) }}" required>
+                     </div>
 
             <!-- End Time -->
             <div class="form-group col-md-6 col-12">
                 <label for="meeting_end_time">End Time</label>
                 <small class="form-text text-muted">Specify when the meeting should end. Required for recurring meetings.</small>
-                <input type="datetime-local" name="meeting_end_time" id="meeting_end_time" class="form-control" value="{{ \Carbon\Carbon::now()->addDay()->format('Y-m-d\TH:i') }}" required>
+                <input type="datetime-local" name="meeting_end_time" id="meeting_end_time" class="form-control" value="{{ old('meeting_end_time', $isEdit ? \Carbon\Carbon::parse($group->meeting_end_time)->format('Y-m-d\TH:i') : now()->addDay()->format('Y-m-d\TH:i')) }}" required>
             </div>
         </div>
 
@@ -109,8 +123,8 @@
                 <label for="participant_video">Enable Participant Video</label>
                 <small class="form-text text-muted">Choose whether participants' videos should be enabled when they join the meeting.</small>
                 <select name="participant_video" id="participant_video" class="form-control">
-                    <option value="0" selected>No</option>
-                    <option value="1">Yes</option>
+                    <option value="0" {{ $isEdit && isset($meetingJson['settings']['participant_video']) && $meetingJson['settings']['participant_video'] == false ? 'selected' : '' }}>No</option>
+                    <option value="1" {{ $isEdit && isset($meetingJson['settings']['participant_video']) && $meetingJson['settings']['participant_video'] == true ? 'selected' : '' }}>Yes</option>
                 </select>
             </div>
             <!-- Host Video -->
@@ -118,8 +132,8 @@
                 <label for="host_video">Enable Host Video</label>
                 <small class="form-text text-muted">Choose whether the host's video should be enabled when the meeting starts.</small>
                 <select name="host_video" id="host_video" class="form-control">
-                    <option value="0" selected>No</option>
-                    <option value="1">Yes</option>
+                    <option value="0" {{ $isEdit && isset($meetingJson['settings']['host_video']) && $meetingJson['settings']['host_video'] == false ? 'selected' : '' }}>No</option>
+                    <option value="1" {{ $isEdit && isset($meetingJson['settings']['host_video']) && $meetingJson['settings']['host_video'] == true ? 'selected' : '' }}>Yes</option>
                 </select>
             </div>
 
@@ -128,9 +142,10 @@
                 <label for="audio_option">Audio Option</label>
                 <small class="form-text text-muted">Select how participants can connect to audio: by computer, telephone, or both.</small>
                 <select name="audio_option" id="audio_option" class="form-control">
-                    <option value="both">Both (Computer and Telephone)</option>
-                    <option value="voip">Computer Audio Only</option>
-                    <option value="telephony">Telephone Only</option>
+                    <option value="both" {{ $isEdit && ($meetingJson['settings']['audio'] ?? '') == 'both' ? 'selected' : '' }}>Both</option>
+                    <option value="voip" {{ $isEdit && ($meetingJson['settings']['audio'] ?? '') == 'voip' ? 'selected' : '' }}>Computer Audio Only</option>
+                    <option value="telephony" {{ $isEdit && ($meetingJson['settings']['audio'] ?? '') == 'telephony' ? 'selected' : '' }}>Telephone Only</option>
+
                 </select>
             </div>
         </div>
@@ -141,9 +156,9 @@
                 <label for="recurrence_type">Recurrence Type</label>
                 <small class="form-text text-muted">Choose how often the meeting should repeat: daily, weekly, or monthly.</small>
                 <select name="recurrence_type" id="recurrence_type" class="form-control">
-                    <option value="1">Daily</option>
-                    <option value="2">Weekly</option>
-                    <option value="3">Monthly</option>
+                    <option value="1" {{ $isEdit && ($meetingJson['recurrence']['type'] ?? '') == 1 ? 'selected' : '' }}>Daily</option>
+                    <option value="2" {{ $isEdit && ($meetingJson['recurrence']['type'] ?? '') == 2 ? 'selected' : '' }}>Weekly</option>
+                    <option value="3" {{ $isEdit && ($meetingJson['recurrence']['type'] ?? '') == 3 ? 'selected' : '' }}>Monthly</option>
                 </select>
             </div>
 
@@ -152,21 +167,24 @@
                 <div class="form-group col-12" id="weekly_days_wrapper" style="display: none;">
                     <label for="weekly_days">Select Days of the Week (Weekly Recurrence)</label>
                     <small class="form-text text-muted">Choose the days on which the meeting should occur. Hold Ctrl (or Cmd) to select multiple days.</small>
+                    @php
+                        $selectedDays = $isEdit && isset($meetingJson['recurrence']['weekly_days']) ? explode(',', $meetingJson['recurrence']['weekly_days']) : [];
+                    @endphp
                     <select name="weekly_days[]" id="weekly_days" class="form-control" multiple>
-                        <option value="1">Sunday</option>
-                        <option value="2">Monday</option>
-                        <option value="3">Tuesday</option>
-                        <option value="4">Wednesday</option>
-                        <option value="5">Thursday</option>
-                        <option value="6">Friday</option>
-                        <option value="7">Saturday</option>
+                        <option value="1" {{ in_array(1, $selectedDays) ? 'selected' : '' }}>Sunday</option>
+                        <option value="2" {{ in_array(2, $selectedDays) ? 'selected' : '' }}>Monday</option>
+                        <option value="3" {{ in_array(3, $selectedDays) ? 'selected' : '' }}>Tuesday</option>
+                        <option value="4" {{ in_array(4, $selectedDays) ? 'selected' : '' }}>Wednesday</option>
+                        <option value="5" {{ in_array(5, $selectedDays) ? 'selected' : '' }}>Thursday</option>
+                        <option value="6" {{ in_array(6, $selectedDays) ? 'selected' : '' }}>Friday</option>
+                        <option value="7" {{ in_array(7, $selectedDays) ? 'selected' : '' }}>Saturday</option>
                     </select>
                 </div>
                 <!-- Monthly Day -->
                 <div class="form-group col-12" id="monthly_day_wrapper" style="display: none;">
                     <label for="monthly_day">Day of the Month (Monthly Recurrence)</label>
                     <small class="form-text text-muted">Enter the specific day of the month (e.g., 15 for the 15th day) when the meeting should occur.</small>
-                    <input type="number" name="monthly_day" id="monthly_day" class="form-control" min="1" max="31">
+                    <input type="number" name="monthly_day" id="monthly_day" class="form-control" min="1" max="31" value="{{ old('monthly_day', $isEdit ? ($meetingJson['recurrence']['monthly_day'] ?? '') : '') }}">
                 </div>
             </div>
         </div>
@@ -176,12 +194,26 @@
             <div class="form-group col-md-12">
                 <label for="student_ids">Select Students</label>
                 <small class="form-text text-muted">Choose the students who will be part of this group. You can select multiple students.</small>
+                @if( !$isEdit )
                 <select name="student_ids[]" id="student_ids" class="form-control" multiple>
                     <option value="">Please select a webinar first</option>
                 </select>
+                @else
+
+                <select name="student_ids[]" id="student_ids" class="form-control" multiple>
+                    @foreach ($allStudents as $student)
+                        <option value="{{ $student->id }}"
+                            {{ $isEdit && in_array($student->id, $group->members->pluck('student_id')->toArray()) ? 'selected' : '' }}>
+                            {{ $student->full_name }}
+                        </option>
+                    @endforeach
+                </select>                
+                @endif
             </div>
         </div>
-        <button type="submit" id="create-group-submit-btn" class="btn btn-primary mt-3">Create Group</button>
+        <button type="submit" id="create-group-submit-btn" class="btn btn-primary mt-3">
+            {{ $isEdit ? 'Update Group' : 'Create Group' }}
+        </button>        
     </form>
     
     
@@ -206,6 +238,21 @@
 @endsection
 @push('scripts_bottom')
 <script>
+    $(document).ready(function () {
+        // Initialize select2 (بعض الحقول قد تحتاج لإعادة التهيئة)
+        $('#student_ids').select2({
+            placeholder: "اختر الطلاب",
+            width: '100%',
+            minimumResultsForSearch: 0 // ✅ هذا السطر يضمن ظهور البحث دائمًا
+        });
+
+        @if($isEdit)
+            // إعادة ضبط القيم المختارة
+            let selectedStudentIds = @json($group->members->pluck('student_id'));
+            console.log(selectedStudentIds);
+            $('#student_ids').val(selectedStudentIds).trigger('change');
+        @endif
+    });
     document.getElementById('create-group-form').addEventListener('submit', function(e) {
         const btn = document.getElementById('create-group-submit-btn');
         btn.disabled = true;
@@ -291,7 +338,9 @@
                 $studentSelect.html('<option value="">Please select a webinar first</option>');
             }
         });
-        $('#webinar_id').trigger('change');
+        @if(!$isEdit)
+            $('#webinar_id').trigger('change');
+        @endif
     });
 </script>
 @endpush

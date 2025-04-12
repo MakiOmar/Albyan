@@ -82,6 +82,9 @@
                             <button class="btn btn-primary btn-sm add-student-btn" data-group-id="{{ $group->id }}" data-toggle="modal" data-target="#addStudentModal">
                                 إضافة طالب
                             </button>
+                            <a href="{{ route('course-group.create-form', ['groupId' => $group->id]) }}" class="btn btn-warning btn-sm">
+                                تعديل بيانات المجموعة
+                            </a>
                         </h2>
 
                         <!-- Delete Button -->
