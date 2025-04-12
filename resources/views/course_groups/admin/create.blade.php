@@ -58,7 +58,7 @@
             <div class="form-group col-md-4 col-12">
                 <label for="instructor_id">Select Instructor</label>
                 <span class="d-flex justify-content-between">
-                    <small class="form-text text-muted">Choose the instructor for this group.</small><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#instructorGroupsModal">
+                    <small class="form-text text-muted">Choose the instructor for this group.</small><button type="button" class="btn btn-primary" style="position: absolute;top: 0;left: 15px;" data-toggle="modal" data-target="#instructorGroupsModal">
                         عرض المواعيد
                     </button>
                 </span>
@@ -72,52 +72,51 @@
             </div>
             <!-- Duration -->
             <div class="form-group col-md-4 col-12">
-                <label for="meeting_duration">Duration (minutes)</label>
-                <small class="form-text text-muted">Enter the duration of the meeting in minutes.</small>
-                <input type="number" name="meeting_duration" id="meeting_duration" class="form-control" value="{{ old('meeting_duration', $isEdit ? $group->meeting_duration : 30) }}" required>
+                <label for="meeting_duration">Duration (hours)</label>
+                <small class="form-text text-muted">Enter the duration of the meeting in hours.</small>
+                <input type="number" name="meeting_duration" id="meeting_duration" class="form-control" value="{{ old('meeting_duration', $isEdit ? $group->meeting_duration / 60 : 30) }}" required>
             </div>
         </div>
 
-        <div class="row">
+        <div class="row d-none">
             <!-- Recurring Meeting -->
             <div class="form-group col-md-4 col-12">
                 <label for="meeting_recurring">Recurring</label>
                 
                 <small class="form-text text-muted">Is this a recurring <br>meeting?</small>
                 <select name="meeting_recurring" id="meeting_recurring" class="form-control">
-                    <option value="0" {{ $isEdit && $group->meeting_recurring == 0 ? 'selected' : '' }}>No</option>
                     <option value="1" {{ $isEdit && $group->meeting_recurring == 1 ? 'selected' : '' }}>Yes</option>
+                    <option value="0" {{ $isEdit && $group->meeting_recurring == 0 ? 'selected' : '' }}>No</option>
                 </select>
             </div>
             <div class="form-group col-md-4 col-12">
                 <label for="recurrence_interval">Recurrence Interval</label>
                 <small class="form-text text-muted">Enter the number of intervals (e.g., every 2 days for daily recurrence).</small>
-                <input type="number" name="recurrence_interval" id="recurrence_interval" class="form-control" value="{{ old('recurrence_interval', $isEdit ? ($meetingJson['recurrence']['repeat_interval'] ?? 1) : 1) }}" required>
-            </div>
-
-            <div class="form-group col-md-4 col-12">
-                <label for="end_times">Number of meetings</label>
-                <small class="form-text text-muted">Enter the number of meetings (e.g., 6 for six meetings between the specificed dates).</small>
-                <input type="number" name="end_times" id="end_times" class="form-control" value="{{ old('end_times', $isEdit ? ($meetingJson['recurrence']['end_times'] ?? 1) : 1) }}" required>
+                <input type="number" name="recurrence_interval" id="recurrence_interval" class="form-control" value="{{ old('recurrence_interval', $isEdit ? ($meetingJson['recurrence']['repeat_interval'] ?? 1) : 1) }}" required value="1">
             </div>
         </div>        
         <div class="row">
             <!-- Start Time -->
-            <div class="form-group col-md-6 col-12">
+            <div class="form-group col-md-4 col-12">
                 <label for="meeting_start_time">Start Time</label>
-                <small class="form-text text-muted">Set the date and time for the meeting to start.</small>
+                <small class="form-text text-muted">Set the date and time <br>for the meeting to start.</small>
                 <input type="datetime-local" name="meeting_start_time" id="meeting_start_time" class="form-control" value="{{ old('meeting_start_time', $isEdit ? \Carbon\Carbon::parse($group->meeting_start_time)->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i')) }}" required>
                      </div>
 
             <!-- End Time -->
-            <div class="form-group col-md-6 col-12">
+            <div class="form-group col-md-4 col-12">
                 <label for="meeting_end_time">End Time</label>
                 <small class="form-text text-muted">Specify when the meeting should end. Required for recurring meetings.</small>
                 <input type="datetime-local" name="meeting_end_time" id="meeting_end_time" class="form-control" value="{{ old('meeting_end_time', $isEdit ? \Carbon\Carbon::parse($group->meeting_end_time)->format('Y-m-d\TH:i') : now()->addDay()->format('Y-m-d\TH:i')) }}" required>
             </div>
+            <div class="form-group col-md-4 col-12">
+                <label for="end_times">Number of meetings</label>
+                <small class="form-text text-muted">Enter the number of meetings (e.g., 6 for six meetings between the specificed dates).</small>
+                <input type="number" name="end_times" id="end_times" class="form-control" value="{{ old('end_times', $isEdit ? ($meetingJson['recurrence']['end_times'] ?? 1) : 1) }}" required readonly>
+            </div>
         </div>
 
-        <div class="row">
+        <div class="row d-none">
             <!-- Participant Video -->
             <div class="form-group col-md-4 col-12">
                 <label for="participant_video">Enable Participant Video</label>
@@ -267,6 +266,8 @@
             weeklyDaysWrapper.style.display = this.value === '2' ? 'block' : 'none'; // Show for weekly
             monthlyDayWrapper.style.display = this.value === '3' ? 'block' : 'none'; // Show for monthly
         });
+        // ✅ Trigger change event on load
+        recurrenceType.dispatchEvent(new Event('change'));
     });
 
     $(document).ready(function () {
@@ -343,5 +344,68 @@
         @endif
     });
 </script>
+<script>
+    function calculateEndTimes() {
+        const start = document.getElementById('meeting_start_time').value;
+        const end = document.getElementById('meeting_end_time').value;
+        const recurrenceType = document.getElementById('recurrence_type').value;
+        const interval = parseInt(document.getElementById('recurrence_interval').value || 1);
+        const weeklyDays = $('#weekly_days').val() || [];
+        const monthlyDay = parseInt(document.getElementById('monthly_day').value || 1);
+    
+        if (!start || !end || !interval) return;
+    
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        let count = 0;
+    
+        if (recurrenceType == '1') {
+            // Daily
+            const diffDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+            count = Math.floor(diffDays / interval) + 1;
+        } else if (recurrenceType == '2') {
+            // Weekly
+            const dayMillis = 24 * 60 * 60 * 1000;
+            const totalDays = Math.floor((endDate - startDate) / dayMillis);
+            let current = new Date(startDate);
+    
+            while (current <= endDate) {
+                const dayOfWeek = current.getDay() + 1; // JS: Sunday=0, we want Sunday=1
+                if (weeklyDays.includes(dayOfWeek.toString())) {
+                    count++;
+                }
+                current.setDate(current.getDate() + 1);
+            }
+        } else if (recurrenceType == '3') {
+            // Monthly
+            let current = new Date(startDate);
+            while (current <= endDate) {
+                if (current.getDate() == monthlyDay) {
+                    count++;
+                }
+                current.setMonth(current.getMonth() + interval);
+            }
+        }
+    
+        document.getElementById('end_times').value = count;
+    }
+    </script>
+<script>
+    const triggerFields = ['meeting_start_time', 'meeting_end_time', 'recurrence_type', 'recurrence_interval', 'weekly_days', 'monthly_day'];
+
+    triggerFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('change', calculateEndTimes);
+            el.addEventListener('input', calculateEndTimes);
+        }
+    });
+
+    // Trigger on page load for edit mode
+    @if($isEdit)
+        window.addEventListener('load', calculateEndTimes);
+    @endif
+</script>
+    
 @endpush
 

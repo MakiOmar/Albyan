@@ -240,7 +240,7 @@ class CourseGroupController extends Controller
                 'meeting_id'         => $zoomMeeting['id'], // Use Zoom's meeting ID
                 'meeting_start_time' => $validated['meeting_start_time'],
                 'meeting_end_time'   => $validated['meeting_end_time'],
-                'meeting_duration'   => $validated['meeting_duration'],
+                'meeting_duration'   => $validated['meeting_duration'] * 60,
                 'meeting_recurring'  => $validated['meeting_recurring'],
                 'meeting_json'       => json_encode($zoomMeeting),
             )
@@ -365,7 +365,7 @@ class CourseGroupController extends Controller
         'instructor_id'      => $validated['teacher_id'],
         'meeting_start_time' => $validated['meeting_start_time'],
         'meeting_end_time'   => $validated['meeting_end_time'],
-        'meeting_duration'   => $validated['meeting_duration'],
+        'meeting_duration'   => $validated['meeting_duration'] * 60,
         'meeting_recurring'  => $validated['meeting_recurring'],
         'meeting_json'       => json_encode($updatedMeeting),
         ]);
@@ -670,7 +670,7 @@ class CourseGroupController extends Controller
             'topic'      => "Meeting for Webinar ID {$data['webinar_id']}",
             'type'       => $data['meeting_recurring'] ? 8 : 2,
             'start_time' => Carbon::parse($data['meeting_start_time'], 'Asia/Dubai')->format('Y-m-d\TH:i:s'),
-            'duration'   => $data['meeting_duration'],
+            'duration'   => $data['meeting_duration'] * 60,
             'timezone'   => 'Asia/Dubai',
             'settings'   => array(
                 'host_video'        => (bool) $data['host_video'],
@@ -723,7 +723,7 @@ class CourseGroupController extends Controller
         $meetingData = [
         'topic'      => "Updated Meeting for Webinar ID {$data['webinar_id']}",
         'start_time' => Carbon::parse($data['meeting_start_time'], 'Asia/Dubai')->format('Y-m-d\TH:i:s'),
-        'duration'   => $data['meeting_duration'],
+        'duration'   => $data['meeting_duration'] * 60,
         'timezone'   => 'Asia/Dubai',
         'settings'   => [
             'host_video'        => (bool) $data['host_video'],
