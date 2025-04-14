@@ -112,7 +112,7 @@
             <div class="form-group col-md-4 col-12">
                 <label for="end_times">Number of meetings</label>
                 <small class="form-text text-muted">Enter the number of meetings (e.g., 6 for six meetings between the specificed dates).</small>
-                <input type="number" name="end_times" id="end_times" class="form-control" value="{{ old('end_times', $isEdit ? ($meetingJson['recurrence']['end_times'] ?? 1) : 1) }}" required readonly>
+                <input type="number" name="end_times" id="end_times" class="form-control" value="{{ old('end_times', $isEdit ? ($meetingJson['recurrence']['end_times'] ?? 1) : 1) }}" required>
             </div>
         </div>
 
