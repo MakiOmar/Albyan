@@ -34,9 +34,11 @@
         <li class="nav-item">
             <a class="nav-link active" id="groups-tab" data-toggle="tab" href="#groups" role="tab" aria-controls="groups" aria-selected="true">المجموعات</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" id="uploads-tab" data-toggle="tab" href="#uploads" role="tab" aria-controls="uploads" aria-selected="false">رفع الملفات</a>
-        </li>
+        @if ( $user->isTeacher() )
+            <li class="nav-item">
+                <a class="nav-link" id="uploads-tab" data-toggle="tab" href="#uploads" role="tab" aria-controls="uploads" aria-selected="false">رفع الملفات</a>
+            </li>
+        @endif
     </ul>
 
     <!-- Tab content -->
@@ -95,7 +97,7 @@
                                     <strong>عدد الطلاب:</strong><br> {{ $group->members->count() }}
                                 </div>
                             </div>
-
+                            @if ( $user->isTeacher() )
                             <div class="px-3 mt-4">
                                 <h6>الطلاب</h6>
                                 <div class="table-responsive">
@@ -117,7 +119,11 @@
                                     </table>
                                 </div>
                             </div>
-
+                            @else
+                            <div class="student-meetings">
+                                @include('web.default.course.learningPage.components.group_meetings', ['group' => $group])
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>

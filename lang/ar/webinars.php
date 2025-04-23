@@ -54,7 +54,7 @@ return [
 
     'this_webinar_includes' => ':classes تشمل:',
     'downloadable_content' => 'محتوي قابل للتنزيل',
-    'official_certificate' => 'شهادة رسمية',
+    'official_certificate' => 'شهادة معتمدة',
     'online_quizzes_count' => ':quiz_count اختبارات اونلاين',
     'instructor_support' => 'دعم الأستاذ',
 

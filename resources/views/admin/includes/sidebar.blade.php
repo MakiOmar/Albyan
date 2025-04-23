@@ -78,10 +78,14 @@
                                 <a class="nav-link" href="{{ getAdminPanelUrl() }}/webinars/create">{{ trans('admin/main.new') }}</a>
                             </li>
                             <li class="{{ request()->is(getAdminPanelUrl('/list-groups', false))  ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ route('course-group.list') }}">Groups</a>
+                                <a class="nav-link" href="{{ route('course-group.list') }}">{{ trans('admin/main.instructor_groups') }}</a>
+                            </li>
+                            
+                            <li class="{{ request()->is(getAdminPanelUrl('/webinar-groups-filter', false))  ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('webinar-groups.filter') }}">{{ trans('admin/main.diploma_groups') }}</a>
                             </li>
                             <li class="{{ (request()->is(getAdminPanelUrl('/course-group', false)) and request()->get('type') == 'manage') ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ route('course-group.create-form') }}">New Group</a>
+                                <a class="nav-link" href="{{ route('course-group.create-form') }}">{{ trans('admin/main.new_diploma_groups') }}</a>
                             </li>
                         @endcan()
 
@@ -888,7 +892,7 @@
                     </ul>
                 </li>
             @endcan
-
+            --}}
             @can('admin_blog')
                 <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/blog*', false)) and !request()->is(getAdminPanelUrl('/blog/comments', false))) ? 'active' : '' }}">
                     <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
@@ -916,7 +920,6 @@
                     </ul>
                 </li>
             @endcan()
-            --}}
             @can('admin_pages')
                 <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/pages*', false))) ? 'active' : '' }}">
                     <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
@@ -1754,6 +1757,12 @@
             @endcan()
 
 
+            <li>
+                <a class="nav-link" href="javascript:void(0);" id="open-media-manager">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>media</span>
+                </a>
+            </li>
             <li>
                 <a class="nav-link" href="{{ getAdminPanelUrl() }}/logout">
                     <i class="fas fa-sign-out-alt"></i>

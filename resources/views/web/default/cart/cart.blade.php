@@ -77,14 +77,14 @@
                                                 </div>
                                             @endif
                                         @endif
-
+                                        {{--
                                         @if(!empty($cartItemInfo['profileUrl']) and !empty($cartItemInfo['teacherName']))
                                             <span class="text-gray font-14 mt-auto">
                                                 {{ trans('public.by') }}
                                                 <a href="{{ $cartItemInfo['profileUrl'] }}" target="_blank" class="text-gray text-decoration-underline">{{ $cartItemInfo['teacherName'] }}</a>
                                             </span>
                                         @endif
-
+                                        --}}
                                         @if(!empty($cartItemInfo['extraHint']))
                                             <span class="text-gray font-14 mt-auto">{{ $cartItemInfo['extraHint'] }}</span>
                                         @endif
@@ -125,8 +125,15 @@
                         </div>
                     </div>
                 @endforeach
-
-                <button type="button" onclick="window.history.back()" class="btn btn-sm btn-primary mt-25">{{ trans('cart.continue_shopping') }}</button>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button type="button" onclick="window.history.back()" class="btn btn-sm btn-primary mt-25">{{ trans('cart.continue_shopping') }}</button>
+                    
+                    <!-- الزر لفتح المودال -->
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-15 ml-10" data-bs-toggle="modal" data-bs-target="#couponModal">
+                        {{ trans('cart.coupon_code') }}
+                    </button>
+                    <button id="toCheckout" class="btn btn-sm btn-primary mt-15">{{ trans('cart.checkout') }}</button>
+                </div>
             </div>
         </section>
 
@@ -139,6 +146,7 @@
             @endif
 
             <div class="row mt-30">
+                {{--
                 <div class="col-12 col-lg-6">
                     <section class="mt-45">
                         <h3 class="section-title">{{ trans('cart.coupon_code') }}</h3>
@@ -164,8 +172,8 @@
                         </div>
                     </section>
                 </div>
-
-                <div class="col-12 col-lg-6">
+                --}}
+                <div class="col-12 col-lg-6 d-none">
                     <section class="mt-45">
                         <h3 class="section-title">{{ trans('cart.cart_totals') }}</h3>
                         <div class="rounded-sm shadow mt-20 pb-20 px-20">
@@ -205,13 +213,51 @@
                                 <span class="font-14 text-gray font-weight-bold"><span id="totalAmount">{{ handlePrice($total) }}</span></span>
                             </div>
 
-                            <button type="submit" class="btn btn-sm btn-primary mt-15">{{ trans('cart.checkout') }}</button>
+                            <button type="submit" id="to-checkout" class="btn btn-sm btn-primary mt-15">{{ trans('cart.checkout') }}</button>
                         </div>
                     </section>
                 </div>
             </div>
         </form>
     </div>
+    <!-- Modal -->
+<div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="couponModalLabel">{{ trans('cart.coupon_code') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <section class="mt-15">
+                    <div class="rounded-sm shadow-sm p-15">
+                        <p class="text-gray font-14">{{ trans('cart.coupon_code_hint') }}</p>
+
+                        @if(!empty($userGroup) and !empty($userGroup->discount))
+                            <p class="text-gray mt-15">{{ trans('cart.in_user_group',['group_name' => $userGroup->name , 'percent' => $userGroup->discount]) }}</p>
+                        @endif
+
+                        <form action="/carts/coupon/validate" method="Post">
+                            {{ csrf_field() }}
+                            <div class="form-group">
+                                <input type="text" name="coupon" id="coupon_input_modal" class="form-control mt-15"
+                                       placeholder="{{ trans('cart.enter_your_code_here') }}">
+                                <span class="invalid-feedback">{{ trans('cart.coupon_invalid') }}</span>
+                                <span class="valid-feedback">{{ trans('cart.coupon_valid') }}</span>
+                            </div>
+
+                            <button type="submit" id="checkCouponModal"
+                                    class="btn btn-sm btn-primary mt-30">{{ trans('cart.validate') }}</button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts_bottom')
@@ -220,8 +266,14 @@
         var selectProvinceLang = '{{ trans('update.select_province') }}';
         var selectCityLang = '{{ trans('update.select_city') }}';
         var selectDistrictLang = '{{ trans('update.select_district') }}';
+        jQuery(document).ready(function($){
+            $('#toCheckout').on( 'click', function(){
+                $('#cartForm').submit();
+            });
+        });
     </script>
 
     <script src="/assets/default/js/parts/get-regions.min.js"></script>
     <script src="/assets/default/js/parts/cart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 @endpush

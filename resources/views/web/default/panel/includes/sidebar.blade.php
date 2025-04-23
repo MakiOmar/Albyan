@@ -80,6 +80,16 @@
                 <span class="font-14 text-dark-blue font-weight-500">{{ trans('panel.my_groups') }}</span>
             </a>
         </li>
+        @else
+        <li class="sidenav-item {{ (request()->is('student-groups')) ? 'sidenav-item-active' : '' }}">
+            <a href="/panel/student-groups" class="d-flex align-items-center">
+                <span class="sidenav-item-icon mr-10">
+                    @include('web.default.panel.includes.sidebar_icons.webinars')
+                </span>
+                <span class="font-14 text-dark-blue font-weight-500">{{ trans('panel.my_groups') }}</span>
+            </a>
+        </li>
+        
         @endif
         
 

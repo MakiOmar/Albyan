@@ -436,8 +436,12 @@
 
         const $form = $this.closest('form');
         $form.attr('action', '/cart/store');
-
+        let action = $(this).data('action');
+        if( action == 'buy_now' ) {
+            $('#direct_buy').val('yes');
+        }
         $form.trigger('submit');
+
     });
 
     $('body').on('click', '.js-course-direct-payment', function (e) {
@@ -446,7 +450,6 @@
 
         const $form = $this.closest('form');
         $form.attr('action', '/course/direct-payment');
-
         $form.trigger('submit');
     });
 

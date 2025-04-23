@@ -766,8 +766,8 @@ return [
     'instructors' => 'الأساتذة',
     'video_or_image_section' => 'قسم الفيديوهات / الصور',
     'settings_navbar_links' => 'الروابط في اعلي شريط التنفل',
-    'navbar_links' => 'الروابط اعلي شريط التنقل',
-    'top_navbar' => 'اعلي شريط التنقل',
+    'navbar_links' => 'روابط قائمة التصفح العلوية',
+    'top_navbar' => 'قائمة التصفح العلوية',
     'pages_backgrounds' => 'خلفيات الصفحات',
     'hero_style_1' => 'Full-width Hero Style',
     'Hero_style_2' => 'Animated Hero Style',
@@ -1445,4 +1445,9 @@ return [
     'notification_forms' => 'استمارة',
     'notification_submit_form_by_users' => 'استمارة التسجيل( للإدارة)',
     'form_title' => 'عنوان الإستمارة',
+
+    // Custom
+    'instructor_groups' => 'مجموعات المحاضر',
+    'diploma_groups' => 'مجموعات الدبلوم',
+    'new_diploma_groups' => 'مجموعة جديدة',
 ];

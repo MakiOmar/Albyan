@@ -1509,5 +1509,9 @@ By enabling this feature, newly registered users will require approval using thi
 'teacher' => 'Instructor',
 'discount_amount' => 'Discount Amount',
 'discount_title' => 'Discount Title',
+// Custom
+'instructor_groups' => 'Instructor groups',
+'diploma_groups' => 'Diploma groups',
+'new_diploma_groups' => 'New diploma groups',
 
 ];

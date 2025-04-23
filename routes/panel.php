@@ -77,6 +77,7 @@ Route::group(['namespace' => 'Panel', 'prefix' => 'panel', 'middleware' => ['imp
         });
     });
     Route::get('/my-groups', 'MyGroupsController@index');
+    Route::get('/student-groups', 'MyGroupsController@studentGroups');
     Route::get('/my-groups/view/{id}', 'MyGroupsController@view')->name('course-group.view');
     Route::get('/instructor-files', [InstructorFileController::class, 'create'])->name('instructor-files.create');
     Route::post('/instructor-files', [InstructorFileController::class, 'store'])->name('instructor-files.store');

@@ -75,8 +75,6 @@ class CourseGroupController extends Controller
         ];
     }
 
-
-
     // GroupController.php
     public function getInstructorGroups($instructor_id)
     {
@@ -95,18 +93,6 @@ class CourseGroupController extends Controller
         $students    = $getWebinarGroups['students'];
 
         return view('course_groups.admin.index', compact('webinar', 'instructors', 'students'));
-    }
-    /**
-     * Display the groups for a specific webinar.
-     */
-    public function listInstructorGroups(Request $request)
-    {
-        $getInstructorGroups      = $this->getGroups($request);
-        $groups      = $getInstructorGroups['groups'];
-        $instructors = $getInstructorGroups['instructors'];
-        $students    = $getInstructorGroups['students'];
-
-        return view('course_groups.admin.instructor_groups', compact('groups', 'instructors', 'students'));
     }
     public function addStudent(Request $request, $groupId)
     {
@@ -932,8 +918,6 @@ class CourseGroupController extends Controller
         return Webinar::with('groups') // Load groups relationship
         ->has('groups') // Only include webinars with at least one group
         ->get();
-
-        return view('course_groups.admin.webninars_groups', compact('webinars'));
     }
 
     public function editGroup($groupId)
@@ -956,5 +940,67 @@ class CourseGroupController extends Controller
         $webinars = $this->getWebinarsWithGroups();
 
         return view('course_groups.admin.webninars_groups', compact('webinars'));
+    }
+    public function getWebinarGroupsHtml($webinarId)
+    {
+        $webinar = Webinar::with([
+            'groups' => function ($query) {
+                $query->with(['members.student', 'instructor']);
+            }
+        ])->findOrFail($webinarId);
+
+        // Group groups by instructor
+        $groupsByInstructor = $webinar->groups->groupBy(fn ($group) => optional($group->instructor)->id ?? 0);
+
+        $students = User::where('role_id', 1)->get();
+
+        return view('course_groups.admin.partials.webinar_groups', [
+            'webinar' => $webinar,
+            'groupsByInstructor' => $groupsByInstructor,
+            'students' => $students,
+        ]);
+    }
+
+
+
+    /**
+     * Display the groups for a specific webinar.
+     */
+    public function listInstructorGroups(Request $request)
+    {
+        $getInstructorGroups      = $this->getGroups($request);
+        $groups      = $getInstructorGroups['groups'];
+        $instructors = $getInstructorGroups['instructors'];
+        $students    = $getInstructorGroups['students'];
+
+        return view('course_groups.admin.instructor_groups', compact('groups', 'instructors', 'students'));
+    }
+    /**
+     * filter webinars with their associated groups.
+     *
+     * This function retrieves all webinars that are associated with at least one group.
+     * It loads the "groups" relationship for each webinar and returns a view for displaying the data.
+     *
+     * @return \Illuminate\Contracts\View\View The view displaying webinars with their associated groups.
+     */
+    public function filterWebinarsWithGroups()
+    {
+        $webinars = $this->getWebinarsWithGroups();
+        $routeToList = route('course-group.list');
+        $students = User::where('role_id', 1)->get();
+        return view('course_groups.admin.filter_webninars_groups', compact('webinars', 'routeToList', 'students'));
+    }
+    public function getWebinarInstructors($webinarId)
+    {
+        $groups = CourseGroup::where('webinar_id', $webinarId)->with('instructor')->get();
+
+        $instructors = $groups->map(function ($group) {
+            return [
+                'id' => $group->instructor->id ?? null,
+                'name' => $group->instructor->full_name ?? 'Unnamed Instructor',
+            ];
+        })->unique('id')->values();
+
+        return response()->json($instructors);
     }
 }

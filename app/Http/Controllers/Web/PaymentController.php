@@ -73,7 +73,6 @@ class PaymentController extends Controller
         $paymentChannel = PaymentChannel::where('id', $gateway)
             ->where('status', 'active')
             ->first();
-
         if (!$paymentChannel) {
             $toastData = [
                 'title' => trans('cart.fail_purchase'),
@@ -85,12 +84,22 @@ class PaymentController extends Controller
 
         $order->payment_method = Order::$paymentChannel;
         $order->save();
+        $channelManager = ChannelManager::makeChannel($paymentChannel);
 
+        $redirect_url = $channelManager->paymentRequest($order);
+        if ( $gateway == 79 ) {
+            var_dump($redirect_url);
+            die;
+        }
 
         try {
             $channelManager = ChannelManager::makeChannel($paymentChannel);
-            $redirect_url = $channelManager->paymentRequest($order);
 
+            $redirect_url = $channelManager->paymentRequest($order);
+            if ( $gateway == 79 ) {
+                var_dump($redirect_url);
+                die;
+            }
             if (in_array($paymentChannel->class_name, PaymentChannel::$gatewayIgnoreRedirect)) {
                 return $redirect_url;
             }

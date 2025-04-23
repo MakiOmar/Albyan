@@ -11,7 +11,7 @@
         <img src="{{ $user->getCover() }}" class="img-cover" alt=""/>
     </section>
 
-
+    {{--
     <section class="container">
         <div class="rounded-lg shadow-sm px-25 py-20 px-lg-50 py-lg-35 position-relative user-profile-info bg-white">
             <div class="profile-info-box d-flex align-items-start justify-content-between">
@@ -115,7 +115,7 @@
             </div>
         </div>
     </section>
-
+    --}}
     <div class="container mt-30">
         <section class="rounded-lg border px-10 pb-35 pt-5 position-relative">
             <ul class="nav nav-tabs d-flex align-items-center px-20 px-lg-50 pb-15" id="tabs-tab" role="tablist">
@@ -141,20 +141,21 @@
                 <li class="nav-item mr-20 mr-lg-50 mt-30">
                     <a class="position-relative text-dark-blue font-weight-500 font-16 {{ (request()->get('tab') == 'posts') ? 'active' : ''  }}" id="webinars-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="false">{{ trans('update.articles') }}</a>
                 </li>
-
+                {{--
                 @if(!empty(getFeaturesSettings('forums_status')) and getFeaturesSettings('forums_status'))
                     <li class="nav-item mr-20 mr-lg-50 mt-30">
                         <a class="position-relative text-dark-blue font-weight-500 font-16 {{ (request()->get('tab') == 'forum') ? 'active' : ''  }}" id="webinars-tab" data-toggle="tab" href="#forum" role="tab" aria-controls="forum" aria-selected="false">{{ trans('update.forum') }}</a>
                     </li>
                 @endif
-
+                --}}
                 <li class="nav-item mr-20 mr-lg-50 mt-30">
                     <a class="position-relative text-dark-blue font-weight-500 font-16 {{ (request()->get('tab') == 'badges') ? 'active' : ''  }}" id="badges-tab" data-toggle="tab" href="#badges" role="tab" aria-controls="badges" aria-selected="false">{{ trans('site.badges') }}</a>
                 </li>
-
+                {{--
                 <li class="nav-item mr-20 mr-lg-50 mt-30">
                     <a class="position-relative text-dark-blue font-weight-500 font-16 {{ (request()->get('tab') == 'appointments') ? 'active' : ''  }}" id="appointments-tab" data-toggle="tab" href="#appointments" role="tab" aria-controls="appointments" aria-selected="false">{{ trans('site.book_an_appointment') }}</a>
                 </li>
+                --}}
             </ul>
 
             <div class="tab-content" id="nav-tabContent">
@@ -175,13 +176,13 @@
                 <div class="tab-pane fade" id="posts" role="tabpanel" aria-labelledby="posts-tab">
                     @include('web.default.user.profile_tabs.posts')
                 </div>
-
+                {{--
                 @if(!empty(getFeaturesSettings('forums_status')) and getFeaturesSettings('forums_status'))
                     <div class="tab-pane fade" id="forum" role="tabpanel" aria-labelledby="forum-tab">
                         @include('web.default.user.profile_tabs.forum')
                     </div>
                 @endif
-
+                --}}
                 @if(!empty(getStoreSettings('status')) and getStoreSettings('status'))
                     <div class="tab-pane fade" id="products" role="tabpanel" aria-labelledby="products-tab">
                         @include('web.default.user.profile_tabs.products')
@@ -191,10 +192,11 @@
                 <div class="tab-pane fade" id="badges" role="tabpanel" aria-labelledby="badges-tab">
                     @include('web.default.user.profile_tabs.badges')
                 </div>
-
+                {{--
                 <div class="tab-pane fade px-20 px-lg-50 {{ (request()->get('tab') == 'appointments') ? 'show active' : ''  }}" id="appointments" role="tabpanel" aria-labelledby="appointments-tab">
                     @include('web.default.user.profile_tabs.appointments')
                 </div>
+                --}}
             </div>
         </section>
     </div>

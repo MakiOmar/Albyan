@@ -198,6 +198,13 @@
 
 <script>
     {!! !empty(getCustomCssAndJs('js')) ? getCustomCssAndJs('js') : '' !!}
+    
+</script>
+<script>
+    document.getElementById('open-media-manager').addEventListener('click', function () {
+        var route_prefix = "/laravel-filemanager"; // adjust if your prefix is different
+        window.open(route_prefix + '?type=image', 'FileManager', 'width=900,height=600');
+    });
 </script>
 </body>
 </html>

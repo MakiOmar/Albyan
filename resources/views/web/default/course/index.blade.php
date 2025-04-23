@@ -210,6 +210,7 @@
                             {{ csrf_field() }}
                             <input type="hidden" name="item_id" value="{{ $course->id }}">
                             <input type="hidden" name="item_name" value="webinar_id">
+                            <input id="direct_buy" type="text" style="display:none;" name="direct_buy" value="no">
 
                             @if(!empty($course->tickets))
                                 @foreach($course->tickets as $ticket)
@@ -310,7 +311,7 @@
                                     @endif
 
                                     @if($canSale and !empty(getFeaturesSettings('direct_classes_payment_button_status')))
-                                        <button type="button" class="btn btn-outline-danger mt-20 js-course-direct-payment">
+                                        <button type="button" data-action="buy_now" class="btn btn-outline-danger mt-20 js-course-add-to-cart-btn">
                                             {{ trans('update.buy_now') }}
                                         </button>
                                     @endif
@@ -540,7 +541,7 @@
                                 </div>
                                 <span class="font-14">{{ $course->files->count() }}</span>
                             </div>
-
+                            {{--
                             <div class="mt-20 d-flex align-items-center justify-content-between text-gray">
                                 <div class="d-flex align-items-center">
                                     <img src="/assets/default/img/icons/sessions.svg" width="20" alt="">
@@ -548,6 +549,7 @@
                                 </div>
                                 <span class="font-14">{{ dateTimeFormat($course->created_at,'j M Y') }}</span>
                             </div>
+                            --}}
                         @endif
 
                         @if(!empty($course->access_days))

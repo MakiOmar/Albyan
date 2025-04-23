@@ -27,10 +27,35 @@ class MyGroupsController extends Controller
 
         $data = [
             'pageTitle' => 'My groups',
+            'user' => $user,
             'groups'    => $groups, // Pass groups to the view
         ];
 
         return view(getTemplate() . '.panel.my_groups.index', $data);
+    }
+    public function studentGroups(Request $request)
+    {
+        $this->authorize("panel_webinars_lists");
+
+        $user = auth()->user();
+
+        if ($user->isTeacher()) {
+            abort(404);
+        }
+        $studentId = $user->id;
+        $groups = CourseGroup::whereHas('members', function ($query) use ($studentId) {
+            $query->where('student_id', $studentId);
+        })
+        ->with(['webinar', 'instructor']) // optional for eager loading
+        ->get();
+    
+        $data = [
+            'pageTitle' => 'My groups',
+            'user' => $user,
+            'groups'    => $groups, // Pass groups to the view
+        ];
+
+        return view(getTemplate() . '.panel.my_groups.student', $data);
     }
     public function groupNextTime($courseGroup, &$joinUrl, &$meetingID, $role = 'teacher')
     {
@@ -73,8 +98,10 @@ class MyGroupsController extends Controller
         $joinUrl       = false;
         $meetingID     = false;
         $nextStartTime = $this->groupNextTime($group, $joinUrl, $meetingID);
+        $user = auth()->user();
         return view(getTemplate() . '.panel.my_groups.view', [
             'group' => $group,
+            'user' => $user,
             'joinUrl' => $joinUrl,
             'nextStartTime' => $nextStartTime,
             'meetingID' => $meetingID,

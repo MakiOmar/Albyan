@@ -32,6 +32,46 @@
         {!! getThemeFontsSettings() !!}
 
         {!! getThemeColorsSettings() !!}
+        #countdown {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .counter {
+            background-color: #ffc107; /* Warning background */
+            color: #fff;
+            border-radius: 10px;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .counter span {
+            display: block;
+            text-align: center;
+        }
+        #countdown .number {
+            font-size: 1.8rem;
+            line-height: 1.2;
+        }
+        #countdown .label {
+            font-size: 0.9rem;
+            line-height: 1.2;
+        }
+        .student-meetings .card-body{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+            position: relative;
+        }
     </style>
 
     @if(!empty($generalSettings['preloading']) and $generalSettings['preloading'] == '1')

@@ -241,11 +241,13 @@
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between ">
                     <div>
-                        <h2 class="section-title">{{ trans('home.latest_classes') }}</h2>
+                        <h2 class="section-title">{{ trans('home.best_rates') }}</h2>
+                        {{--
                         <p class="section-hint">{{ trans('home.latest_webinars_hint') }}</p>
+                        --}}
                     </div>
 
-                    <a href="/classes?sort=newest" class="btn btn-border-white">{{ trans('home.view_all') }}</a>
+                    <a href="/classes?sort=newest" class="btn btn-border-white top-view-all">{{ trans('home.view_all') }}</a>
                 </div>
 
                 <div class="mt-10 position-relative">
@@ -273,6 +275,9 @@
                                 </div>
                             @endforeach
 
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <a href="/classes?sort=newest" class="btn btn-border-white bottom-view-all">{{ trans('home.view_all') }}</a>
                         </div>
                     </div>
                 </div>

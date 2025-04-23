@@ -335,6 +335,9 @@ class CartManagerController extends Controller
             'msg' => trans('cart.cart_add_success_msg'),
             'status' => 'success'
         ];
+        if ($request->has('direct_buy') && $request->input('direct_buy') === 'yes') {
+            return redirect('/cart')->with(['toast' => $toastData]);
+        }
         return back()->with(['toast' => $toastData]);
     }
 

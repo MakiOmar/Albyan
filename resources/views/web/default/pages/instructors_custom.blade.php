@@ -13,13 +13,13 @@
     <br>
     <div class="row justify-content-center">
         <div class="col-6 col-md-3">
-            <a href="/profile/ceo1">
+            <a href="#">
                 <img src="/store/1/Instructors Profiles/RaghebFouda.png" class="rounded-circle border border-warning p-1" width="120" height="120" alt="CEO 1">
                 <center><strong>Mr.Ragheb Fouda</strong></center>
             </a>
         </div>
         <div class="col-6 col-md-3">
-            <a href="/profile/ceo2">
+            <a href="#">
                 <img src="/store/1/Instructors Profiles/AhmedYounes.png" class="rounded-circle border border-warning p-1" width="120" height="120" alt="CEO 2">
                 <center><strong>Mr.Ahmed Younes</strong></center>
             </a>
@@ -32,23 +32,55 @@
     <h3 class="fw-bold">Instructors</h3>
     <br>
     <div class="row justify-content-center">
-        <div class="col-4 col-md-2">
-            <a href="/profile/instructor1">
+        <div class="col-4 col-md-3 mt-2">
+            <a href="/users/1072/profile">
                 <img src="/store/1/Instructors Profiles/Dr.Nour.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Instructor 1">
             </a>
             <center><strong>د. نور صالح</strong></center>
         </div>
-        <div class="col-4 col-md-2">
-            <a href="/profile/instructor2">
+        <div class="col-4 col-md-3 mt-2">
+            <a href="/users/1068/profile">
                 <img src="/store/1/Instructors Profiles/Dr.MahmoudAbo-Amera.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Instructor 2">
             </a>
             <center><strong>د. محمود أبو عميرة</strong></center>
         </div>
-        <div class="col-4 col-md-2">
-            <a href="/profile/instructor3">
+        <div class="col-4 col-md-3 mt-2">
+            <a href="/users/1060/profile">
                 <img src="/store/1/Instructors Profiles/Dr.Fatma.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Instructor 3">
             </a>
             <center><strong>د فاطمة احمد</strong></center>
+        </div>
+
+        <div class="col-4 col-md-3 mt-2">
+            <a href="#">
+                <img src="/store/1/Instructors Profiles/WhatsApp Image 2025-04-17 at 11.40.59_ef7d6394.jpg" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Instructor 3">
+            </a>
+            <center><strong>د.محمد غانم</strong></center>
+        </div>
+
+        <div class="col-4 col-md-3 mt-2">
+            <a href="#">
+                <img src="/store/1/Instructors Profiles/WhatsApp Image 2025-04-17 at 11.40.59_66c17b90.jpg" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Instructor 3">
+            </a>
+            <center><strong>د.ابراهيم رشدي</strong></center>
+        </div>
+        <div class="col-4 col-md-3 mt-2">
+            <a href="#">
+                <img src="/store/1/Instructors Profiles/WhatsApp Image 2025-04-17 at 11.40.59_6d26eb9b.jpg" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Instructor 3">
+            </a>
+            <center><strong>د.سارة عبدالسميع</strong></center>
+        </div>
+        <div class="col-4 col-md-3 mt-2">
+            <a href="#">
+                <img src="/store/1/Instructors Profiles/WhatsApp Image 2025-04-17 at 11.41.00_c958ace3.jpg" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Instructor 3">
+            </a>
+            <center><strong>د.يوسف شنودة</strong></center>
+        </div>
+        <div class="col-4 col-md-3 mt-2">
+            <a href="#">
+                <img src="/store/1/Instructors Profiles/WhatsApp Image 2025-04-17 at 13.00.25_ba1366e4.jpg" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Instructor 3">
+            </a>
+            <center><strong>د.اشرف الصياح</strong></center>
         </div>
     </div>
 
@@ -59,43 +91,43 @@
     <br>
     <div class="row justify-content-center">
         <div class="col-4 col-md-3">
-            <a href="/profile/team1">
+            <a href="#">
                 <img src="/store/1/Instructors Profiles/GehadSales.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Team Member 1">
             </a>
             <center><strong>جهاد ابراهيم</strong></center>
         </div>
         <div class="col-4 col-md-3">
-            <a href="/profile/team2">
+            <a href="#">
                 <img src="/store/1/Instructors Profiles/ManarSales.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Team Member 2">
             </a>
             <center><strong>منار محمد</strong></center>
         </div>
         <div class="col-4 col-md-3">
-            <a href="/profile/team3">
+            <a href="#">
                 <img src="/store/1/Instructors Profiles/MariSales.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Team Member 3">
             </a>
             <center><strong>مارى الحركة</strong></center>
         </div>
         <div class="col-4 col-md-3">
-            <a href="/profile/team4">
+            <a href="#">
                 <img src="/store/1/Instructors Profiles/SamehaSales.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Team Member 4">
             </a>
             <center><strong>سميحة محمد</strong></center>
         </div>
         <div class="col-4 col-md-3">
-            <a href="/profile/team4">
+            <a href="#">
                 <img src="/store/1/Instructors Profiles/MahmoudAccounting.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Team Member 4">
             </a>
             <center><strong>محمود عبدالسلام</strong></center>
         </div>
         <div class="col-4 col-md-3">
-            <a href="/profile/team4">
+            <a href="#">
                 <img src="/store/1/Instructors Profiles/MohamedSamirSales.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Team Member 4">
             </a>
             <center><strong>محمد سمير</strong></center>
         </div>
         <div class="col-4 col-md-3">
-            <a href="/profile/team4">
+            <a href="#">
                 <img src="/store/1/Instructors Profiles/7.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Team Member 4">
             </a>
             <center><strong>معاذ خالد</strong></center>

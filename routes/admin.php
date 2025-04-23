@@ -61,6 +61,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/edit/{groupId}', [CourseGroupController::class, 'editGroup'])->name('course-group.edit');
 
             Route::get('/webinar-groups/', [CourseGroupController::class, 'listWebinarsWithGroups'])->name('webinar-groups.manage');
+            Route::get('/webinar-groups-filter/', [CourseGroupController::class, 'filterWebinarsWithGroups'])->name('webinar-groups.filter');
 
             Route::get('/create/{groupId?}', [CourseGroupController::class, 'showCreateForm'])->name('course-group.create-form');
             Route::delete('/{group}', [CourseGroupController::class, 'destroy'])->name('course-group.destroy');
@@ -77,6 +78,9 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::post('/{group}/add-student', [CourseGroupController::class, 'addStudent'])->name('group.student.add');
 
             Route::get('/ajax/webinar/{webinar}/students', [CourseGroupController::class, 'getStudents']);
+            Route::get('/ajax/webinar/{webinar}/instructors', [CourseGroupController::class, 'getWebinarInstructors']);
+            Route::get('/ajax/webinar/{webinarId}/groups-html', [CourseGroupController::class, 'getWebinarGroupsHtml']);
+
         });
 
 
