@@ -109,7 +109,7 @@ return [
     'moderator_password' => 'كلمة مرور الوسيط',
     'category' => 'فئة',
     'choose_category' => 'اختر تصنيف',
-    'category_filters' => 'مرشحات الفئات',
+    'category_filters' => 'مرشحات الأقسام',
     'tickets' => 'تذاكر',
     'add_ticket' => 'خطة تسعير جديدة',
     'add_plan' => 'خطة جديدة',

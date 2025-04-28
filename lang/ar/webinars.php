@@ -126,7 +126,7 @@ return [
     'show_only_subscribe' => 'اظهر المشتركين فقط',
     'show_only_certificate_included' => 'اظهر الشهادات المضمنة فقط',
     'show_only_with_quiz' => 'اظهر فقط الدبلومات التي تحتوي علي اختبارات',
-    'show_only_featured' => 'اظهر الفئات المميزة فقط',
+    'show_only_featured' => 'اظهر الأقسام المميزة فقط',
 
     'private' => 'خاص',
     'create_private_course_hint' => 'اذا فعلت هذا الخيار لن يتم نشر الحصة علي المنصة وسيكون متاح في لوحة البوابة والأساتذة والطلاب فقط.',

@@ -17,7 +17,7 @@ return [
     'seo_metas' => 'Seo ميتا',
     'seo_metas_home' => 'الصفحة الرئيسية',
     'seo_metas_search' => 'صفحة البحث',
-    'seo_metas_categories' => 'صفحة الفئات',
+    'seo_metas_categories' => 'صفحة الأقسام',
     'seo_metas_classes' => 'صفحة الدبلومات',
     'seo_metas_login' => 'صفحة تسجيل الدخول',
     'seo_metas_register' => 'صفحة التسجيل',
