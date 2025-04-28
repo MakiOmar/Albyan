@@ -7,10 +7,11 @@
 
 
 @section('content')
+{{--
     <section class="site-top-banner position-relative">
         <img src="{{ $user->getCover() }}" class="img-cover" alt=""/>
     </section>
-
+--}}
     {{--
     <section class="container">
         <div class="rounded-lg shadow-sm px-25 py-20 px-lg-50 py-lg-35 position-relative user-profile-info bg-white">

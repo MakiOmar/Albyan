@@ -115,8 +115,9 @@
                             @include('web.default.includes.discounts.instructor_discounts_card', ['discount' => $instructorDiscount, 'instructorDiscountClassName' => "mt-35"])
                         @endforeach
                     @endif
-
+                    
                     <div class="mt-35">
+                        {{--
                         <ul class="nav nav-tabs bg-secondary rounded-sm p-15 d-flex align-items-center justify-content-between" id="tabs-tab" role="tablist">
                             <li class="nav-item">
                                 <a class="position-relative font-14 text-white {{ (empty(request()->get('tab','')) or request()->get('tab','') == 'information') ? 'active' : '' }}" id="information-tab"
@@ -147,8 +148,8 @@
                             </li>
                             @endif
                         </ul>
-
-                        <div class="tab-content" id="nav-tabContent">
+--}}
+                        <div class="tab-content" style="margin-top: 65px" id="nav-tabContent">
                             <div class="tab-pane fade {{ (empty(request()->get('tab','')) or request()->get('tab','') == 'information') ? 'show active' : '' }} " id="information" role="tabpanel" aria-labelledby="information-tab">
                                 @include(getTemplate().'.course.tabs.information')
                             </div>

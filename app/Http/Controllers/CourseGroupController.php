@@ -42,6 +42,7 @@ class CourseGroupController extends Controller
             'students'    => $students,
         ];
     }
+
     /**
      * Display the groups for a specific webinar.
      */
@@ -74,7 +75,12 @@ class CourseGroupController extends Controller
             'students'    => $students,
         ];
     }
+    public function view($id)
+    {
+        $group = CourseGroup::with(['webinar', 'instructor', 'members.student'])->findOrFail($id);
 
+        return view('course_groups.admin.view', compact('group'));
+    }
     // GroupController.php
     public function getInstructorGroups($instructor_id)
     {
@@ -173,201 +179,166 @@ class CourseGroupController extends Controller
         return redirect()->back()->withErrors('Failed to remove the student from the group.');
     }
 
-    /**
-     * Create a new group for a webinar.
-     */
     public function createGroup(Request $request)
     {
-        $validated = $request->validate(
-            array(
-                'webinar_id'          => 'required|exists:webinars,id', // Ensure webinar exists
-                'meeting_start_time'  => 'required|date', // Validate start time
-                'meeting_end_time'    => 'required_if:meeting_recurring,1|date', // Required only if recurring
-                'meeting_duration'    => 'required|integer|min:1', // Minimum duration 1 minute
-                'meeting_recurring'   => 'required|in:0,1', // Ensure value is 0 or 1
-                'recurrence_type'     => 'required_if:meeting_recurring,1|in:1,2,3', // Validate type: 1=Daily, 2=Weekly, 3=Monthly
-                'recurrence_interval' => 'required_if:meeting_recurring,1|integer|min:1',
-                'weekly_days'         => 'required_if:recurrence_type,2|array', // Required if weekly recurrence
-                'weekly_days.*'       => 'in:1,2,3,4,5,6,7', // Validate each day is a valid weekday
-                'monthly_day'         => 'nullable|required_if:recurrence_type,3|integer|min:1|max:31', // Required if monthly recurrence
-                'participant_video'   => 'required|in:0,1', // Validate participant video toggle
-                'host_video'          => 'required|in:0,1', // Validate host video toggle
-                'audio_option'        => 'required|in:both,voip,telephony', // Ensure audio option is valid
-                'student_ids'         => 'required|array|min:1', // At least one student must be selected
-                'student_ids.*'       => 'exists:users,id', // Validate each student ID
-                'teacher_id'          => 'required|exists:users,id', // Ensure teacher exists
-                'end_times'           => 'required', // Number of meetings
-            )
-        );
+        $validated = $request->validate([
+            'webinar_id'          => 'required|exists:webinars,id',
+            'meeting_start_time'  => 'required|date',
+            'meeting_end_time'    => 'required_if:meeting_recurring,1|date',
+            'meeting_duration'    => 'required|integer|min:1',
+            'meeting_recurring'   => 'required|in:0,1',
+            'recurrence_type'     => 'required_if:meeting_recurring,1|in:1,2,3',
+            'recurrence_interval' => 'required_if:meeting_recurring,1|integer|min:1',
+            'weekly_days'         => 'required_if:recurrence_type,2|array',
+            'weekly_days.*'       => 'in:1,2,3,4,5,6,7',
+            'monthly_day'         => 'nullable|required_if:recurrence_type,3|integer|min:1|max:31',
+            'participant_video'   => 'nullable|in:0,1',
+            'host_video'          => 'nullable|in:0,1',
+            'audio_option'        => 'nullable|in:both,voip,telephony',
+            'student_ids'         => 'required|array|min:1',
+            'student_ids.*'       => 'exists:users,id',
+            'teacher_id'          => 'required|exists:users,id',
+            'end_times'           => 'required|integer|min:1',
+            'session_type'        => 'required|in:zoom,offline',
+        ]);
 
-        $webinar = Webinar::find($validated['webinar_id']);
+        $webinar = Webinar::findOrFail($validated['webinar_id']);
+        $instructor = User::findOrFail($validated['teacher_id']);
 
-        if ($webinar) {
-            $instructor = User::findOrFail($validated['teacher_id']);
+        $meetingJson = null;
+
+        if ($validated['session_type'] === 'offline') {
+            $meetingJson = $this->generateOfflineOccurrences($validated);
         } else {
-            return redirect()->back()->with('Error', 'No constructor specified');
+            $zoomMeetingResponse = $this->createZoomMeeting($instructor, $validated);
+
+            if (! $zoomMeetingResponse['success']) {
+                return redirect()->back()->withErrors(['zoom_meeting' => $zoomMeetingResponse['error']]);
+            }
+
+            $meetingJson = $zoomMeetingResponse['data'];
         }
 
-        // Generate Zoom Meeting
-        $zoomMeetingResponse = $this->createZoomMeeting($instructor, $validated);
+        $group = CourseGroup::create([
+            'webinar_id'         => $validated['webinar_id'],
+            'instructor_id'      => $validated['teacher_id'],
+            'meeting_id'         => $meetingJson['id'] ?? time(),
+            'meeting_start_time' => $validated['meeting_start_time'],
+            'meeting_end_time'   => $validated['meeting_end_time'] ?? null,
+            'meeting_duration'   => $validated['meeting_duration'] * 60,
+            'meeting_recurring'  => $validated['meeting_recurring'],
+            'meeting_json'       => json_encode($meetingJson),
+            'session_type'       => $validated['session_type'],
+        ]);
 
-        // Check if the Zoom meeting creation was successful
-        if (! $zoomMeetingResponse['success']) {
-            return redirect()->back()->withErrors(array( 'zoom_meeting' => $zoomMeetingResponse['error'] ));
-        }
-
-        $zoomMeeting = $zoomMeetingResponse['data'];
-
-        // Create the course group in the database
-        $group = CourseGroup::create(
-            array(
-                'webinar_id'         => $validated['webinar_id'],
-                'instructor_id'      => $validated['teacher_id'],
-                'meeting_id'         => $zoomMeeting['id'], // Use Zoom's meeting ID
-                'meeting_start_time' => $validated['meeting_start_time'],
-                'meeting_end_time'   => $validated['meeting_end_time'],
-                'meeting_duration'   => $validated['meeting_duration'] * 60,
-                'meeting_recurring'  => $validated['meeting_recurring'],
-                'meeting_json'       => json_encode($zoomMeeting),
-            )
-        );
-        // Calculate duration
-        $startDate        = Carbon::parse($validated['meeting_start_time']);
-        $endDate          = Carbon::parse($validated['meeting_end_time']);
-        $durationInWeeks  = $startDate->diffInWeeks($endDate);
-        $durationInMonths = $startDate->diffInMonths($endDate);
-        $webinarURL       = $webinar->getUrl();
-        // Attach students to the group
         foreach ($validated['student_ids'] as $studentId) {
-            GroupMember::create(
-                array(
-                    'group_id'   => $group->id,
-                    'student_id' => $studentId,
-                    'webinar_id' => $validated['webinar_id'],
-                )
-            );
-
-            // Send Email Notification
-            $student    = \App\User::where('id', $studentId)->first();
-            $userLocale = ! empty($student) ? $student->locale : app()->getLocale(); // Get user's locale
-            $instructor = \App\User::where('id', $validated['teacher_id'])->first();
-                    // Determine duration text dynamically
-            if ($durationInMonths >= 1) {
-                $durationText = trans_choice('public.duration_months', $durationInMonths, array( 'count' => $durationInMonths ), $userLocale);
-            } else {
-                $durationText = trans_choice('public.duration_weeks', $durationInWeeks, array( 'count' => $durationInWeeks ), $userLocale);
-            }
-            // Send Notification to Student
-            Notification::create(
-                array(
-                    'user_id'    => $studentId,
-                    'group_id'   => null,
-                    'webinar_id' => $validated['webinar_id'],
-                    'sender_id'  => auth()->id(),
-                    'title'      => trans('public.new_course_group_title', array(), $userLocale),
-                    'message'    => trans(
-                        'public.new_course_group_message',
-                        array(
-                            'course'     => $webinar->title,
-                            'instructor' => $instructor->full_name ?? trans('public.the_instructor', array(), $userLocale),
-                            'duration'   => $durationText,
-                            'interval'   => trans('public.interval_' . $validated['recurrence_type'], array(), $userLocale),
-                            'link'       => $webinarURL,
-                        ),
-                        $userLocale
-                    ),
-
-                    'sender'     => Notification::$AdminSender,
-                    'type'       => 'single',
-                    'created_at' => time(),
-                )
-            );
-            $msg_array = array(
-                'type'    => 'single',
-                'title'   => trans('public.new_course_group_title', array(), $userLocale),
-                'message' => trans(
-                    'public.new_course_group_message',
-                    array(
-                        'course'     => $webinar->title,
-                        'instructor' => $instructor->full_name ?? trans('public.the_instructor', array(), $userLocale),
-                        'duration'   => $durationText,
-                        'interval'   => trans('public.interval_' . $validated['recurrence_type'], array(), $userLocale),
-                        'link'       => $webinarURL,
-                    ),
-                    $userLocale
-                ),
-            );
-            if (! empty($student) && ! empty($student->email)) {
-                try {
-                    \Mail::to($student->email)->send(new SendNotifications($msg_array));
-                } catch (\Exception $exception) {
-                    // Handle email exception
-                }
-            }
-
-            // Send Firebase Message (Push Notification)
-            $this->handleFirebaseMessages($msg_array, $studentId, null, $validated['webinar_id']);
+            GroupMember::create([
+                'group_id'   => $group->id,
+                'student_id' => $studentId,
+                'webinar_id' => $validated['webinar_id'],
+            ]);
         }
 
         return redirect()->route('course-group.manage', $validated['webinar_id'])
-            ->with('success', 'Group and Zoom meeting created successfully!');
+            ->with('success', 'Group created successfully!');
     }
+
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-        'webinar_id'          => 'required|exists:webinars,id',
-        'meeting_start_time'  => 'required|date',
-        'meeting_end_time'    => 'required_if:meeting_recurring,1|date',
-        'meeting_duration'    => 'required|integer|min:1',
-        'meeting_recurring'   => 'required|in:0,1',
-        'recurrence_type'     => 'required_if:meeting_recurring,1|in:1,2,3',
-        'recurrence_interval' => 'required_if:meeting_recurring,1|integer|min:1',
-        'weekly_days'         => 'required_if:recurrence_type,2|array',
-        'weekly_days.*'       => 'in:1,2,3,4,5,6,7',
-        'monthly_day'         => 'nullable|required_if:recurrence_type,3|integer|min:1|max:31',
-        'participant_video'   => 'required|in:0,1',
-        'host_video'          => 'required|in:0,1',
-        'audio_option'        => 'required|in:both,voip,telephony',
-        'student_ids'         => 'required|array|min:1',
-        'student_ids.*'       => 'exists:users,id',
-        'teacher_id'          => 'required|exists:users,id',
-        'end_times'           => 'required',
+            'webinar_id'          => 'required|exists:webinars,id',
+            'meeting_start_time'  => 'required|date',
+            'meeting_end_time'    => 'required_if:meeting_recurring,1|date',
+            'meeting_duration'    => 'required|integer|min:1',
+            'meeting_recurring'   => 'required|in:0,1',
+            'recurrence_type'     => 'required_if:meeting_recurring,1|in:1,2,3',
+            'recurrence_interval' => 'required_if:meeting_recurring,1|integer|min:1',
+            'weekly_days'         => 'required_if:recurrence_type,2|array',
+            'weekly_days.*'       => 'in:1,2,3,4,5,6,7',
+            'monthly_day'         => 'nullable|required_if:recurrence_type,3|integer|min:1|max:31',
+            'participant_video'   => 'nullable|in:0,1',
+            'host_video'          => 'nullable|in:0,1',
+            'audio_option'        => 'nullable|in:both,voip,telephony',
+            'student_ids'         => 'required|array|min:1',
+            'student_ids.*'       => 'exists:users,id',
+            'teacher_id'          => 'required|exists:users,id',
+            'end_times'           => 'required|integer|min:1',
+            'session_type'        => 'required|in:zoom,offline',
         ]);
 
         $group = CourseGroup::findOrFail($id);
         $instructor = User::findOrFail($validated['teacher_id']);
 
-        // ✅ تحديث اجتماع Zoom
-        $zoomUpdateResponse = $this->updateZoomMeeting($group->meeting_id, $instructor, $validated);
-        if (! $zoomUpdateResponse['success']) {
-            return redirect()->back()->withErrors(['zoom_meeting' => $zoomUpdateResponse['error']]);
+        if ($validated['session_type'] === 'offline') {
+            $meetingJson = $this->generateOfflineOccurrences($validated);
+        } else {
+            $zoomMeetingResponse = $this->updateZoomMeeting($group->meeting_id, $instructor, $validated);
+
+            if (! $zoomMeetingResponse['success']) {
+                return redirect()->back()->withErrors(['zoom_meeting' => $zoomMeetingResponse['error']]);
+            }
+
+            $meetingJson = $zoomMeetingResponse['data'];
         }
 
-        $updatedMeeting = $zoomUpdateResponse['data'];
-
-        // ✅ تحديث بيانات المجموعة
         $group->update([
-        'webinar_id'         => $validated['webinar_id'],
-        'instructor_id'      => $validated['teacher_id'],
-        'meeting_start_time' => $validated['meeting_start_time'],
-        'meeting_end_time'   => $validated['meeting_end_time'],
-        'meeting_duration'   => $validated['meeting_duration'] * 60,
-        'meeting_recurring'  => $validated['meeting_recurring'],
-        'meeting_json'       => json_encode($updatedMeeting),
+            'webinar_id'         => $validated['webinar_id'],
+            'instructor_id'      => $validated['teacher_id'],
+            'meeting_start_time' => $validated['meeting_start_time'],
+            'meeting_end_time'   => $validated['meeting_end_time'] ?? null,
+            'meeting_duration'   => $validated['meeting_duration'] * 60,
+            'meeting_recurring'  => $validated['meeting_recurring'],
+            'meeting_json'       => json_encode($meetingJson),
+            'session_type'       => $validated['session_type'],
         ]);
 
-        // ✅ تحديث الأعضاء
         GroupMember::where('group_id', $group->id)->delete();
         foreach ($validated['student_ids'] as $studentId) {
             GroupMember::create([
-            'group_id'   => $group->id,
-            'student_id' => $studentId,
-            'webinar_id' => $validated['webinar_id'],
+                'group_id'   => $group->id,
+                'student_id' => $studentId,
+                'webinar_id' => $validated['webinar_id'],
             ]);
         }
 
         return redirect()->route('course-group.manage', $validated['webinar_id'])
-        ->with('success', 'Group and Zoom meeting updated successfully!');
+            ->with('success', 'Group updated successfully!');
+    }
+
+    private function generateOfflineOccurrences($validated)
+    {
+        $startDate = Carbon::parse($validated['meeting_start_time']);
+        $endDate = Carbon::parse($validated['meeting_end_time']);
+        $occurrences = [];
+        $count = 0;
+
+        while ($startDate <= $endDate && $count < $validated['end_times']) {
+            if (
+                ($validated['recurrence_type'] == 1) ||
+                ($validated['recurrence_type'] == 2 && in_array($startDate->dayOfWeekIso, $validated['weekly_days'])) ||
+                ($validated['recurrence_type'] == 3 && $startDate->day == $validated['monthly_day'])
+            ) {
+                $occurrences[] = [
+                    'start_time' => $startDate->toIso8601String(),
+                    'duration' => $validated['meeting_duration'] * 60,
+                    'status' => 'available',
+                ];
+                $count++;
+            }
+
+            if ($validated['recurrence_type'] == 1) {
+                $startDate->addDays($validated['recurrence_interval']);
+            } elseif ($validated['recurrence_type'] == 2) {
+                $startDate->addDay();
+            } elseif ($validated['recurrence_type'] == 3) {
+                $startDate->addMonth($validated['recurrence_interval']);
+            }
+        }
+
+        return [
+            'occurrences' => $occurrences,
+            'type' => 'offline',
+        ];
     }
 
 
@@ -523,7 +494,9 @@ class CourseGroupController extends Controller
 
         // Delete the course group itself
         $courseGroup->delete();
-
+        if ( strpos( $_SERVER['HTTP_REFERER'], 'course-group/view' ) !== false ) {
+            return redirect()->route('webinar-groups.all')->with('success', 'تم حذف المجموعة بنجاح.');
+        }
         return redirect()->back()->with('success', 'تم حذف المجموعة بنجاح.');
     }
     private function deleteZoomMeeting($meetingId)
@@ -919,6 +892,25 @@ class CourseGroupController extends Controller
         ->has('groups') // Only include webinars with at least one group
         ->get();
     }
+    public function getPaginatedGroups(Request $request)
+    {
+        $perPage = $request->input('per_page', 10); // عدد العناصر في الصفحة
+        $page    = $request->input('page', 1);
+
+        $query = CourseGroup::with(['webinar', 'instructor', 'members.student']);
+
+        if ($request->has('instructor_id')) {
+            $query->where('instructor_id', $request->input('instructor_id'));
+        }
+
+        if ($request->has('webinar_id')) {
+            $query->where('webinar_id', $request->input('webinar_id'));
+        }
+
+        $groups = $query->paginate($perPage, ['*'], 'page', $page);
+        $screen = 'admin';
+        return view('course_groups.admin.paginated_groups', compact('groups', 'screen'));
+    }
 
     public function editGroup($groupId)
     {
@@ -1002,5 +994,120 @@ class CourseGroupController extends Controller
         })->unique('id')->values();
 
         return response()->json($instructors);
+    }
+    public function schedule(Request $request)
+    {
+        $weekOffset = $request->query('week', 0);
+
+        $today = Carbon::now('Asia/Dubai')->startOfWeek(Carbon::SATURDAY)->addWeeks($weekOffset);
+
+        $weekDays = [];
+        for ($i = 0; $i < 6; $i++) { // من السبت إلى الخميس
+            $dayDate = $today->copy()->addDays($i);
+            $weekDays[] = [
+                'name' => $dayDate->format('l'),       // Saturday
+                'label' => $dayDate->translatedFormat('D (M d)'), // سبت (أبريل 28)
+                'date' => $dayDate->format('Y-m-d'),
+            ];
+        }
+
+        $timeSlots = [];
+        $start = Carbon::createFromTime(10, 0);
+        $end = Carbon::createFromTime(22, 0);
+
+        while ($start < $end) {
+            $next = $start->copy()->addHour();
+            $timeSlots[] = [
+                'start' => $start->format('H:i'),
+                'end' => $next->format('H:i'),
+            ];
+            $start = $next;
+        }
+
+        $sessions = [];
+
+        $courseGroups = CourseGroup::with('webinar')->get();
+
+        foreach ($courseGroups as $group) {
+            $meetingJson = json_decode($group->meeting_json, true);
+
+            if (!empty($meetingJson['occurrences'])) {
+                // ✅ Group has defined occurrences (Zoom or Offline)
+                foreach ($meetingJson['occurrences'] as $occurrence) {
+                    $startUtc = Carbon::parse($occurrence['start_time'])->timezone('Asia/Dubai');
+
+                    $sessions[] = [
+                        'group_id'      => $group->id,
+                        'instructor_id' => $group->instructor_id,
+                        'day'           => $startUtc->format('Y-m-d'),
+                        'time'          => $startUtc->format('H:i'),
+                        'duration'      => ($occurrence['duration'] ?? $group->meeting_duration) / 60,
+                        'session_type'  => $group->session_type ?? 'zoom',
+                        'webinar_title' => $group->webinar->title ?? '',
+                    ];
+                }
+            } else {
+                // ✅ Group without occurrences => assume based on recurrence settings
+                $startDate = Carbon::parse($group->meeting_start_time)->timezone('Asia/Dubai');
+                $endDate = Carbon::parse($group->meeting_end_time)->timezone('Asia/Dubai');
+                $durationHours = $group->meeting_duration / 60;
+
+                $meetingRecurring = $group->meeting_recurring ?? 0;
+                $recurrence = $meetingJson['recurrence'] ?? [];
+
+                if ($meetingRecurring && isset($recurrence['type'])) {
+                    $type = $recurrence['type']; // 1 = Daily, 2 = Weekly, 3 = Monthly
+                    $interval = $recurrence['repeat_interval'] ?? 1;
+                    $weeklyDays = isset($recurrence['weekly_days']) ? explode(',', $recurrence['weekly_days']) : [];
+                    $monthlyDay = $recurrence['monthly_day'] ?? null;
+
+                    $current = $startDate->copy();
+
+                    while ($current <= $endDate) {
+                        $add = false;
+
+                        if ($type == 1) { // Daily
+                            $add = true;
+                            $current->addDays($interval - 1); // Because we'll add +1 at end
+                        } elseif ($type == 2) { // Weekly
+                            if (in_array($current->dayOfWeekIso, $weeklyDays)) {
+                                $add = true;
+                            }
+                        } elseif ($type == 3) { // Monthly
+                            if ($current->day == $monthlyDay) {
+                                $add = true;
+                            }
+                        }
+
+                        if ($add) {
+                            $sessions[] = [
+                                'group_id'      => $group->id,
+                                'instructor_id' => $group->instructor_id,
+                                'day'           => $current->format('Y-m-d'),
+                                'time'          => $startDate->format('H:i'),
+                                'duration'      => $durationHours,
+                                'session_type'  => $group->session_type ?? 'offline',
+                                'webinar_title' => $group->webinar->title ?? '',
+                            ];
+                        }
+
+                        $current->addDay();
+                    }
+                } else {
+                    // No recurrence (single session)
+                    $sessions[] = [
+                        'group_id'      => $group->id,
+                        'instructor_id' => $group->instructor_id,
+                        'day'           => $startDate->format('Y-m-d'),
+                        'time'          => $startDate->format('H:i'),
+                        'duration'      => $durationHours,
+                        'session_type'  => $group->session_type ?? 'offline',
+                        'webinar_title' => $group->webinar->title ?? '',
+                    ];
+                }
+            }
+        }
+
+        return view('course_groups.admin.schedule', compact('weekDays', 'timeSlots', 'sessions', 'weekOffset'));
     }
 }

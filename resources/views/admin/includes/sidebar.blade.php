@@ -66,16 +66,19 @@
                             <li class="{{ (request()->is(getAdminPanelUrl('/webinars', false)) and request()->get('type') == 'course') ? 'active' : '' }}">
                                 <a class="nav-link @if(!empty($sidebarBeeps['courses']) and $sidebarBeeps['courses']) beep beep-sidebar @endif" href="{{ getAdminPanelUrl() }}/webinars?type=course">{{ trans('admin/main.courses') }}</a>
                             </li>
-                            
+                            {{--
                             <li class="{{ (request()->is(getAdminPanelUrl('/webinars', false)) and request()->get('type') == 'text_lesson') ? 'active' : '' }}">
                                 <a class="nav-link @if(!empty($sidebarBeeps['textLessons']) and $sidebarBeeps['textLessons']) beep beep-sidebar @endif" href="{{ getAdminPanelUrl() }}/webinars?type=text_lesson">{{ trans('admin/main.text_courses') }}</a>
                             </li>
-                            
+                            --}}
                         @endcan()
 
                         @can('admin_webinars_create')
                             <li class="{{ (request()->is(getAdminPanelUrl('/webinars/create', false))) ? 'active' : '' }}">
                                 <a class="nav-link" href="{{ getAdminPanelUrl() }}/webinars/create">{{ trans('admin/main.new') }}</a>
+                            </li>
+                            <li class="{{ (request()->is(getAdminPanelUrl('/course-group', false)) and request()->get('type') == 'manage') ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('course-group.create-form') }}">{{ trans('admin/main.new_diploma_groups') }}</a>
                             </li>
                             <li class="{{ request()->is(getAdminPanelUrl('/list-groups', false))  ? 'active' : '' }}">
                                 <a class="nav-link" href="{{ route('course-group.list') }}">{{ trans('admin/main.instructor_groups') }}</a>
@@ -83,18 +86,21 @@
                             
                             <li class="{{ request()->is(getAdminPanelUrl('/webinar-groups-filter', false))  ? 'active' : '' }}">
                                 <a class="nav-link" href="{{ route('webinar-groups.filter') }}">{{ trans('admin/main.diploma_groups') }}</a>
-                            </li>
-                            <li class="{{ (request()->is(getAdminPanelUrl('/course-group', false)) and request()->get('type') == 'manage') ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ route('course-group.create-form') }}">{{ trans('admin/main.new_diploma_groups') }}</a>
+                            </li>                            
+                            <li class="{{ request()->is(getAdminPanelUrl('/webinar-groups/all', false))  ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('webinar-groups.all') }}">{{ trans('admin/main.all_groups') }}</a>
+                            </li>                            
+                            <li class="{{ request()->is(getAdminPanelUrl('/schedule', false))  ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ route('schedule.index') }}">{{ trans('admin/main.schedule_table') }}</a>
                             </li>
                         @endcan()
-
+                            {{--
                         @can('admin_agora_history_list')
                             <li class="{{ (request()->is(getAdminPanelUrl('/agora_history', false))) ? 'active' : '' }}">
                                 <a class="nav-link" href="{{ getAdminPanelUrl() }}/agora_history">{{ trans('update.agora_history') }}</a>
                             </li>
                         @endcan
-
+                        --}}
                         @can('admin_course_personal_notes')
                             @if(!empty(getFeaturesSettings('course_notes_status')))
                                 <li class="{{ (request()->is(getAdminPanelUrl('/webinars/personal-notes', false))) ? 'active' : '' }}">

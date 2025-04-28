@@ -12,7 +12,16 @@
         </div>
     </div>
 @endif
-
+<div class="d-flex align-items-center mt-2">
+    <img src="{{ $user->avatar }}" alt="User Avatar"
+         class="rounded-circle border border-primary me-3"
+         style="width: 80px; height: 80px; object-fit: cover;margin-left:10px">
+        <div>
+            <h1 class="mb-1">{{ $user->full_name }}</h1>
+            <strong class="mb-0">{{ $user->bio }}</strong>
+        </div>
+    
+  </div>
 @if((!empty($educations) and !$educations->isEmpty()) or (!empty($experiences) and !$experiences->isEmpty()) or (!empty($occupations) and !$occupations->isEmpty()) or !empty($user->about))
     @if(!empty($educations) and !$educations->isEmpty())
         <div class="mt-40">
@@ -40,8 +49,9 @@
 
     @if(!empty($user->about))
         <div class="mt-40">
+            {{--
             <h3 class="font-16 text-dark-blue font-weight-bold">{{ trans('site.about') }}</h3>
-
+            --}}
             <div class="mt-30">
                 {!! nl2br($user->about) !!}
             </div>

@@ -59,9 +59,11 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/manage/{webinarId}', [CourseGroupController::class, 'listWebinarGroups'])->name('course-group.manage');
             Route::get('/list-groups', [CourseGroupController::class, 'listInstructorGroups'])->name('course-group.list');
             Route::get('/edit/{groupId}', [CourseGroupController::class, 'editGroup'])->name('course-group.edit');
-
+            Route::get('/view/{id}', [CourseGroupController::class, 'view'])->name('course-group.show');
             Route::get('/webinar-groups/', [CourseGroupController::class, 'listWebinarsWithGroups'])->name('webinar-groups.manage');
+            Route::get('/webinar-groups/all', [CourseGroupController::class, 'getPaginatedGroups'])->name('webinar-groups.all');
             Route::get('/webinar-groups-filter/', [CourseGroupController::class, 'filterWebinarsWithGroups'])->name('webinar-groups.filter');
+            Route::get('/schedule', [CourseGroupController::class, 'schedule'])->name('schedule.index');
 
             Route::get('/create/{groupId?}', [CourseGroupController::class, 'showCreateForm'])->name('course-group.create-form');
             Route::delete('/{group}', [CourseGroupController::class, 'destroy'])->name('course-group.destroy');

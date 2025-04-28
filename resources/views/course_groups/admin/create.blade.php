@@ -70,6 +70,7 @@
                     @endforeach
                 </select>
             </div>
+            
             <!-- Duration -->
             <div class="form-group col-md-4 col-12">
                 <label for="meeting_duration">Duration (hours)</label>
@@ -78,18 +79,18 @@
             </div>
         </div>
 
-        <div class="row d-none">
+        <div class="row">
             <!-- Recurring Meeting -->
-            <div class="form-group col-md-4 col-12">
+            <div class="form-group col-md-6 col-12">
                 <label for="meeting_recurring">Recurring</label>
                 
-                <small class="form-text text-muted">Is this a recurring <br>meeting?</small>
+                <small class="form-text text-muted">Is this a recurring meeting?</small>
                 <select name="meeting_recurring" id="meeting_recurring" class="form-control">
                     <option value="1" {{ $isEdit && $group->meeting_recurring == 1 ? 'selected' : '' }}>Yes</option>
                     <option value="0" {{ $isEdit && $group->meeting_recurring == 0 ? 'selected' : '' }}>No</option>
                 </select>
             </div>
-            <div class="form-group col-md-4 col-12">
+            <div class="form-group col-md-6 col-12">
                 <label for="recurrence_interval">Recurrence Interval</label>
                 <small class="form-text text-muted">Enter the number of intervals (e.g., every 2 days for daily recurrence).</small>
                 <input type="number" name="recurrence_interval" id="recurrence_interval" class="form-control" value="{{ old('recurrence_interval', $isEdit ? ($meetingJson['recurrence']['repeat_interval'] ?? 1) : 1) }}" required value="1">
@@ -97,22 +98,30 @@
         </div>        
         <div class="row">
             <!-- Start Time -->
-            <div class="form-group col-md-4 col-12">
+            <div class="form-group col-md-3 col-12">
                 <label for="meeting_start_time">Start Time</label>
                 <small class="form-text text-muted">Set the date and time <br>for the meeting to start.</small>
                 <input type="datetime-local" name="meeting_start_time" id="meeting_start_time" class="form-control" value="{{ old('meeting_start_time', $isEdit ? \Carbon\Carbon::parse($group->meeting_start_time)->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i')) }}" required>
                      </div>
 
             <!-- End Time -->
-            <div class="form-group col-md-4 col-12">
+            <div class="form-group col-md-3 col-12">
                 <label for="meeting_end_time">End Time</label>
                 <small class="form-text text-muted">Specify when the meeting should end. Required for recurring meetings.</small>
                 <input type="datetime-local" name="meeting_end_time" id="meeting_end_time" class="form-control" value="{{ old('meeting_end_time', $isEdit ? \Carbon\Carbon::parse($group->meeting_end_time)->format('Y-m-d\TH:i') : now()->addDay()->format('Y-m-d\TH:i')) }}" required>
             </div>
-            <div class="form-group col-md-4 col-12">
+            <div class="form-group col-md-3 col-12">
                 <label for="end_times">Number of meetings</label>
                 <small class="form-text text-muted">Enter the number of meetings (e.g., 6 for six meetings between the specificed dates).</small>
                 <input type="number" name="end_times" id="end_times" class="form-control" value="{{ old('end_times', $isEdit ? ($meetingJson['recurrence']['end_times'] ?? 1) : 1) }}" required>
+            </div>
+            <div class="form-group col-md-3 col-12">
+                <label for="session_type">Session Type</label>
+                <small class="form-text text-muted">Choose whether the session is Online (Zoom) or Offline (in-person).</small>
+                <select name="session_type" id="session_type" class="form-control select2">
+                    <option value="zoom" {{ $isEdit && ($group->session_type ?? 'zoom') == 'zoom' ? 'selected' : '' }}>Zoom Online</option>
+                    <option value="offline" {{ $isEdit && ($group->session_type ?? 'zoom') == 'offline' ? 'selected' : '' }}>Offline (In-Person)</option>
+                </select>
             </div>
         </div>
 
@@ -406,6 +415,68 @@
         window.addEventListener('load', calculateEndTimes);
     @endif
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const meetingRecurring = document.getElementById('meeting_recurring');
+        const recurrenceType = document.getElementById('recurrence_type');
+        const meetingEndTimeWrapper = document.getElementById('meeting_end_time').closest('.form-group');
+        const meetingEndTimeInput = document.getElementById('meeting_end_time');
+        const recurrenceFieldsWrapper = [
+            document.getElementById('recurrence_interval').closest('.form-group'),
+            document.getElementById('recurrence_type').closest('.form-group'),
+            document.getElementById('end_times').closest('.form-group')
+        ];
+        const weeklyDaysWrapper = document.getElementById('weekly_days_wrapper');
+        const monthlyDayWrapper = document.getElementById('monthly_day_wrapper');
+
+        function toggleRecurrenceFields() {
+            const showRecurring = meetingRecurring.value == '1';
+
+            recurrenceFieldsWrapper.forEach(el => {
+                if (el) el.style.display = showRecurring ? 'block' : 'none';
+            });
+
+            if (showRecurring) {
+                toggleRecurrenceTypeFields();
+            } else {
+                weeklyDaysWrapper.style.display = 'none';
+                monthlyDayWrapper.style.display = 'none';
+            }
+        }
+
+        function toggleRecurrenceTypeFields() {
+            if (recurrenceType.value == '1') { // Daily
+                weeklyDaysWrapper.style.display = 'none';
+                monthlyDayWrapper.style.display = 'none';
+            } else if (recurrenceType.value == '2') { // Weekly
+                weeklyDaysWrapper.style.display = 'block';
+                monthlyDayWrapper.style.display = 'none';
+            } else if (recurrenceType.value == '3') { // Monthly
+                weeklyDaysWrapper.style.display = 'none';
+                monthlyDayWrapper.style.display = 'block';
+            }
+        }
+        function toggleEndTimeField() {
+            if (meetingRecurring.value == '1') {
+                meetingEndTimeWrapper.style.display = 'block';
+                meetingEndTimeInput.required = true;
+            } else {
+                meetingEndTimeWrapper.style.display = 'none';
+                meetingEndTimeInput.required = false;
+                meetingEndTimeInput.value = '';
+            }
+        }
+
+        meetingRecurring.addEventListener('change', toggleRecurrenceFields);
+        meetingRecurring.addEventListener('change', toggleEndTimeField);
+        recurrenceType.addEventListener('change', toggleRecurrenceTypeFields);
+
+        // ✅ تشغيل وقت تحميل الصفحة
+        toggleRecurrenceFields();
+        toggleEndTimeField();
+    });
+</script>
+
     
 @endpush
 

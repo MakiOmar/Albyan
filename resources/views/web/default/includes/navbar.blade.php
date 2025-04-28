@@ -99,6 +99,11 @@
                             </li>
                         @endforeach
                     @endif
+                    @if(!empty($authUser) && $authUser->isUser() )
+                    <li class="nav-item">
+                        <a class="nav-link" href="/panel/student-groups">مجموعاتي الدراسية</a>
+                    </li>
+                    @endif
                 </ul>
             </div>
             {{--
