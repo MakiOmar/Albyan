@@ -118,7 +118,7 @@ body.sidebar-mini .main-sidebar:after {
 
 .main-sidebar .sidebar-menu li ul.dropdown-menu li a {
   padding-left: auto !important;
-  padding-right: 65px; }
+  padding-right: 45px; }
 
 body:not(.sidebar-mini) .sidebar-style-2 .sidebar-menu li.active ul.dropdown-menu li a {
   padding-left: 0; }
