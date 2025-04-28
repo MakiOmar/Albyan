@@ -75,7 +75,7 @@
             <div class="form-group col-md-4 col-12">
                 <label for="meeting_duration">Duration (hours)</label>
                 <small class="form-text text-muted">Enter the duration of the meeting in hours.</small>
-                <input type="text" name="meeting_duration" id="meeting_duration" class="form-control" value="{{ old('meeting_duration', $isEdit ? $group->meeting_duration / 60 : 30) }}" required>
+                <input type="text" name="meeting_duration" id="meeting_duration" class="form-control" value="{{ old('meeting_duration', $isEdit ? $group->meeting_duration / 60 : 1) }}" required>
             </div>
         </div>
 
@@ -97,33 +97,59 @@
             </div>
         </div>        
         <div class="row">
+            <!-- Start Date -->
+            <div class="form-group col-md-3 col-12">
+                <label for="meeting_start_date">Start Date</label>
+                <small class="form-text text-muted">Select the date the meeting <br>will start.</small>
+                <input type="date" name="meeting_start_date" id="meeting_start_date" class="form-control"
+                    value="{{ old('meeting_start_date', $isEdit ? \Carbon\Carbon::parse($group->meeting_start_time)->format('Y-m-d') : now()->format('Y-m-d')) }}" required>
+            </div>
+        
             <!-- Start Time -->
             <div class="form-group col-md-3 col-12">
                 <label for="meeting_start_time">Start Time</label>
-                <small class="form-text text-muted">Set the date and time <br>for the meeting to start.</small>
-                <input type="datetime-local" name="meeting_start_time" id="meeting_start_time" class="form-control" value="{{ old('meeting_start_time', $isEdit ? \Carbon\Carbon::parse($group->meeting_start_time)->format('Y-m-d\TH:i') : now()->format('Y-m-d\TH:i')) }}" required>
-                     </div>
-
+                <small class="form-text text-muted">Select the time the meeting <br>will start.</small>
+                <input type="time" name="meeting_start_time" id="meeting_start_time" class="form-control"
+                    value="{{ old('meeting_start_time', $isEdit ? \Carbon\Carbon::parse($group->meeting_start_time)->format('H:i') : '10:00') }}" required>
+            </div>
+        
+            <!-- End Date -->
+            <div class="form-group col-md-3 col-12">
+                <label for="meeting_end_date">End Date</label>
+                <small class="form-text text-muted">Select the date the meeting will end (for recurring meetings).</small>
+                <input type="date" name="meeting_end_date" id="meeting_end_date" class="form-control"
+                    value="{{ old('meeting_end_date', $isEdit ? \Carbon\Carbon::parse($group->meeting_end_time)->format('Y-m-d') : now()->addDay()->format('Y-m-d')) }}">
+            </div>
+        
             <!-- End Time -->
             <div class="form-group col-md-3 col-12">
                 <label for="meeting_end_time">End Time</label>
-                <small class="form-text text-muted">Specify when the meeting should end. Required for recurring meetings.</small>
-                <input type="datetime-local" name="meeting_end_time" id="meeting_end_time" class="form-control" value="{{ old('meeting_end_time', $isEdit ? \Carbon\Carbon::parse($group->meeting_end_time)->format('Y-m-d\TH:i') : now()->addDay()->format('Y-m-d\TH:i')) }}" required>
+                <small class="form-text text-muted">Select the time the meeting will end (for recurring meetings).</small>
+                <input type="time" name="meeting_end_time" id="meeting_end_time" class="form-control"
+                    value="{{ old('meeting_end_time', $isEdit ? \Carbon\Carbon::parse($group->meeting_end_time)->format('H:i') : '22:00') }}">
             </div>
-            <div class="form-group col-md-3 col-12">
-                <label for="end_times">Number of meetings</label>
-                <small class="form-text text-muted">Enter the number of meetings (e.g., 6 for six meetings between the specificed dates).</small>
-                <input type="number" name="end_times" id="end_times" class="form-control" value="{{ old('end_times', $isEdit ? ($meetingJson['recurrence']['end_times'] ?? 1) : 1) }}" required>
+        </div>
+        
+        <div class="row">
+            <!-- Number of Meetings -->
+            <div class="form-group col-md-6 col-12">
+                <label for="end_times">Number of Meetings</label>
+                <small class="form-text text-muted">Enter the number of meetings (e.g., 6 meetings between the specified dates).</small>
+                <input type="number" name="end_times" id="end_times" class="form-control"
+                    value="{{ old('end_times', $isEdit ? ($meetingJson['recurrence']['end_times'] ?? 1) : 1) }}" required>
             </div>
-            <div class="form-group col-md-3 col-12">
+        
+            <!-- Session Type -->
+            <div class="form-group col-md-6 col-12">
                 <label for="session_type">Session Type</label>
-                <small class="form-text text-muted">Choose whether the session is Online (Zoom) or Offline (in-person).</small>
+                <small class="form-text text-muted">Choose if the session is Online (Zoom) or Offline (in-person).</small>
                 <select name="session_type" id="session_type" class="form-control select2">
                     <option value="zoom" {{ $isEdit && ($group->session_type ?? 'zoom') == 'zoom' ? 'selected' : '' }}>Zoom Online</option>
                     <option value="offline" {{ $isEdit && ($group->session_type ?? 'zoom') == 'offline' ? 'selected' : '' }}>Offline (In-Person)</option>
                 </select>
             </div>
         </div>
+        
 
         <div class="row d-none">
             <!-- Participant Video -->

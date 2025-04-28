@@ -73,7 +73,7 @@
             @foreach($timeSlots as $slot)
                 @php [$slotStart, $slotEnd] = [$slot['start'], $slot['end']]; @endphp
                 <tr>
-                    <td>{{ $slotStart }} - {{ $slotEnd }}</td>
+                    <td style="text-align:center;padding: 0 5px; min-width:100px">{{ $slotStart }} - {{ $slotEnd }}</td>
 
                     @foreach($weekDays as $day)
                         @php
@@ -116,7 +116,7 @@
                             <td rowspan="{{ $rowspan }}" class="session-cell {{ $cellClass }}">
                                 <strong>{{ $session['webinar_title'] }}</strong><br>
                                 مجموعة: {{ $session['group_id'] }}<br>
-                                من: {{ $session['time'] }}<br>
+                                من: {{ \Carbon\Carbon::createFromFormat('H:i', $session['time'])->format('h:i A') }}<br>
                                 المدة: {{ $session['duration'] }} ساعة<br>
 
                                 <div class="mt-1">
