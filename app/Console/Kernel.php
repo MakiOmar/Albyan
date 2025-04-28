@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \App\Console\Commands\SearchReplaceCommand::class,
+        \App\Console\Commands\NotifyGroupsNearEndCommand::class,
     ];
 
     /**
@@ -25,6 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('groups:notify-near-end')->cron('0 */6 * * *');
     }
 
     /**

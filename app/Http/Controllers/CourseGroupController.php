@@ -1043,16 +1043,17 @@ class CourseGroupController extends Controller
     public function schedule(Request $request)
     {
         $weekOffset = $request->query('week', 0);
+        $instructorIdFilter = $request->query('instructor_id');
 
         $today = Carbon::now('Asia/Dubai')->startOfWeek(Carbon::SATURDAY)->addWeeks($weekOffset);
 
         $weekDays = [];
-        for ($i = 0; $i < 6; $i++) { // من السبت إلى الخميس
+        for ($i = 0; $i < 6; $i++) {
             $dayDate = $today->copy()->addDays($i);
             $weekDays[] = [
-                'name' => $dayDate->format('l'),       // Saturday
-                'label' => $dayDate->translatedFormat('D (M d)'), // سبت (أبريل 28)
-                'date' => $dayDate->format('Y-m-d'),
+            'name'  => $dayDate->format('l'),
+            'label' => $dayDate->translatedFormat('D (M d)'),
+            'date'  => $dayDate->format('Y-m-d'),
             ];
         }
 
@@ -1063,46 +1064,50 @@ class CourseGroupController extends Controller
         while ($start < $end) {
             $next = $start->copy()->addHour();
             $timeSlots[] = [
-                'start' => $start->format('H:i'),
-                'end' => $next->format('H:i'),
+            'start' => $start->format('H:i'),
+            'end'   => $next->format('H:i'),
             ];
             $start = $next;
         }
 
         $sessions = [];
 
-        $courseGroups = CourseGroup::with('webinar')->get();
+        $courseGroups = CourseGroup::with('instructor', 'webinar')->get();
 
         foreach ($courseGroups as $group) {
             $meetingJson = json_decode($group->meeting_json, true);
+            $isRecurring = $group->meeting_recurring == 1 ? 1 : 0;
 
             if (!empty($meetingJson['occurrences'])) {
-                // ✅ Group has defined occurrences (Zoom or Offline)
+                $lastOccurrence = collect($meetingJson['occurrences'])->sortByDesc('start_time')->first();
+                $lastDay = $isRecurring && $lastOccurrence ? Carbon::parse($lastOccurrence['start_time'])->format('Y-m-d') : null;
+
                 foreach ($meetingJson['occurrences'] as $occurrence) {
                     $startUtc = Carbon::parse($occurrence['start_time']);
 
                     $sessions[] = [
-                        'group_id'      => $group->id,
-                        'instructor_id' => $group->instructor_id,
-                        'instructor_name' => $group->instructor->full_name ?? '',
-                        'day'           => $startUtc->format('Y-m-d'),
-                        'time'          => $startUtc->format('H:i'),
-                        'duration'      => ($occurrence['duration'] ?? $group->meeting_duration) / 60,
-                        'session_type'  => $group->session_type ?? 'zoom',
-                        'webinar_title' => $group->webinar->title ?? '',
+                    'group_id'        => $group->id,
+                    'instructor_id'   => $group->instructor_id,
+                    'instructor_name' => $group->instructor->full_name ?? '',
+                    'day'             => $startUtc->format('Y-m-d'),
+                    'time'            => $startUtc->format('H:i'),
+                    'duration'        => ($occurrence['duration'] ?? $group->meeting_duration) / 60,
+                    'session_type'    => $group->session_type ?? 'zoom',
+                    'webinar_title'   => $group->webinar->title ?? '',
+                    'is_recurring'    => $isRecurring,
+                    'last_day'        => $lastDay, // ✅ فقط لو متكرر
                     ];
                 }
             } else {
-                // ✅ Group without occurrences => assume based on recurrence settings
                 $startDate = Carbon::parse($group->meeting_start_time);
                 $endDate = Carbon::parse($group->meeting_end_time);
                 $durationHours = $group->meeting_duration / 60;
-
-                $meetingRecurring = $group->meeting_recurring ?? 0;
                 $recurrence = $meetingJson['recurrence'] ?? [];
 
-                if ($meetingRecurring && isset($recurrence['type'])) {
-                    $type = $recurrence['type']; // 1 = Daily, 2 = Weekly, 3 = Monthly
+                if ($isRecurring && isset($recurrence['type'])) {
+                    $lastDay = $endDate->format('Y-m-d');
+
+                    $type = $recurrence['type'];
                     $interval = $recurrence['repeat_interval'] ?? 1;
                     $weeklyDays = isset($recurrence['weekly_days']) ? explode(',', $recurrence['weekly_days']) : [];
                     $monthlyDay = $recurrence['monthly_day'] ?? null;
@@ -1112,14 +1117,14 @@ class CourseGroupController extends Controller
                     while ($current <= $endDate) {
                         $add = false;
 
-                        if ($type == 1) { // Daily
+                        if ($type == 1) {
                             $add = true;
-                            $current->addDays($interval - 1); // Because we'll add +1 at end
-                        } elseif ($type == 2) { // Weekly
+                            $current->addDays($interval - 1);
+                        } elseif ($type == 2) {
                             if (in_array($current->dayOfWeekIso, $weeklyDays)) {
                                 $add = true;
                             }
-                        } elseif ($type == 3) { // Monthly
+                        } elseif ($type == 3) {
                             if ($current->day == $monthlyDay) {
                                 $add = true;
                             }
@@ -1127,35 +1132,45 @@ class CourseGroupController extends Controller
 
                         if ($add) {
                             $sessions[] = [
-                                'group_id'      => $group->id,
-                                'instructor_id' => $group->instructor_id,
-                                'instructor_name' => $group->instructor->full_name ?? '',
-                                'day'           => $current->format('Y-m-d'),
-                                'time'          => $startDate->format('H:i'),
-                                'duration'      => $durationHours,
-                                'session_type'  => $group->session_type ?? 'offline',
-                                'webinar_title' => $group->webinar->title ?? '',
+                            'group_id'        => $group->id,
+                            'instructor_id'   => $group->instructor_id,
+                            'instructor_name' => $group->instructor->full_name ?? '',
+                            'day'             => $current->format('Y-m-d'),
+                            'time'            => $startDate->format('H:i'),
+                            'duration'        => $durationHours,
+                            'session_type'    => $group->session_type ?? 'offline',
+                            'webinar_title'   => $group->webinar->title ?? '',
+                            'is_recurring'    => $isRecurring,
+                            'last_day'        => $lastDay, // ✅ هنا فقط مع المكرر
                             ];
                         }
 
                         $current->addDay();
                     }
                 } else {
-                    // No recurrence (single session)
+                    // ✅ جلسة واحدة بدون تكرار (لا نحتاج last_day)
                     $sessions[] = [
-                        'group_id'      => $group->id,
-                        'instructor_id' => $group->instructor_id,
-                        'instructor_name' => $group->instructor->full_name ?? '',
-                        'day'           => $startDate->format('Y-m-d'),
-                        'time'          => $startDate->format('H:i'),
-                        'duration'      => $durationHours,
-                        'session_type'  => $group->session_type ?? 'offline',
-                        'webinar_title' => $group->webinar->title ?? '',
+                    'group_id'        => $group->id,
+                    'instructor_id'   => $group->instructor_id,
+                    'instructor_name' => $group->instructor->full_name ?? '',
+                    'day'             => $startDate->format('Y-m-d'),
+                    'time'            => $startDate->format('H:i'),
+                    'duration'        => $durationHours,
+                    'session_type'    => $group->session_type ?? 'offline',
+                    'webinar_title'   => $group->webinar->title ?? '',
+                    'is_recurring'    => 0,
+                    'last_day'        => null, // ✅ صراحة نضعها null أو لا نرسلها أساساً
                     ];
                 }
             }
         }
+
+        if (!empty($instructorIdFilter)) {
+            $sessions = collect($sessions)->where('instructor_id', $instructorIdFilter)->values()->toArray();
+        }
+
         $instructors = User::where('role_name', 'teacher')->get();
+
         return view('course_groups.admin.schedule', compact('weekDays', 'timeSlots', 'sessions', 'weekOffset', 'instructors'));
     }
 }

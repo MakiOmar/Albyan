@@ -21,11 +21,19 @@
         background-color: #d4edda;
     }
     .session-ending-soon {
-        background-color: #f8d7da;
+        background-color: #9b0b17;
+        color:#fff;
     }
     .badge-today {
         background-color: #ffc107;
         color: #000;
+        font-size: 0.7rem;
+        padding: 3px 5px;
+        border-radius: 5px;
+    }
+    .badge-ending {
+        background-color: #000;
+        color: #fff;
         font-size: 0.7rem;
         padding: 3px 5px;
         border-radius: 5px;
@@ -128,21 +136,47 @@
                         @endphp
 
                         @if($session)
-                        <td rowspan="{{ $rowspan }}" class="session-cell {{ $cellClass }}">
+                        @php
+                            $today = \Carbon\Carbon::now('Asia/Dubai')->format('Y-m-d');
+                            $isToday = $session['day'] == $today;
+
+                            $endingSoon = false;
+                            
+                            if (!empty($session['last_day']) && $session['is_recurring']) {
+                                $lastDay = \Carbon\Carbon::parse($session['last_day'])->timezone('Asia/Dubai');
+                                $now = \Carbon\Carbon::now('Asia/Dubai');
+                                $daysRemaining = $now->diffInDays($lastDay, false);
+
+                                if ($daysRemaining <= 7) {
+                                    $endingSoon = true;
+                                }
+                            }
+
+                            $cellClass = $session['session_type'] == 'zoom' ? 'session-zoom' : 'session-offline';
+
+                            if ($endingSoon) {
+                                $cellClass = 'session-ending-soon';
+                            }
+                        @endphp
+
+                        <td rowspan="{{ $rowspan }}" class="session-cell position-relative pt-5 {{ $cellClass }}">
                             <strong>{{ $session['webinar_title'] }}</strong><br>
-                            <small>المحاضر: {{ $session['instructor_name'] ?? 'غير محدد' }}</small><br>
                             مجموعة: {{ $session['group_id'] }}<br>
+                            المدرس: {{ $session['instructor_name'] }}<br>
                             من: {{ \Carbon\Carbon::createFromFormat('H:i', $session['time'])->format('h:i A') }}<br>
                             المدة: {{ $session['duration'] }} ساعة<br>
-                        
+                            @if($endingSoon)
+                                <span class="badge-ending mt-2 position-absolute" style="top:3px;right:3px">تنتهي قريبا</span>
+                            @endif
                             <div class="mt-1">
                                 <span class="badge {{ $session['session_type'] == 'zoom' ? 'badge-info' : 'badge-success' }}">
                                     {{ $session['session_type'] == 'zoom' ? 'Zoom' : 'Offline' }}
                                 </span>
-                        
+
                                 @if($isToday)
                                     <span class="badge-today">جلسة اليوم</span>
                                 @endif
+                                
                             </div>
                         </td>
                         
