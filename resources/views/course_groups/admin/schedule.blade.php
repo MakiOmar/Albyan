@@ -36,20 +36,30 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-            <a href="{{ route('schedule.index', ['week' => $weekOffset - 1, 'type' => request('type')]) }}" class="btn btn-primary">الأسبوع السابق</a>
-            <a href="{{ route('schedule.index', ['week' => 0, 'type' => request('type')]) }}" class="btn btn-warning mx-2">الأسبوع الحالي</a>
-            <a href="{{ route('schedule.index', ['week' => $weekOffset + 1, 'type' => request('type')]) }}" class="btn btn-primary">الأسبوع القادم</a>
+            <a href="{{ route('schedule.index', ['week' => $weekOffset - 1, 'type' => request('type'), 'instructor_id' => request('instructor_id')]) }}" class="btn btn-primary">الأسبوع السابق</a>
+            <a href="{{ route('schedule.index', ['week' => 0, 'type' => request('type'), 'instructor_id' => request('instructor_id')]) }}" class="btn btn-warning mx-2">الأسبوع الحالي</a>
+            <a href="{{ route('schedule.index', ['week' => $weekOffset + 1, 'type' => request('type'), 'instructor_id' => request('instructor_id')]) }}" class="btn btn-primary">الأسبوع القادم</a>            
         </div>
 
         <div>
-            <form id="filter-form" method="GET" action="{{ route('schedule.index') }}" class="d-flex">
+            <form id="filter-form" method="GET" action="{{ route('schedule.index') }}" class="d-flex align-items-center gap-2">
                 <input type="hidden" name="week" value="{{ $weekOffset }}">
+                
+                <select name="instructor_id" id="instructor_id" onchange="document.getElementById('filter-form').submit()" class="form-control mr-2">
+                    <option value="">كل المحاضرين</option>
+                    @foreach($instructors as $instructor)
+                        <option value="{{ $instructor->id }}" {{ request('instructor_id') == $instructor->id ? 'selected' : '' }}>
+                            {{ $instructor->full_name }}
+                        </option>
+                    @endforeach
+                </select>
+            
                 <select name="type" onchange="document.getElementById('filter-form').submit()" class="form-control">
                     <option value="">كل الجلسات</option>
                     <option value="zoom" {{ request('type') == 'zoom' ? 'selected' : '' }}>Zoom فقط</option>
                     <option value="offline" {{ request('type') == 'offline' ? 'selected' : '' }}>Offline فقط</option>
                 </select>
-            </form>
+            </form>            
         </div>
     </div>
 
@@ -83,8 +93,13 @@
                             }
 
                             $session = collect($sessions)->first(function ($s) use ($day, $slotStart) {
-                                return $s['day'] === $day['date'] && $s['time'] === $slotStart;
+                                $filterType = request('type');
+                                $filterInstructor = request('instructor_id');
+                                $matchesType = empty($filterType) || $s['session_type'] === $filterType;
+                                $matchesInstructor = empty($filterInstructor) || $s['instructor_id'] == $filterInstructor;
+                                return $s['day'] === $day['date'] && $s['time'] === $slotStart && $matchesType && $matchesInstructor;
                             });
+
 
                             if ($session) {
                                 // فلترة حسب نوع الجلسة إذا تم اختيار فلتر
@@ -113,26 +128,26 @@
                         @endphp
 
                         @if($session)
-                            <td rowspan="{{ $rowspan }}" class="session-cell {{ $cellClass }}">
-                                <strong>{{ $session['webinar_title'] }}</strong><br>
-                                مجموعة: {{ $session['group_id'] }}<br>
-                                من: {{ \Carbon\Carbon::createFromFormat('H:i', $session['time'])->format('h:i A') }}<br>
-                                المدة: {{ $session['duration'] }} ساعة<br>
-
-                                <div class="mt-1">
-                                    <span class="badge {{ $session['session_type'] == 'zoom' ? 'badge-info' : 'badge-success' }}">
-                                        {{ $session['session_type'] == 'zoom' ? 'Zoom' : 'Offline' }}
-                                    </span>
-
-                                    @if($isToday)
-                                        <span class="badge-today">جلسة اليوم</span>
-                                    @endif
-                                </div>
-                            </td>
+                        <td rowspan="{{ $rowspan }}" class="session-cell {{ $cellClass }}">
+                            <strong>{{ $session['webinar_title'] }}</strong><br>
+                            <small>المحاضر: {{ $session['instructor_name'] ?? 'غير محدد' }}</small><br>
+                            مجموعة: {{ $session['group_id'] }}<br>
+                            من: {{ \Carbon\Carbon::createFromFormat('H:i', $session['time'])->format('h:i A') }}<br>
+                            المدة: {{ $session['duration'] }} ساعة<br>
+                        
+                            <div class="mt-1">
+                                <span class="badge {{ $session['session_type'] == 'zoom' ? 'badge-info' : 'badge-success' }}">
+                                    {{ $session['session_type'] == 'zoom' ? 'Zoom' : 'Offline' }}
+                                </span>
+                        
+                                @if($isToday)
+                                    <span class="badge-today">جلسة اليوم</span>
+                                @endif
+                            </div>
+                        </td>
+                        
                         @else
-                            <td onclick="openCreateGroupPopup('{{ $day['date'] }}', '{{ $slotStart }}')" style="cursor:pointer;">
-                                <div style="height: 60px;"></div>
-                            </td>
+                        <td onclick="openCreateGroupPopup('{{ $day['date'] }}', '{{ $slotStart }}', '{{ $session['instructor_id'] ?? '' }}')" style="cursor:pointer;">
                         @endif
                     @endforeach
                 </tr>
@@ -146,6 +161,7 @@
             <form id="quick-create-group-form" method="GET" action="{{ route('course-group.create-form') }}">
                 <input type="hidden" name="selected_date" id="selected_date">
                 <input type="hidden" name="selected_time" id="selected_time">
+                <input type="hidden" name="selected_instructor" id="selected_instructor" value="{{ request('instructor_id') }}">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">إنشاء مجموعة جديدة</h5>
@@ -170,11 +186,16 @@
 
 @push('scripts_bottom')
 <script>
-function openCreateGroupPopup(date, time) {
-    $('#selected_date').val(date);
-    $('#selected_time').val(time);
-    $('#selected_datetime_text').text('إنشاء جلسة في ' + date + ' الساعة ' + time);
-    $('#createGroupModal').modal('show');
-}
+    jQuery(document).ready(function($){
+        $('#instructor_id').select2();
+    });
+    function openCreateGroupPopup(date, time) {
+        $('#selected_date').val(date);
+        $('#selected_time').val(time);
+        $('#selected_instructor').val('{{ request('instructor_id') }}'); // ✅ قيمة الفلتر الحالي للمحاضر
+        $('#selected_datetime_text').text('إنشاء جلسة في ' + date + ' الساعة ' + time);
+        $('#createGroupModal').modal('show');
+    }
+
 </script>
 @endpush

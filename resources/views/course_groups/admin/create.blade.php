@@ -306,6 +306,20 @@
     });
 
     $(document).ready(function () {
+        const params = new URLSearchParams(window.location.search);
+        const selectedDate = params.get('selected_date');
+        const selectedTime = params.get('selected_time');
+        const selectedInstructor = params.get('selected_instructor');
+
+        if (selectedDate) {
+            $('#meeting_start_date').val(selectedDate);
+        }
+        if (selectedTime) {
+            $('#meeting_start_time').val(selectedTime);
+        }
+        if (selectedInstructor) {
+            $('#teacher_id').val(selectedInstructor).trigger('change');
+        }
         var ajaxInit = false;
         const getGroupsRoute = "{{ route('instructor.groups', ['instructor' => 'INSTRUCTOR_ID']) }}";
             $('#teacher_id').on('change', function () {

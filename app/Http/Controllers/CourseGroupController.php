@@ -1084,6 +1084,7 @@ class CourseGroupController extends Controller
                     $sessions[] = [
                         'group_id'      => $group->id,
                         'instructor_id' => $group->instructor_id,
+                        'instructor_name' => $group->instructor->full_name ?? '',
                         'day'           => $startUtc->format('Y-m-d'),
                         'time'          => $startUtc->format('H:i'),
                         'duration'      => ($occurrence['duration'] ?? $group->meeting_duration) / 60,
@@ -1128,6 +1129,7 @@ class CourseGroupController extends Controller
                             $sessions[] = [
                                 'group_id'      => $group->id,
                                 'instructor_id' => $group->instructor_id,
+                                'instructor_name' => $group->instructor->full_name ?? '',
                                 'day'           => $current->format('Y-m-d'),
                                 'time'          => $startDate->format('H:i'),
                                 'duration'      => $durationHours,
@@ -1143,6 +1145,7 @@ class CourseGroupController extends Controller
                     $sessions[] = [
                         'group_id'      => $group->id,
                         'instructor_id' => $group->instructor_id,
+                        'instructor_name' => $group->instructor->full_name ?? '',
                         'day'           => $startDate->format('Y-m-d'),
                         'time'          => $startDate->format('H:i'),
                         'duration'      => $durationHours,
@@ -1152,7 +1155,7 @@ class CourseGroupController extends Controller
                 }
             }
         }
-
-        return view('course_groups.admin.schedule', compact('weekDays', 'timeSlots', 'sessions', 'weekOffset'));
+        $instructors = User::where('role_name', 'teacher')->get();
+        return view('course_groups.admin.schedule', compact('weekDays', 'timeSlots', 'sessions', 'weekOffset', 'instructors'));
     }
 }
