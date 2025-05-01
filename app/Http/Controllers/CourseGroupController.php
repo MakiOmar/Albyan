@@ -219,8 +219,11 @@ class CourseGroupController extends Controller
             if (!$zoomMeetingResponse['success']) {
                 return redirect()->back()->withErrors(['zoom_meeting' => $zoomMeetingResponse['error']]);
             }
-
-            $zoomMeeting = $zoomMeetingResponse['data'];
+            $zoomData = $zoomMeetingResponse['data'];
+            if (isset($zoomData['global_dial_in_numbers'])) {
+                $zoomData['global_dial_in_numbers'] = array();
+            }
+            $zoomMeeting = $zoomData;
         }
         if ($validated['session_type'] == 'offline') {
             $offlineOccurrences = $this->generateOfflineOccurrences($validated);
@@ -293,8 +296,11 @@ class CourseGroupController extends Controller
             if (!$zoomUpdateResponse['success']) {
                 return redirect()->back()->withErrors(['zoom_meeting' => $zoomUpdateResponse['error']]);
             }
-
-            $zoomMeeting = $zoomUpdateResponse['data'];
+            $zoomData = $zoomUpdateResponse['data'];
+            if (isset($zoomData['global_dial_in_numbers'])) {
+                $zoomData['global_dial_in_numbers'] = array();
+            }
+            $zoomMeeting = $zoomData;
         }
         if ($validated['session_type'] == 'offline') {
             $offlineOccurrences = $this->generateOfflineOccurrences($validated);
@@ -1172,5 +1178,110 @@ class CourseGroupController extends Controller
         $instructors = User::where('role_name', 'teacher')->get();
 
         return view('course_groups.admin.schedule', compact('weekDays', 'timeSlots', 'sessions', 'weekOffset', 'instructors'));
+    }
+    public function addCompensatorySession(Request $request, $groupId)
+    {
+        $group = CourseGroup::findOrFail($groupId);
+        $date = $request->input('date');
+        $time = $request->input('time');
+
+        if ($group->session_type === 'offline') {
+            // ✅ تحقق من وجود التاريخ والوقت
+            if (!$date || !$time) {
+                return redirect()->back()->withErrors(['error' => 'يجب إدخال التاريخ والوقت للجلسات الأوفلاين.']);
+            }
+
+            $durationMinutes = $group->meeting_duration / 60;
+            $result = $this->addCompensatoryOfflineSession($group, $date, $time, $durationMinutes);
+        } else {
+            // ✅ Zoom: فقط زيادة end_times دون الحاجة لتاريخ ووقت
+            $result = $this->addCompensatoryZoomOccurrence($group);
+        }
+
+        if (!$result['success']) {
+            return redirect()->back()->withErrors(['error' => $result['error']]);
+        }
+
+        return redirect()->back()->with('success', 'تمت إضافة الجلسة التعويضية بنجاح.');
+    }
+
+    private function addCompensatoryZoomOccurrence($group)
+    {
+        try {
+            $accessToken   = $this->getZoomAccessToken();
+            $zoomBaseUrl   = env('ZOOM_BASE_URL', 'https://api.zoom.us/v2');
+            $zoomMeetingUrl = "{$zoomBaseUrl}/meetings/{$group->meeting_id}";
+
+            // ✅ جلب بيانات الاجتماع
+            $meetingData = json_decode($group->meeting_json ?? '{}', true);
+            $recurrence  = $meetingData['recurrence'] ?? [];
+
+            $newEndTimes = ($recurrence['end_times'] ?? 1) + 1;
+
+            $patchData = [
+                'recurrence' => [
+                    'type'            => $recurrence['type'] ?? 1,
+                    'repeat_interval' => $recurrence['repeat_interval'] ?? 1,
+                    'end_times'       => $newEndTimes,
+                    'weekly_days'     => $recurrence['weekly_days'] ?? null,
+                    'monthly_day'     => $recurrence['monthly_day'] ?? null,
+                ]
+            ];
+
+            $patchResponse = Http::withToken($accessToken)->patch($zoomMeetingUrl, array_filter($patchData));
+
+            if ($patchResponse->failed()) {
+                return ['success' => false, 'error' => 'فشل تحديث اجتماع زووم: ' . $patchResponse->body()];
+            }
+
+            // ✅ تحديث البيانات محليًا
+            $updatedMeeting = Http::withToken($accessToken)->get($zoomMeetingUrl)->json();
+            $group->meeting_json = json_encode($updatedMeeting);
+
+            // ⬇️ تحديد نوع التكرار وتعديل نهاية الجلسات محليًا
+            $type = $recurrence['type'] ?? 1;
+            $interval = $recurrence['repeat_interval'] ?? 1;
+
+            $currentEnd = Carbon::parse($group->meeting_end_time);
+            if ($type == 1) {
+                $group->meeting_end_time = $currentEnd->addDays($interval);
+            } elseif ($type == 2) {
+                $group->meeting_end_time = $currentEnd->addWeeks($interval);
+            } elseif ($type == 3) {
+                $group->meeting_end_time = $currentEnd->addMonths($interval);
+            }
+
+            $group->save();
+
+            return ['success' => true];
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    private function addCompensatoryOfflineSession($group, $date, $time, $durationMinutes)
+    {
+        try {
+            $meetingData = json_decode($group->meeting_json ?? '{}', true);
+
+            if (!isset($meetingData['occurrences'])) {
+                $meetingData['occurrences'] = [];
+            }
+
+            $newOccurrence = [
+                'start_time' => Carbon::parse($date . ' ' . $time, 'Asia/Dubai')->timezone('UTC')->format('Y-m-d\TH:i:s\Z'),
+                'duration'   => $durationMinutes,
+                'status'     => 'available',
+            ];
+
+            $meetingData['occurrences'][] = $newOccurrence;
+
+            $group->meeting_json = json_encode($meetingData);
+            $group->save();
+
+            return ['success' => true];
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
     }
 }

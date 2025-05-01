@@ -56,6 +56,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/{id}/delete', 'RoleController@destroy');
         });
         Route::prefix('course-group')->group(function () {
+            Route::post('/{group}/add-compensatory-session', [CourseGroupController::class, 'addCompensatorySession'])->name('course-group.add-compensatory-session');
             Route::get('/manage/{webinarId}', [CourseGroupController::class, 'listWebinarGroups'])->name('course-group.manage');
             Route::get('/list-groups', [CourseGroupController::class, 'listInstructorGroups'])->name('course-group.list');
             Route::get('/edit/{groupId}', [CourseGroupController::class, 'editGroup'])->name('course-group.edit');

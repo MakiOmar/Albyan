@@ -42,4 +42,6 @@
         </div>
     </div>
 </section>
+@include('course_groups.admin.partials.compensatory_session_model');
 @endsection
+@include('course_groups.admin.partials.compensatory_session_script');
