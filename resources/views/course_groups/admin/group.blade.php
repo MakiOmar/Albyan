@@ -65,7 +65,12 @@
                     <div class="card-header d-flex justify-content-between" id="heading{{ $group->id }}">
                         <h2 class="mb-0">
                             <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse{{ $group->id }}" aria-expanded="false" aria-controls="collapse{{ $group->id }}">
-                                المجموعة: {{ $group->id }} - معرف الاجتماع: {{ $group->meeting_id }}
+                                المجموعة: {{ $group->id }} 
+                                @if($group->session_type === 'zoom')
+                                    - معرف الاجتماع: {{ $group->meeting_id }}
+                                @else
+                                    - جلسة حضورية
+                                @endif
                             </button>
                             <button class="btn btn-primary btn-sm add-student-btn" data-group-id="{{ $group->id }}" data-toggle="modal" data-target="#addStudentModal">
                                 إضافة طالب

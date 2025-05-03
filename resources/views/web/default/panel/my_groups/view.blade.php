@@ -51,13 +51,20 @@
                         <div class="card-header d-flex justify-content-between">
                             <h2 class="mb-0">
                                 <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse{{ $group->id }}" aria-expanded="false" aria-controls="collapse{{ $group->id }}">
-                                    المجموعة: {{ $group->id }} - معرف الاجتماع: {{ $group->meeting_id }}
+                                    المجموعة: {{ $group->id }}
+                                    @if($group->session_type === 'zoom')
+                                        - معرف الاجتماع: {{ $group->meeting_id }}
+                                    @else
+                                        - جلسة حضورية
+                                    @endif
+
                                 </button>
                             </h2>
                             <div class="mt-20 d-flex flex-column">
-                                @if($joinUrl)
+                                @if($group->session_type === 'zoom' && $joinUrl)
                                     <a href="{{ $joinUrl }}" class="btn btn-primary">{{ trans('public.join_meeting') }}</a>
                                 @endif
+
                                 @if($nextStartTime)
                                 <div id="countdown">
                                     <div class="counter">
@@ -99,8 +106,8 @@
                             </div>
                             @if ( $user->isTeacher() )
                             <div class="px-3 mt-4">
-                                <h6>الطلاب</h6>
-                                <div class="table-responsive">
+                                <h3 class="text-secondary"><i class="fa fa-bookmark"></i> الطلاب</h3>
+                                <div class="table-responsive pt-2">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
@@ -119,11 +126,13 @@
                                     </table>
                                 </div>
                             </div>
-                            @else
-                            <div class="student-meetings">
-                                @include('web.default.course.learningPage.components.group_meetings', ['group' => $group])
-                            </div>
                             @endif
+                            <div class="px-3 mt-4">
+                                <h3 class="text-secondary"><i class="fa fa-bookmark"></i> قائمة المحاضرات</h3>
+                                <div class="student-meetings pt-2">
+                                    @include('web.default.course.learningPage.components.group_meetings', ['group' => $group, 'occurrences' => $occurrences])
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -192,7 +201,7 @@
 @endsection
 
 @push('scripts_bottom')
-@if( $meetingID && $nextStartTime )
+@if($nextStartTime)
     <script>
         // Set the countdown date from PHP
         const nextSessionTime = new Date("{{ $nextStartTime }}").getTime();
@@ -221,6 +230,6 @@
             document.getElementById("seconds").innerText = seconds;
         }, 1000);
     </script>
-    @endif
+@endif
 <script src="/assets/default/js/panel/make_next_session.min.js"></script>
 @endpush

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InstructorFileController;
+use App\Http\Controllers\CourseGroupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +78,7 @@ Route::group(['namespace' => 'Panel', 'prefix' => 'panel', 'middleware' => ['imp
         });
     });
     Route::get('/my-groups', 'MyGroupsController@index');
+    Route::post('/course-group/{group}/add-compensatory-session', [CourseGroupController::class, 'addCompensatorySession'])->name('course-group.add-compensatory-session');
     Route::get('/student-groups', 'MyGroupsController@studentGroups');
     Route::get('/my-groups/view/{id}', 'MyGroupsController@view')->name('course-group.view');
     Route::get('/instructor-files', [InstructorFileController::class, 'create'])->name('instructor-files.create');

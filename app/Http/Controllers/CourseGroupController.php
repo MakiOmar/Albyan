@@ -200,13 +200,16 @@ class CourseGroupController extends Controller
             'student_ids'         => 'required|array|min:1',
             'student_ids.*'       => 'exists:users,id',
             'teacher_id'          => 'required|exists:users,id',
-            'end_times'           => 'required',
+            'end_times'           => 'required|integer|min:1',
             'session_type'        => 'required|in:zoom,offline',
+            'manual_occurrences'  => 'nullable|array',
+            'manual_occurrences.*.date' => 'nullable|date',
+            'manual_occurrences.*.time' => 'nullable|date_format:H:i',
         ]);
 
-        $startDateTime = Carbon::parse($validated['meeting_start_date'] . ' ' . $validated['meeting_start_time']);
+        $startDateTime = Carbon::parse($validated['meeting_start_date'] . ' ' . $validated['meeting_start_time'], 'Asia/Dubai');
         $endDateTime = ($validated['meeting_recurring'] == 1 && !empty($validated['meeting_end_date']) && !empty($validated['meeting_end_time']))
-            ? Carbon::parse($validated['meeting_end_date'] . ' ' . $validated['meeting_end_time'])
+            ? Carbon::parse($validated['meeting_end_date'] . ' ' . $validated['meeting_end_time'], 'Asia/Dubai')
             : null;
 
         $webinar = Webinar::findOrFail($validated['webinar_id']);
@@ -219,15 +222,37 @@ class CourseGroupController extends Controller
             if (!$zoomMeetingResponse['success']) {
                 return redirect()->back()->withErrors(['zoom_meeting' => $zoomMeetingResponse['error']]);
             }
+
             $zoomData = $zoomMeetingResponse['data'];
-            if (isset($zoomData['global_dial_in_numbers'])) {
-                $zoomData['global_dial_in_numbers'] = array();
-            }
+            unset($zoomData['global_dial_in_numbers']); // إزالة بيانات لا حاجة لها
             $zoomMeeting = $zoomData;
         }
+
         if ($validated['session_type'] == 'offline') {
-            $offlineOccurrences = $this->generateOfflineOccurrences($validated);
+            $manualOccurrences = $request->input('manual_occurrences');
+
+            if (is_array($manualOccurrences) && count($manualOccurrences) > 0) {
+                $offlineOccurrences = collect($manualOccurrences)
+                    ->filter(fn($item) => !empty($item['date']) && !empty($item['time']))
+                    ->map(function ($item) use ($validated) {
+                        return [
+                            'start_time' => Carbon::parse($item['date'] . ' ' . $item['time'], 'Asia/Dubai')->toIso8601String(),
+                            'duration'   => $validated['meeting_duration'] * 60,
+                            'status'     => 'available',
+                        ];
+                    })->values()->all();
+            } else {
+                $offlineOccurrences = $this->generateOfflineOccurrences($validated);
+            }
+
             $zoomMeeting = [
+                'recurrence' => [
+                    'type'            => (int) $validated['recurrence_type'],
+                    'repeat_interval' => (int) $validated['recurrence_interval'],
+                    'end_times'       => (int) $validated['end_times'],
+                    'weekly_days'     => isset($validated['weekly_days']) ? implode(',', $validated['weekly_days']) : null,
+                    'monthly_day'     => $validated['monthly_day'] ?? null,
+                ],
                 'occurrences' => $offlineOccurrences,
             ];
         }
@@ -255,7 +280,6 @@ class CourseGroupController extends Controller
         return redirect()->route('webinar-groups.all')->with('success', 'Group created successfully.');
     }
 
-
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
@@ -277,13 +301,16 @@ class CourseGroupController extends Controller
             'student_ids'         => 'required|array|min:1',
             'student_ids.*'       => 'exists:users,id',
             'teacher_id'          => 'required|exists:users,id',
-            'end_times'           => 'required',
+            'end_times'           => 'required|integer|min:1',
             'session_type'        => 'required|in:zoom,offline',
+            'manual_occurrences'  => 'nullable|array',
+            'manual_occurrences.*.date' => 'nullable|date',
+            'manual_occurrences.*.time' => 'nullable|date_format:H:i',
         ]);
 
-        $startDateTime = Carbon::parse($validated['meeting_start_date'] . ' ' . $validated['meeting_start_time']);
+        $startDateTime = Carbon::parse($validated['meeting_start_date'] . ' ' . $validated['meeting_start_time'], 'Asia/Dubai');
         $endDateTime = ($validated['meeting_recurring'] == 1 && !empty($validated['meeting_end_date']) && !empty($validated['meeting_end_time']))
-            ? Carbon::parse($validated['meeting_end_date'] . ' ' . $validated['meeting_end_time'])
+            ? Carbon::parse($validated['meeting_end_date'] . ' ' . $validated['meeting_end_time'], 'Asia/Dubai')
             : null;
 
         $group = CourseGroup::findOrFail($id);
@@ -296,15 +323,38 @@ class CourseGroupController extends Controller
             if (!$zoomUpdateResponse['success']) {
                 return redirect()->back()->withErrors(['zoom_meeting' => $zoomUpdateResponse['error']]);
             }
+
             $zoomData = $zoomUpdateResponse['data'];
-            if (isset($zoomData['global_dial_in_numbers'])) {
-                $zoomData['global_dial_in_numbers'] = array();
-            }
+            unset($zoomData['global_dial_in_numbers']);
             $zoomMeeting = $zoomData;
         }
+
         if ($validated['session_type'] == 'offline') {
-            $offlineOccurrences = $this->generateOfflineOccurrences($validated);
+            $manualOccurrences = $request->input('manual_occurrences');
+
+            if (is_array($manualOccurrences) && count($manualOccurrences) > 0) {
+                $offlineOccurrences = collect($manualOccurrences)
+                    ->filter(fn($item) => !empty($item['date']) && !empty($item['time']))
+                    ->map(function ($item) use ($validated) {
+                        return [
+                            'occurrence_id' => time() . rand(1, 1000),
+                            'start_time' => Carbon::parse($item['date'] . ' ' . $item['time'], 'Asia/Dubai')->toIso8601String(),
+                            'duration'   => $validated['meeting_duration'] * 60,
+                            'status'     => 'available',
+                        ];
+                    })->values()->all();
+            } else {
+                $offlineOccurrences = $this->generateOfflineOccurrences($validated);
+            }
+
             $zoomMeeting = [
+                'recurrence' => [
+                    'type'            => (int) $validated['recurrence_type'],
+                    'repeat_interval' => (int) $validated['recurrence_interval'],
+                    'end_times'       => (int) $validated['end_times'],
+                    'weekly_days'     => isset($validated['weekly_days']) ? implode(',', $validated['weekly_days']) : null,
+                    'monthly_day'     => $validated['monthly_day'] ?? null,
+                ],
                 'occurrences' => $offlineOccurrences,
             ];
         }
@@ -329,21 +379,19 @@ class CourseGroupController extends Controller
             ]);
         }
 
-        return redirect()->route('course-group.manage', $validated['webinar_id'])
-            ->with('success', 'Group updated successfully.');
+        return redirect()->back()->with('success', 'Group updated successfully.');
     }
-
 
     private function generateOfflineOccurrences(array $validated)
     {
         $occurrences = [];
 
-        $startDateTime = Carbon::parse($validated['meeting_start_date'] . ' ' . $validated['meeting_start_time']);
-        Log::emergency($startDateTime);
+        $startDateTime = Carbon::parse($validated['meeting_start_date'] . ' ' . $validated['meeting_start_time'], 'Asia/Dubai');
         $endDateTime = ($validated['meeting_recurring'] == 1 && !empty($validated['meeting_end_date']) && !empty($validated['meeting_end_time']))
-            ? Carbon::parse($validated['meeting_end_date'] . ' ' . $validated['meeting_end_time'])
+            ? Carbon::parse($validated['meeting_end_date'] . ' ' . $validated['meeting_end_time'], 'Asia/Dubai')
             : $startDateTime;
 
+        $duration = (int) $validated['meeting_duration'] * 60;
         $current = $startDateTime->copy();
         $count = 0;
 
@@ -351,8 +399,8 @@ class CourseGroupController extends Controller
             if ($validated['recurrence_type'] == 1) {
                 // يومي
                 $occurrences[] = [
-                    'start_time' => $current->copy()->toIso8601String(),
-                    'duration'   => $validated['meeting_duration'] * 60,
+                    'start_time' => $current->toIso8601String(),
+                    'duration'   => $duration,
                     'status'     => 'available',
                 ];
                 $current->addDays($validated['recurrence_interval']);
@@ -362,8 +410,8 @@ class CourseGroupController extends Controller
 
                 if (in_array($current->dayOfWeekIso, $weekDays)) {
                     $occurrences[] = [
-                        'start_time' => $current->copy()->toIso8601String(),
-                        'duration'   => $validated['meeting_duration'] * 60,
+                        'start_time' => $current->toIso8601String(),
+                        'duration'   => $duration,
                         'status'     => 'available',
                     ];
                     $count++;
@@ -374,8 +422,8 @@ class CourseGroupController extends Controller
                 // شهري
                 if ($current->day == $validated['monthly_day']) {
                     $occurrences[] = [
-                        'start_time' => $current->copy()->toIso8601String(),
-                        'duration'   => $validated['meeting_duration'] * 60,
+                        'start_time' => $current->toIso8601String(),
+                        'duration'   => $duration,
                         'status'     => 'available',
                     ];
                     $current->addMonths($validated['recurrence_interval']);
@@ -390,8 +438,6 @@ class CourseGroupController extends Controller
 
         return $occurrences;
     }
-
-
 
     private function handleFirebaseMessages($data, $user_id, $group_id, $webinar_id)
     {
@@ -1269,8 +1315,9 @@ class CourseGroupController extends Controller
             }
 
             $newOccurrence = [
-                'start_time' => Carbon::parse($date . ' ' . $time, 'Asia/Dubai')->timezone('UTC')->format('Y-m-d\TH:i:s\Z'),
-                'duration'   => $durationMinutes,
+                'occurrence_id' => time() . rand(1, 1000),
+                'start_time' => Carbon::parse($date . ' ' . $time, 'Asia/Dubai')->toIso8601String(),
+                'duration'   => $durationMinutes * 60,
                 'status'     => 'available',
             ];
 

@@ -93,7 +93,7 @@
             <div class="form-group col-md-6 col-12">
                 <label for="recurrence_interval">Recurrence Interval</label>
                 <small class="form-text text-muted">Enter the number of intervals (e.g., every 2 days for daily recurrence).</small>
-                <input type="number" name="recurrence_interval" id="recurrence_interval" class="form-control" value="{{ old('recurrence_interval', $isEdit ? ($meetingJson['recurrence']['repeat_interval'] ?? 1) : 1) }}" required value="1">
+                <input type="number" name="recurrence_interval" id="recurrence_interval" class="form-control" value="{{ old('recurrence_interval', $isEdit ? ($meetingJson['recurrence']['repeat_interval'] ?? 1) : 1) }}" required>
             </div>
         </div>        
         <div class="row">
@@ -148,6 +148,24 @@
                     <option value="offline" {{ $isEdit && ($group->session_type ?? 'zoom') == 'offline' ? 'selected' : '' }}>Offline (In-Person)</option>
                 </select>
             </div>
+            <div id="offline-repeater-wrapper" style="display:none">
+                <h6>مواعيد مخصصة</h6>
+                <div id="manual-occurrences">
+                    <div class="row occurrence-row">
+                        <div class="col-md-5">
+                            <input type="date" name="manual_occurrences[0][date]" class="form-control">
+                        </div>
+                        <div class="col-md-5">
+                            <input type="time" name="manual_occurrences[0][time]" class="form-control">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger remove-occurrence">X</button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="addOccurrence" class="btn btn-secondary mt-2">إضافة موعد</button>
+            </div>
+            
         </div>
         
 
@@ -283,15 +301,27 @@
         @if($isEdit)
             // إعادة ضبط القيم المختارة
             let selectedStudentIds = @json($group->members->pluck('student_id'));
-            console.log(selectedStudentIds);
             $('#student_ids').val(selectedStudentIds).trigger('change');
         @endif
     });
     document.getElementById('create-group-form').addEventListener('submit', function(e) {
         const btn = document.getElementById('create-group-submit-btn');
+        const form = this;
+
+        // تحقق من صحة النموذج قبل التعطيل
+        if (!form.checkValidity()) {
+            // ✅ النموذج غير صالح، لا تعطل الزر
+            e.preventDefault();
+            e.stopPropagation();
+            form.classList.add('was-validated'); // يظهر الأخطاء إن وجدت
+            return;
+        }
+
+        // ✅ النموذج صالح
         btn.disabled = true;
-        btn.innerText = 'Submitting...';
+        btn.innerText = 'جاري الإرسال...';
     });
+
     document.addEventListener('DOMContentLoaded', function () {
         const recurrenceType = document.getElementById('recurrence_type');
         const weeklyDaysWrapper = document.getElementById('weekly_days_wrapper');
@@ -393,33 +423,40 @@
         @endif
     });
 </script>
+
 <script>
     function calculateEndTimes() {
-        const start = document.getElementById('meeting_start_time').value;
-        const end = document.getElementById('meeting_end_time').value;
+        const startDateValue = document.getElementById('meeting_start_date').value;
+        const endDateValue = document.getElementById('meeting_end_date').value;
+        const startTimeValue = document.getElementById('meeting_start_time').value;
+        const endTimeValue = document.getElementById('meeting_end_time').value;
         const recurrenceType = document.getElementById('recurrence_type').value;
         const interval = parseInt(document.getElementById('recurrence_interval').value || 1);
         const weeklyDays = $('#weekly_days').val() || [];
-        const monthlyDay = parseInt(document.getElementById('monthly_day').value || 1);
-    
-        if (!start || !end || !interval) return;
-    
-        const startDate = new Date(start);
-        const endDate = new Date(end);
+        let monthlyDay = 1;
+        if (document.getElementById('recurrence_type').value === '3') {
+            const monthlyDayInput = document.getElementById('monthly_day');
+            if (monthlyDayInput && monthlyDayInput.value) {
+                monthlyDay = parseInt(monthlyDayInput.value);
+            }
+        }
+
+
+        if (!startDateValue || !endDateValue || !startTimeValue || !endTimeValue || !interval) return;
+
+        const start = new Date(`${startDateValue}T${startTimeValue}`);
+        const end = new Date(`${endDateValue}T${endTimeValue}`);
         let count = 0;
-    
+
         if (recurrenceType == '1') {
             // Daily
-            const diffDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+            const diffDays = Math.floor((end - start) / (1000 * 60 * 60 * 24));
             count = Math.floor(diffDays / interval) + 1;
         } else if (recurrenceType == '2') {
             // Weekly
-            const dayMillis = 24 * 60 * 60 * 1000;
-            const totalDays = Math.floor((endDate - startDate) / dayMillis);
-            let current = new Date(startDate);
-    
-            while (current <= endDate) {
-                const dayOfWeek = current.getDay() + 1; // JS: Sunday=0, we want Sunday=1
+            let current = new Date(start);
+            while (current <= end) {
+                const dayOfWeek = current.getDay() + 1; // Sunday = 0
                 if (weeklyDays.includes(dayOfWeek.toString())) {
                     count++;
                 }
@@ -427,36 +464,46 @@
             }
         } else if (recurrenceType == '3') {
             // Monthly
-            let current = new Date(startDate);
-            while (current <= endDate) {
+            let current = new Date(start);
+            while (current <= end) {
                 if (current.getDate() == monthlyDay) {
                     count++;
                 }
                 current.setMonth(current.getMonth() + interval);
             }
         }
-    
+
         document.getElementById('end_times').value = count;
     }
-    </script>
-<script>
-    const triggerFields = ['meeting_start_time', 'meeting_end_time', 'recurrence_type', 'recurrence_interval', 'weekly_days', 'monthly_day'];
+    document.addEventListener('DOMContentLoaded', function () {
+        const startInput = document.getElementById('meeting_start_time');
+        const endInput = document.getElementById('meeting_end_time');
+        const recurrenceType = document.getElementById('recurrence_type');
+        const intervalInput = document.getElementById('recurrence_interval');
 
-    triggerFields.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-            el.addEventListener('change', calculateEndTimes);
-            el.addEventListener('input', calculateEndTimes);
+        // تأكد من وجود كل الحقول المطلوبة
+        if (startInput && endInput && recurrenceType && intervalInput) {
+            const triggerFields = ['meeting_start_time', 'meeting_end_time', 'recurrence_type', 'recurrence_interval', 'weekly_days', 'monthly_day'];
+
+            triggerFields.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('change', calculateEndTimes);
+                    el.addEventListener('input', calculateEndTimes);
+                }
+            });
+
+            // ✅ نفذ فقط بعد التأكد من وجود كل شيء
+            @if(!$isEdit)
+                calculateEndTimes();
+            @endif
+        } else {
+            console.warn('⚠️ One or more required fields for calculateEndTimes are missing.');
         }
     });
 
-    // Trigger on page load for edit mode
-    @if($isEdit)
-        window.addEventListener('load', calculateEndTimes);
-    @endif
-</script>
-<script>
     document.addEventListener('DOMContentLoaded', function () {
+        
         const meetingRecurring = document.getElementById('meeting_recurring');
         const recurrenceType = document.getElementById('recurrence_type');
         const meetingEndTimeWrapper = document.getElementById('meeting_end_time').closest('.form-group');
@@ -515,6 +562,36 @@
         toggleRecurrenceFields();
         toggleEndTimeField();
     });
+    jQuery(document).ready(function ($) {
+        let index = 1;
+        $('#addOccurrence').click(function() {
+            $('#manual-occurrences').append(`
+                <div class="row occurrence-row">
+                    <div class="col-md-5">
+                        <input type="date" name="manual_occurrences[${index}][date]" class="form-control">
+                    </div>
+                    <div class="col-md-5">
+                        <input type="time" name="manual_occurrences[${index}][time]" class="form-control">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger remove-occurrence">X</button>
+                    </div>
+                </div>
+            `);
+            index++;
+        });
+
+        $(document).on('click', '.remove-occurrence', function() {
+            $(this).closest('.occurrence-row').remove();
+        });
+
+        $('#session_type').on('change', function () {
+            const isOffline = $(this).val() === 'offline';
+            console.log(isOffline);
+            $('#offline-repeater-wrapper').toggle(isOffline);
+        }).trigger('change');
+    });
+
 </script>
 
     

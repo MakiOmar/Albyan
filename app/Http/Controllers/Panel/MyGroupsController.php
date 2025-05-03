@@ -48,7 +48,7 @@ class MyGroupsController extends Controller
         })
         ->with(['webinar', 'instructor']) // optional for eager loading
         ->get();
-    
+
         $data = [
             'pageTitle' => 'My groups',
             'user' => $user,
@@ -59,39 +59,46 @@ class MyGroupsController extends Controller
     }
     public function groupNextTime($courseGroup, &$joinUrl, &$meetingID, $role = 'teacher')
     {
-        $joinURL = $role === 'teacher' ? 'start_url' : 'join_url';
+        $joinURLKey = $role === 'teacher' ? 'start_url' : 'join_url';
         $nextStartTime = false;
 
-        if ($courseGroup->meeting_json) {
+        // Zoom session
+        if ($courseGroup->session_type === 'zoom') {
+            $joinUrl = $courseGroup->{$joinURLKey};
+            $meetingID = $courseGroup->meeting_id;
+
+            $startTime = $courseGroup->meeting_start_time;
+            $userTimezone = auth()->user()->timezone ?? 'Asia/Dubai';
+            $currentDateTime = Carbon::now($userTimezone);
+
+            if ($startTime && Carbon::parse($startTime)->greaterThan($currentDateTime)) {
+                $nextStartTime = Carbon::parse($startTime)->setTimezone($userTimezone)->toIso8601String();
+            }
+        }
+        // Offline session with occurrences in JSON
+        elseif ($courseGroup->session_type === 'offline' && $courseGroup->meeting_json) {
             $decodedJson = json_decode($courseGroup->meeting_json, true);
             if ($decodedJson && isset($decodedJson['occurrences'])) {
-                $joinUrl     = $decodedJson[$joinURL];
                 $occurrences = $decodedJson['occurrences'];
-                $meetingID   = $decodedJson['id'];
+                $meetingID = $decodedJson['id'] ?? null;
+                $joinUrl = null; // No joinUrl for offline sessions
 
-                // Get user's timezone and set default if not valid
-                $userTimezone = auth()->user()->timezone ?? '';
-                if ($userTimezone !== 'Asia/Dubai' && $userTimezone !== 'Africa/Cairo') {
-                    $userTimezone = 'Asia/Dubai';
-                }
-
-                // Get current datetime in the user's (or default) timezone
+                $userTimezone = auth()->user()->timezone ?? 'Asia/Dubai';
                 $currentDateTime = Carbon::now($userTimezone);
 
-                // Filter occurrences to find the next closest session
                 $nextSession = collect($occurrences)->filter(
                     function ($occurrence) use ($currentDateTime, $userTimezone) {
                         return Carbon::parse($occurrence['start_time'])->setTimezone($userTimezone)->greaterThan($currentDateTime);
                     }
-                )->sortBy('start_time')->first(); // Sort by start_time and get the first one
+                )->sortBy('start_time')->first();
                 if ($nextSession) {
                     $nextStartTime = Carbon::parse($nextSession['start_time'])->setTimezone($userTimezone)->toIso8601String();
                 }
             }
         }
-
         return $nextStartTime;
     }
+
     public function view(Request $request)
     {
         $group = CourseGroup::findOrFail($request->id);
@@ -99,12 +106,16 @@ class MyGroupsController extends Controller
         $meetingID     = false;
         $nextStartTime = $this->groupNextTime($group, $joinUrl, $meetingID);
         $user = auth()->user();
+
+        $decodedMeeting = $group->meeting_json ? json_decode($group->meeting_json, true) : [];
+        $occurrences = $decodedMeeting['occurrences'] ?? [];
         return view(getTemplate() . '.panel.my_groups.view', [
-            'group' => $group,
-            'user' => $user,
-            'joinUrl' => $joinUrl,
-            'nextStartTime' => $nextStartTime,
-            'meetingID' => $meetingID,
+        'group' => $group,
+        'user' => $user,
+        'joinUrl' => $joinUrl,
+        'nextStartTime' => $nextStartTime,
+        'meetingID' => $meetingID,
+        'occurrences' => $occurrences,
         ]);
     }
 }

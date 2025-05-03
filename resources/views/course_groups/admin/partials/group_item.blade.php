@@ -8,11 +8,11 @@
                 data-group-id="{{ $group->id }}"
                 data-group-name="{{ $group->webinar->title ?? 'دورة بدون اسم' }}"
                 data-session-type="{{ $group->session_type }}"
+                data-last-date="{{ optional(collect(json_decode($group->meeting_json, true)['occurrences'] ?? [])->last())['start_time'] }}"
                 data-toggle="modal" 
                 data-target="#makeupSessionModal">
                 إضافة جلسة تعويضية
             </button>
-
             <form method="POST" action="{{ route('course-group.destroy', $group->id) }}" class="d-inline">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('هل أنت متأكد؟')">حذف</button>
