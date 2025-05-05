@@ -348,7 +348,7 @@ class WebinarController extends Controller
         ]);
 
         $data = $request->all();
-
+        /*
 
         if (!empty($data['capacity']) and !empty($data['sales_count_number']) and $data['sales_count_number'] > $data['capacity']) {
             return back()->withErrors([
@@ -361,7 +361,7 @@ class WebinarController extends Controller
                 ]
             ]);
         }
-
+        */
         if ($data['type'] != Webinar::$webinar) {
             $data['start_date'] = null;
         }
@@ -590,7 +590,7 @@ class WebinarController extends Controller
         }
 
         $this->validate($request, $rules);
-
+        /*
         if (!empty($data['capacity']) and !empty($data['sales_count_number']) and $data['sales_count_number'] > $data['capacity']) {
             return back()->withErrors([
                 'sales_count_number' => [
@@ -602,7 +602,7 @@ class WebinarController extends Controller
                 ]
             ]);
         }
-
+        */
         if (!empty($data['teacher_id'])) {
             $teacher = User::find($data['teacher_id']);
             $creator = !empty($data['organ_id']) ? User::find($data['organ_id']) : $webinar->creator;
