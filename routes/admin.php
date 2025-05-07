@@ -67,6 +67,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/schedule', [CourseGroupController::class, 'schedule'])->name('schedule.index');
 
             Route::get('/create/{groupId?}', [CourseGroupController::class, 'showCreateForm'])->name('course-group.create-form');
+            Route::get('/variable-create/{groupId?}', [CourseGroupController::class, 'showVariableForm'])->name('course-group.create-variable-form');
             Route::delete('/{group}', [CourseGroupController::class, 'destroy'])->name('course-group.destroy');
 
             Route::post('/store', [CourseGroupController::class, 'createGroup'])->name('course-group.store');
