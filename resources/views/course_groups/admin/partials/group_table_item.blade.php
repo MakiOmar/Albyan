@@ -6,6 +6,10 @@
     <td>
         <a href="{{ route($screen === 'admin' ? 'course-group.show' : 'course-group.view', $group->id) }}" class="btn btn-warning btn-sm">
             <i class="fas fa-eye"></i>&nbsp;View
-        </a>        
+        </a>
+        <form method="POST" action="{{ route('course-group.destroy', $group->id) }}" class="d-inline">
+            @csrf @method('DELETE')
+            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('هل أنت متأكد؟')">حذف</button>
+        </form>        
     </td>
 </tr>
