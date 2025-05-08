@@ -280,16 +280,23 @@
     });
     jQuery(document).ready(function ($) {
         let index = 1;
-        $('#addOccurrence').click(function() {
+
+        $('#addOccurrence').click(function () {
             $('#manual-occurrences').append(`
-                <div class="row occurrence-row">
-                    <div class="col-md-5">
-                        <input type="date" name="manual_occurrences[${index}][date]" class="form-control">
+                <div class="row occurrence-row mb-2 position-relative">
+                    <div class="col-md-4">
+                        <label>التاريخ</label>
+                        <input type="date" name="manual_occurrences[${index}][date]" class="form-control" required>
                     </div>
-                    <div class="col-md-5">
-                        <input type="time" name="manual_occurrences[${index}][time]" class="form-control" value="10:00">
+                    <div class="col-md-4">
+                        <label>الوقت</label>
+                        <input type="time" name="manual_occurrences[${index}][time]" class="form-control" value="10:00" required>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-4">
+                        <label>مدة المحاضرة</label>
+                        <input type="number" name="manual_occurrences[${index}][duration]" class="form-control" placeholder="المدة بالدقائق" min="1" value="1" required>
+                    </div>
+                    <div class="position-absolute" style="left:-30px;bottom: 1.5px;">
                         <button type="button" class="btn btn-danger remove-occurrence">X</button>
                     </div>
                 </div>
@@ -297,7 +304,7 @@
             index++;
         });
 
-        $(document).on('click', '.remove-occurrence', function() {
+        $(document).on('click', '.remove-occurrence', function () {
             $(this).closest('.occurrence-row').remove();
         });
     });
