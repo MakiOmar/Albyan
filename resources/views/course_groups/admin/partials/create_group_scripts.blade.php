@@ -281,33 +281,70 @@
     jQuery(document).ready(function ($) {
         let index = 1;
 
+        // عند تغيير نوع الإدخال (تاريخ / يوم)
+        $('#manual_occurrences_type').on('change', function () {
+            const type = $(this).val();
+            $('.manual_occurrences_type').val(type);
+            if (type === 'day') {
+                $('.occurrence-day').show();
+                $('.occurrence-date').hide();
+            } else {
+                $('.occurrence-date').show();
+                $('.occurrence-day').hide();
+            }
+        });
+
+        // إضافة صف جديد
         $('#addOccurrence').click(function () {
+            const type = $('#manual_occurrences_type').val();
+
+            const dateInput = `
+                <div class="col-md-4 occurrence-date" ${type === 'day' ? 'style="display:none;"' : ''}>
+                    <label>التاريخ</label>
+                    <input type="date" name="manual_occurrences[${index}][date]" class="form-control">
+                </div>`;
+
+            const daySelect = `
+                <div class="col-md-4 occurrence-day" ${type === 'date' ? 'style="display:none;"' : ''}>
+                    <label>اليوم</label>
+                    <select name="manual_occurrences[${index}][day]" class="form-control">
+                        <option value="Saturday">السبت</option>
+                        <option value="Sunday">الأحد</option>
+                        <option value="Monday">الاثنين</option>
+                        <option value="Tuesday">الثلاثاء</option>
+                        <option value="Wednesday">الأربعاء</option>
+                        <option value="Thursday">الخميس</option>
+                        <option value="Friday">الجمعة</option>
+                    </select>
+                </div>`;
+
             $('#manual-occurrences').append(`
                 <div class="row occurrence-row mb-2 position-relative">
-                    <div class="col-md-4">
-                        <label>التاريخ</label>
-                        <input type="date" name="manual_occurrences[${index}][date]" class="form-control" required>
-                    </div>
+                    <input type="hidden" name="manual_occurrences[${index}][type]" value="${type}">
+                    ${type === 'date' ? dateInput : daySelect}
+
                     <div class="col-md-4">
                         <label>الوقت</label>
-                        <input type="time" name="manual_occurrences[${index}][time]" class="form-control" value="10:00" required>
+                        <input type="time" name="manual_occurrences[${index}][time]" class="form-control" value="10:00">
                     </div>
                     <div class="col-md-4">
-                        <label>مدة المحاضرة</label>
-                        <input type="number" name="manual_occurrences[${index}][duration]" class="form-control" placeholder="المدة بالدقائق" min="1" value="1" required>
+                        <label>المدة (بالساعات)</label>
+                        <input type="number" step="0.1" name="manual_occurrences[${index}][duration]" class="form-control" placeholder="مثال: 1.5" min="0.1" value="1" required>
                     </div>
                     <div class="position-absolute" style="left:-30px;bottom: 1.5px;">
                         <button type="button" class="btn btn-danger remove-occurrence">X</button>
                     </div>
                 </div>
             `);
+
             index++;
         });
 
+        // حذف صف
         $(document).on('click', '.remove-occurrence', function () {
             $(this).closest('.occurrence-row').remove();
         });
+        $('#manual_occurrences_type').trigger('change')
     });
-
 </script>
 @endpush

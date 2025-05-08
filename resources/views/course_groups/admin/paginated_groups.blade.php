@@ -4,6 +4,8 @@
 <section class="section">
     <div class="container">
         <h3 class="mb-4">قائمة المجموعات</h3>
+        <!-- Nav Tabs -->
+        @include('course_groups.admin.partials.forms_nav')
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover table-bordered text-center align-middle">
