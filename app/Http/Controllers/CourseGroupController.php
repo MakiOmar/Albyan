@@ -1299,7 +1299,7 @@ class CourseGroupController extends Controller
         foreach ($courseGroups as $group) {
             $meetingJson = json_decode($group->meeting_json, true);
             $isRecurring = $group->meeting_recurring == 1 ? 1 : 0;
-
+            $division    = $group->session_type === 'offline' ? 60 : 3600;
             if (!empty($meetingJson['occurrences'])) {
                 $lastOccurrence = collect($meetingJson['occurrences'])->sortByDesc('start_time')->first();
                 $lastDay = $isRecurring && $lastOccurrence ? Carbon::parse($lastOccurrence['start_time'])->format('Y-m-d') : null;
@@ -1313,7 +1313,7 @@ class CourseGroupController extends Controller
                     'instructor_name' => $group->instructor->full_name ?? '',
                     'day'             => $startUtc->format('Y-m-d'),
                     'time'            => $startUtc->format('H:i'),
-                    'duration'        => ($occurrence['duration'] ?? $group->meeting_duration) / (60 * 60),
+                    'duration'        => ($occurrence['duration'] ?? $group->meeting_duration) / $division,
                     'session_type'    => $group->session_type ?? 'zoom',
                     'webinar_title'   => $group->webinar->title ?? '',
                     'is_recurring'    => $isRecurring,
@@ -1323,7 +1323,7 @@ class CourseGroupController extends Controller
             } else {
                 $startDate = Carbon::parse($group->meeting_start_time);
                 $endDate = Carbon::parse($group->meeting_end_time);
-                $durationHours = $group->meeting_duration / 60;
+                $durationHours = $group->meeting_duration / $division;
                 $recurrence = $meetingJson['recurrence'] ?? [];
 
                 if ($isRecurring && isset($recurrence['type'])) {
