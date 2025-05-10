@@ -375,7 +375,6 @@ class CourseGroupController extends Controller
 
             while ($cursor->lte($endDate)) {
                 if (in_array($cursor->englishDayOfWeek, $daysOfWeek)) {
-
                     foreach ($manualOccurrences as $item) {
                         if ($item['day'] === $cursor->englishDayOfWeek && !empty($item['time'])) {
                             $startTime = $cursor->copy()->setTimeFromTimeString($time($item));
@@ -718,12 +717,35 @@ class CourseGroupController extends Controller
                 404
             );
         }
+        $meetingJson = json_decode($courseGroup->meeting_json, true);
+        $meetingType = $meetingJson['type'] ?? 'recurring';
         $zoomMeetingId = $courseGroup->meeting_id;
 
-        if ($zoomMeetingId) {
+        if ($zoomMeetingId && $meetingType !== 'variable') {
             $zoomDeletionResponse = $this->deleteZoomMeeting($zoomMeetingId);
             if (! $zoomDeletionResponse['success']) {
-                LOG::info('Zoom errors', array( 'zoom_meeting' => $zoomDeletionResponse['error'] ));
+                Log::warning('Failed to delete Zoom meeting', [
+                            'meeting_id' => $zoomMeetingId,
+                            'error'      => $zoomDeletionResponse['error'],
+                        ]);
+            }
+        } elseif (
+            $courseGroup->session_type === 'zoom' &&
+            $meetingType === 'variable' &&
+            ! empty($meetingJson['occurrences'])
+        ) {
+            foreach ($meetingJson['occurrences'] as $occurrence) {
+                $zoomMeetingId = $occurrence['occurrence_id'] ?? null;
+
+                if ($zoomMeetingId) {
+                    $zoomDelete = $this->deleteZoomMeeting($zoomMeetingId);
+                    if (! $zoomDelete['success']) {
+                        Log::warning('Failed to delete Zoom meeting', [
+                            'meeting_id' => $zoomMeetingId,
+                            'error'      => $zoomDelete['error'],
+                        ]);
+                    }
+                }
             }
         }
         // Delete related group members first
@@ -1283,7 +1305,7 @@ class CourseGroupController extends Controller
                 $lastDay = $isRecurring && $lastOccurrence ? Carbon::parse($lastOccurrence['start_time'])->format('Y-m-d') : null;
 
                 foreach ($meetingJson['occurrences'] as $occurrence) {
-                    $startUtc = Carbon::parse($occurrence['start_time']);
+                    $startUtc = Carbon::parse($occurrence['start_time'])->setTimezone('Asia/Dubai');
 
                     $sessions[] = [
                     'group_id'        => $group->id,
@@ -1291,7 +1313,7 @@ class CourseGroupController extends Controller
                     'instructor_name' => $group->instructor->full_name ?? '',
                     'day'             => $startUtc->format('Y-m-d'),
                     'time'            => $startUtc->format('H:i'),
-                    'duration'        => ($occurrence['duration'] ?? $group->meeting_duration) / 60,
+                    'duration'        => ($occurrence['duration'] ?? $group->meeting_duration) / (60 * 60),
                     'session_type'    => $group->session_type ?? 'zoom',
                     'webinar_title'   => $group->webinar->title ?? '',
                     'is_recurring'    => $isRecurring,
