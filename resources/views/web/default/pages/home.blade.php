@@ -102,20 +102,24 @@
             <section class="home-sections home-sections-swiper container">
                 <div class="px-20 px-md-0">
                     <h2 class="section-title">{{ trans('home.featured_classes') }}</h2>
+                    {{--
                     <p class="section-hint">{{ trans('home.featured_classes_hint') }}</p>
+                    --}}
                 </div>
 
-                <div class="feature-slider-container position-relative d-flex justify-content-center mt-10">
-                    <div class="swiper-container features-swiper-container pb-25">
-                        <div class="swiper-wrapper py-10">
+                <div class="position-relative d-flex justify-content-center mt-10">
+                    <div class="pb-25 container">
+                        <div class="py-10 row">
                             @foreach($featureWebinars as $feature)
-                                <div class="swiper-slide">
-
+                                <div class="col-md-4">
+                                    @include('web.default.includes.webinar.grid-card',['webinar' => $feature->webinar])
+                                    
+                                    {{--
                                     <a href="{{ $feature->webinar->getUrl() }}">
                                         <div class="feature-slider d-flex h-100" style="background-image: url('{{ $feature->webinar->getImage() }}')">
                                             <div class="mask"></div>
-                                            <div class="p-5 p-md-25 feature-slider-card">
-                                                <div class="d-flex flex-column feature-slider-body position-relative h-100">
+                                            <div class="p-5 p-md-25 feature-slider-card position-relative">
+                                                <div class="d-flex flex-column feature-slider-body position-relative" style="top:50%">
                                                     @if($feature->webinar->bestTicket() < $feature->webinar->price)
                                                         <span class="badge badge-danger mb-2 ">{{ trans('public.offer',['off' => $feature->webinar->bestTicket(true)['percent']]) }}</span>
                                                     @endif
@@ -131,7 +135,6 @@
                                                     </div>
 
                                                     <p class="mt-25 feature-desc text-gray">{{ $feature->description }}</p>
-
                                                     @include('web.default.includes.webinar.rate',['rate' => $feature->webinar->getRate()])
 
                                                     <div class="feature-footer mt-auto d-flex align-items-center justify-content-between">
@@ -167,12 +170,18 @@
                                             </div>
                                         </div>
                                     </a>
+                                    --}}
                                 </div>
                             @endforeach
+                            
                         </div>
+                        <div class="d-flex align-items-center justify-content-center p-10 mt-10">
+                                <a href="/classes?sort=newest" class="btn btn-border-white">{{ trans('home.view_all') }}</a>
+                            </div>
                     </div>
-
+                    {{--
                     <div class="swiper-pagination features-swiper-pagination"></div>
+                    --}}
                 </div>
             </section>
         @endif
@@ -236,22 +245,21 @@
                 </div>
             </section>
         @endif
-
+            {{--
         @if($homeSection->name == \App\Models\HomeSection::$latest_classes and !empty($latestWebinars) and !$latestWebinars->isEmpty())
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between ">
                     <div>
                         <h2 class="section-title">{{ trans('home.best_rates') }}</h2>
-                        {{--
+
                         <p class="section-hint">{{ trans('home.latest_webinars_hint') }}</p>
-                        --}}
                     </div>
 
                     <a href="/classes?sort=newest" class="btn btn-border-white top-view-all">{{ trans('home.view_all') }}</a>
                 </div>
 
                 <div class="mt-10 position-relative">
-                    {{--
+
                     <div class="swiper-container latest-webinars-swiper px-12">
                         <div class="swiper-wrapper py-20">
                             @foreach($latestWebinars as $latestWebinar)
@@ -266,7 +274,7 @@
                     <div class="d-flex justify-content-center">
                         <div class="swiper-pagination latest-webinars-swiper-pagination"></div>
                     </div>
-                    --}}
+
                     <div class="px-12">
                         <div class="row py-20">
                             @foreach($latestWebinars as $latestWebinar)
@@ -283,7 +291,7 @@
                 </div>
             </section>
         @endif
-
+        
         @if($homeSection->name == \App\Models\HomeSection::$best_rates and !empty($bestRateWebinars) and !$bestRateWebinars->isEmpty())
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between">
@@ -312,7 +320,6 @@
                 </div>
             </section>
         @endif
-        {{--
         @if($homeSection->name == \App\Models\HomeSection::$trend_categories and !empty($trendCategories) and !$trendCategories->isEmpty())
             <section class="home-sections home-sections-swiper container">
                 <h2 class="section-title">{{ trans('home.trending_categories') }}</h2>
