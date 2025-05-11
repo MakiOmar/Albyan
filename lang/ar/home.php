@@ -33,8 +33,8 @@ return [
 
     'hours' => 'ساعات',
 
-    'featured_classes' => 'دبلومات رائجة',
-    'featured_webinars' => 'دبلومات رائجة',
+    'featured_classes' => 'الأعلى تقييما',
+    'featured_webinars' => 'الأعلى تقييما',
     'featured_classes_hint' => 'اكتشف افضل الدبلومات واستمتع بالتعلم',
 
     'latest_classes' => 'أحدث الدبلومات',

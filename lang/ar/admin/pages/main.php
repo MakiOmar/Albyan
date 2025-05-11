@@ -1055,7 +1055,7 @@ return [
     'ban_students' => 'الطلاب المحظورون',
     'users_without_purchases' => 'الطلاب بدون عملية شراء',
     'teachers_without_class' => 'المعلمون بدون دبلومات',
-    'featured_classes' => 'الدبلومات الرائجة',
+    'featured_classes' => 'الأعلى تقييما',
     'active_discounts' => 'الخصومات النشطة',
     'net_profit_statistics' => 'احصائيات، صافي الربح بدون ضريبة',
 
