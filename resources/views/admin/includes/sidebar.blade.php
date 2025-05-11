@@ -1454,7 +1454,7 @@
                     </ul>
                 </li>
             @endcan
-
+            --}}
             @can('admin_feature_webinars')
                 <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/webinars/features*', false))) ? 'active' : '' }}">
                     <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
@@ -1476,7 +1476,7 @@
                     </ul>
                 </li>
             @endcan
-
+            {{--
             @can('admin_cashback')
                 <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/cashback*', false))) ? 'active' : '' }}">
                     <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
@@ -1699,7 +1699,7 @@
                     </ul>
                 </li>
             @endcan
-
+            --}}
             @can('admin_product_badges')
                 <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/product-badges*', false))) ? 'active' : '' }}">
                     <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
@@ -1724,7 +1724,7 @@
                     </ul>
                 </li>
             @endcan
-            --}}
+
             @if($authUser->can('admin_settings'))
                 <li class="menu-header">{{ trans('admin/main.settings') }}</li>
             @endif
