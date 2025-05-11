@@ -10,9 +10,11 @@
         font-size: 0.85rem;
     }
     .session-cell {
-        padding: 8px;
-        border-radius: 8px;
-        color: #000;
+        padding: 6px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        cursor: pointer;
     }
     .session-zoom {
         background-color: #d1ecf1;
@@ -86,8 +88,6 @@
             </tr>
         </thead>
         <tbody>
-            @php $skipCells = []; @endphp
-
             @foreach($timeSlots as $slot)
                 @php [$slotStart, $slotEnd] = [$slot['start'], $slot['end']]; @endphp
                 <tr>
@@ -95,98 +95,68 @@
 
                     @foreach($weekDays as $day)
                         @php
-                            $cellKey = $day['date'] . '_' . $slotStart;
-                            if (in_array($cellKey, $skipCells)) {
-                                continue;
-                            }
+                            $filterType = request('type');
+                            $filterInstructor = request('instructor_id');
 
-                            $session = collect($sessions)->first(function ($s) use ($day, $slotStart) {
-                                $filterType = request('type');
-                                $filterInstructor = request('instructor_id');
+                            $sessionsInCell = collect($sessions)->filter(function ($s) use ($day, $slotStart, $filterType, $filterInstructor) {
                                 $matchesType = empty($filterType) || $s['session_type'] === $filterType;
                                 $matchesInstructor = empty($filterInstructor) || $s['instructor_id'] == $filterInstructor;
                                 return $s['day'] === $day['date'] && $s['time'] === $slotStart && $matchesType && $matchesInstructor;
                             });
-
-
-                            if ($session) {
-                                // فلترة حسب نوع الجلسة إذا تم اختيار فلتر
-                                $filterType = request('type');
-                                if (!empty($filterType) && $session['session_type'] !== $filterType) {
-                                    $session = null;
-                                }
-                            }
-
-                            if ($session) {
-                                $rowspan = ceil($session['duration']);
-                                for ($i = 1; $i < $rowspan; $i++) {
-                                    $skipTime = \Carbon\Carbon::parse($slotStart)->addHours($i)->format('H:i');
-                                    $skipCells[] = $day['date'] . '_' . $skipTime;
-                                }
-
-                                $today = \Carbon\Carbon::now('Asia/Dubai')->format('Y-m-d');
-                                $endingSoon = \Carbon\Carbon::parse($session['day'])->addWeeks(1)->greaterThanOrEqualTo(\Carbon\Carbon::now('Asia/Dubai'));
-                                $isToday = $session['day'] == $today;
-
-                                $cellClass = $session['session_type'] == 'zoom' ? 'session-zoom' : 'session-offline';
-                                if ($endingSoon) {
-                                    $cellClass = 'session-ending-soon';
-                                }
-                            }
                         @endphp
 
-                        @if($session)
-                        @php
-                            $today = \Carbon\Carbon::now('Asia/Dubai')->format('Y-m-d');
-                            $isToday = $session['day'] == $today;
+                        @if($sessionsInCell->isNotEmpty())
+                            <td class="position-relative" style="height: 80px; min-width: 150px;">
+                                @foreach($sessionsInCell as $index => $session)
+                                    @php
+                                        $offset = $index * 10;
+                                        $today = \Carbon\Carbon::now('Asia/Dubai')->format('Y-m-d');
+                                        $isToday = $session['day'] === $today;
 
-                            $endingSoon = false;
-                            
-                            if (!empty($session['last_day']) && $session['is_recurring']) {
-                                $lastDay = \Carbon\Carbon::parse($session['last_day'])->timezone('Asia/Dubai');
-                                $now = \Carbon\Carbon::now('Asia/Dubai');
-                                $daysRemaining = $now->diffInDays($lastDay, false);
+                                        $endingSoon = false;
+                                        if (!empty($session['last_day']) && $session['is_recurring']) {
+                                            $lastDay = \Carbon\Carbon::parse($session['last_day'])->timezone('Asia/Dubai');
+                                            $now = \Carbon\Carbon::now('Asia/Dubai');
+                                            $daysRemaining = $now->diffInDays($lastDay, false);
+                                            if ($daysRemaining <= 7) {
+                                                $endingSoon = true;
+                                            }
+                                        }
 
-                                if ($daysRemaining <= 7) {
-                                    $endingSoon = true;
-                                }
-                            }
+                                        $cellClass = $session['session_type'] === 'zoom' ? 'session-zoom' : 'session-offline';
+                                        if ($endingSoon) {
+                                            $cellClass = 'session-ending-soon';
+                                        }
+                                    @endphp
 
-                            $cellClass = $session['session_type'] == 'zoom' ? 'session-zoom' : 'session-offline';
-
-                            if ($endingSoon) {
-                                $cellClass = 'session-ending-soon';
-                            }
-                        @endphp
-
-                        <td rowspan="{{ $rowspan }}" class="session-cell position-relative pt-5 {{ $cellClass }}">
-                            <strong>{{ $session['webinar_title'] }}</strong><br>
-                            مجموعة: {{ $session['group_id'] }}<br>
-                            المدرس: {{ $session['instructor_name'] }}<br>
-                            من: {{ \Carbon\Carbon::createFromFormat('H:i', $session['time'])->format('h:i A') }}<br>
-                            المدة: {{ $session['duration'] }} ساعة<br>
-                            @if($endingSoon)
-                                <span class="badge-ending mt-2 position-absolute" style="top:3px;right:3px">تنتهي قريبا</span>
-                            @endif
-                            <div class="mt-1">
-                                <span class="badge {{ $session['session_type'] == 'zoom' ? 'badge-info' : 'badge-success' }}">
-                                    {{ $session['session_type'] == 'zoom' ? 'Zoom' : 'Offline' }}
-                                </span>
-
-                                @if($isToday)
-                                    <span class="badge-today">جلسة اليوم</span>
-                                @endif
-                                
-                            </div>
-                        </td>
-                        
+                                    <div class="session-cell {{ $cellClass }}" style="position:absolute; top:{{ $offset }}px; left:5px; right:5px; z-index:1; transition:0.3s" onmouseover="this.style.zIndex=10" onmouseout="this.style.zIndex=1">
+                                        <strong>{{ $session['webinar_title'] }}</strong><br>
+                                        مجموعة: {{ $session['group_id'] }}<br>
+                                        المدرس: {{ $session['instructor_name'] }}<br>
+                                        من: {{ \Carbon\Carbon::createFromFormat('H:i', $session['time'])->format('h:i A') }}<br>
+                                        المدة: {{ $session['duration'] }} ساعة
+                                        <div class="mt-1">
+                                            <span class="badge {{ $session['session_type'] === 'zoom' ? 'badge-info' : 'badge-success' }}">
+                                                {{ $session['session_type'] === 'zoom' ? 'Zoom' : 'Offline' }}
+                                            </span>
+                                            @if($isToday)
+                                                <span class="badge-today">جلسة اليوم</span>
+                                            @endif
+                                            @if($endingSoon)
+                                                <span class="badge-ending">تنتهي قريبا</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </td>
                         @else
-                        <td onclick="openCreateGroupPopup('{{ $day['date'] }}', '{{ $slotStart }}', '{{ $session['instructor_id'] ?? '' }}')" style="cursor:pointer;">
+                            <td onclick="openCreateGroupPopup('{{ $day['date'] }}', '{{ $slotStart }}', '{{ request('instructor_id') }}')" style="cursor:pointer;"></td>
                         @endif
                     @endforeach
                 </tr>
             @endforeach
         </tbody>
+
     </table>
 
     <!-- Modal إنشاء مجموعة -->
