@@ -191,7 +191,7 @@
                                                     <td>{{ trans("update.{$content->getContentType()}") }}</td>
 
                                                     <td class="text-left">
-                                                        {{ $content->getContentItem()->title }}
+                                                        {{ $content->getContentItem()?->title }}
                                                     </td>
 
                                                     <td>
