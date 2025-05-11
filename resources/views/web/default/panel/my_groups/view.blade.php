@@ -64,8 +64,8 @@
                                 @if($group->session_type === 'zoom' && $joinUrl)
                                     <a href="{{ $joinUrl }}" class="btn btn-primary">{{ trans('public.join_meeting') }}</a>
                                 @endif
-
                                 @if($nextStartTime)
+                                
                                 <div id="countdown">
                                     <div class="counter">
                                         <span class="number" id="days"></span>
@@ -111,8 +111,8 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>اسم الطالب</th>
-                                                <th>البريد الإلكتروني</th>
+                                                <th class="text-left">اسم الطالب</th>
+                                                <th class="text-left">البريد الإلكتروني</th>
                                             </tr>
                                         </thead>
                                         <tbody>
