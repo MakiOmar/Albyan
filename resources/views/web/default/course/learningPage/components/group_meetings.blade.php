@@ -19,9 +19,25 @@
                     <strong>{{ trans('public.time_zone') }}:</strong>
                     {{ $timezone }}
                 </p>
-
+                @php
+                $joinUrl = '#';
+                if ( isset( $meetings->join_url ) ) {
+                    if (  $user->isTeacher() ) {
+                        $joinUrl = $meetings->join_url;
+                    } else {
+                        $joinUrl = $meetings->start_url;
+                    }
+                }
+                if ( isset( $occurrence->join_url ) ) {
+                    if (  $user->isTeacher() ) {
+                        $joinUrl = $occurrence->join_url;
+                    } else {
+                        $joinUrl = $occurrence->start_url;
+                    }
+                }
+                @endphp
                 @if ($isZoom)
-                    <a href="{{ $meetings->join_url ?? '#' }}" class="btn btn-primary" target="_blank">
+                    <a href="{{ $joinUrl }}" class="btn btn-primary" target="_blank">
                         {{ trans('public.join_meeting') }}
                     </a>
                 @else
