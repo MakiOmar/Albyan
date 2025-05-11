@@ -15,11 +15,16 @@ use Illuminate\Http\Request;
 use App\Models\GroupMember;
 use App\Models\CourseGroup;
 use Illuminate\Support\Carbon;
+use App\Http\Controllers\Common\HandlesCourseGroupMeetings;
 
 class LearningPageController extends Controller
 {
-    use LearningPageMixinsTrait, LearningPageAssignmentTrait, LearningPageItemInfoTrait,
-        LearningPageNoticeboardsTrait, LearningPageForumTrait;
+    use HandlesCourseGroupMeetings;
+    use LearningPageMixinsTrait;
+    use LearningPageAssignmentTrait;
+    use LearningPageItemInfoTrait;
+    use LearningPageNoticeboardsTrait;
+    use LearningPageForumTrait;
 
     public function index(Request $request, $slug)
     {
@@ -103,40 +108,5 @@ class LearningPageController extends Controller
             })
             ->get();
         return $groups;
-    }
-    public function groupNextTime($courseGroup, &$joinUrl, &$meetingID, $role = 'teacher')
-    {
-        $joinURL = $role === 'teacher' ? 'start_url' : 'join_url';
-        $nextStartTime = false;
-
-        if ($courseGroup->meeting_json) {
-            $decodedJson = json_decode($courseGroup->meeting_json, true);
-            if ($decodedJson && isset($decodedJson['occurrences'])) {
-                $joinUrl     = $decodedJson[$joinURL];
-                $occurrences = $decodedJson['occurrences'];
-                $meetingID   = $decodedJson['id'];
-
-                // Get user's timezone and set default if not valid
-                $userTimezone = auth()->user()->timezone ?? '';
-                if ($userTimezone !== 'Asia/Dubai' && $userTimezone !== 'Africa/Cairo') {
-                    $userTimezone = 'Asia/Dubai';
-                }
-
-                // Get current datetime in the user's (or default) timezone
-                $currentDateTime = Carbon::now($userTimezone);
-
-                // Filter occurrences to find the next closest session
-                $nextSession = collect($occurrences)->filter(
-                    function ($occurrence) use ($currentDateTime, $userTimezone) {
-                        return Carbon::parse($occurrence['start_time'])->setTimezone($userTimezone)->greaterThan($currentDateTime);
-                    }
-                )->sortBy('start_time')->first(); // Sort by start_time and get the first one
-                if ($nextSession) {
-                    $nextStartTime = Carbon::parse($nextSession['start_time'])->setTimezone($userTimezone)->toIso8601String();
-                }
-            }
-        }
-
-        return $nextStartTime;
     }
 }
