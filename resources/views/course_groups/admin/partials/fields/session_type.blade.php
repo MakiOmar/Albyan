@@ -2,7 +2,8 @@
     <label for="session_type">Session Type</label>
     <small class="form-text text-muted">Choose if the session is Online (Zoom) or Offline (in-person).</small>
     <select name="session_type" id="session_type" class="form-control select2">
-        <option value="zoom" {{ $isEdit && ($group->session_type ?? 'zoom') == 'zoom' ? 'selected' : '' }}>Zoom Online</option>
-        <option value="offline" {{ $isEdit && ($group->session_type ?? 'zoom') == 'offline' ? 'selected' : '' }}>Offline (In-Person)</option>
+        <option value="zoom" {{ old('session_type', $isEdit ? ($group->session_type ?? 'zoom') : 'zoom') == 'zoom' ? 'selected' : '' }}>Zoom Online</option>
+        <option value="offline" {{ old('session_type', $isEdit ? ($group->session_type ?? 'zoom') : 'zoom') == 'offline' ? 'selected' : '' }}>Offline (In-Person)</option>
     </select>
+
 </div>

@@ -2,8 +2,10 @@
     <label for="weekly_days">Select Days of the Week (Weekly Recurrence)</label>
     <small class="form-text text-muted">Choose the days on which the meeting should occur. Hold Ctrl (or Cmd) to select multiple days.</small>
     @php
-        $selectedDays = $isEdit && isset($meetingJson['recurrence']['weekly_days']) ? explode(',', $meetingJson['recurrence']['weekly_days']) : [];
+        $selectedDays = old('weekly_days', $isEdit && isset($meetingJson['recurrence']['weekly_days']) ? explode(',', $meetingJson['recurrence']['weekly_days']) : []);
+        $selectedDays = array_map('intval', $selectedDays); // لتجنب تعارض types عند in_array
     @endphp
+
     <select name="weekly_days[]" id="weekly_days" class="form-control" multiple>
         <option value="1" {{ in_array(1, $selectedDays) ? 'selected' : '' }}>Sunday</option>
         <option value="2" {{ in_array(2, $selectedDays) ? 'selected' : '' }}>Monday</option>

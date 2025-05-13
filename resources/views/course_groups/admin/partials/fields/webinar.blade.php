@@ -3,7 +3,8 @@
     <small class="form-text text-muted">Choose the webinar for which you want to create a group.</small>
     <select name="webinar_id" id="webinar_id" class="form-control select2">
         @foreach ($webinars as $webinar)
-        <option value="{{ $webinar->id }}" {{ $isEdit && $group->webinar_id == $webinar->id ? 'selected' : '' }}>
+        <option value="{{ $webinar->id }}" {{ old('webinar_id', $isEdit ? $group->webinar_id : '') == $webinar->id ? 'selected' : '' }}>
+
             {{ $webinar->title }}</option>
         @endforeach
     </select>

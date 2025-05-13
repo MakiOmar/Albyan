@@ -8,8 +8,11 @@
     <select name="teacher_id" id="teacher_id" class="form-control select2">
         <option value="">-- Select Instructor --</option>
         @foreach ($instructors as $instructor)
-        <option value="{{ $instructor->id }}" {{ $isEdit && $group->instructor_id == $instructor->id ? 'selected' : '' }}>
-            {{ $instructor->full_name }}</option>
+            <option value="{{ $instructor->id }}"
+                {{ old('teacher_id', $isEdit ? $group->instructor_id : '') == $instructor->id ? 'selected' : '' }}>
+                {{ $instructor->full_name }}
+            </option>
         @endforeach
     </select>
+
 </div>
