@@ -191,7 +191,7 @@ class CourseGroupController extends Controller
             'meeting_duration'    => 'required|numeric|min:1',
             'session_type'        => 'required|in:zoom,offline',
             'teacher_id'          => 'required|exists:users,id',
-            'student_ids'         => 'required|array|min:1',
+            'student_ids'         => 'nullable|array',
             'student_ids.*'       => 'exists:users,id',
             'manual_occurrences'             => 'nullable|array',
             'manual_occurrences.*.type'     => 'required|in:date,day',
@@ -267,13 +267,16 @@ class CourseGroupController extends Controller
             'session_type'       => $validated['session_type'],
         ]);
 
-        foreach ($validated['student_ids'] as $studentId) {
-            GroupMember::create([
-                'group_id'   => $group->id,
-                'student_id' => $studentId,
-                'webinar_id' => $validated['webinar_id'],
-            ]);
+        if (!empty($validated['student_ids'])) {
+            foreach ($validated['student_ids'] as $studentId) {
+                GroupMember::create([
+                    'group_id'   => $group->id,
+                    'student_id' => $studentId,
+                    'webinar_id' => $validated['webinar_id'],
+                ]);
+            }
         }
+
 
         return redirect()->route('webinar-groups.all')->with('success', 'Group created successfully.');
     }
@@ -317,12 +320,16 @@ class CourseGroupController extends Controller
         ]);
 
         GroupMember::where('group_id', $group->id)->delete();
-        foreach ($validated['student_ids'] as $studentId) {
-            GroupMember::create([
-                'group_id'   => $group->id,
-                'student_id' => $studentId,
-                'webinar_id' => $validated['webinar_id'],
-            ]);
+        if (!empty($validated['student_ids'])) {
+            foreach ($validated['student_ids'] as $studentId) {
+                GroupMember::create([
+                    'group_id'   => $group->id,
+                    'student_id' => $studentId,
+                    'webinar_id' => $validated['webinar_id'],
+                ]);
+            }
+        } else {
+            GroupMember::where('group_id', $group->id)->delete();
         }
 
         return redirect()->back()->with('success', 'Group updated successfully.');
@@ -492,10 +499,9 @@ class CourseGroupController extends Controller
                 $cursor->addDay();
             }
         }
-
         return [
         'recurrence' => [
-            'type'            => (int) ($validated['recurrence_type'] ?? 1),
+            'type'            => $validated['schedule_type'],
             'repeat_interval' => (int) ($validated['recurrence_interval'] ?? 1),
             'end_times'       => (int) ($validated['end_times'] ?? 1),
             'weekly_days'     => isset($validated['weekly_days']) ? implode(',', $validated['weekly_days']) : null,

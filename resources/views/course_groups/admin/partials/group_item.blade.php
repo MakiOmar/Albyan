@@ -1,8 +1,18 @@
+@php
+    $meetingType = json_decode($group->meeting_json, true)['recurrence']['type'] ?? 'regular';
+@endphp
+
 <div class="card my-3 border border-secondary">
     <div class="card-header d-flex justify-content-between align-items-center">
         <strong>المجموعة #{{ $group->id }} - الاجتماع: {{ $group->meeting_id }}</strong>
         <div class="d-flex flex-wrap gap-2">
-            <a href="{{ route('course-group.create-form', ['groupId' => $group->id]) }}" class="btn btn-warning btn-sm">تعديل</a>
+            <a href="{{ $meetingType === 'variable' 
+                        ? route('course-group.create-variable-form', ['groupId' => $group->id]) 
+                        : route('course-group.create-form', ['groupId' => $group->id]) }}"
+            class="btn btn-warning btn-sm">
+                تعديل
+            </a>
+
             <button class="btn btn-primary btn-sm add-student-btn" data-group-id="{{ $group->id }}" data-toggle="modal" data-target="#addStudentModal">إضافة طالب</button>
             <button class="btn btn-success btn-sm add-makeup-session-btn" 
                 data-group-id="{{ $group->id }}"
