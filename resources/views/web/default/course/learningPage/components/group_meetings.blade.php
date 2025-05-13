@@ -9,15 +9,19 @@
     @foreach ($occurrences as $occurrence)
         <div class="card mb-3">
             <div class="card-body d-flex justify-content-between align-items-center">
-                <p class="card-text">
-                    <strong>{{ trans('public.start_time') }}:</strong>
-                    {{ \Carbon\Carbon::parse($occurrence->start_time)->setTimezone($timezone)->format('Y-m-d h:i A') }}<br>
-
-                    <strong>{{ trans('public.the_duration') }}:</strong>
-                    {{ $occurrence->duration }} {{ trans('public.minutes') }}<br>
-
-                    <strong>{{ trans('public.time_zone') }}:</strong>
-                    {{ $timezone }}
+                <p class="card-text meeting-details">
+                    <span>
+                        <strong>{{ trans('public.start_time') }}:</strong>
+                        {{ \Carbon\Carbon::parse($occurrence->start_time)->setTimezone($timezone)->format('Y-m-d h:i A') }}<br>
+                    </span>
+                    <span>
+                        <strong>{{ trans('public.the_duration') }}:</strong>
+                        {{ $occurrence->duration }} {{ trans('public.minutes') }}<br>
+                    </span>
+                    <span>
+                        <strong>{{ trans('public.time_zone') }}:</strong>
+                        {{ $timezone }}
+                    </span>
                 </p>
                 @if(  $user->isTeacher() || $user->isUser() )
                     @php
