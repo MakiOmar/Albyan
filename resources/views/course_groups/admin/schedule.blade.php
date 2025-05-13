@@ -51,24 +51,28 @@
             <a href="{{ route('schedule.index', ['week' => $weekOffset + 1, 'type' => request('type'), 'instructor_id' => request('instructor_id')]) }}" class="btn btn-primary">الأسبوع القادم</a>            
         </div>
 
-        <div>
+        <div class="w-50">
             <form id="filter-form" method="GET" action="{{ route('schedule.index') }}" class="d-flex align-items-center gap-2">
                 <input type="hidden" name="week" value="{{ $weekOffset }}">
-                
-                <select name="instructor_id" id="instructor_id" onchange="document.getElementById('filter-form').submit()" class="form-control mr-2">
-                    <option value="">كل المحاضرين</option>
-                    @foreach($instructors as $instructor)
-                        <option value="{{ $instructor->id }}" {{ request('instructor_id') == $instructor->id ? 'selected' : '' }}>
-                            {{ $instructor->full_name }}
-                        </option>
-                    @endforeach
-                </select>
-            
-                <select name="type" onchange="document.getElementById('filter-form').submit()" class="form-control">
-                    <option value="">كل الجلسات</option>
-                    <option value="zoom" {{ request('type') == 'zoom' ? 'selected' : '' }}>Zoom فقط</option>
-                    <option value="offline" {{ request('type') == 'offline' ? 'selected' : '' }}>Offline فقط</option>
-                </select>
+                <div class="row w-100">
+                    <div class="col-md-6">
+                        <select name="instructor_id" id="instructor_id" onchange="document.getElementById('filter-form').submit()" class="form-control mr-2">
+                            <option value="">كل المحاضرين</option>
+                            @foreach($instructors as $instructor)
+                                <option value="{{ $instructor->id }}" {{ request('instructor_id') == $instructor->id ? 'selected' : '' }}>
+                                    {{ $instructor->full_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <select name="type" onchange="document.getElementById('filter-form').submit()" class="form-control">
+                            <option value="">كل الجلسات</option>
+                            <option value="zoom" {{ request('type') == 'zoom' ? 'selected' : '' }}>Zoom فقط</option>
+                            <option value="offline" {{ request('type') == 'offline' ? 'selected' : '' }}>Offline فقط</option>
+                        </select>
+                    </div>
+                </div>
             </form>            
         </div>
     </div>
