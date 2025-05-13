@@ -22,6 +22,7 @@ use App\Models\Role;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class CourseGroupController extends Controller
 {
@@ -79,8 +80,10 @@ class CourseGroupController extends Controller
     public function view($id)
     {
         $group = CourseGroup::with(['webinar', 'instructor', 'members.student'])->findOrFail($id);
+        $decodedMeeting = $group->meeting_json ? json_decode($group->meeting_json, true) : [];
+        $occurrences = $decodedMeeting['occurrences'] ?? [];
 
-        return view('course_groups.admin.view', compact('group'));
+        return view('course_groups.admin.view', compact('group', 'occurrences'));
     }
     // GroupController.php
     public function getInstructorGroups($instructor_id)
@@ -230,110 +233,123 @@ class CourseGroupController extends Controller
         return $validator->validated();
     }
 
-    public function createGroup(Request $request)
+    // Add these protected methods to your controller
+    protected function handleMeetingLogic(Request $request, User $instructor, ?string $meetingId = null): array
     {
         $validated = $this->validateGroupRequest($request);
 
-        $startDateTime = Carbon::parse($validated['meeting_start_date'] . ' ' . $validated['meeting_start_time'], 'Asia/Dubai');
-        $endDateTime = (!empty($validated['meeting_end_date']) && !empty($validated['meeting_end_time']))
-            ? Carbon::parse($validated['meeting_end_date'] . ' ' . $validated['meeting_end_time'], 'Asia/Dubai')
-            : null;
-
-        $instructor = User::findOrFail($validated['teacher_id']);
         if ($validated['schedule_type'] === 'variable' && $validated['session_type'] === 'zoom') {
-            $meetingJson = $this->buildVariableZoomMeetingJson($validated, $request->input('manual_occurrences'), $instructor);
-        } elseif ($validated['session_type'] === 'zoom') {
-            $zoomResponse = $this->createZoomMeeting($instructor, $validated);
+            return $this->buildVariableZoomMeetingJson($validated, $request->input('manual_occurrences'), $instructor);
+        }
+
+        if ($validated['session_type'] === 'zoom') {
+            $zoomResponse = $meetingId
+                        ? $this->updateZoomMeeting($meetingId, $instructor, $validated)
+                        : $this->createZoomMeeting($instructor, $validated);
 
             if (!$zoomResponse['success']) {
-                return redirect()->back()->withErrors(['zoom_meeting' => $zoomResponse['error']]);
+                throw ValidationException::withMessages(['zoom_meeting' => $zoomResponse['error']]);
             }
 
             $meetingJson = $zoomResponse['data'];
-            unset($meetingJson['global_dial_in_numbers']);
-        } else {
-            $meetingJson = $this->buildOfflineMeetingJson($validated, $request->input('manual_occurrences'));
+            unset($meetingJson['settings']['global_dial_in_numbers']);
+            return $meetingJson;
         }
 
-        $group = CourseGroup::create([
-            'webinar_id'         => $validated['webinar_id'],
-            'instructor_id'      => $validated['teacher_id'],
-            'meeting_id'         => $meetingJson['id'] ?? time(),
-            'meeting_start_time' => $startDateTime,
-            'meeting_end_time'   => $endDateTime,
-            'meeting_duration'   => $validated['meeting_duration'] * 60,
-            'meeting_recurring'  => $validated['meeting_recurring'] ?? 0,
-            'meeting_json'       => json_encode($meetingJson),
-            'session_type'       => $validated['session_type'],
-        ]);
+        return $this->buildOfflineMeetingJson($validated, $request->input('manual_occurrences'));
+    }
 
-        if (!empty($validated['student_ids'])) {
-            foreach ($validated['student_ids'] as $studentId) {
-                GroupMember::create([
-                    'group_id'   => $group->id,
-                    'student_id' => $studentId,
-                    'webinar_id' => $validated['webinar_id'],
-                ]);
-            }
+    protected function parseDates(array $validated): array
+    {
+        $startDateTime = Carbon::parse($validated['meeting_start_date'] . ' ' . $validated['meeting_start_time'], 'Asia/Dubai');
+
+        $endDateTime = null;
+        if (!empty($validated['meeting_end_date']) && !empty($validated['meeting_end_time'])) {
+            $endDateTime = Carbon::parse($validated['meeting_end_date'] . ' ' . $validated['meeting_end_time'], 'Asia/Dubai');
         }
 
+        return [$startDateTime, $endDateTime];
+    }
 
-        return redirect()->route('webinar-groups.all')->with('success', 'Group created successfully.');
+    protected function syncGroupMembers(CourseGroup $group, array $studentIds, $webinarId): void
+    {
+        $group->members()->delete();
+
+        if (!empty($studentIds)) {
+            $members = array_map(function ($studentId) use ($group, $webinarId) {
+                return [
+                'group_id' => $group->id,
+                'student_id' => $studentId,
+                'webinar_id' => $webinarId,
+                'created_at' => now(),
+                'updated_at' => now()
+                ];
+            }, $studentIds);
+
+            GroupMember::insert($members);
+        }
+    }
+
+    protected function prepareGroupData(array $validated, $meetingJson, $startDateTime, $endDateTime): array
+    {
+        return [
+        'webinar_id' => $validated['webinar_id'],
+        'instructor_id' => $validated['teacher_id'],
+        'meeting_start_time' => $startDateTime,
+        'meeting_end_time' => $endDateTime,
+        'meeting_duration' => $validated['meeting_duration'] * 60,
+        'meeting_recurring' => $validated['meeting_recurring'] ?? 0,
+        'meeting_json' => json_encode($meetingJson),
+        'session_type' => $validated['session_type'],
+        ];
+    }
+
+// Updated controller methods
+    public function createGroup(Request $request)
+    {
+        [$validated, $instructor] = $this->validateAndResolveInstructor($request);
+        try {
+            [$startDateTime, $endDateTime] = $this->parseDates($validated);
+            $meetingJson = $this->handleMeetingLogic($request, $instructor);
+
+            $group = CourseGroup::create(array_merge(
+                $this->prepareGroupData($validated, $meetingJson, $startDateTime, $endDateTime),
+                ['meeting_id' => $meetingJson['id'] ?? time()]
+            ));
+
+            $this->syncGroupMembers($group, $validated['student_ids'] ?? [], $validated['webinar_id']);
+
+            return redirect()->route('webinar-groups.all')->with('success', 'Group created successfully.');
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors());
+        }
     }
 
     public function update(Request $request, $id)
     {
-        $validated = $this->validateGroupRequest($request);
-
-        $startDateTime = Carbon::parse($validated['meeting_start_date'] . ' ' . $validated['meeting_start_time'], 'Asia/Dubai');
-        $endDateTime = (!empty($validated['meeting_end_date']) && !empty($validated['meeting_end_time']))
-            ? Carbon::parse($validated['meeting_end_date'] . ' ' . $validated['meeting_end_time'], 'Asia/Dubai')
-            : null;
-
+        [$validated, $instructor] = $this->validateAndResolveInstructor($request);
         $group = CourseGroup::findOrFail($id);
-        $instructor = User::findOrFail($validated['teacher_id']);
 
-        if ($validated['schedule_type'] === 'variable' && $validated['session_type'] === 'zoom') {
-            $meetingJson = $this->buildVariableZoomMeetingJson($validated, $request->input('manual_occurrences'), $instructor);
-        } elseif ($validated['session_type'] === 'zoom') {
-            $zoomResponse = $this->updateZoomMeeting($group->meeting_id, $instructor, $validated);
+        try {
+            [$startDateTime, $endDateTime] = $this->parseDates($validated);
+            $meetingJson = $this->handleMeetingLogic($request, $instructor, $group->meeting_id);
 
-            if (!$zoomResponse['success']) {
-                return redirect()->back()->withErrors(['zoom_meeting' => $zoomResponse['error']]);
-            }
+            $group->update($this->prepareGroupData($validated, $meetingJson, $startDateTime, $endDateTime));
+            $this->syncGroupMembers($group, $validated['student_ids'] ?? [], $validated['webinar_id']);
 
-            $meetingJson = $zoomResponse['data'];
-            unset($meetingJson['global_dial_in_numbers']);
-        } else {
-            $meetingJson = $this->buildOfflineMeetingJson($validated, $request->input('manual_occurrences'));
+            return redirect()->back()->with('success', 'Group updated successfully.');
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors());
         }
-
-        $group->update([
-            'webinar_id'         => $validated['webinar_id'],
-            'instructor_id'      => $validated['teacher_id'],
-            'meeting_start_time' => $startDateTime,
-            'meeting_end_time'   => $endDateTime,
-            'meeting_duration'   => $validated['meeting_duration'] * 60,
-            'meeting_recurring'  => $validated['meeting_recurring'] ?? 0,
-            'meeting_json'       => json_encode($meetingJson),
-            'session_type'       => $validated['session_type'],
-        ]);
-
-        GroupMember::where('group_id', $group->id)->delete();
-        if (!empty($validated['student_ids'])) {
-            foreach ($validated['student_ids'] as $studentId) {
-                GroupMember::create([
-                    'group_id'   => $group->id,
-                    'student_id' => $studentId,
-                    'webinar_id' => $validated['webinar_id'],
-                ]);
-            }
-        } else {
-            GroupMember::where('group_id', $group->id)->delete();
-        }
-
-        return redirect()->back()->with('success', 'Group updated successfully.');
     }
+
+    protected function validateAndResolveInstructor(Request $request): array
+    {
+        $validated = $this->validateGroupRequest($request);
+        $instructor = User::findOrFail($validated['teacher_id']);
+        return [$validated, $instructor];
+    }
+
 
     private function buildVariableZoomMeetingJson(array $validated, ?array $manualOccurrences, User $instructor): array
     {

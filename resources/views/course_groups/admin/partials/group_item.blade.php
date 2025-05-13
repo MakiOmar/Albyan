@@ -63,5 +63,12 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="px-3 mt-4">
+            <h3 class="text-secondary"><i class="fa fa-bookmark"></i> قائمة المحاضرات</h3>
+            <div class="student-meetings pt-2">
+                @include('web.default.course.learningPage.components.group_meetings', ['group' => $group, 'occurrences' => $occurrences, 'user' => auth()->user()])
+            </div>
+        </div>
     </div>
 </div>
