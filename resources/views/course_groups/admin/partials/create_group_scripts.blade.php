@@ -218,10 +218,17 @@
     document.addEventListener('DOMContentLoaded', function () {
 
         const meetingRecurring = document.getElementById('meeting_recurring');
+        const recurrenceType = document.getElementById('recurrence_type');
+        // If no value is selected or value is empty, set to weekly (2)
+        if (!recurrenceType.value) {
+            recurrenceType.value = '2';
+        }
+        // Create and dispatch the change event
+        const event = new Event('change');
+        recurrenceType.dispatchEvent(event);
         if ( ! meetingRecurring  ) {
             return;
         }
-        const recurrenceType = document.getElementById('recurrence_type');
         const meetingEndTimeWrapper = document.getElementById('meeting_end_time').closest('.form-group');
         const meetingEndTimeInput = document.getElementById('meeting_end_time');
         const recurrenceFieldsWrapper = [
