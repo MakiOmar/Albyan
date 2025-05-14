@@ -107,13 +107,17 @@
                                 $matchesInstructor = empty($filterInstructor) || $s['instructor_id'] == $filterInstructor;
                                 return $s['day'] === $day['date'] && $s['time'] === $slotStart && $matchesType && $matchesInstructor;
                             });
+                            $height = '80px';
                         @endphp
 
                         @if($sessionsInCell->isNotEmpty())
-                            <td class="position-relative" style="height: 80px; min-width: 150px;">
+                            @php
+                            $height = '180px';
+                            @endphp
+                            <td class="position-relative" style="height: {{ $height }}; min-width: 150px;">
                                 @foreach($sessionsInCell as $index => $session)
                                     @php
-                                        $offset = $index * 10;
+                                        $offset = 0; // الطبقات كلها فوق بعض
                                         $today = \Carbon\Carbon::now('Asia/Dubai')->format('Y-m-d');
                                         $isToday = $session['day'] === $today;
 
@@ -133,7 +137,8 @@
                                         }
                                     @endphp
 
-                                    <div class="session-cell {{ $cellClass }}" style="position:absolute; top:{{ $offset }}px; left:5px; right:5px; z-index:1; transition:0.3s" onmouseover="this.style.zIndex=10" onmouseout="this.style.zIndex=1">
+                                    <div class="session-cell {{ $cellClass }} session-layer-{{ $loop->index }}" 
+                                        style="position:absolute; top:0px; left:5px; right:5px; z-index:{{ $loop->index == 0 ? 10 : 1 }}; transition:0.3s">
                                         <strong>{{ $session['webinar_title'] }}</strong><br>
                                         مجموعة: {{ $session['group_id'] }}<br>
                                         المدرس: {{ $session['instructor_name'] }}<br>
@@ -152,7 +157,17 @@
                                         </div>
                                     </div>
                                 @endforeach
+
+                                {{-- ✅ نقاط التنقل --}}
+                                <div class="d-flex justify-content-center mt-2 position-absolute w-100" style="bottom: 5px; z-index:20;">
+                                    @foreach($sessionsInCell as $dotIndex => $session)
+                                        <div class="dot-nav mx-1 rounded-circle" 
+                                            style="width: 10px; height: 10px; background-color: #999; cursor:pointer;" 
+                                            onmouseover="showLayer(this, {{ $dotIndex }})"></div>
+                                    @endforeach
+                                </div>
                             </td>
+
                         @else
                             <td onclick="openCreateGroupPopup('{{ $day['date'] }}', '{{ $slotStart }}', '{{ request('instructor_id') }}')" style="cursor:pointer;"></td>
                         @endif
@@ -194,7 +209,18 @@
 
 @push('scripts_bottom')
 <script>
+    function showLayer(dot, index) {
+        // إخفاء كل الطبقات في نفس الخلية
+        const cell = dot.closest('td');
+        const layers = cell.querySelectorAll('.session-cell');
+        layers.forEach(el => el.style.zIndex = 1);
+
+        // إظهار الطبقة المقابلة للنقطة
+        const target = cell.querySelector('.session-layer-' + index);
+        if (target) target.style.zIndex = 10;
+    }
     jQuery(document).ready(function($){
+        
         $('#instructor_id').select2();
     });
     function openCreateGroupPopup(date, time) {
