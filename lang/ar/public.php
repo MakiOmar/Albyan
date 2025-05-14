@@ -364,4 +364,11 @@ return [
     'forbidden_request_toast_lang' => 'طلب"ممنوع" ',
     'forbidden_request_toast_msg_lang' => 'غير مسموح لك بالولوج لهذا المحتوى',
     'offline_session' => 'جلسة حضورية (بدون رابط)',
+    'Saturday'  => 'السبت',
+    'Sunday'    => 'الأحد',
+    'Monday'    => 'الاثنين',
+    'Tuesday'   => 'الثلاثاء',
+    'Wednesday' => 'الأربعاء',
+    'Thursday'  => 'الخميس',
+    'Friday'    => 'الجمعة',
 ];

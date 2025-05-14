@@ -400,5 +400,12 @@ return [
 
     'forbidden_request_toast_lang' => '"FORBIDDEN" Request',
     'forbidden_request_toast_msg_lang' => 'You not access to this content.',
+    'Saturday'  => 'Saturday',
+    'Sunday'    => 'Sunday',
+    'Monday'    => 'Monday',
+    'Tuesday'   => 'Tuesday',
+    'Wednesday' => 'Wednesday',
+    'Thursday'  => 'Thursday',
+    'Friday'    => 'Friday',
 
 ];
