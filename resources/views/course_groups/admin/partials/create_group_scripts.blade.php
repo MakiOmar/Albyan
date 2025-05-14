@@ -286,7 +286,7 @@
         toggleEndTimeField();
     });
     jQuery(document).ready(function ($) {
-        let index = 1;
+        let index = $('#manual-occurrences .occurrence-row').length;
 
         // عند تغيير نوع الإدخال (تاريخ / يوم)
         $('#manual_occurrences_type').on('change', function () {
@@ -303,6 +303,7 @@
 
         // إضافة صف جديد
         $('#addOccurrence').click(function () {
+            index = $('#manual-occurrences .occurrence-row').length;
             const type = $('#manual_occurrences_type').val();
 
             const dateInput = `
@@ -336,7 +337,7 @@
                     </div>
                     <div class="col-md-4">
                         <label>المدة (بالساعات)</label>
-                        <input type="number" step="0.1" name="manual_occurrences[${index}][duration]" class="form-control" placeholder="مثال: 1.5" min="0.1" value="1" required>
+                        <input type="number" step="0.01" name="manual_occurrences[${index}][duration]" class="form-control" placeholder="مثال: 1.5" min="0.1" value="1" required>
                     </div>
                     <div class="position-absolute" style="left:-30px;bottom: 1.5px;">
                         <button type="button" class="btn btn-danger remove-occurrence">X</button>

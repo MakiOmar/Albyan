@@ -338,7 +338,7 @@ class CourseGroupController extends Controller
             $group->update($this->prepareGroupData($validated, $meetingJson, $startDateTime, $endDateTime));
             $this->syncGroupMembers($group, $validated['student_ids'] ?? [], $validated['webinar_id']);
 
-            return redirect()->back()->with('success', 'Group updated successfully.');
+            return redirect()->route('webinar-groups.all')->with('success', 'Group created successfully.');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors());
         }
@@ -419,9 +419,16 @@ class CourseGroupController extends Controller
         }
 
         return [
-        'type'        => 'variable',
-        'timezone'    => 'Asia/Dubai',
-        'occurrences' => $occurrences,
+            'recurrence'  => [
+                'type'        => 'variable',
+                'repeat_interval' => (int) ($validated['recurrence_interval'] ?? 1),
+                'end_times'       => (int) ($validated['end_times'] ?? 1),
+                'weekly_days'     => isset($validated['weekly_days']) ? implode(',', $validated['weekly_days']) : null,
+                'monthly_day'     => $validated['monthly_day'] ?? null,
+            ],
+            'timezone'    => 'Asia/Dubai',
+            'manual_occurrences_type' => $type,
+            'occurrences' => $occurrences,
         ];
     }
 
@@ -516,14 +523,15 @@ class CourseGroupController extends Controller
             }
         }
         return [
-        'recurrence' => [
-            'type'            => $validated['schedule_type'],
-            'repeat_interval' => (int) ($validated['recurrence_interval'] ?? 1),
-            'end_times'       => (int) ($validated['end_times'] ?? 1),
-            'weekly_days'     => isset($validated['weekly_days']) ? implode(',', $validated['weekly_days']) : null,
-            'monthly_day'     => $validated['monthly_day'] ?? null,
-        ],
-        'occurrences' => $occurrences,
+            'recurrence' => [
+                'type'            => $validated['schedule_type'],
+                'repeat_interval' => (int) ($validated['recurrence_interval'] ?? 1),
+                'end_times'       => (int) ($validated['end_times'] ?? 1),
+                'weekly_days'     => isset($validated['weekly_days']) ? implode(',', $validated['weekly_days']) : null,
+                'monthly_day'     => $validated['monthly_day'] ?? null,
+            ],
+            'manual_occurrences_type' => $type,
+            'occurrences' => $occurrences,
         ];
     }
 
@@ -698,12 +706,14 @@ class CourseGroupController extends Controller
         $allStudents = User::where('role_id', 1)->get(); // جميع الطلاب
         $group    = null;
         $students = [];
-
+        $manualType = false;
         if ($groupId) {
             $group = CourseGroup::with('members')->findOrFail($groupId);
             $students = User::whereIn('id', $group->members->pluck('student_id'))->get(); // فقط طلاب المجموعة
+            $meetingJson = json_decode($group->meeting_json, true);
+            $manualType = $meetingJson['manual_occurrences_type'] ?? 'date';
         }
-        return view('course_groups.admin.create_variable', compact('webinars', 'instructors', 'allStudents', 'students', 'group'));
+        return view('course_groups.admin.create_variable', compact('webinars', 'instructors', 'allStudents', 'students', 'group', 'manualType'));
     }
 
 

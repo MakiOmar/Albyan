@@ -18,6 +18,8 @@ if (!empty($values)) {
 }
 $isEdit = isset($group);
 $meetingJson = $isEdit ? json_decode($group->meeting_json, true) : null;
+$manualType = old('manual_occurrences_type', $meetingJson['manual_occurrences_type'] ?? 'date');
+$occurrences = old('manual_occurrences', $meetingJson['occurrences'] ?? []);
 @endphp
 @section('content')
 <div class="container">
