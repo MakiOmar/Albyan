@@ -308,6 +308,7 @@ class CourseGroupController extends Controller
     public function createGroup(Request $request)
     {
         [$validated, $instructor] = $this->validateAndResolveInstructor($request);
+
         try {
             [$startDateTime, $endDateTime] = $this->parseDates($validated);
             $meetingJson = $this->handleMeetingLogic($request, $instructor);
@@ -913,15 +914,17 @@ class CourseGroupController extends Controller
         ? Carbon::parse($startDate . ' ' . $startTime, 'Asia/Dubai')
         : Carbon::now('Asia/Dubai');
 
+        $isRecurring = !empty($data['meeting_recurring']);
+
         $meetingData = [
-        'topic'    => $data['topic'] ?? "Meeting for Webinar ID {$data['webinar_id']}",
-        'type'     => (isset($data['meeting_recurring']) && $data['meeting_recurring']) ? 8 : 2,
+        'topic'      => $data['topic'] ?? "Meeting for Webinar ID {$data['webinar_id']}",
+        'type'       => $isRecurring ? 8 : 2,
         'start_time' => $startDateTime->format('Y-m-d\TH:i:s'),
         'duration'   => $data['meeting_duration'] * 60,
         'timezone'   => 'Asia/Dubai',
         'settings'   => [
-            'host_video'        => isset($data['host_video']) ? (bool) $data['host_video'] : false,
-            'participant_video' => isset($data['participant_video']) ? (bool) $data['participant_video'] : false,
+            'host_video'        => (bool) ($data['host_video'] ?? false),
+            'participant_video' => (bool) ($data['participant_video'] ?? false),
             'audio'             => $data['audio_option'] ?? 'both',
             'join_before_host'  => false,
             'mute_upon_entry'   => true,
@@ -929,18 +932,17 @@ class CourseGroupController extends Controller
         ],
         ];
 
-    // إذا كانت جلسة متكررة (ليس في حالة variable)
-        if (!empty($data['meeting_recurring'])) {
+        if ($isRecurring) {
             $recurrence = [
-            'type'            => (int) $data['recurrence_type'], // 1: Daily, 2: Weekly, 3: Monthly
-            'repeat_interval' => $data['recurrence_interval'],
-            'end_times'       => $data['end_times'],
+            'type'            => (int) $data['recurrence_type'],
+            'repeat_interval' => (int) $data['recurrence_interval'],
+            'end_times'       => (int) $data['end_times'],
             ];
 
-            if ($data['recurrence_type'] == 2 && isset($data['weekly_days'])) {
+            if ((int) $data['recurrence_type'] === 2 && !empty($data['weekly_days'])) {
                 $recurrence['weekly_days'] = implode(',', $data['weekly_days']);
-            } elseif ($data['recurrence_type'] == 3 && isset($data['monthly_day'])) {
-                $recurrence['monthly_day'] = $data['monthly_day'];
+            } elseif ((int) $data['recurrence_type'] === 3 && !empty($data['monthly_day'])) {
+                $recurrence['monthly_day'] = (int) $data['monthly_day'];
             }
 
             $meetingData['recurrence'] = $recurrence;
@@ -955,18 +957,34 @@ class CourseGroupController extends Controller
             ];
         }
 
+        $meeting = $response->json();
+        $meetingId = $meeting['id'] ?? null;
+
+        // ✅ فقط إذا متكرر، نجلب البيانات التفصيلية
+        if ($isRecurring && $meetingId) {
+            $detailsResponse = Http::withToken($accessToken)->get("{$zoomBaseUrl}/meetings/{$meetingId}");
+            if ($detailsResponse->successful()) {
+                $details = $detailsResponse->json();
+                if (isset($details['occurrences'])) {
+                    $meeting['occurrences'] = $details['occurrences'];
+                }
+            }
+        }
+
         return [
         'success' => true,
-        'data'    => $response->json(),
+        'data'    => $meeting,
         ];
     }
+
 
     private function updateZoomMeeting($meetingId, $instructor, $data)
     {
         $accessToken = $this->getZoomAccessToken();
         $zoomBaseUrl = env('ZOOM_BASE_URL', 'https://api.zoom.us/v2');
-        $zoomUpdateUrl = $zoomBaseUrl . "/meetings/{$meetingId}";
-        $zoomGetUrl    = $zoomUpdateUrl; // same endpoint
+        $zoomUrl     = $zoomBaseUrl . "/meetings/{$meetingId}";
+
+        $isRecurring = !empty($data['meeting_recurring']);
 
         $meetingData = [
         'topic'      => "Updated Meeting for Webinar ID {$data['webinar_id']}",
@@ -983,24 +1001,23 @@ class CourseGroupController extends Controller
         ],
         ];
 
-        if ($data['meeting_recurring']) {
+        if ($isRecurring) {
             $recurrence = [
-                'type'            => (int) $data['recurrence_type'],
-                'repeat_interval' => $data['recurrence_interval'],
-                'end_times' => $data['end_times'],
+            'type'            => (int) $data['recurrence_type'],
+            'repeat_interval' => (int) $data['recurrence_interval'],
+            'end_times'       => (int) $data['end_times'],
             ];
 
-            if ($data['recurrence_type'] == 2) {
+            if ((int) $data['recurrence_type'] === 2 && !empty($data['weekly_days'])) {
                 $recurrence['weekly_days'] = implode(',', $data['weekly_days']);
-            } elseif ($data['recurrence_type'] == 3) {
-                $recurrence['monthly_day'] = $data['monthly_day'];
+            } elseif ((int) $data['recurrence_type'] === 3 && !empty($data['monthly_day'])) {
+                $recurrence['monthly_day'] = (int) $data['monthly_day'];
             }
 
             $meetingData['recurrence'] = $recurrence;
         }
 
-        // 1️⃣ تحديث الاجتماع
-        $updateResponse = Http::withToken($accessToken)->patch($zoomUpdateUrl, $meetingData);
+        $updateResponse = Http::withToken($accessToken)->patch($zoomUrl, $meetingData);
 
         if ($updateResponse->failed()) {
             return [
@@ -1009,21 +1026,36 @@ class CourseGroupController extends Controller
             ];
         }
 
-        // 2️⃣ جلب البيانات المحدثة
-        $getResponse = Http::withToken($accessToken)->get($zoomGetUrl);
+        // ✅ فقط إذا متكرر، نجلب البيانات الجديدة مع التكرارات
+        if ($isRecurring) {
+            $getResponse = Http::withToken($accessToken)->get($zoomUrl);
 
-        if ($getResponse->failed()) {
+            if ($getResponse->failed()) {
+                return [
+                'success' => false,
+                'error'   => 'Zoom meeting updated, but failed to fetch updated details: ' . $getResponse->body(),
+                ];
+            }
+
+            $data = $getResponse->json();
+            if (!isset($data['occurrences'])) {
+                $data['occurrences'] = [];
+            }
+
             return [
-            'success' => false,
-            'error'   => 'Zoom meeting updated, but failed to fetch updated details: ' . $getResponse->body(),
+            'success' => true,
+            'data'    => $data,
             ];
         }
 
+        // إذا لم يكن متكرر، نعيد البيانات الحالية فقط
         return [
         'success' => true,
-        'data'    => $getResponse->json(),
+        'data'    => ['id' => $meetingId],
         ];
     }
+
+
 
 
 
@@ -1325,7 +1357,7 @@ class CourseGroupController extends Controller
             if (!empty($meetingJson['occurrences'])) {
                 $lastOccurrence = collect($meetingJson['occurrences'])->sortByDesc('start_time')->first();
                 $lastDay = $isRecurring && $lastOccurrence ? Carbon::parse($lastOccurrence['start_time'])->format('Y-m-d') : null;
-
+                
                 foreach ($meetingJson['occurrences'] as $occurrence) {
                     $startUtc = Carbon::parse($occurrence['start_time'])->setTimezone('Asia/Dubai');
 
