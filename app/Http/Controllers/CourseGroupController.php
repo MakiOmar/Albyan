@@ -461,8 +461,7 @@ class CourseGroupController extends Controller
         return [
             'occurrence_id' => $meeting['id'],
             'start_time'    => $meeting['start_time'], // ISO 8601 format from Zoom
-            'duration'      => $meeting['duration'] * 60, // Convert from minutes to seconds
-            'join_url'      => $meeting['join_url'],
+            'duration'      => $meeting['duration'],
             'start_url'     => $meeting['start_url'],
             'status'        => 'available',
         ];
@@ -1353,7 +1352,7 @@ class CourseGroupController extends Controller
         foreach ($courseGroups as $group) {
             $meetingJson = json_decode($group->meeting_json, true);
             $isRecurring = $group->meeting_recurring == 1 ? 1 : 0;
-            $division    = $group->session_type === 'offline' ? 60 : 3600;
+            $division    = $group->session_type === 'offline' ? 60 : 60;
             if (!empty($meetingJson['occurrences'])) {
                 $lastOccurrence = collect($meetingJson['occurrences'])->sortByDesc('start_time')->first();
                 $lastDay = $isRecurring && $lastOccurrence ? Carbon::parse($lastOccurrence['start_time'])->format('Y-m-d') : null;
