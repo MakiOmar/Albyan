@@ -84,6 +84,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/ajax/webinar/{webinar}/students', [CourseGroupController::class, 'getStudents']);
             Route::get('/ajax/webinar/{webinar}/instructors', [CourseGroupController::class, 'getWebinarInstructors']);
             Route::get('/ajax/webinar/{webinarId}/groups-html', [CourseGroupController::class, 'getWebinarGroupsHtml']);
+            Route::get('/ajax/groups/{group}/students', [CourseGroupController::class, 'getGroupStudents']);
         });
 
 

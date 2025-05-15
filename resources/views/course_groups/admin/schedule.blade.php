@@ -147,9 +147,14 @@
                                         من: {{ \Carbon\Carbon::createFromFormat('H:i', $session['time'])->format('h:i A') }}<br>
                                         المدة: {{ $session['duration'] }} ساعة
                                         <div class="mt-1">
-                                            <span class="badge {{ $session['session_type'] === 'zoom' ? 'badge-info' : 'badge-success' }}">
+                                            <span class="badge {{ $session['session_type'] === 'zoom' ? 'badge-info' : 'badge-success' }}"
+                                                style="cursor:pointer"
+                                                data-toggle="modal"
+                                                data-target="#sessionStudentsModal"
+                                                onclick="loadGroupStudents({{ $session['group_id'] }}, '{{ $session['webinar_title'] }}')">
                                                 {{ $session['session_type'] === 'zoom' ? 'Zoom' : 'Offline' }}
                                             </span>
+
                                             @if($isToday)
                                                 <span class="badge-today">جلسة اليوم</span>
                                             @endif
@@ -207,9 +212,66 @@
     </div>
 
 </div>
+<!-- Students Modal -->
+<div class="modal fade" id="sessionStudentsModal" tabindex="-1" role="dialog" aria-labelledby="sessionStudentsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">الطلاب في المجموعة <span id="modalGroupTitle"></span></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="إغلاق">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="studentsListContainer">
+          <p class="text-muted">جاري التحميل...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 @endsection
 
 @push('scripts_bottom')
+<script>
+function loadGroupStudents(groupId, groupTitle) {
+    $('#modalGroupTitle').text(groupTitle);
+    $('#studentsListContainer').html('<p class="text-muted">جاري التحميل...</p>');
+
+    $.ajax({
+        url: '/admin/course-group/ajax/groups/' + groupId + '/students',
+        method: 'GET',
+        success: function(data) {
+            let editButton = `</ul>
+                        <div class="mt-3">
+                            <a href="${data.edit_url}" class="btn btn-warning">تعديل المجموعة</a>
+                        </div>`;
+            if (!data.students || data.students.length === 0) {
+                let html = `<p class="text-danger">لا يوجد طلاب في هذه المجموعة.</p>`;
+                html += editButton;
+                $('#studentsListContainer').html(html);
+            } else {
+                let html = `<p><strong>عدد الطلاب:</strong> ${data.students.length}</p><ul class="list-group">`;
+                $.each(data.students, function(index, student) {
+                    html += `<li class="list-group-item d-flex justify-content-between align-items-center">
+                                ${student.full_name}
+                                <small class="text-muted">${student.email}</small>
+                            </li>`;
+                });
+                html += editButton;
+
+                $('#studentsListContainer').html(html);
+            }
+        },
+        error: function(xhr) {
+            $('#studentsListContainer').html('<p class="text-danger">حدث خطأ أثناء تحميل الطلاب.</p>');
+            console.error(xhr.responseText);
+        }
+    });
+}
+</script>
 <script>
     function showLayer(dot, index) {
         // إخفاء كل الطبقات في نفس الخلية

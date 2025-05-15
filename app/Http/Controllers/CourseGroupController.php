@@ -167,6 +167,26 @@ class CourseGroupController extends Controller
         return response()->json($availableStudents);
     }
 
+    public function getGroupStudents($groupId)
+    {
+        $group = CourseGroup::with('members.student')->findOrFail($groupId);
+
+        $students = $group->members->map(function ($member) {
+            return [
+            'full_name' => $member->student->full_name,
+            'email'     => $member->student->email,
+            ];
+        });
+
+        $isVariable = $group->meeting_json && json_decode($group->meeting_json, true)['recurrence']['type'] === 'variable';
+
+        return response()->json([
+        'students'  => $students,
+        'edit_url'  => $isVariable
+            ? route('course-group.create-variable-form', $groupId)
+            : route('course-group.create-form', $groupId),
+        ]);
+    }
 
 
     public function removeStudent($groupId, $studentId)
@@ -440,7 +460,7 @@ class CourseGroupController extends Controller
         array $validated,
         User $instructor,
         int $webinarId
-        ): array {
+    ): array {
         $meetingData = [
             'topic'      => "Session for Webinar ID {$webinarId}",
             'type'       => 2, // Scheduled meeting
@@ -1367,7 +1387,7 @@ class CourseGroupController extends Controller
             if (!empty($meetingJson['occurrences'])) {
                 $lastOccurrence = collect($meetingJson['occurrences'])->sortByDesc('start_time')->first();
                 $lastDay = $isRecurring && $lastOccurrence ? Carbon::parse($lastOccurrence['start_time'])->format('Y-m-d') : null;
-                
+
                 foreach ($meetingJson['occurrences'] as $occurrence) {
                     $startUtc = Carbon::parse($occurrence['start_time'])->setTimezone('Asia/Dubai');
 

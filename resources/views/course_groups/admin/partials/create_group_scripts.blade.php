@@ -219,8 +219,11 @@
 
         const meetingRecurring = document.getElementById('meeting_recurring');
         const recurrenceType = document.getElementById('recurrence_type');
+        if ( ! recurrenceType ) {
+            return;
+        }
         // If no value is selected or value is empty, set to weekly (2)
-        if (!recurrenceType.value) {
+        if ( !recurrenceType.value) {
             recurrenceType.value = '2';
         }
         // Create and dispatch the change event
