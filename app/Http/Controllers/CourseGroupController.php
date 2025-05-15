@@ -440,7 +440,7 @@ class CourseGroupController extends Controller
         array $validated,
         User $instructor,
         int $webinarId
-    ): array {
+        ): array {
         $meetingData = [
             'topic'      => "Session for Webinar ID {$webinarId}",
             'type'       => 2, // Scheduled meeting
@@ -470,6 +470,7 @@ class CourseGroupController extends Controller
             'start_time'    => $meeting['start_time'], // ISO 8601 format from Zoom
             'duration'      => $meeting['duration'],
             'start_url'     => $meeting['start_url'],
+            'join_url'      => $meeting['join_url'],
             'status'        => 'available',
         ];
     }
