@@ -16,7 +16,7 @@
 <div class="card my-3 border border-secondary">
     <div class="card-header d-flex justify-content-between align-items-center">
         <strong>المجموعة #{{ $group->id }} - الاجتماع: {{ $group->meeting_id }}</strong>
-        <div class="d-flex flex-wrap gap-2">
+        <div class="d-flex flex-wrap align-items-center gap-2">
             <a href="{{ $meetingType === 'variable' 
                         ? route('course-group.create-variable-form', ['groupId' => $group->id]) 
                         : route('course-group.create-form', ['groupId' => $group->id]) }}"
@@ -34,7 +34,7 @@
                 data-target="#makeupSessionModal">
                 إضافة جلسة تعويضية
             </button>
-            <form method="POST" action="{{ route('course-group.destroy', $group->id) }}" class="d-inline">
+            <form method="POST" action="{{ route('course-group.destroy', $group->id) }}" class="d-inline m-0">
                 @csrf @method('DELETE')
                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('هل أنت متأكد؟')">حذف</button>
             </form>
