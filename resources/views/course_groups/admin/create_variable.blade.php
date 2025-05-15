@@ -20,10 +20,11 @@ $isEdit = isset($group);
 $meetingJson = $isEdit ? json_decode($group->meeting_json, true) : null;
 $manualType = old('manual_occurrences_type', $meetingJson['manual_occurrences_type'] ?? 'date');
 $occurrences = old('manual_occurrences', $meetingJson['occurrences'] ?? []);
+$pageTitle = 'Create variable schedule Group';
 @endphp
 @section('content')
 <div class="container">
-    <h1>Create a New Group</h1>
+    @include('partials.admin_page_title')
 
     <!-- Display Validation Errors -->
     @if ($errors->any())

@@ -1,9 +1,11 @@
 @extends('admin.layouts.app')
-
+@php
+$pageTitle = 'قائمة المجموعات';
+@endphp
 @section('content')
 <section class="section">
     <div class="container">
-        <h3 class="mb-4">قائمة المجموعات</h3>
+        @include('partials.admin_page_title')
         <!-- Nav Tabs -->
         @include('course_groups.admin.partials.forms_nav')
         <div class="card-body">

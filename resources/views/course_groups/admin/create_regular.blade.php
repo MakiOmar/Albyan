@@ -18,10 +18,11 @@ if (!empty($values)) {
 }
 $isEdit = isset($group);
 $meetingJson = $isEdit ? json_decode($group->meeting_json, true) : null;
+$pageTitle = 'Create regular schedule Group';
 @endphp
 @section('content')
 <div class="container">
-    <h1>Create a New Group</h1>
+    @include('partials.admin_page_title')
 
     <!-- Display Validation Errors -->
     @if ($errors->any())

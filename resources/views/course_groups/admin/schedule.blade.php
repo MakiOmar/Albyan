@@ -1,5 +1,7 @@
 @extends('admin.layouts.app')
-
+@php
+    $pageTitle = 'جدول المواعيد';
+@endphp
 @section('content')
 <style>
     table th, table td {
@@ -43,7 +45,7 @@
 </style>
 
 <div class="container">
-
+    @include('partials.admin_page_title')
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
             <a href="{{ route('schedule.index', ['week' => $weekOffset - 1, 'type' => request('type'), 'instructor_id' => request('instructor_id')]) }}" class="btn btn-primary">الأسبوع السابق</a>

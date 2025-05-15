@@ -18,9 +18,11 @@
         </button>
     </div>
 @endif
-
+@php
+$pageTitle = 'تفاصيل المجموعة';
+@endphp
 <div class="container">
-    <h3>تفاصيل المجموعة</h3>
+    @include('partials.admin_page_title')
     @include('course_groups.admin.partials.group_item', ['group' => $group]);
 </div>
 @include('course_groups.admin.partials.compensatory_session_model');

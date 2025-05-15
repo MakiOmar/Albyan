@@ -1,15 +1,10 @@
 @extends('admin.layouts.app')
-
+@php
+$pageTitle = 'Webinars with Course Groups';
+@endphp
 @section('content')
 <section class="section">
-    <div class="section-header">
-        <h1>Webinars with Course Groups</h1>
-        <div class="section-header-breadcrumb">
-            <div class="breadcrumb-item active"><a href="/admin">Dashboard</a>
-            </div>
-            <div class="breadcrumb-item">Webinars with Course Groups</div>
-        </div>
-    </div>
+    @include('partials.admin_page_title')
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">
