@@ -2,8 +2,8 @@
     <label for="manual_occurrences_type">نوع الإدخال</label>
     <small class="form-text text-muted">Choose if date based or week day based.</small>
     <select name="manual_occurrences_type" id="manual_occurrences_type" class="form-control">
-        <option value="date" {{ $manualType == 'date' ? 'selected' : '' }}>تواريخ</option>
         <option value="day" {{ $manualType == 'day' ? 'selected' : '' }}>أيام الأسبوع</option>
+        <option value="date" {{ $manualType == 'date' ? 'selected' : '' }}>تواريخ</option>
     </select>
 
 
@@ -60,10 +60,27 @@
                     </select>
                 </div>
 
+                @php
+                    $timeSlots = [];
+                    $start = \Carbon\Carbon::createFromTime(9, 0);
+                    $end = \Carbon\Carbon::createFromTime(22, 0);
+                    while ($start <= $end) {
+                        $timeSlots[] = $start->format('H:i');
+                        $start->addMinutes(30);
+                    }
+                @endphp
+
                 <div class="col-md-4">
                     <label>الوقت</label>
-                    <input type="time" name="manual_occurrences[{{ $i }}][time]" class="form-control" value="{{ $time }}">
+                    <select name="manual_occurrences[{{ $i }}][time]" class="form-control">
+                        @foreach($timeSlots as $slot)
+                            <option value="{{ $slot }}" {{ $slot == $time ? 'selected' : '' }}>
+                                {{ \Carbon\Carbon::createFromFormat('H:i', $slot)->format('h:i A') }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
+
 
                 <div class="col-md-4">
                     <label>المدة (بالساعات)</label>
@@ -75,7 +92,7 @@
                 </div>
             </div>
         @empty
-            {{-- لا توجد مواعيد مسبقة، عرض صف واحد فاضي --}}
+            @php $i = 0; @endphp
             <div class="row occurrence-row mb-2 position-relative">
                 <input type="hidden" class="manual_occurrences_type" name="manual_occurrences[0][type]" value="{{ $type }}">
 
@@ -93,9 +110,22 @@
                     </select>
                 </div>
 
+                @php
+                    $timeSlots = [];
+                    $start = \Carbon\Carbon::createFromTime(9, 0);
+                    $end = \Carbon\Carbon::createFromTime(22, 0);
+                    while ($start <= $end) {
+                        $timeSlots[] = $start->format('H:i');
+                        $start->addMinutes(30);
+                    }
+                @endphp
                 <div class="col-md-4">
                     <label>الوقت</label>
-                    <input type="time" name="manual_occurrences[0][time]" class="form-control" value="10:00">
+                    <select name="manual_occurrences[0][time]" class="form-control">
+                        @foreach($timeSlots as $slot)
+                            <option value="{{ $slot }}">{{ \Carbon\Carbon::createFromFormat('H:i', $slot)->format('h:i A') }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class="col-md-4">
@@ -110,7 +140,5 @@
         @endforelse
     </div>
 
-
-
-    <button type="button" id="addOccurrence" class="btn btn-secondary mt-2">إضافة موعد آخر</button>
+    <button type="button" id="addOccurrence" class="btn btn-success mt-2">إضافة موعد آخر</button>
 </div>

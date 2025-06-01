@@ -253,19 +253,20 @@ class CourseGroupController extends Controller
         return $validator->validated();
     }
 
-    // Add these protected methods to your controller
     protected function handleMeetingLogic(Request $request, User $instructor, ?string $meetingId = null): array
     {
         $validated = $this->validateGroupRequest($request);
 
+    // ✅ 1. Zoom + Variable
         if ($validated['schedule_type'] === 'variable' && $validated['session_type'] === 'zoom') {
             return $this->buildVariableZoomMeetingJson($validated, $request->input('manual_occurrences'), $instructor);
         }
 
+    // ✅ 2. Zoom + Regular
         if ($validated['session_type'] === 'zoom') {
             $zoomResponse = $meetingId
-                        ? $this->updateZoomMeeting($meetingId, $instructor, $validated)
-                        : $this->createZoomMeeting($instructor, $validated);
+            ? $this->updateZoomMeeting($meetingId, $instructor, $validated)
+            : $this->createZoomMeeting($instructor, $validated);
 
             if (!$zoomResponse['success']) {
                 throw ValidationException::withMessages(['zoom_meeting' => $zoomResponse['error']]);
@@ -276,8 +277,29 @@ class CourseGroupController extends Controller
             return $meetingJson;
         }
 
-        return $this->buildOfflineMeetingJson($validated, $request->input('manual_occurrences'));
+    // ✅ 3. Offline + Variable
+        if ($validated['schedule_type'] === 'variable' && $validated['session_type'] === 'offline') {
+            return $this->buildOfflineMeetingJson($validated, $request->input('manual_occurrences'));
+        }
+
+    // ✅ 4. Offline + Regular => استخدم generateOfflineOccurrences
+        if ($validated['schedule_type'] === 'regular' && $validated['session_type'] === 'offline') {
+            return [
+            'recurrence' => [
+                'type'            => (int) $validated['recurrence_type'],
+                'repeat_interval' => (int) $validated['recurrence_interval'],
+                'end_times'       => (int) $validated['end_times'],
+                'weekly_days'     => isset($validated['weekly_days']) ? implode(',', $validated['weekly_days']) : null,
+                'monthly_day'     => $validated['monthly_day'] ?? null,
+            ],
+            'timezone'    => 'Asia/Dubai',
+            'occurrences' => $this->generateOfflineOccurrences($validated),
+            ];
+        }
+
+        throw new \Exception('Unsupported meeting configuration.');
     }
+
 
     protected function parseDates(array $validated): array
     {
@@ -328,7 +350,6 @@ class CourseGroupController extends Controller
     public function createGroup(Request $request)
     {
         [$validated, $instructor] = $this->validateAndResolveInstructor($request);
-
         try {
             [$startDateTime, $endDateTime] = $this->parseDates($validated);
             $meetingJson = $this->handleMeetingLogic($request, $instructor);
@@ -1364,17 +1385,18 @@ class CourseGroupController extends Controller
         }
 
         $timeSlots = [];
-        $start = Carbon::createFromTime(10, 0);
+        $start = Carbon::createFromTime(9, 0);
         $end = Carbon::createFromTime(22, 0);
 
         while ($start < $end) {
-            $next = $start->copy()->addHour();
+            $next = $start->copy()->addMinutes(30);
             $timeSlots[] = [
-            'start' => $start->format('H:i'),
-            'end'   => $next->format('H:i'),
+                'start' => $start->format('H:i'),
+                'end'   => $next->format('H:i'),
             ];
             $start = $next;
         }
+
 
         $sessions = [];
 

@@ -60,7 +60,7 @@
 
     @include('course_groups.admin.partials.fields.students')
 
-    <button type="submit" id="create-group-submit-btn" class="btn btn-primary mt-3">
+    <button type="submit" id="create-group-submit-btn" class="btn btn-success mt-3">
         {{ $isEdit ? 'Update Group' : 'Create Group' }}
     </button>        
 </form>

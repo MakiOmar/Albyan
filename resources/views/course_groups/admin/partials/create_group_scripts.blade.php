@@ -290,7 +290,7 @@
     });
     jQuery(document).ready(function ($) {
         let index = $('#manual-occurrences .occurrence-row').length;
-
+         
         // عند تغيير نوع الإدخال (تاريخ / يوم)
         $('#manual_occurrences_type').on('change', function () {
             const type = $(this).val();
@@ -303,6 +303,27 @@
                 $('.occurrence-day').hide();
             }
         });
+        function generateTimeOptions() {
+            const times = [];
+            const start = new Date();
+            start.setHours(9, 0, 0, 0); // 9:00 AM
+            const end = new Date();
+            end.setHours(22, 0, 0, 0); // 10:00 PM
+
+            while (start <= end) {
+                const hours = start.getHours().toString().padStart(2, '0');
+                const minutes = start.getMinutes().toString().padStart(2, '0');
+                const value = `${hours}:${minutes}`;
+                const display = new Date(start).toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                times.push(`<option value="${value}">${display}</option>`);
+                start.setMinutes(start.getMinutes() + 30);
+            }
+
+            return times.join('');
+        }
 
         // إضافة صف جديد
         $('#addOccurrence').click(function () {
@@ -336,7 +357,9 @@
 
                     <div class="col-md-4">
                         <label>الوقت</label>
-                        <input type="time" name="manual_occurrences[${index}][time]" class="form-control" value="10:00">
+                        <select name="manual_occurrences[${index}][time]" class="form-control">
+                            ${generateTimeOptions()}
+                        </select>
                     </div>
                     <div class="col-md-4">
                         <label>المدة (بالساعات)</label>

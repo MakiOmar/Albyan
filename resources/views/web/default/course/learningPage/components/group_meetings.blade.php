@@ -2,7 +2,7 @@
     $meetings = json_decode($group->meeting_json, false);
     $occurrences = $meetings->occurrences ?? [];
     $isZoom = $group->session_type === 'zoom';
-    $timezone = $isZoom ? ($meetings->timezone ?? config('app.timezone')) : (auth()->user()->timezone ?? config('app.timezone'));
+    $timezone = 'Asia/Dubai';
 @endphp
 
 @if (!empty($occurrences))
