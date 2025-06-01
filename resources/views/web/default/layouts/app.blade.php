@@ -43,6 +43,28 @@
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-WTTKXKPQ');</script>
     <!-- End Google Tag Manager -->
+
+    <style>
+        .blue-bg{
+            background-color: #016291!important;
+        }
+        .blue-txt{
+            color: #016291!important;
+        }
+        #navbarShopingCart svg circle, #navbarShopingCart svg path, #navbarNotification svg path{
+            stroke: #fff;
+        }
+        .login-register-button{
+            border-radius: 25px;
+            border: 1px solid #fff;
+        }
+        a#login-button:hover, a#login-button:focus {
+            color: #016291 !important;
+        }
+        .navbar-search ::placeholder{
+            color: #fff
+        }
+    </style>
     
 </head>
 

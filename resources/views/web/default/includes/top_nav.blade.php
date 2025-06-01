@@ -13,7 +13,7 @@
 
 @endphp
 
-<div class="top-navbar d-flex border-bottom">
+<div class="top-navbar d-flex border-bottom blue-bg">
     <div class="container d-flex justify-content-between flex-column flex-lg-row">
         <div class="top-contact-box border-bottom d-flex flex-column flex-md-row align-items-center justify-content-center">
 
@@ -66,9 +66,9 @@
 
 
                 <form action="/search" method="get" class="form-inline my-2 my-lg-0 navbar-search position-relative">
-                    <input class="form-control mr-5 rounded" type="text" name="search" placeholder="{{ trans('navbar.search_anything') }}" aria-label="Search">
+                    <input class="blue-bg form-control mr-5 rounded-pill text-white" type="text" name="search" placeholder="{{ trans('navbar.search_anything') }}" aria-label="Search">
 
-                    <button type="submit" class="btn-transparent d-flex align-items-center justify-content-center search-icon">
+                    <button type="submit" class="btn-transparent d-flex align-items-center justify-content-center search-icon text-white">
                         <i data-feather="search" width="20" height="20" class="mr-10"></i>
                     </button>
                 </form>
@@ -82,21 +82,21 @@
 
                 foreach ($socials as $id => $social) {
                     if ($social['title'] == 'Facebook') {
-                        $socials[$id]['image'] = '/store/1/icons/icons8-facebook.svg';
+                        $socials[$id]['image'] = '/store/1/socials/211902_social_facebook.png';
                     } elseif ($social['title'] == 'Twitter') {
-                        $socials[$id]['image'] = '/store/1/icons/icons8-x.svg';
+                        $socials[$id]['image'] = '/store/1/socials/11244080_x_twitter.png';
                     } elseif ($social['title'] == 'Instagram') {
-                        $socials[$id]['image'] = '/store/1/icons/icons8-instagram.svg';
+                        $socials[$id]['image'] = '/store/1/socials/1161953_instagram_icon.png';
                     } elseif ($social['title'] == 'Whatsapp') {
-                        $socials[$id]['image'] = '/store/1/icons/icons8-whatsapp.svg';
+                        $socials[$id]['image'] = '/store/1/socials/7156624_whatsapp.png';
                     } elseif ($social['title'] == 'Snapchat') {
-                        $socials[$id]['image'] = '/store/1/icons/icons8-snapchat-circled-logo.svg';
+                        $socials[$id]['image'] = '/store/1/socials/1851684_snap chat.png';
                     } elseif ($social['title'] == 'Linkedin') {
-                        $socials[$id]['image'] = '/store/1/icons/icons8-linkedin.svg';
+                        $socials[$id]['image'] = '/store/1/socials/367593_linkedin.png';
                     } elseif ($social['title'] == 'Tik Tok') {
-                        $socials[$id]['image'] = '/store/1/icons/icons8-tiktok-black.svg';
+                        $socials[$id]['image'] = '/store/1/socials/8547041_tiktok.png';
                     } elseif ($social['title'] == 'Youtube') {
-                        $socials[$id]['image'] = '/store/1/icons/youtube-svgrepo-com.svg';
+                        $socials[$id]['image'] = '/store/1/socials/4375133_youtube.png';
                     }
                 }
             }
@@ -105,7 +105,7 @@
             @if(!empty($socials) and count($socials))
                 @foreach($socials as $social)
                     <a href="{{ $social['link'] }}" target="_blank">
-                        <img style="height:28px" src="{{ $social['image'] }}" alt="{{ $social['title'] }}" class="mr-15">
+                        <img src="{{ $social['image'] }}" alt="{{ $social['title'] }}" class="mr-15">
                     </a>
                 @endforeach
             @endif
