@@ -1192,7 +1192,7 @@ return [
 'certificate_completion_hint' => 'سيتم منح الطالب شهادة عند اجتياز الدورة.',
 'guarantee' => 'نص الضمان',
 'enter_guarantee_text' => 'أدخل نص الضمان',
-'online_viewer' => 'عارض على الإنترنت',
+'online_viewer' => 'عرض على الإنترنت',
 
 'add_to_not_access' => 'تقييد الوصول للمحتوى',
 'content_access_limitation' => 'تعطيل الوصول للمحتوى',
