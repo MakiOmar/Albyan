@@ -64,6 +64,17 @@
         .navbar-search ::placeholder{
             color: #fff
         }
+        .trendy-category canvas{
+            margin-left: 4px
+        }
+        .trendy-category:hover{
+            background-color: #016291;
+            color: #fff!important
+
+        }
+        .text-dark.trendy-category:hover{
+            color: #fff!important
+        }
     </style>
     
 </head>
@@ -174,6 +185,104 @@
         }
         $form.trigger('submit');
     });
+</script>
+
+<script>
+    /**
+        * Dynamically recolors PNG images inside a parent container.
+        * @param {string} parentSelector - The class of the parent element that triggers the change.
+        * @param {string} action - The trigger event: "click", "hover", or "load".
+        * @param {string} color - The target color in hex format (e.g., "#FF5733").
+        * @param {boolean} resetOthers - Whether to reset other images to their original state.
+        */
+    function applyParentImageColorChange(parentSelector, action, color, resetOthers) {
+        document.querySelectorAll(parentSelector).forEach(parent => {
+            let img = parent.querySelector("img"); // Target any image inside the parent
+            if (!img) return; // If no image is found, exit function
+
+            function recolorImage() {
+                // Reset all previous images (only if resetOthers is true)
+                if (resetOthers) {
+                    document.querySelectorAll(parentSelector).forEach(otherParent => {
+                        let otherImg = otherParent.querySelector("img");
+                        let otherCanvas = otherParent.querySelector("canvas");
+                        if (otherCanvas && otherImg) {
+                            otherCanvas.style.display = "none"; // Hide canvas
+                            otherImg.style.display = "inline"; // Show original image
+                        }
+                    });
+                }
+
+                // Ensure the image is fully loaded before modifying it
+                if (!img.complete) {
+                    img.onload = function () {
+                        recolorImage(); // Run function again after image loads
+                    };
+                    return;
+                }
+
+                // Create or reuse a canvas
+                let canvas = parent.querySelector("canvas");
+                if (!canvas) {
+                    canvas = document.createElement("canvas");
+                    canvas.style.display = "none"; // Hide by default
+                    img.parentNode.insertBefore(canvas, img); // Prepend canvas before the image
+                }
+                let ctx = canvas.getContext("2d");
+
+                // Get high-resolution image dimensions
+                let imgWidth = img.naturalWidth;
+                let imgHeight = img.naturalHeight;
+                canvas.width = imgWidth;
+                canvas.height = imgHeight;
+
+                // Draw the image onto the canvas
+                ctx.drawImage(img, 0, 0, imgWidth, imgHeight);
+                let imageData = ctx.getImageData(0, 0, imgWidth, imgHeight);
+                let data = imageData.data;
+
+                let r = parseInt(color.substring(1, 3), 16);
+                let g = parseInt(color.substring(3, 5), 16);
+                let b = parseInt(color.substring(5, 7), 16);
+
+                // Loop through pixels and recolor non-transparent areas
+                for (let i = 0; i < data.length; i += 4) {
+                    if (data[i+3] > 0) {  // If pixel is not transparent
+                        data[i] = r;   // Red
+                        data[i+1] = g; // Green
+                        data[i+2] = b; // Blue
+                    }
+                }
+
+                // Apply the new color
+                ctx.putImageData(imageData, 0, 0);
+
+                // Ensure the canvas matches displayed image size
+                canvas.style.width = img.width + "px";
+                canvas.style.height = img.height + "px";
+
+                // Hide the original image and show the canvas
+                img.style.display = "none";
+                canvas.style.display = "inline-block";
+            }
+
+            // Apply event listener based on action type
+            if (action === "click") {
+                parent.addEventListener("click", recolorImage);
+            } else if (action === "hover") {
+                parent.addEventListener("mouseenter", recolorImage);
+                parent.addEventListener("mouseleave", function () {
+                    // Reset to original state on mouse leave
+                    let canvas = parent.querySelector("canvas");
+                    if (canvas) canvas.style.display = "none";
+                    img.style.display = "inline";
+                });
+            } else if (action === "load") {
+                recolorImage(); // Apply color change immediately on page load
+            }
+        });
+    }
+    applyParentImageColorChange('.trendy-category', 'hover', '#ffffff', true);
 </script>
 </body>
 </html>
