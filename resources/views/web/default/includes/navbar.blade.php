@@ -24,7 +24,7 @@
     <div class="{{ (!empty($isPanel) and $isPanel) ? 'container-fluid' : 'container'}}">
         <div class="d-flex align-items-center justify-content-between w-100">
 
-            <a class="navbar-brand navbar-order d-flex align-items-center justify-content-center mr-0 {{ (empty($navBtnUrl) and empty($navBtnText)) ? 'ml-auto' : '' }}" href="/">
+            <a class="navbar-brand navbar-order d-flex d-lg-none align-items-center justify-content-center mr-0 {{ (empty($navBtnUrl) and empty($navBtnText)) ? 'ml-auto' : '' }}" href="/">
                 @if(!empty($generalSettings['logo']))
                     <img src="{{ $generalSettings['logo'] }}" class="img-cover" alt="site logo">
                 @endif
@@ -41,7 +41,8 @@
                     </button>
                 </div>
 
-                <ul class="navbar-nav mr-auto d-flex align-items-center">
+                <ul class="navbar-nav d-flex align-items-center" style="margin: auto">
+                    {{--
                     @if(!empty($categories) and count($categories))
                         <li class="mr-lg-25">
                             <div class="menu-category">
@@ -91,12 +92,27 @@
                             </div>
                         </li>
                     @endif
-
+                        --}}
+                        @php
+                            $count = count($navbarPages ?? []);
+                            $middle = ceil($count / 2);
+                        @endphp
                     @if(!empty($navbarPages) and count($navbarPages))
-                        @foreach($navbarPages as $navbarPage)
+                        @foreach($navbarPages as $index => $navbarPage)
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ $navbarPage['link'] }}">{{ $navbarPage['title'] }}</a>
                             </li>
+
+                            @if($index + 1 == $middle)
+                                {{-- Insert logo after middle item --}}
+                                <li class="nav-item px-3 d-none d-lg-flex align-items-center">
+                                    <a class="navbar-brand d-flex justify-content-center m-0" href="/">
+                                        @if(!empty($generalSettings['logo']))
+                                            <img src="{{ $generalSettings['logo'] }}" class="img-cover" style="height: 40px;" alt="site logo">
+                                        @endif
+                                    </a>
+                                </li>
+                            @endif
                         @endforeach
                     @endif
                     @if(!empty($authUser) && $authUser->isUser() )
