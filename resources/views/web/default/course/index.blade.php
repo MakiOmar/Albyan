@@ -117,7 +117,6 @@
                     @endif
                     
                     <div class="mt-35">
-                        {{--
                         <ul class="nav nav-tabs bg-secondary rounded-sm p-15 d-flex align-items-center justify-content-between" id="tabs-tab" role="tablist">
                             <li class="nav-item">
                                 <a class="position-relative font-14 text-white {{ (empty(request()->get('tab','')) or request()->get('tab','') == 'information') ? 'active' : '' }}" id="information-tab"
@@ -129,6 +128,7 @@
                                    href="#content" role="tab" aria-controls="content"
                                    aria-selected="false">{{ trans('product.content') }} ({{ $webinarContentCount }})</a>
                             </li>
+                            {{--
                             <li class="nav-item">
                                 <a class="position-relative font-14 text-white {{ (request()->get('tab','') == 'reviews') ? 'active' : '' }}" id="reviews-tab" data-toggle="tab"
                                    href="#reviews" role="tab" aria-controls="reviews"
@@ -147,8 +147,9 @@
                                    aria-selected="false">المجموعات</a>
                             </li>
                             @endif
+                            --}}
                         </ul>
---}}
+
                         <div class="tab-content" style="margin-top: 65px" id="nav-tabContent">
                             <div class="tab-pane fade {{ (empty(request()->get('tab','')) or request()->get('tab','') == 'information') ? 'show active' : '' }} " id="information" role="tabpanel" aria-labelledby="information-tab">
                                 @include(getTemplate().'.course.tabs.information')

@@ -67,7 +67,9 @@
 
                     <div class="d-flex align-items-center text-gray text-center font-14 mr-20">
                         <i data-feather="paperclip" width="18" height="18" class="text-gray mr-5"></i>
-                        <span class="line-height-1">{{ trans('public.attachments') }}: {{ $textLesson->attachments_count }}</span>
+                        <span class="line-height-1">{{ trans('public.attachments') }}:</span>
+                        <a href="{{ $textLesson->image }}" target="_blank" rel="noopener noreferrer">عرض</a>&nbsp;|&nbsp;
+                        <a href="{{ $textLesson->image }}" download target="_blank" rel="noopener noreferrer">تحميل</a>
                     </div>
                 </div>
 
