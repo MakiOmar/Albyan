@@ -141,7 +141,7 @@ return [
 	'youtube' => 'Youtube',
     'vimeo' => 'Vimeo',
     'show_only_bundles' => 'Show only bundles',
-    'your_reviews_successfully_submitted' => 'Your reviews was successfully submitted'
+    'your_reviews_successfully_submitted' => 'Your reviews was successfully submitted',
 
-    
+    'add_to_cart' => 'Add to cart'
 ];

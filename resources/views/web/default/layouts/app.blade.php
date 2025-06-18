@@ -45,11 +45,15 @@
     <!-- End Google Tag Manager -->
 
     <style>
+        :root {
+            --main-color: #01477d;
+            --font-size-large: 20px;
+        }
         .blue-bg{
-            background-color: #016291!important;
+            background-color: var(--main-color)!important;
         }
         .blue-txt{
-            color: #016291!important;
+            color: var(--main-color)!important;
         }
         #navbarShopingCart svg circle, #navbarShopingCart svg path, #navbarNotification svg path{
             stroke: #fff;
@@ -59,7 +63,7 @@
             border: 1px solid #fff;
         }
         a#login-button:hover, a#login-button:focus {
-            color: #016291 !important;
+            color: var(--main-color) !important;
         }
         .navbar-search ::placeholder{
             color: #fff
@@ -68,12 +72,167 @@
             margin-left: 4px
         }
         .trendy-category:hover{
-            background-color: #016291;
+            background-color: var(--main-color);
             color: #fff!important
 
         }
         .text-dark.trendy-category:hover{
             color: #fff!important
+        }
+        .section-title{
+            position: relative;
+        }
+        .section-title:not(.section-title-bg)::before{
+            content: '';
+            display: block;
+            position: absolute;
+            right: -22px;
+            background-color: var(--main-color);
+            width: 25px;
+            height: 5px;
+            border-radius: 3px;
+            rotate: 90deg;
+            top: 15px;
+        }
+        .section-title-bg{
+            min-width: 200px;
+            position: relative;
+            display: inline-block;
+            background-image: url('store/1/Union.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+        .webinar-card{
+            background-color: #F2F5FC;
+        }
+        .webinar-card .webinar-card-body .webinar-price-box .real {
+            font-size: 16px!important;
+        }
+        .top-0 {
+        top: 0 !important;
+        }
+
+        .right-0 {
+        right: 0 !important;
+        }
+
+        .bottom-0 {
+        bottom: 0 !important;
+        }
+
+        .left-0 {
+        left: 0 !important;
+        }
+        .light-gray-bg{
+            background-color: #F2F5FC!important;
+        }
+        .course-teacher-card .teacher-avatar {
+            position: absolute;
+            top: -40px;
+        }
+        .course-teacher-card{
+            padding-top: 35px!important
+        }
+        .footer {
+            margin-top: 355px!important;
+        }
+        .course-content-section .course-title {
+            color: white ; 
+            }
+            .cart-banner {
+                padding: 20px 0!important;
+            }
+            .bottom-view-all{
+            display:none
+            }
+            .d-none {
+                        display: none;
+                    }
+                    .text-blue {
+                        color: #699ab1;
+                        cursor: pointer;
+                        background: none;
+                        border: none;
+                        cursor: pointer;
+                    }
+                    .testimonials-container .testimonials-card {
+                        min-height: 275px;
+                    }
+            .user-inline-avatar{
+            display:none!important
+            }
+            @media (max-width: 991px) {
+            .navbar-brand img {
+                max-height: 30px;
+            }
+
+            .slider-container, .slider-container.slider-hero-section2 {
+                min-height: 300px;
+            }
+            }
+            @media (min-width: 1200px) {
+            .container-xl, .container-lg, .container-md, .container-sm, .container {
+                max-width: 1200px;
+            }
+            }
+
+            .trending-image .icon img{
+            width:auto;
+            height:auto
+            }
+            .trending-card .trending-image .icon {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .contact-us-about p {
+            font-size: 18px;
+            line-height: 30px;
+            text-align: justify;
+            }
+            .testimonials-card img{
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            }
+            .swiper-wrapper{
+            min-height: 300px;
+            }
+            .home-sections {
+                margin-top: 50px;
+            }
+            .navbar-brand {
+                height: auto;
+            }
+            .navbar-brand  img{
+                width: auto;
+            }
+            .footer .footer-logo {
+
+            height: auto!important; 
+            }
+
+            .footer-social a {
+            display:inline-block;
+            margin-bottom:5px
+            }
+            @media screen and (max-width:480px){
+            .bottom-view-all{
+            display:inline-flex
+            }
+            .top-view-all{
+            display:none
+            }
+            }
+        @media screen and ( max-width:480px ){
+            .webinar-card .webinar-card-body .webinar-price-box .real {
+                font-size: 12px !important;
+            }
+            .js-course-add-to-cart-btn{
+                font-size: 12px !important;
+                padding: 5px 8px;
+            }
         }
     </style>
     

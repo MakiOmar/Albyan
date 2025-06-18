@@ -1559,7 +1559,7 @@
                     </ul>
                 </li>
             @endcan
-
+            --}}
             @can('admin_advertising')
                 <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/advertising*', false)) and !request()->is(getAdminPanelUrl('/advertising_modal*', false))) ? 'active' : '' }}">
                     <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
@@ -1581,7 +1581,7 @@
                     </ul>
                 </li>
             @endcan
-
+                {{--
             @can('admin_newsletters')
                 <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/newsletters*', false))) ? 'active' : '' }}">
                     <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">

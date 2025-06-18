@@ -2,7 +2,7 @@
     
     <img src="/store/1/Group1321314336.png" style="position: absolute;z-index: -1;left: 0;top: -50px;height: 170px;">  
         <div class="container text-center">
-            <h2 class="section-title mb-4" style="min-width: 200px;position: relative; display: inline-block;background-image: url('store/1/Union.png');background-position: center;background-repeat: no-repeat;background-size: contain">
+            <h2 class="section-title section-title-bg mb-4" style="min-width: 200px;position: relative; display: inline-block;background-image: url('store/1/Union.png');background-position: center;background-repeat: no-repeat;background-size: contain">
 
             <span style="color: white; padding: 8px 24px; border-radius: 0 20px 0 20px;">
                 الأقسام

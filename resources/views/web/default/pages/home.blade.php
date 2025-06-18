@@ -101,7 +101,9 @@
     @foreach($homeSections as $homeSection)
         @if($homeSection->name == \App\Models\HomeSection::$featured_classes and !empty($featureWebinars) and !$featureWebinars->isEmpty())
        
-            <section class="home-sections home-sections-swiper container">
+            <section class="home-sections position-relative home-sections-swiper">
+                <div class="container position-relative">
+
                 <div class="px-20 px-md-0">
                     <h2 class="section-title">{{ trans('home.featured_classes') }}</h2>
                     {{--
@@ -110,11 +112,16 @@
                 </div>
 
                 <div class="position-relative d-flex justify-content-center mt-10">
+                    
+
                     <div class="pb-25 container">
                         <div class="py-10 row">
-                            @foreach($featureWebinars as $feature)
+                            @php
+                            $featuredCount = count( $featureWebinars );
+                            @endphp
+                            @foreach($featureWebinars as $index => $feature)
                                 <div class="col-md-4">
-                                    @include('web.default.includes.webinar.grid-card',['webinar' => $feature->webinar])
+                                    @include('web.default.includes.webinar.grid-card',['webinar' => $feature->webinar, 'index' => $index, 'featuredCount' => $featuredCount])
                                     
                                     {{--
                                     <a href="{{ $feature->webinar->getUrl() }}">
@@ -185,6 +192,12 @@
                     <div class="swiper-pagination features-swiper-pagination"></div>
                     --}}
                 </div>
+                </div>
+                <svg class="bottom-left position-absolute bottom-0 right-0" width="151" height="313" viewBox="0 0 151 313" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path opacity="0.2" d="M42.5 156.5C42.5 217.804 92.1964 267.5 153.5 267.5L357.5 267.5L357.5 45.5L153.5 45.5001C92.1964 45.5001 42.5 95.1965 42.5 156.5Z" stroke="#016291" stroke-width="3"/>
+                    <path opacity="0.2" d="M1.50003 156.5C1.50005 242.104 70.8959 311.5 156.5 311.5L357.5 311.5L357.5 1.50001L156.5 1.50006C70.8959 1.50008 1.50003 70.896 1.50003 156.5Z" stroke="#016291" stroke-width="3"/>
+                    <path opacity="0.2" d="M22.5 156.5C22.5 230.506 82.4939 290.5 156.5 290.5L357.5 290.5L357.5 22.5L156.5 22.5001C82.4939 22.5001 22.5 82.4939 22.5 156.5Z" stroke="#016291" stroke-width="3"/>
+                    </svg>
             </section>
         @endif
 
@@ -468,23 +481,34 @@
         @if($homeSection->name == \App\Models\HomeSection::$testimonials and !empty($testimonials) and !$testimonials->isEmpty())
             <div class="position-relative home-sections testimonials-container">
 
-                <div id="parallax1" class="ltr">
+                <div id="parallax1" class="ltr d-none">
                     <div data-depth="0.2" class="gradient-box left-gradient-box"></div>
                 </div>
 
                 <section class="container home-sections home-sections-swiper">
-                    <div class="text-center">
+                    <div>
                         <h2 class="section-title">{{ trans('home.testimonials') }}</h2>
+                        {{--
                         <p class="section-hint">{{ trans('home.testimonials_hint') }}</p>
+                        --}}
                     </div>
 
                     <div class="position-relative">
+                        <svg width="60" height="63" style="position: absolute;top: -10px; left: 0" viewBox="0 0 80 83" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M50.3152 3.04623C58.9597 -3.38967 71.3295 1.94584 72.5809 12.6501L78.9162 66.8407C80.1676 77.545 69.362 85.5899 59.4661 81.3215L9.36805 59.7127C-0.527853 55.4443 -2.09209 42.0639 6.5524 35.628L50.3152 3.04623Z" fill="#BFE3C6"/>
+                        </svg>
+                        <svg width="62" height="61" style="position: absolute;bottom: -40px;right: -40px;" viewBox="0 0 82 81" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M70.3577 13.3654C80.8282 15.9179 84.6092 28.8479 77.1634 36.6394L39.4691 76.0842C32.0234 83.8758 18.9352 80.6852 15.9104 70.3412L0.597296 17.9746C-2.4275 7.63056 6.87973 -2.10887 17.3503 0.443587L70.3577 13.3654Z" fill="#BFE3C6"/>
+                                        </svg>
                         <div class="swiper-container testimonials-swiper px-12">
                             <div class="swiper-wrapper">
-
-                                @foreach($testimonials as $testimonial)
+                                @php
+                                $testimonialsCount = count( $testimonials );
+                                @endphp
+                                @foreach($testimonials as $index => $testimonial)
                                     <div class="swiper-slide">
-                                        <div class="testimonials-card position-relative py-15 py-lg-30 px-10 px-lg-20 rounded-sm shadow bg-white text-center">
+                                       
+                                        <div class="testimonials-card light-gray-bg position-relative py-15 py-lg-30 px-10 px-lg-20 rounded-sm text-center">
                                             <img class="google-icon" src="/store/1/icons/google.png">
                                             <div class="d-flex flex-column align-items-center">
                                                 <div class="testimonials-user-avatar">
@@ -496,15 +520,16 @@
                                             </div>
                                             @php
                                                 $comment = $testimonial->comment;
+                                                $comment = strip_tags($comment);
                                                 $words = explode(' ', $comment);
                                                 $maxWords = 25; // Set max words to display initially
                                                 $visibleText = implode(' ', array_slice($words, 0, $maxWords));
                                                 $hiddenText = implode(' ', array_slice($words, $maxWords));
                                             @endphp
                                             <p class="mt-25 text-gray font-14">
-                                                {!! nl2br(e($visibleText)) !!}
+                                                {!! e($visibleText) !!}
                                                 @if(!empty($hiddenText))
-                                                    <span class="hidden-text d-none">{!! nl2br(e($hiddenText)) !!}</span>
+                                                    <span class="hidden-text d-none">{!! e($hiddenText) !!}</span>
                                                     <button class="show-more-btn text-blue" onclick="toggleText(this)">... عرض المزيد</button>
                                                 @endif
                                             </p>
@@ -523,11 +548,11 @@
                     </div>
                 </section>
 
-                <div id="parallax2" class="ltr">
+                <div id="parallax2" class="ltr d-none">
                     <div data-depth="0.4" class="gradient-box right-gradient-box"></div>
                 </div>
 
-                <div id="parallax3" class="ltr">
+                <div id="parallax3" class="ltr d-none">
                     <div data-depth="0.8" class="gradient-box bottom-gradient-box"></div>
                 </div>
             </div>
@@ -833,55 +858,80 @@
         @endif
 
         @if($homeSection->name == \App\Models\HomeSection::$instructors and !empty($instructors) and !$instructors->isEmpty())
-            <section class="home-sections container">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h2 class="section-title">{{ trans('home.instructors') }}</h2>
-                        <p class="section-hint">{{ trans('home.instructors_hint') }}</p>
+            <section class="home-sections">
+                <svg width="74" style="position: absolute;bottom: -10px; left: 0;z-index:20" height="74" viewBox="0 0 74 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_139_666)">
+                        <path d="M52.0528 46.2972C38.8966 37.4613 37.7712 34.6734 41.1082 19.181C41.1595 18.9423 41.1261 18.6932 41.0136 18.4765C40.9012 18.2598 40.7168 18.089 40.4921 17.9936C40.2674 17.8981 40.0164 17.8839 39.7824 17.9534C39.5483 18.0229 39.3458 18.1718 39.2097 18.3744C30.3753 31.5313 27.5873 32.6567 12.0935 29.3209C11.855 29.2695 11.6059 29.3027 11.3893 29.415C11.1726 29.5274 11.0019 29.7117 10.9065 29.9363C10.811 30.1609 10.7969 30.4117 10.8665 30.6457C10.936 30.8796 11.085 31.0819 11.2876 31.2179C24.4449 40.0533 25.571 42.8398 22.2334 58.3337C22.1823 58.5723 22.2159 58.8212 22.3284 59.0377C22.4409 59.2543 22.6253 59.4249 22.8499 59.5203C23.0744 59.6157 23.3252 59.6299 23.5591 59.5606C23.7931 59.4912 23.9956 59.3426 24.1319 59.1403C32.9669 45.9818 35.7542 44.858 51.2469 48.1942C51.4855 48.2457 51.7345 48.2124 51.9512 48.1001C52.1678 47.9878 52.3385 47.8034 52.434 47.5788C52.5294 47.3542 52.5435 47.1034 52.474 46.8695C52.4044 46.6355 52.2555 46.4332 52.0528 46.2972Z" fill="#EA433A" fill-opacity="0.8"/>
+                        <path d="M55.4696 35.298C55.245 35.2024 55.0606 35.0317 54.9482 34.815C54.8357 34.5983 54.8023 34.3493 54.8534 34.1106C56.0297 28.6518 55.7117 27.8641 51.0755 24.7515C50.8729 24.6153 50.724 24.4128 50.6545 24.1788C50.585 23.9448 50.5992 23.6938 50.6947 23.4692C50.7902 23.2445 50.9609 23.06 51.1776 22.9476C51.3943 22.8352 51.6434 22.8017 51.882 22.853C57.342 24.0288 58.129 23.7105 61.2411 19.075C61.3773 18.8724 61.5798 18.7235 61.8139 18.654C62.0479 18.5845 62.2988 18.5987 62.5235 18.6942C62.7482 18.7897 62.9327 18.9604 63.0451 19.1771C63.1575 19.3938 63.191 19.6429 63.1397 19.8816C61.9637 25.3396 62.281 26.1271 66.9176 29.2407C67.1202 29.3769 67.2691 29.5794 67.3386 29.8134C67.4081 30.0474 67.3939 30.2984 67.2984 30.5231C67.2029 30.7478 67.0322 30.9322 66.8155 31.0446C66.5988 31.1571 66.3497 31.1905 66.1111 31.1392C60.6522 29.963 59.8645 30.281 56.752 34.9172C56.6157 35.1197 56.4132 35.2685 56.1792 35.338C55.9452 35.4075 55.6943 35.3933 55.4696 35.298ZM55.5007 25.5109C56.2031 26.1251 56.751 26.896 57.1004 27.7611C57.4497 28.6263 57.5906 29.5615 57.5117 30.4911C58.1261 29.7889 58.897 29.2411 59.7623 28.892C60.6275 28.5428 61.5627 28.4021 62.4924 28.4813C61.7903 27.8669 61.2425 27.096 60.8931 26.2309C60.5438 25.3658 60.4028 24.4307 60.4814 23.5011C59.8668 24.203 59.0958 24.7507 58.2307 25.0998C57.3655 25.4489 56.4303 25.5898 55.5007 25.5109Z" fill="#EA433A" fill-opacity="0.8"/>
+                        </g>
+                        <defs>
+                        <clipPath id="clip0_139_666">
+                        <rect width="56" height="56" fill="white" transform="translate(21.897) rotate(23.0177)"/>
+                        </clipPath>
+                        </defs>
+                </svg>
+
+                <svg width="74" style="position: absolute;top: 50px; right: 0;z-index:20" height="74" viewBox="0 0 74 74" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_139_666)">
+                        <path d="M52.0528 46.2972C38.8966 37.4613 37.7712 34.6734 41.1082 19.181C41.1595 18.9423 41.1261 18.6932 41.0136 18.4765C40.9012 18.2598 40.7168 18.089 40.4921 17.9936C40.2674 17.8981 40.0164 17.8839 39.7824 17.9534C39.5483 18.0229 39.3458 18.1718 39.2097 18.3744C30.3753 31.5313 27.5873 32.6567 12.0935 29.3209C11.855 29.2695 11.6059 29.3027 11.3893 29.415C11.1726 29.5274 11.0019 29.7117 10.9065 29.9363C10.811 30.1609 10.7969 30.4117 10.8665 30.6457C10.936 30.8796 11.085 31.0819 11.2876 31.2179C24.4449 40.0533 25.571 42.8398 22.2334 58.3337C22.1823 58.5723 22.2159 58.8212 22.3284 59.0377C22.4409 59.2543 22.6253 59.4249 22.8499 59.5203C23.0744 59.6157 23.3252 59.6299 23.5591 59.5606C23.7931 59.4912 23.9956 59.3426 24.1319 59.1403C32.9669 45.9818 35.7542 44.858 51.2469 48.1942C51.4855 48.2457 51.7345 48.2124 51.9512 48.1001C52.1678 47.9878 52.3385 47.8034 52.434 47.5788C52.5294 47.3542 52.5435 47.1034 52.474 46.8695C52.4044 46.6355 52.2555 46.4332 52.0528 46.2972Z" fill="#EA433A" fill-opacity="0.8"/>
+                        <path d="M55.4696 35.298C55.245 35.2024 55.0606 35.0317 54.9482 34.815C54.8357 34.5983 54.8023 34.3493 54.8534 34.1106C56.0297 28.6518 55.7117 27.8641 51.0755 24.7515C50.8729 24.6153 50.724 24.4128 50.6545 24.1788C50.585 23.9448 50.5992 23.6938 50.6947 23.4692C50.7902 23.2445 50.9609 23.06 51.1776 22.9476C51.3943 22.8352 51.6434 22.8017 51.882 22.853C57.342 24.0288 58.129 23.7105 61.2411 19.075C61.3773 18.8724 61.5798 18.7235 61.8139 18.654C62.0479 18.5845 62.2988 18.5987 62.5235 18.6942C62.7482 18.7897 62.9327 18.9604 63.0451 19.1771C63.1575 19.3938 63.191 19.6429 63.1397 19.8816C61.9637 25.3396 62.281 26.1271 66.9176 29.2407C67.1202 29.3769 67.2691 29.5794 67.3386 29.8134C67.4081 30.0474 67.3939 30.2984 67.2984 30.5231C67.2029 30.7478 67.0322 30.9322 66.8155 31.0446C66.5988 31.1571 66.3497 31.1905 66.1111 31.1392C60.6522 29.963 59.8645 30.281 56.752 34.9172C56.6157 35.1197 56.4132 35.2685 56.1792 35.338C55.9452 35.4075 55.6943 35.3933 55.4696 35.298ZM55.5007 25.5109C56.2031 26.1251 56.751 26.896 57.1004 27.7611C57.4497 28.6263 57.5906 29.5615 57.5117 30.4911C58.1261 29.7889 58.897 29.2411 59.7623 28.892C60.6275 28.5428 61.5627 28.4021 62.4924 28.4813C61.7903 27.8669 61.2425 27.096 60.8931 26.2309C60.5438 25.3658 60.4028 24.4307 60.4814 23.5011C59.8668 24.203 59.0958 24.7507 58.2307 25.0998C57.3655 25.4489 56.4303 25.5898 55.5007 25.5109Z" fill="#EA433A" fill-opacity="0.8"/>
+                        </g>
+                        <defs>
+                        <clipPath id="clip0_139_666">
+                        <rect width="56" height="56" fill="white" transform="translate(21.897) rotate(23.0177)"/>
+                        </clipPath>
+                        </defs>
+                </svg>
+                <div class="container">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h2 class="section-title">{{ trans('home.instructors') }}</h2>
+                            <p class="section-hint">{{ trans('home.instructors_hint') }}</p>
+                        </div>
+
+                        <a href="/instructors" class="btn btn-border-white">{{ trans('home.all_instructors') }}</a>
                     </div>
 
-                    <a href="/instructors" class="btn btn-border-white">{{ trans('home.all_instructors') }}</a>
-                </div>
-
-                <div class="position-relative mt-20 ltr">
-                    <div class="owl-carousel customers-testimonials instructors-swiper-container">
-
-                        @foreach($instructors as $instructor)
-                            <div class="item">
-                                <div class="shadow-effect">
-                                    <div class="instructors-card d-flex flex-column align-items-center justify-content-center">
-                                        <div class="instructors-card-avatar">
-                                            <img src="{{ $instructor->getAvatar(108) }}" alt="{{ $instructor->full_name }}" class="rounded-circle img-cover">
-                                        </div>
-                                        <div class="instructors-card-info mt-10 text-center">
-                                            <a href="{{ $instructor->getProfileUrl() }}" target="_blank">
-                                                <h3 class="font-16 font-weight-bold text-dark-blue">{{ $instructor->full_name }}</h3>
-                                            </a>
-
-                                            <p class="font-14 text-gray mt-5">{{ $instructor->bio }}</p>
-                                            <div class="stars-card d-flex align-items-center justify-content-center mt-10">
-                                                @php
-                                                    $i = 5;
-                                                @endphp
-                                                @while(--$i >= 5 - $instructor->rates())
-                                                    <i data-feather="star" width="20" height="20" class="active"></i>
-                                                @endwhile
-                                                @while($i-- >= 0)
-                                                    <i data-feather="star" width="20" height="20" class=""></i>
-                                                @endwhile
+                    <div class="position-relative mt-20 ltr">
+                        <div class="owl-carousel customers-testimonials instructors-swiper-container">
+                            
+                            @foreach($instructors as $instructor)
+                                <div class="item">
+                                    <div class="shadow-effect light-gray-bg">
+                                        <div class="instructors-card d-flex flex-column align-items-center justify-content-center">
+                                            <div class="instructors-card-avatar">
+                                                <img src="{{ $instructor->getAvatar(108) }}" alt="{{ $instructor->full_name }}" class="rounded-circle img-cover">
                                             </div>
+                                            <div class="instructors-card-info mt-10 text-center">
+                                                <a href="{{ $instructor->getProfileUrl() }}" target="_blank">
+                                                    <h3 class="font-16 font-weight-bold text-dark-blue">{{ $instructor->full_name }}</h3>
+                                                </a>
 
-                                            @if(!empty($instructor->hasMeeting()))
-                                                <a href="{{ $instructor->getProfileUrl() }}?tab=appointments" class="btn btn-primary btn-sm rounded-pill mt-15">{{ trans('home.reserve_a_live_class') }}</a>
-                                            @else
-                                                <a href="{{ $instructor->getProfileUrl() }}" class="btn btn-primary btn-sm rounded-pill mt-15">{{ trans('public.profile') }}</a>
-                                            @endif
+                                                <p class="font-14 text-gray mt-5">{{ $instructor->bio }}</p>
+                                                <div class="stars-card d-flex align-items-center justify-content-center mt-10">
+                                                    @php
+                                                        $i = 5;
+                                                    @endphp
+                                                    @while(--$i >= 5 - $instructor->rates())
+                                                        <i data-feather="star" width="20" height="20" class="active"></i>
+                                                    @endwhile
+                                                    @while($i-- >= 0)
+                                                        <i data-feather="star" width="20" height="20" class=""></i>
+                                                    @endwhile
+                                                </div>
+
+                                                @if(!empty($instructor->hasMeeting()))
+                                                    <a href="{{ $instructor->getProfileUrl() }}?tab=appointments" class="btn btn-primary btn-sm rounded-pill mt-15">{{ trans('home.reserve_a_live_class') }}</a>
+                                                @else
+                                                    <a href="{{ $instructor->getProfileUrl() }}" class="btn btn-primary btn-sm rounded-pill mt-15">{{ trans('public.profile') }}</a>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        @endforeach
+                            @endforeach
 
+                        </div>
                     </div>
                 </div>
             </section>

@@ -139,5 +139,6 @@ return [
     'zoom_jwt_token_invalid' => 'رمز زوم الخاص بك غير صالح.',
     'youtube' => 'يوتوب',
     'vimeo' => 'فيميو',
-    'your_reviews_successfully_submitted' => 'تم إرسال تعليقاتك بنجاح'
+    'your_reviews_successfully_submitted' => 'تم إرسال تعليقاتك بنجاح',
+    'add_to_cart' => 'أضف إلى العربة'
 ];

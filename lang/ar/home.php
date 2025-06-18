@@ -61,7 +61,7 @@ return [
     'free_classes' => 'دبلومات مجانية',
     'free_classes_hint' => 'لم ننس اهمية التعليم المجاني',
 
-    'testimonials' => 'الاراء',
+    'testimonials' => 'آراء العملاء',
     'testimonials_hint' => 'ماذا قال عملاؤنا عنا',
 
     'subscribe_now' => 'اشترك الان!',

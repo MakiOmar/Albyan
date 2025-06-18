@@ -1,0 +1,1 @@
+<div style="width: 40px;background: #fff;height: 4px; border-radius: 4px"></div>
