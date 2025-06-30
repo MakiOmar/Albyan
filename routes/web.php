@@ -438,3 +438,7 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
 
 });
 
+Route::get('tabby/success', [App\Http\Controllers\TabbyController::class, 'success'])->name('tabby.success');
+Route::get('tabby/cancel', [App\Http\Controllers\TabbyController::class, 'cancel'])->name('tabby.cancel');
+Route::get('tabby/failure', [App\Http\Controllers\TabbyController::class, 'failure'])->name('tabby.failure');
+
