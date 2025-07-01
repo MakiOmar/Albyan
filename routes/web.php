@@ -442,3 +442,12 @@ Route::get('tabby/success', [App\Http\Controllers\TabbyController::class, 'succe
 Route::get('tabby/cancel', [App\Http\Controllers\TabbyController::class, 'cancel'])->name('tabby.cancel');
 Route::get('tabby/failure', [App\Http\Controllers\TabbyController::class, 'failure'])->name('tabby.failure');
 
+Route::get('sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap.xml');
+Route::get('sitemap-courses.xml', [App\Http\Controllers\SitemapController::class, 'courses'])->name('sitemap.courses');
+Route::get('sitemap-blog.xml', [App\Http\Controllers\SitemapController::class, 'blog'])->name('sitemap.blog');
+Route::get('sitemap-upcoming-courses.xml', [App\Http\Controllers\SitemapController::class, 'upcomingCourses'])->name('sitemap.upcoming-courses');
+
+// Paginated sitemap routes for large datasets
+Route::get('sitemap-courses-index.xml', [App\Http\Controllers\SitemapController::class, 'coursesIndex'])->name('sitemap.courses.index');
+Route::get('sitemap-courses-page-{page}.xml', [App\Http\Controllers\SitemapController::class, 'coursesPaginated'])->name('sitemap.courses.paginated');
+

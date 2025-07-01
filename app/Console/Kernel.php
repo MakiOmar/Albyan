@@ -13,8 +13,10 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \App\Console\Commands\SearchReplaceCommand::class,
-        \App\Console\Commands\NotifyGroupsNearEndCommand::class,
+        Commands\clearAll::class,
+        Commands\NotifyGroupsNearEndCommand::class,
+        Commands\SearchReplaceCommand::class,
+        Commands\GenerateSitemap::class,
     ];
 
     /**
@@ -27,6 +29,9 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('groups:notify-near-end')->cron('0 */6 * * *');
+        
+        // Generate sitemap daily at 2 AM
+        $schedule->command('sitemap:generate all')->dailyAt('02:00');
     }
 
     /**

@@ -1,2 +1,118 @@
 User-agent: *
-Disallow:
+Allow: /
+
+# Block admin and private areas
+Disallow: /admin/
+Disallow: /panel/
+Disallow: /api/
+Disallow: /vendor/
+Disallow: /database/
+Disallow: /config/
+Disallow: /bootstrap/
+Disallow: /app/
+Disallow: /resources/
+Disallow: /routes/
+Disallow: /tests/
+Disallow: /update_tmp/
+
+# Block Laravel framework files
+Disallow: /.env
+Disallow: /composer.json
+Disallow: /composer.lock
+Disallow: /package.json
+Disallow: /package-lock.json
+Disallow: /artisan
+Disallow: /Changelog.txt
+Disallow: /config.json
+
+# Block private storage areas
+Disallow: /storage/app/private/
+Disallow: /storage/logs/
+Disallow: /storage/framework/
+Disallow: /storage/app/users/
+Disallow: /storage/app/temp/
+Disallow: /storage/app/cache/
+
+# Allow public storage for course/blog images
+Allow: /storage/app/public/courses/
+Allow: /storage/app/public/blog/
+Allow: /storage/app/public/webinars/
+Allow: /storage/app/public/categories/
+Allow: /storage/app/public/instructors/
+
+# Block sensitive file types
+Disallow: /*.pdf$
+Disallow: /*.doc$
+Disallow: /*.docx$
+Disallow: /*.xls$
+Disallow: /*.xlsx$
+Disallow: /*.zip$
+Disallow: /*.rar$
+Disallow: /*.7z$
+Disallow: /*.tar$
+Disallow: /*.gz$
+Disallow: /*.sql$
+Disallow: /*.log$
+Disallow: /*.env$
+Disallow: /*.key$
+Disallow: /*.pem$
+
+# Block user-specific areas
+Disallow: /user/
+Disallow: /profile/
+Disallow: /account/
+Disallow: /dashboard/
+Disallow: /my-courses/
+Disallow: /my-purchases/
+Disallow: /settings/
+
+# Block search and filter pages (optional - remove if you want them indexed)
+Disallow: /search?
+Disallow: /filter?
+Disallow: /sort?
+
+# Block pagination pages (optional - remove if you want them indexed)
+Disallow: /*?page=
+Disallow: /*?p=
+
+# Block authentication pages
+Disallow: /login
+Disallow: /register
+Disallow: /password/
+Disallow: /reset/
+Disallow: /verify/
+Disallow: /logout
+
+# Block checkout and payment pages
+Disallow: /cart
+Disallow: /checkout
+Disallow: /payment/
+Disallow: /invoice/
+Disallow: /receipt/
+
+# Block API documentation and development files
+Disallow: /docs/
+Disallow: /documentation/
+Disallow: /swagger/
+Disallow: /api-docs/
+
+# Allow important public files
+Allow: /sitemap.xml
+Allow: /sitemap-courses.xml
+Allow: /sitemap-blog.xml
+Allow: /sitemap-upcoming-courses.xml
+Allow: /sitemap-courses-index.xml
+Allow: /sitemap-courses-page-*.xml
+Allow: /favicon.ico
+Allow: /manifest.json
+Allow: /mix-manifest.json
+
+# Sitemap location
+Sitemap: https://albyaninstitute.com/sitemap.xml
+Sitemap: https://albyaninstitute.com/sitemap-courses.xml
+Sitemap: https://albyaninstitute.com/sitemap-blog.xml
+Sitemap: https://albyaninstitute.com/sitemap-upcoming-courses.xml
+Sitemap: https://albyaninstitute.com/sitemap-courses-index.xml
+
+# Crawl delay (optional - adjust based on your server capacity)
+Crawl-delay: 1
