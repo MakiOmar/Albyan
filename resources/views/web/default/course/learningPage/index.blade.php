@@ -65,7 +65,10 @@
                 <div class="tab-content h-100" id="nav-tabContent">
                     <div class="pb-20 tab-pane fade  h-100" id="meetings" role="tabpanel"
                          aria-labelledby="meetings-tab">
-                        @include('web.default.course.learningPage.meetings')
+                         @php
+                            $groups = $groups ?? [];
+                        @endphp
+                        @include('web.default.course.learningPage.meetings', ['groups' => $groups])
                     </div>
                     <div class="pb-20 tab-pane fade show active h-100" id="content" role="tabpanel"
                          aria-labelledby="content-tab">

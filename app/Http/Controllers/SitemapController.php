@@ -115,7 +115,7 @@ class SitemapController extends Controller
     {
         // Get all published upcoming courses with chunking for better memory management
         UpcomingCourse::where('status', UpcomingCourse::$active)
-            ->orderBy('updated_at', 'desc')
+            ->orderBy('created_at', 'desc')
             ->chunk(100, function ($upcomingCourses) use ($sitemap) {
                 foreach ($upcomingCourses as $course) {
                     $url = '/upcoming-course/' . $course->slug;
@@ -124,7 +124,7 @@ class SitemapController extends Controller
                         Url::create($url)
                             ->setPriority(0.6)
                             ->setChangeFrequency('weekly')
-                            ->setLastModificationDate($course->updated_at ? Carbon::createFromTimestamp($course->updated_at) : now())
+                            ->setLastModificationDate($course->created_at ? Carbon::createFromTimestamp($course->created_at) : now())
                     );
                 }
             });
