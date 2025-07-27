@@ -13,69 +13,92 @@ use Maatwebsite\Excel\Facades\Excel;
 class FeatureWebinarsControllers extends Controller
 {
     public function index(Request $request)
-    {
-        $this->authorize('admin_feature_webinars');
+{
+    $this->authorize('admin_feature_webinars');
 
-        removeContentLocale();
+    removeContentLocale();
 
-        $categories = Category::where('parent_id', null)
-            ->with('subCategories')
-            ->get();
+    // Log incoming request parameters
+    \Log::debug('FeatureWebinar index request params:', $request->all());
 
-        $query = FeatureWebinar::with([
-            'webinar' => function ($query) {
-                $query->select(['id', 'teacher_id', 'category_id', 'slug', 'status'])
-                    ->with(['category', 'teacher' => function ($query) {
+    $categories = Category::whereNull('parent_id')
+        ->with('subCategories')
+        ->get();
+
+    // Base query with eager loading
+    $query = FeatureWebinar::with([
+        'webinar' => function ($query) {
+            $query->select(['id', 'teacher_id', 'category_id', 'slug', 'status'])
+                ->with([
+                    'category',
+                    'teacher' => function ($query) {
                         $query->select(['id', 'full_name']);
-                    }]);
-            }
-        ]);
+                    }
+                ]);
+        }
+    ]);
 
+    // Apply filters with debug logging
+    try {
         $query = $this->filters($query, $request);
-
-        $features = $query->orderBy('updated_at', 'desc')
-            ->paginate(10);
-
-        $data = [
-            'pageTitle' => trans('admin/pages/webinars.feature_webinars'),
-            'categories' => $categories,
-            'features' => $features,
-        ];
-
-        return view('admin.webinars.feature.lists', $data);
+    } catch (\Throwable $e) {
+        \Log::error('Error in filters(): ' . $e->getMessage());
     }
+
+    // Debug: Log SQL and page info
+    \Log::info('SQL Query: ' . $query->toSql());
+    \Log::info('Bindings: ', $query->getBindings());
+    \Log::info('Requested Page: ' . $request->get('page'));
+
+    // Paginate with query string preserved
+    $features = $query->orderBy('updated_at', 'desc')
+        ->paginate(10)
+        ->appends($request->query());
+
+    \Log::info('FeatureWebinar result count on page ' . $features->currentPage() . ': ' . $features->count());
+    \Log::info('Total Results: ' . $features->total());
+
+    // Optional: dump to test live data
+    // dd($features->currentPage(), $features->lastPage(), $features->total(), $features->items());
+
+    $data = [
+        'pageTitle' => trans('admin/pages/webinars.feature_webinars'),
+        'categories' => $categories,
+        'features' => $features,
+    ];
+
+    return view('admin.webinars.feature.lists', $data);
+}
+
 
     private function filters($query, $request)
-    {
-        $page = $request->get('page', null);
-        $status = $request->get('status', null);
-        $category_id = $request->get('category_id', null);
-        $webinar_title = $request->get('webinar_title', null);
+{
+    // Do NOT read page here, it's for pagination only
+    $status = $request->get('status', null);
+    $category_id = $request->get('category_id', null);
+    $webinar_title = $request->get('webinar_title', null);
 
-        if (!empty($page)) {
-            $query->where('page', $page);
-        }
-
-        if (!empty($status)) {
-            $query->where('status', $status);
-        }
-
-        if (!empty($category_id)) {
-            $query->whereHas('webinar', function ($q) use ($category_id) {
-                $q->whereHas('category', function ($q) use ($category_id) {
-                    $q->where('id', $category_id);
-                });
-            });
-        }
-
-        if (!empty($webinar_title)) {
-            $query->whereHas('webinar', function ($q) use ($webinar_title) {
-                $q->whereTranslationLike('title', '%' . $webinar_title . '%');
-            });
-        }
-
-        return $query;
+    if (!empty($status)) {
+        $query->where('status', $status);
     }
+
+    if (!empty($category_id)) {
+        $query->whereHas('webinar', function ($q) use ($category_id) {
+            $q->whereHas('category', function ($q) use ($category_id) {
+                $q->where('id', $category_id);
+            });
+        });
+    }
+
+    if (!empty($webinar_title)) {
+        $query->whereHas('webinar', function ($q) use ($webinar_title) {
+            $q->whereTranslationLike('title', '%' . $webinar_title . '%');
+        });
+    }
+
+    return $query;
+}
+
 
     public function create()
     {
