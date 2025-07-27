@@ -108,7 +108,7 @@
                                 <li class="nav-item px-3 d-none d-lg-flex align-items-center">
                                     <a class="navbar-brand d-flex justify-content-center m-0" href="/">
                                         @if(!empty($generalSettings['logo']))
-                                            <img src="{{ $generalSettings['logo'] }}" class="img-cover" style="height: 40px;" alt="site logo">
+                                            <img src="{{ $generalSettings['logo'] }}" class="img-cover" style="height: 40px;width:auto" alt="site logo">
                                         @endif
                                     </a>
                                 </li>
