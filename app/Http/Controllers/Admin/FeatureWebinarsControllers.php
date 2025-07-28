@@ -18,9 +18,6 @@ class FeatureWebinarsControllers extends Controller
 
     removeContentLocale();
 
-    // Log incoming request parameters
-    \Log::debug('FeatureWebinar index request params:', $request->all());
-
     $categories = Category::whereNull('parent_id')
         ->with('subCategories')
         ->get();
@@ -45,18 +42,10 @@ class FeatureWebinarsControllers extends Controller
         \Log::error('Error in filters(): ' . $e->getMessage());
     }
 
-    // Debug: Log SQL and page info
-    \Log::info('SQL Query: ' . $query->toSql());
-    \Log::info('Bindings: ', $query->getBindings());
-    \Log::info('Requested Page: ' . $request->get('page'));
-
     // Paginate with query string preserved
     $features = $query->orderBy('updated_at', 'desc')
         ->paginate(10)
         ->appends($request->query());
-
-    \Log::info('FeatureWebinar result count on page ' . $features->currentPage() . ': ' . $features->count());
-    \Log::info('Total Results: ' . $features->total());
 
     // Optional: dump to test live data
     // dd($features->currentPage(), $features->lastPage(), $features->total(), $features->items());

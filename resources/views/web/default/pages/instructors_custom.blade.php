@@ -65,18 +65,18 @@
     <h2 class="fw-bold section-title-bg text-white p-2">المدير التنفيذي</h2>
     <br>
     <div class="row justify-content-center">
-        <div class="col-6 col-md-3">
-            <a href="#">
-                <img src="/store/1/Instructors Profiles/RaghebFouda.png" class="rounded-circle border border-warning p-1" width="120" height="120" alt="CEO 1">
-                <center><strong>Mr.Ragheb Fouda</strong></center>
-            </a>
-        </div>
-        <div class="col-6 col-md-3">
-            <a href="#">
-                <img src="/store/1/Instructors Profiles/AhmedYounes.png" class="rounded-circle border border-warning p-1" width="120" height="120" alt="CEO 2">
-                <center><strong>Mr.Ahmed Younes</strong></center>
-            </a>
-        </div>
+        @forelse($ceoUsers as $ceoUser)
+            <div class="col-6 col-md-3">
+                <a href="{{ $ceoUser->getProfileUrl() }}">
+                    <img src="{{ $ceoUser->getAvatar(120) }}" class="rounded-circle border border-warning p-1" width="120" height="120" alt="{{ $ceoUser->full_name }}">
+                    <center><strong>{{ $ceoUser->full_name }}</strong></center>
+                </a>
+            </div>
+        @empty
+            <div class="col-12 text-center">
+                <p class="text-muted">No CEO users found</p>
+            </div>
+        @endforelse
     </div>
 
     <hr class="my-4">
@@ -85,56 +85,18 @@
     <h3 class="fw-bold section-title-bg text-white p-2">المدربين</h3>
     <br>
     <div class="row justify-content-center">
-        <div class="col-4 col-md-3 mt-2">
-            <a href="/users/1072/profile">
-                <img src="/store/1/Instructors Profiles/Dr.Nour.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Instructor 1">
-            </a>
-            <center><strong>د. نور صالح</strong></center>
-        </div>
-        <div class="col-4 col-md-3 mt-2">
-            <a href="/users/1068/profile">
-                <img src="/store/1/Instructors Profiles/Dr.MahmoudAbo-Amera.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Instructor 2">
-            </a>
-            <center><strong>د. محمود أبو عميرة</strong></center>
-        </div>
-        <div class="col-4 col-md-3 mt-2">
-            <a href="/users/1060/profile">
-                <img src="/store/1/Instructors Profiles/Dr.Fatma.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Instructor 3">
-            </a>
-            <center><strong>د فاطمة احمد</strong></center>
-        </div>
-
-        <div class="col-4 col-md-3 mt-2">
-            <a href="#">
-                <img src="/store/1/Instructors Profiles/WhatsApp Image 2025-04-17 at 11.40.59_ef7d6394.jpg" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Instructor 3">
-            </a>
-            <center><strong>د.محمد غانم</strong></center>
-        </div>
-
-        <div class="col-4 col-md-3 mt-2">
-            <a href="#">
-                <img src="/store/1/Instructors Profiles/WhatsApp Image 2025-04-17 at 11.40.59_66c17b90.jpg" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Instructor 3">
-            </a>
-            <center><strong>د.ابراهيم رشدي</strong></center>
-        </div>
-        <div class="col-4 col-md-3 mt-2">
-            <a href="#">
-                <img src="/store/1/Instructors Profiles/WhatsApp Image 2025-04-17 at 11.40.59_6d26eb9b.jpg" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Instructor 3">
-            </a>
-            <center><strong>د.سارة عبدالسميع</strong></center>
-        </div>
-        <div class="col-4 col-md-3 mt-2">
-            <a href="#">
-                <img src="/store/1/Instructors Profiles/WhatsApp Image 2025-04-17 at 11.41.00_c958ace3.jpg" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Instructor 3">
-            </a>
-            <center><strong>د.يوسف شنودة</strong></center>
-        </div>
-        <div class="col-4 col-md-3 mt-2">
-            <a href="#">
-                <img src="/store/1/Instructors Profiles/WhatsApp Image 2025-04-17 at 13.00.25_ba1366e4.jpg" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Instructor 3">
-            </a>
-            <center><strong>د.اشرف الصياح</strong></center>
-        </div>
+        @forelse($instructors as $instructor)
+            <div class="col-4 col-md-3 mt-2">
+                <a href="{{ $instructor->getProfileUrl() }}">
+                    <img src="{{ $instructor->getAvatar(100) }}" class="rounded-circle bg-dark p-1" width="100" height="100" alt="{{ $instructor->full_name }}">
+                </a>
+                <center><strong>{{ $instructor->full_name }}</strong></center>
+            </div>
+        @empty
+            <div class="col-12 text-center">
+                <p class="text-muted">No instructors found</p>
+            </div>
+        @endforelse
     </div>
 
     <hr class="my-4">
@@ -143,48 +105,18 @@
     <h3 class="fw-bold section-title-bg text-white p-2">فريق البيان</h3>
     <br>
     <div class="row justify-content-center">
-        <div class="col-4 col-md-3">
-            <a href="#">
-                <img src="/store/1/Instructors Profiles/GehadSales.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Team Member 1">
-            </a>
-            <center><strong>جهاد ابراهيم</strong></center>
-        </div>
-        <div class="col-4 col-md-3">
-            <a href="#">
-                <img src="/store/1/Instructors Profiles/ManarSales.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Team Member 2">
-            </a>
-            <center><strong>منار محمد</strong></center>
-        </div>
-        <div class="col-4 col-md-3">
-            <a href="#">
-                <img src="/store/1/Instructors Profiles/MariSales.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Team Member 3">
-            </a>
-            <center><strong>مارى الحركة</strong></center>
-        </div>
-        <div class="col-4 col-md-3">
-            <a href="#">
-                <img src="/store/1/Instructors Profiles/SamehaSales.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Team Member 4">
-            </a>
-            <center><strong>سميحة محمد</strong></center>
-        </div>
-        <div class="col-4 col-md-3">
-            <a href="#">
-                <img src="/store/1/Instructors Profiles/MahmoudAccounting.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Team Member 4">
-            </a>
-            <center><strong>محمود عبدالسلام</strong></center>
-        </div>
-        <div class="col-4 col-md-3">
-            <a href="#">
-                <img src="/store/1/Instructors Profiles/MohamedSamirSales.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Team Member 4">
-            </a>
-            <center><strong>محمد سمير</strong></center>
-        </div>
-        <div class="col-4 col-md-3">
-            <a href="#">
-                <img src="/store/1/Instructors Profiles/7.png" class="rounded-circle bg-dark p-1" width="100" height="100" alt="Team Member 4">
-            </a>
-            <center><strong>معاذ خالد</strong></center>
-        </div>
+        @forelse($teamMembers as $teamMember)
+            <div class="col-4 col-md-3">
+                <a href="{{ $teamMember->getProfileUrl() }}">
+                    <img src="{{ $teamMember->getAvatar(100) }}" class="rounded-circle bg-dark p-1" width="100" height="100" alt="{{ $teamMember->full_name }}">
+                </a>
+                <center><strong>{{ $teamMember->full_name }}</strong></center>
+            </div>
+        @empty
+            <div class="col-12 text-center">
+                <p class="text-muted">No team members found</p>
+            </div>
+        @endforelse
     </div>
 </div>
 @endsection

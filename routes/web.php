@@ -407,9 +407,7 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
     Route::get('/forms/{url}', 'FormsController@index');
     Route::post('/forms/{url}/store', 'FormsController@store');
 
-    Route::get('/our-instructors', function () {
-        return view('web.default.pages.instructors_custom');
-    });
+    Route::get('/our-instructors', 'InstructorsCustomController@index');
     Route::get('/Reviews', function () {
         $cacheKey = 'google_reviews';
         $cacheDuration = now()->addDays(3); // Store for 3 days
