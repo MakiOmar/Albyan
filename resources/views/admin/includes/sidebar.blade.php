@@ -730,6 +730,13 @@
                     </a>
                 </li>
             @endcan
+
+            <li class="{{ (request()->is(getAdminPanelUrl('/city-contact*', false))) ? 'active' : '' }}">
+                <a class="nav-link" href="{{ getAdminPanelUrl() }}/city-contact">
+                    <i class="fas fa-city"></i>
+                    <span>{{ trans('admin/main.city_contact') }}</span>
+                </a>
+            </li>
             {{--
             @can('admin_noticeboards')
                 <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/noticeboards*', false))) ? 'active' : '' }}">

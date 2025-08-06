@@ -950,9 +950,10 @@ return [
 'accept_request' => 'Accept',
 'check_user_information' => 'Check User Information',
 'become_instructors_list' => 'Instructor Request Details',
-'contacts' => 'Contact Messages',
-'contacts_lists' => 'Contact Messages Lists',
-'contacts_message' => 'Contact Message',
+    'contacts' => 'Contact Messages',
+    'contacts_lists' => 'Contact Messages Lists',
+    'contacts_message' => 'Contact Message',
+    'city_contact' => 'City Contact Management',
 'user_role_updated' => 'The user role updated.',
 
 //Classes

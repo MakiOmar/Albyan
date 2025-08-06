@@ -2740,3 +2740,81 @@ function customSortArrayNumAndTextIndex($array) {
 
     return array_merge($numericKeys, $textualKeys);
 }
+
+if (!function_exists('getCityContactConfig')) {
+    function getCityContactConfig($key = null)
+    {
+        $jsonPath = storage_path('app/city_contact.json');
+        
+        if (!file_exists($jsonPath)) {
+            // Create default configuration if file doesn't exist
+            $defaultConfig = [
+                'cities' => [
+                    [
+                        'name' => 'الرياض',
+                        'slug' => 'riyadh',
+                        'email' => 'riyadh@example.com',
+                        'flag' => '/assets/default/img/flags/sa.png',
+                        'is_active' => true
+                    ]
+                ],
+                'form' => [
+                    'title' => 'تواصل معنا',
+                    'description' => 'يرجى ملء النموذج أدناه وسنقوم بالرد عليك في أقرب وقت ممكن',
+                    'success_message' => 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك قريباً.',
+                    'error_message' => 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.'
+                ],
+                'email' => [
+                    'subject' => 'رسالة جديدة من نموذج الاتصال - :city',
+                    'template' => 'emails.city_contact_form'
+                ]
+            ];
+            
+            saveCityContactConfig($defaultConfig);
+            return $key ? ($defaultConfig[$key] ?? null) : $defaultConfig;
+        }
+        
+        $data = json_decode(file_get_contents($jsonPath), true);
+        
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            // If JSON is invalid, return default config
+            return null;
+        }
+        
+        if ($key) {
+            return $data[$key] ?? null;
+        }
+        
+        return $data;
+    }
+}
+
+if (!function_exists('getActiveCities')) {
+    function getActiveCities()
+    {
+        $cities = getCityContactConfig('cities') ?? [];
+        return collect($cities)
+            ->where('is_active', true)
+            ->sortBy('name')
+            ->values();
+    }
+}
+
+if (!function_exists('getCityBySlug')) {
+    function getCityBySlug($slug)
+    {
+        $cities = getCityContactConfig('cities') ?? [];
+        return collect($cities)
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->first();
+    }
+}
+
+if (!function_exists('saveCityContactConfig')) {
+    function saveCityContactConfig($data)
+    {
+        $jsonPath = storage_path('app/city_contact.json');
+        return file_put_contents($jsonPath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    }
+}

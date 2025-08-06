@@ -918,6 +918,7 @@ return [
     'contacts' => 'رسائل الاتصال',
     'contacts_lists' => 'قائمة رسائل الاتصال',
     'contacts_message' => 'رسالة اتصال',
+    'city_contact' => 'إدارة الاتصال بالمدن',
     'user_role_updated' => 'تم ترقية دور المستخدم.',
 
 //Classes

@@ -97,10 +97,9 @@
             min-width: 200px;
             position: relative;
             display: inline-block;
-            background-image: url('store/1/Union.png');
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: contain;
+            padding: 10px;
+            border: 2px solid var(--main-color);
+            border-radius: 15px
         }
         .webinar-card{
             background-color: #F2F5FC;
@@ -445,5 +444,8 @@
     }
     applyParentImageColorChange('.trendy-category', 'hover', '#ffffff', true);
 </script>
+
+    @include('web.default.partials.floating_city_bar')
+
 </body>
 </html>

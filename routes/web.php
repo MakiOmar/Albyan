@@ -90,6 +90,12 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
         return view('web.default.cart.channels.stripe');
     });
 
+    // City Contact Routes
+    Route::get('/contact/{citySlug}', 'CityContactController@showForm')->name('city.contact.form');
+    Route::post('/contact/{citySlug}/submit', 'CityContactController@submitForm')->name('city.contact.submit');
+    Route::get('/api/cities', 'CityContactController@getActiveCities')->name('city.contact.cities');
+    Route::get('/api/city-contact/config', 'CityContactController@getConfig')->name('city.contact.config');
+
     Route::fallback(function () {
         return view("errors.404", ['pageTitle' => trans('public.error_404_page_title')]);
     });

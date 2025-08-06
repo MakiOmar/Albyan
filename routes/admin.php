@@ -1188,6 +1188,14 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             });
         });
 
+        Route::group(['prefix' => 'city-contact'], function () {
+            Route::get('/', 'CityContactController@index')->name('admin.city-contact.index');
+            Route::post('/config/update', 'CityContactController@updateConfig')->name('admin.city-contact.config.update');
+            Route::post('/cities/add', 'CityContactController@addCity')->name('admin.city-contact.cities.add');
+            Route::post('/cities/{index}/update', 'CityContactController@updateCity')->name('admin.city-contact.cities.update');
+            Route::get('/cities/{index}/delete', 'CityContactController@deleteCity')->name('admin.city-contact.cities.delete');
+        });
+
         Route::group(['prefix' => 'purchase_notifications'], function () {
             Route::get('/', 'PurchaseNotificationsController@index');
             Route::get('/create', 'PurchaseNotificationsController@create');
