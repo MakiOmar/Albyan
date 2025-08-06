@@ -73,8 +73,8 @@
                     @if(!empty($socials) and count($socials))
                     <div class="mt-2">
                         @foreach($socials as $social)
-                            <a href="{{ $social['link'] }}" target="_blank">
-                                <img src="{{ $social['image'] }}" alt="{{ $social['title'] }}" class="mr-5">
+                            <a href="{{ $social['link'] }}" target="_blank" class="mr-15 border border-white rounded-circle m-1 p-1">
+                                <img src="{{ $social['image'] }}" alt="{{ $social['title'] }}">
                             </a>
                         @endforeach
                     </div>
@@ -92,23 +92,47 @@
                 </ul>
             </div>
 
-            <div class="col-md-5 info-section">
+            <div class="col-md-4 info-section">
               <h3>معلومات عنا</h3>
               @include('web.default.includes.title_border')
                 <p class=" mt-4">معهد البيان للخدمات التعليمية يقدم تجربة تعليمية متميزة مع نخبة من المحاضرين والخبراء في مختلف المجالات. يقدم المعهد مئات الدبلومات التدريبية الاحترافية المصممة لتلبية احتياجات سوق العمل، مع خيارات مرنة في الحضور من مقر المعهد أو الدراسة أون لاين. يمنح المعهد شهادات معتمدة محلياً ودولياً تعزز من مكانتك المهنية وينظم حفل تخرج سنوي ضخم لتكريم اعداد كبيرة من خريجي المعهدبمختلف التخصصات بحضور شخصيات هامة. انضم إلى معهد البيان للارتقاء بمسارك المهني. </p>
             </div>
 
                         
-            <div class="col-md-4 info-section">
+            <div class="col-md-5 info-section">
                 <h3>اتصل بنا</h3>
                 @include('web.default.includes.title_border')
                 <ul class="list-unstyled mt-4">
-                    <li class="pb-2">📞 <a href="tel:+971569001020">971569001020+</a></li>
-                    <li class="pb-2">📞 <a href="tel:+97143931889">971043931889+</a></li>
-                    <li class="pb-2">📧 <a href="mailto:info@albyaninstitute.net">info@albyaninstitute.net</a></li>
+                <li class="pb-2 d-flex align-items-center">
+                    <!-- Phone Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" style="height: 16px; width: 16px; margin-right: 0.5rem;" fill="none" viewBox="0 0 24 24" stroke="white">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 5a2 2 0 012-2h1.6a1 1 0 01.95.684l1.3 3.9a1 1 0 01-.24 1.054L7.6 10.6a16.007 16.007 0 006.8 6.8l1.962-1.962a1 1 0 011.054-.24l3.9 1.3a1 1 0 01.684.95V19a2 2 0 01-2 2h-.5C10.506 21 3 13.494 3 4.5V5z" />
+                    </svg>&nbsp;
+                    <a href="tel:+971569001020" class="text-white">971569001020+</a>
+                </li>
+
+                <li class="pb-2 d-flex align-items-center">
+                    <!-- Phone Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" style="height: 16px; width: 16px; margin-right: 0.5rem;" fill="none" viewBox="0 0 24 24" stroke="white">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 5a2 2 0 012-2h1.6a1 1 0 01.95.684l1.3 3.9a1 1 0 01-.24 1.054L7.6 10.6a16.007 16.007 0 006.8 6.8l1.962-1.962a1 1 0 011.054-.24l3.9 1.3a1 1 0 01.684.95V19a2 2 0 01-2 2h-.5C10.506 21 3 13.494 3 4.5V5z" />
+                    </svg>&nbsp;
+                    <a href="tel:+97143931889" class="text-white">97143931889+</a>
+                </li>
+
+                <li class="pb-2 d-flex align-items-center">
+                    <!-- Email Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" style="height: 16px; width: 16px; margin-right: 0.5rem;" fill="none" viewBox="0 0 24 24" stroke="white">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m0-2H3a2 2 0 00-2 2v8a2 2 0 002 2h18a2 2 0 002-2V8a2 2 0 00-2-2z" />
+                    </svg>&nbsp;
+                    <a href="mailto:info@albyaninstitute.net" class="text-white">info@albyaninstitute.net</a>
+                </li>
                 </ul>
+
                 <div class="map-container text-center pb-1">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d14432.980440036239!2d55.3405061!3d25.2623388!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f5d12c2143dbf%3A0x59ed5335a90de4ba!2z2YXYudmH2K8g2KfZhNio2YrYp9mGINmE2YTYrtiv2YXYp9iqINin2YTYqti52YTZitmF2YrYqSAtIEFMQllBTiBJTlNUSVRVVEUgRURVQ0FUSU9OIFNVUFBPUlQgU0VSVklDRVM!5e0!3m2!1sen!2seg!4v1739955859681!5m2!1sen!2seg" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d14432.980440036239!2d55.3405061!3d25.2623388!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f5d12c2143dbf%3A0x59ed5335a90de4ba!2z2YXYudmH2K8g2KfZhNio2YrYp9mGINmE2YTYrtiv2YXYp9iqINin2YTYqti52YTZitmF2YrYqSAtIEFMQllBTiBJTlNUSVRVVEUgRURVQ0FUSU9OIFNVUFBPUlQgU0VSVklDRVM!5e0!3m2!1sen!2seg!4v1739955859681!5m2!1sen!2seg" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
             </div>
             

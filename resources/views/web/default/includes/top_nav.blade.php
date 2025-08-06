@@ -104,8 +104,8 @@
         <div class="footer-social d-flex align-items-center">
             @if(!empty($socials) and count($socials))
                 @foreach($socials as $social)
-                    <a href="{{ $social['link'] }}" target="_blank">
-                        <img src="{{ $social['image'] }}" alt="{{ $social['title'] }}" class="mr-15">
+                    <a href="{{ $social['link'] }}" target="_blank" class="mr-15 border border-white rounded-circle m-1 p-1">
+                        <img src="{{ $social['image'] }}" alt="{{ $social['title'] }}">
                     </a>
                 @endforeach
             @endif
