@@ -4,7 +4,7 @@
         <div class="container text-center">
             <h2 class="section-title section-title-bg mb-4" style="min-width: 200px;position: relative; display: inline-block">
 
-            <span style="color: white; padding: 8px 24px; border-radius: 0 20px 0 20px;">
+            <span style="padding: 8px 24px; border-radius: 0 20px 0 20px;">
                 الأقسام
             </span>
         </h2>
