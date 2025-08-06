@@ -64,7 +64,7 @@
     display: flex;
     align-items: center;
     padding: 12px 20px;
-    color: white;
+    color: white !important;
     text-decoration: none;
     transition: all 0.3s ease;
     border-left: 3px solid transparent;
@@ -73,9 +73,21 @@
 .city-item:hover {
     background: rgba(255,255,255,0.1);
     border-left-color: #ffc107;
-    color: white;
+    color: white !important;
     text-decoration: none;
     transform: translateX(5px);
+}
+
+.city-item:visited {
+    color: white !important;
+}
+
+.city-item:active {
+    color: white !important;
+}
+
+.city-item:focus {
+    color: white !important;
 }
 
 .city-flag {
@@ -126,12 +138,26 @@
         border-radius: 8px;
         border-left: none;
         border-bottom: 3px solid transparent;
+        color: white !important;
     }
     
     .city-item:hover {
         transform: translateY(-3px);
         border-left-color: transparent;
         border-bottom-color: #ffc107;
+        color: white !important;
+    }
+    
+    .city-item:visited {
+        color: white !important;
+    }
+    
+    .city-item:active {
+        color: white !important;
+    }
+    
+    .city-item:focus {
+        color: white !important;
     }
     
     .city-name {
