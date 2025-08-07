@@ -121,10 +121,10 @@
                                                                 @endif
                                                             </td>
                                                             <td>
-                                                                <button type="button" class="btn btn-sm btn-primary" 
-                                                                        onclick="editCity({{ $index }}, '{{ $city['name'] }}', '{{ $city['slug'] }}', '{{ $city['email'] }}', '{{ $city['flag'] }}', {{ $city['is_active'] ? 'true' : 'false' }})">
-                                                                    تعديل
-                                                                </button>
+                                                                                                                                 <button type="button" class="btn btn-sm btn-primary" 
+                                                                         onclick="editCity('{{ $city['slug'] }}', '{{ $city['name'] }}', '{{ $city['slug'] }}', '{{ $city['email'] }}', '{{ $city['flag'] }}', {{ $city['is_active'] ? 'true' : 'false' }})">
+                                                                     تعديل
+                                                                 </button>
                                                                 <a href="{{ route('admin.city-contact.cities.delete', $index) }}" 
                                                                    class="btn btn-sm btn-danger"
                                                                    onclick="return confirm('هل أنت متأكد من حذف هذه المدينة؟')">
@@ -233,14 +233,15 @@
 
 @push('scripts_bottom')
 <script>
-function editCity(index, name, slug, email, flag, isActive) {
+function editCity(slug, name, slugValue, email, flag, isActive) {
     document.getElementById('edit_city_name').value = name;
-    document.getElementById('edit_city_slug').value = slug;
+    document.getElementById('edit_city_slug').value = slugValue;
     document.getElementById('edit_city_email').value = email;
     document.getElementById('edit_city_flag').value = flag;
     document.getElementById('edit_city_active').checked = isActive;
     
-    document.getElementById('editCityForm').action = '{{ route("admin.city-contact.cities.update", "") }}/' + index;
+    var actionUrl = '/admin/city-contact/cities/' + slug + '/update';
+    document.getElementById('editCityForm').action = actionUrl;
     
     $('#editCityModal').modal('show');
 }

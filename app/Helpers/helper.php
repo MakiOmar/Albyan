@@ -2774,18 +2774,28 @@ if (!function_exists('getCityContactConfig')) {
             return $key ? ($defaultConfig[$key] ?? null) : $defaultConfig;
         }
         
-        $data = json_decode(file_get_contents($jsonPath), true);
-        
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            // If JSON is invalid, return default config
+        try {
+            $fileContent = file_get_contents($jsonPath);
+            
+            if ($fileContent === false) {
+                return null;
+            }
+            
+            $data = json_decode($fileContent, true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return null;
+            }
+            
+            if ($key) {
+                return $data[$key] ?? null;
+            }
+            
+            return $data;
+            
+        } catch (\Exception $e) {
             return null;
         }
-        
-        if ($key) {
-            return $data[$key] ?? null;
-        }
-        
-        return $data;
     }
 }
 
@@ -2815,6 +2825,17 @@ if (!function_exists('saveCityContactConfig')) {
     function saveCityContactConfig($data)
     {
         $jsonPath = storage_path('app/city_contact.json');
-        return file_put_contents($jsonPath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        
+        try {
+            $result = file_put_contents($jsonPath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            
+            if ($result === false) {
+                return false;
+            }
+            
+            return $result;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

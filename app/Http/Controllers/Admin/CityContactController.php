@@ -110,50 +110,75 @@ class CityContactController extends Controller
         return redirect()->back()->with('success', 'تم إضافة المدينة بنجاح');
     }
 
-    public function updateCity(Request $request, $index)
+    public function updateCity(Request $request, $slug)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'flag' => 'nullable|string|max:255',
-            'is_active' => 'boolean',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'slug' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'flag' => 'nullable|string|max:255',
+                'is_active' => 'nullable|in:on,1,true',
+            ]);
 
-        $config = getCityContactConfig() ?? [
-            'cities' => [],
-            'form' => [
-                'title' => 'تواصل معنا',
-                'description' => 'يرجى ملء النموذج أدناه وسنقوم بالرد عليك في أقرب وقت ممكن',
-                'success_message' => 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك قريباً.',
-                'error_message' => 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.'
-            ],
-            'email' => [
-                'subject' => 'رسالة جديدة من نموذج الاتصال - :city',
-                'template' => 'emails.city_contact_form'
-            ]
-        ];
+            $config = getCityContactConfig() ?? [
+                'cities' => [],
+                'form' => [
+                    'title' => 'تواصل معنا',
+                    'description' => 'يرجى ملء النموذج أدناه وسنقوم بالرد عليك في أقرب وقت ممكن',
+                    'success_message' => 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك قريباً.',
+                    'error_message' => 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.'
+                ],
+                'email' => [
+                    'subject' => 'رسالة جديدة من نموذج الاتصال - :city',
+                    'template' => 'emails.city_contact_form'
+                ]
+            ];
 
-        if (isset($config['cities'][$index])) {
-            // Check if slug already exists (excluding current city)
-            $existingSlugs = collect($config['cities'])->pluck('slug')->toArray();
-            unset($existingSlugs[$index]);
-            if (in_array($request->input('slug'), $existingSlugs)) {
-                return redirect()->back()->with('error', 'الرابط مستخدم بالفعل');
+            // Find city by slug
+            $cityIndex = null;
+            foreach ($config['cities'] as $index => $city) {
+                if ($city['slug'] === $slug) {
+                    $cityIndex = $index;
+                    break;
+                }
             }
 
-            $config['cities'][$index]['name'] = $request->input('name');
-            $config['cities'][$index]['slug'] = $request->input('slug');
-            $config['cities'][$index]['email'] = $request->input('email');
-            $config['cities'][$index]['flag'] = $request->input('flag');
-            $config['cities'][$index]['is_active'] = $request->has('is_active');
+            if ($cityIndex !== null) {
+                // Check if slug already exists (excluding current city)
+                $existingSlugs = collect($config['cities'])->pluck('slug')->toArray();
+                $currentSlug = $config['cities'][$cityIndex]['slug'] ?? '';
+                $newSlug = $request->input('slug');
 
-            saveCityContactConfig($config);
+                // Remove current city's slug from the check (allow keeping the same slug)
+                $otherSlugs = array_filter($existingSlugs, function($slug) use ($currentSlug) {
+                    return $slug !== $currentSlug;
+                });
 
-            return redirect()->back()->with('success', 'تم تحديث المدينة بنجاح');
+                if (in_array($newSlug, $otherSlugs)) {
+                    return redirect()->back()->with('error', 'الرابط مستخدم بالفعل');
+                }
+
+                $config['cities'][$cityIndex]['name'] = $request->input('name');
+                $config['cities'][$cityIndex]['slug'] = $request->input('slug');
+                $config['cities'][$cityIndex]['email'] = $request->input('email');
+                $config['cities'][$cityIndex]['flag'] = $request->input('flag');
+                $config['cities'][$cityIndex]['is_active'] = in_array($request->input('is_active'), ['on', '1', 'true']);
+
+                $saveResult = saveCityContactConfig($config);
+
+                if ($saveResult === false) {
+                    return redirect()->back()->with('error', 'فشل في حفظ البيانات');
+                }
+
+                return redirect()->back()->with('success', 'تم تحديث المدينة بنجاح');
+            }
+
+            return redirect()->back()->with('error', 'المدينة غير موجودة');
+            
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'حدث خطأ أثناء تحديث المدينة: ' . $e->getMessage());
         }
-
-        return redirect()->back()->with('error', 'المدينة غير موجودة');
     }
 
     public function deleteCity($index)
