@@ -95,6 +95,10 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
     Route::post('/contact/{citySlug}/submit', 'CityContactController@submitForm')->name('city.contact.submit');
     Route::get('/api/cities', 'CityContactController@getActiveCities')->name('city.contact.cities');
     Route::get('/api/city-contact/config', 'CityContactController@getConfig')->name('city.contact.config');
+    
+    // New City Contact Routes
+    Route::get('/cities', 'CityContactController@index')->name('city.contact.index');
+    Route::get('/city/{slug}', 'CityContactController@show')->name('city.contact.show');
 
     Route::fallback(function () {
         return view("errors.404", ['pageTitle' => trans('public.error_404_page_title')]);

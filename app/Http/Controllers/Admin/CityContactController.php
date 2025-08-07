@@ -73,6 +73,11 @@ class CityContactController extends Controller
             'slug' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'flag' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255',
+            'whatsapp' => 'nullable|string|max:255',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
+            'address' => 'nullable|string|max:500',
         ]);
 
         $config = getCityContactConfig() ?? [
@@ -99,7 +104,12 @@ class CityContactController extends Controller
             'name' => $request->input('name'),
             'slug' => $request->input('slug'),
             'email' => $request->input('email'),
-            'flag' => $request->input('flag'),
+            'flag' => $request->input('flag') ?: null,
+            'phone' => $request->input('phone') ?: null,
+            'whatsapp' => $request->input('whatsapp') ?: null,
+            'latitude' => $request->input('latitude') ?: null,
+            'longitude' => $request->input('longitude') ?: null,
+            'address' => $request->input('address') ?: null,
             'is_active' => true,
         ];
 
@@ -118,6 +128,11 @@ class CityContactController extends Controller
                 'slug' => 'required|string|max:255',
                 'email' => 'required|email|max:255',
                 'flag' => 'nullable|string|max:255',
+                'phone' => 'nullable|string|max:255',
+                'whatsapp' => 'nullable|string|max:255',
+                'latitude' => 'nullable|numeric|between:-90,90',
+                'longitude' => 'nullable|numeric|between:-180,180',
+                'address' => 'nullable|string|max:500',
                 'is_active' => 'nullable|in:on,1,true',
             ]);
 
@@ -162,7 +177,12 @@ class CityContactController extends Controller
                 $config['cities'][$cityIndex]['name'] = $request->input('name');
                 $config['cities'][$cityIndex]['slug'] = $request->input('slug');
                 $config['cities'][$cityIndex]['email'] = $request->input('email');
-                $config['cities'][$cityIndex]['flag'] = $request->input('flag');
+                $config['cities'][$cityIndex]['flag'] = $request->input('flag') ?: null;
+                $config['cities'][$cityIndex]['phone'] = $request->input('phone') ?: null;
+                $config['cities'][$cityIndex]['whatsapp'] = $request->input('whatsapp') ?: null;
+                $config['cities'][$cityIndex]['latitude'] = $request->input('latitude') ?: null;
+                $config['cities'][$cityIndex]['longitude'] = $request->input('longitude') ?: null;
+                $config['cities'][$cityIndex]['address'] = $request->input('address') ?: null;
                 $config['cities'][$cityIndex]['is_active'] = in_array($request->input('is_active'), ['on', '1', 'true']);
 
                 $saveResult = saveCityContactConfig($config);

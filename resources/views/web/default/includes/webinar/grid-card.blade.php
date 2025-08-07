@@ -28,6 +28,7 @@
             </div>
             --}}
             <a href="{{ $webinar->getUrl() }}">
+                <div class="image-overlay"></div>
                 <img src="{{ $webinar->getImage() }}" class="img-cover" alt="{{ $webinar->title }}">
             </a>
 
@@ -128,3 +129,37 @@
         </figcaption>
     </figure>
 </div>
+
+<style>
+    .image-box {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .image-box a {
+        position: relative;
+        display: block;
+    }
+    
+    .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: 1;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        border-radius: 15px 15px 0 0;
+    }
+    
+    .image-box:hover .image-overlay {
+        opacity: 0;
+    }
+    
+    .image-box img {
+        position: relative;
+        z-index: 0;
+    }
+</style>

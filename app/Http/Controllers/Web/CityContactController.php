@@ -111,4 +111,38 @@ class CityContactController extends Controller
         $config = getCityContactConfig();
         return response()->json($config);
     }
+
+    /**
+     * Show the cities index page
+     */
+    public function index()
+    {
+        $cities = getActiveCities();
+        
+        return view('web.default.city_contact.index', compact('cities'));
+    }
+
+    /**
+     * Show individual city page
+     */
+    public function show($slug)
+    {
+        $config = getCityContactConfig();
+        $city = null;
+        
+        if (!empty($config['cities'])) {
+            foreach ($config['cities'] as $cityData) {
+                if ($cityData['slug'] === $slug && $cityData['is_active']) {
+                    $city = $cityData;
+                    break;
+                }
+            }
+        }
+        
+        if (!$city) {
+            abort(404);
+        }
+        
+        return view('web.default.city_contact.show', compact('city'));
+    }
 } 

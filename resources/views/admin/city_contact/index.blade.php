@@ -95,6 +95,8 @@
                                                         <th>الاسم</th>
                                                         <th>الرابط</th>
                                                         <th>البريد الإلكتروني</th>
+                                                        <th>الهاتف</th>
+                                                        <th>واتساب</th>
                                                         <th>العلم</th>
                                                         <th>الحالة</th>
                                                         <th>الإجراءات</th>
@@ -102,10 +104,12 @@
                                                 </thead>
                                                 <tbody>
                                                     @foreach($cities as $index => $city)
-                                                        <tr>
+                                                                                                                <tr>
                                                             <td>{{ $city['name'] }}</td>
                                                             <td><code>{{ $city['slug'] }}</code></td>
                                                             <td>{{ $city['email'] }}</td>
+                                                            <td>{{ $city['phone'] ?? 'لا يوجد' }}</td>
+                                                            <td>{{ $city['whatsapp'] ?? 'لا يوجد' }}</td>
                                                             <td>
                                                                 @if($city['flag'])
                                                                     <img src="{{ url($city['flag']) }}" alt="{{ $city['name'] }}" style="width: 30px; height: 20px;">
@@ -121,8 +125,8 @@
                                                                 @endif
                                                             </td>
                                                             <td>
-                                                                                                                                 <button type="button" class="btn btn-sm btn-primary" 
-                                                                         onclick="editCity('{{ $city['slug'] }}', '{{ $city['name'] }}', '{{ $city['slug'] }}', '{{ $city['email'] }}', '{{ $city['flag'] }}', {{ $city['is_active'] ? 'true' : 'false' }})">
+                                                                 <button type="button" class="btn btn-sm btn-primary" 
+                                                                         onclick="editCity('{{ $city['slug'] }}', '{{ $city['name'] }}', '{{ $city['slug'] }}', '{{ $city['email'] }}', '{{ $city['flag'] }}', {{ $city['is_active'] ? 'true' : 'false' }}, '{{ $city['phone'] ?? '' }}', '{{ $city['whatsapp'] ?? '' }}', '{{ $city['latitude'] ?? '' }}', '{{ $city['longitude'] ?? '' }}', '{{ $city['address'] ?? '' }}')">
                                                                      تعديل
                                                                  </button>
                                                                 <a href="{{ route('admin.city-contact.cities.delete', $index) }}" 
@@ -175,6 +179,32 @@
                             <label>مسار العلم (اختياري)</label>
                             <input type="text" name="flag" class="form-control" placeholder="/assets/default/img/flags/sa.png">
                         </div>
+                        <div class="form-group">
+                            <label>رقم الهاتف (اختياري)</label>
+                            <input type="text" name="phone" class="form-control" placeholder="+966501234567">
+                        </div>
+                        <div class="form-group">
+                            <label>رقم الواتساب (اختياري)</label>
+                            <input type="text" name="whatsapp" class="form-control" placeholder="+966501234567">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>خط العرض (Latitude) (اختياري)</label>
+                                    <input type="number" step="any" name="latitude" class="form-control" placeholder="24.7136">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>خط الطول (Longitude) (اختياري)</label>
+                                    <input type="number" step="any" name="longitude" class="form-control" placeholder="46.6753">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>العنوان (اختياري)</label>
+                            <textarea name="address" class="form-control" rows="2" placeholder="العنوان التفصيلي للمدينة"></textarea>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
@@ -215,6 +245,32 @@
                             <input type="text" name="flag" id="edit_city_flag" class="form-control">
                         </div>
                         <div class="form-group">
+                            <label>رقم الهاتف (اختياري)</label>
+                            <input type="text" name="phone" id="edit_city_phone" class="form-control" placeholder="+966501234567">
+                        </div>
+                        <div class="form-group">
+                            <label>رقم الواتساب (اختياري)</label>
+                            <input type="text" name="whatsapp" id="edit_city_whatsapp" class="form-control" placeholder="+966501234567">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>خط العرض (Latitude) (اختياري)</label>
+                                    <input type="number" step="any" name="latitude" id="edit_city_latitude" class="form-control" placeholder="24.7136">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>خط الطول (Longitude) (اختياري)</label>
+                                    <input type="number" step="any" name="longitude" id="edit_city_longitude" class="form-control" placeholder="46.6753">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>العنوان (اختياري)</label>
+                            <textarea name="address" id="edit_city_address" class="form-control" rows="2" placeholder="العنوان التفصيلي للمدينة"></textarea>
+                        </div>
+                        <div class="form-group">
                             <div class="custom-control custom-checkbox">
                                 <input type="checkbox" name="is_active" id="edit_city_active" class="custom-control-input">
                                 <label class="custom-control-label" for="edit_city_active">نشط</label>
@@ -233,11 +289,16 @@
 
 @push('scripts_bottom')
 <script>
-function editCity(slug, name, slugValue, email, flag, isActive) {
+function editCity(slug, name, slugValue, email, flag, isActive, phone, whatsapp, latitude, longitude, address) {
     document.getElementById('edit_city_name').value = name;
     document.getElementById('edit_city_slug').value = slugValue;
     document.getElementById('edit_city_email').value = email;
     document.getElementById('edit_city_flag').value = flag;
+    document.getElementById('edit_city_phone').value = phone;
+    document.getElementById('edit_city_whatsapp').value = whatsapp;
+    document.getElementById('edit_city_latitude').value = latitude;
+    document.getElementById('edit_city_longitude').value = longitude;
+    document.getElementById('edit_city_address').value = address;
     document.getElementById('edit_city_active').checked = isActive;
     
     var actionUrl = '/admin/city-contact/cities/' + slug + '/update';

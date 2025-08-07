@@ -62,7 +62,7 @@
         </defs>
     </svg>
     <!-- CEO Section -->
-    <h2 class="fw-bold section-title-bg text-white p-2">المدير التنفيذي</h2>
+    <h2 class="fw-bold section-title-bg p-2">المدير التنفيذي</h2>
     <br>
     <div class="row justify-content-center">
         @forelse($ceoUsers as $ceoUser)
@@ -82,7 +82,7 @@
     <hr class="my-4">
 
     <!-- Instructors Section -->
-    <h3 class="fw-bold section-title-bg text-white p-2">المدربين</h3>
+    <h3 class="fw-bold section-title-bg p-2">المدربين</h3>
     <br>
     <div class="row justify-content-center">
         @forelse($instructors as $instructor)
@@ -102,7 +102,7 @@
     <hr class="my-4">
 
     <!-- Albayan Team Section -->
-    <h3 class="fw-bold section-title-bg text-white p-2">فريق البيان</h3>
+    <h3 class="fw-bold section-title-bg p-2">فريق البيان</h3>
     <br>
     <div class="row justify-content-center">
         @forelse($teamMembers as $teamMember)

@@ -2803,7 +2803,19 @@ if (!function_exists('getActiveCities')) {
     function getActiveCities()
     {
         $cities = getCityContactConfig('cities') ?? [];
-        return collect($cities)
+        
+        // Ensure backward compatibility by adding missing fields to existing cities
+        $cities = collect($cities)->map(function ($city) {
+            return array_merge([
+                'phone' => null,
+                'whatsapp' => null,
+                'latitude' => null,
+                'longitude' => null,
+                'address' => null,
+            ], $city);
+        });
+        
+        return $cities
             ->where('is_active', true)
             ->sortBy('name')
             ->values();
@@ -2814,7 +2826,19 @@ if (!function_exists('getCityBySlug')) {
     function getCityBySlug($slug)
     {
         $cities = getCityContactConfig('cities') ?? [];
-        return collect($cities)
+        
+        // Ensure backward compatibility by adding missing fields to existing cities
+        $cities = collect($cities)->map(function ($city) {
+            return array_merge([
+                'phone' => null,
+                'whatsapp' => null,
+                'latitude' => null,
+                'longitude' => null,
+                'address' => null,
+            ], $city);
+        });
+        
+        return $cities
             ->where('slug', $slug)
             ->where('is_active', true)
             ->first();

@@ -120,6 +120,28 @@
                         <a class="nav-link" href="/panel/student-groups">مجموعاتي الدراسية</a>
                     </li>
                     @endif
+                    
+                    {{-- City Contact Dropdown --}}
+                    @php
+                        $cities = getActiveCities();
+                    @endphp
+                    @if(!empty($cities) && count($cities) > 0)
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="citiesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                فروع البيان
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="citiesDropdown">
+                                @foreach($cities as $city)
+                                    <a class="dropdown-item" href="{{ route('city.contact.show', $city['slug']) }}">
+                                        @if(!empty($city['flag']))
+                                            <img src="{{ url($city['flag']) }}" alt="{{ $city['name'] }}" style="width: 20px; height: 15px; margin-left: 8px;">
+                                        @endif
+                                        {{ $city['name'] }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        </li>
+                    @endif
                 </ul>
             </div>
             {{--
