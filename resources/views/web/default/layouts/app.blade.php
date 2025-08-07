@@ -446,6 +446,7 @@
 </script>
 
     @include('web.default.partials.floating_city_bar')
+    @include('web.default.includes.whatsapp-chat')
 
 </body>
 </html>

@@ -206,5 +206,8 @@
         window.open(route_prefix + '?type=image', 'FileManager', 'width=900,height=600');
     });
 </script>
+
+@include('web.default.includes.whatsapp-chat')
+
 </body>
 </html>
