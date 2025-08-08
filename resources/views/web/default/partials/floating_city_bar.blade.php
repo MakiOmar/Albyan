@@ -4,9 +4,9 @@
 
 @if($cities->count() > 0)
 <div id="floating-city-bar" class="floating-city-bar">
-    <div class="city-bar-header">
+    {{--<div class="city-bar-header">
         <span class="city-bar-title">تواصل معنا</span>
-    </div>
+    </div>--}}
     
     <div class="city-list">
         @foreach($cities as $city)
@@ -15,7 +15,9 @@
                data-city="{{ $city['slug'] }}"
                title="{{ $city['name'] }}">
                 @if($city['flag'])
-                    <img src="{{ url($city['flag']) }}" alt="{{ $city['name'] }}" class="city-flag">
+                    <div class="flag-circle">
+                        <img src="{{ url($city['flag']) }}" alt="{{ $city['name'] }}" class="city-flag">
+                    </div>
                 @endif
                 <span class="city-name">فرع {{ $city['name'] }}</span>
             </a>
@@ -29,9 +31,7 @@
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    background: linear-gradient(135deg, #007bff, #0056b3);
     border-radius: 0 15px 15px 0;
-    box-shadow: 2px 0 20px rgba(0,0,0,0.2);
     z-index: 1000;
     transition: all 0.3s ease;
     max-height: 80vh;
@@ -40,13 +40,14 @@
 
 .floating-city-bar:hover {
     left: 0;
-    box-shadow: 5px 0 25px rgba(0,0,0,0.3);
 }
 
 .city-bar-header {
     padding: 15px 20px;
     border-bottom: 1px solid rgba(255,255,255,0.2);
     text-align: center;
+    background: linear-gradient(135deg, #136390 0%, #1a7bb8 100%);
+    border-radius: 0 15px 0 0;
 }
 
 .city-bar-title {
@@ -68,10 +69,16 @@
     text-decoration: none;
     transition: all 0.3s ease;
     border-left: 3px solid transparent;
+    background: linear-gradient(135deg, #136390 0%, #1a7bb8 100%);
+    margin-bottom: 5px;
+    height: 45px;
+    max-height: 45px;
+    border-radius: 0 25px 25px 0;
+    box-shadow: 0 2px 10px rgba(19, 99, 144, 0.3);
 }
 
 .city-item:hover {
-    background: rgba(255,255,255,0.1);
+    background: linear-gradient(135deg, #1a7bb8 0%, #136390 100%);
     border-left-color: #ffc107;
     color: white !important;
     text-decoration: none;
@@ -90,12 +97,23 @@
     color: white !important;
 }
 
-.city-flag {
-    width: 25px;
-    height: 18px;
-    border-radius: 3px;
+.flag-circle {
+    width: 35px;
+    height: 35px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     margin-left: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.city-flag {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    object-fit: contain;
 }
 
 .city-name {
@@ -135,10 +153,12 @@
         flex-shrink: 0;
         min-width: 120px;
         margin-right: 10px;
-        border-radius: 8px;
+        border-radius: 0 20px 20px 0;
         border-left: none;
         border-bottom: 3px solid transparent;
         color: white !important;
+        height: 40px;
+        max-height: 40px;
     }
     
     .city-item:hover {
@@ -158,6 +178,16 @@
     
     .city-item:focus {
         color: white !important;
+    }
+    
+    .flag-circle {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .city-flag {
+        width: 16px;
+        height: 16px;
     }
     
     .city-name {
