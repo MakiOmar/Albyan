@@ -176,8 +176,18 @@
                             <input type="email" name="email" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label>مسار العلم (اختياري)</label>
-                            <input type="text" name="flag" class="form-control" placeholder="/assets/default/img/flags/sa.png">
+                            <label>علم المدينة (اختياري)</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <button type="button" class="input-group-text admin-file-manager" data-input="city_flag" data-preview="city_flag_preview">
+                                        <i class="fa fa-arrow-up" class="text-white"></i>
+                                    </button>
+                                </div>
+                                <input id="city_flag" type="text" name="flag" class="form-control lfm-input" placeholder="/assets/default/img/flags/sa.png">
+                            </div>
+                            <div id="city_flag_preview" class="mt-2">
+                                <img src="" alt="Flag Preview" style="max-width: 50px; max-height: 30px; display: none;">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>رقم الهاتف (اختياري)</label>
@@ -241,8 +251,18 @@
                             <input type="email" name="email" id="edit_city_email" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label>مسار العلم (اختياري)</label>
-                            <input type="text" name="flag" id="edit_city_flag" class="form-control">
+                            <label>علم المدينة (اختياري)</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <button type="button" class="input-group-text admin-file-manager" data-input="edit_city_flag" data-preview="edit_city_flag_preview">
+                                        <i class="fa fa-arrow-up" class="text-white"></i>
+                                    </button>
+                                </div>
+                                <input id="edit_city_flag" type="text" name="flag" class="form-control lfm-input">
+                            </div>
+                            <div id="edit_city_flag_preview" class="mt-2">
+                                <img src="" alt="Flag Preview" style="max-width: 50px; max-height: 30px; display: none;">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>رقم الهاتف (اختياري)</label>
@@ -301,10 +321,51 @@ function editCity(slug, name, slugValue, email, flag, isActive, phone, whatsapp,
     document.getElementById('edit_city_address').value = address;
     document.getElementById('edit_city_active').checked = isActive;
     
+    // Update flag preview
+    var flagPreview = document.querySelector('#edit_city_flag_preview img');
+    if (flag && flag.trim() !== '') {
+        flagPreview.src = flag;
+        flagPreview.style.display = 'block';
+    } else {
+        flagPreview.style.display = 'none';
+    }
+    
     var actionUrl = '/admin/city-contact/cities/' + slug + '/update';
     document.getElementById('editCityForm').action = actionUrl;
     
     $('#editCityModal').modal('show');
 }
+
+// Handle flag preview for add form
+document.addEventListener('DOMContentLoaded', function() {
+    var cityFlagInput = document.getElementById('city_flag');
+    var cityFlagPreview = document.querySelector('#city_flag_preview img');
+    
+    if (cityFlagInput) {
+        cityFlagInput.addEventListener('input', function() {
+            if (this.value && this.value.trim() !== '') {
+                cityFlagPreview.src = this.value;
+                cityFlagPreview.style.display = 'block';
+            } else {
+                cityFlagPreview.style.display = 'none';
+            }
+        });
+    }
+    
+    // Handle flag preview for edit form
+    var editCityFlagInput = document.getElementById('edit_city_flag');
+    var editCityFlagPreview = document.querySelector('#edit_city_flag_preview img');
+    
+    if (editCityFlagInput) {
+        editCityFlagInput.addEventListener('input', function() {
+            if (this.value && this.value.trim() !== '') {
+                editCityFlagPreview.src = this.value;
+                editCityFlagPreview.style.display = 'block';
+            } else {
+                editCityFlagPreview.style.display = 'none';
+            }
+        });
+    }
+});
 </script>
 @endpush 

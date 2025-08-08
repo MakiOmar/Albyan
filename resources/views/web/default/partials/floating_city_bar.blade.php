@@ -64,7 +64,7 @@
 .city-item {
     display: flex;
     align-items: center;
-    padding: 12px 20px;
+    padding: 12px 10px;
     color: white !important;
     text-decoration: none;
     transition: all 0.3s ease;
@@ -74,7 +74,6 @@
     height: 45px;
     max-height: 45px;
     border-radius: 0 25px 25px 0;
-    box-shadow: 0 2px 10px rgba(19, 99, 144, 0.3);
 }
 
 .city-item:hover {
