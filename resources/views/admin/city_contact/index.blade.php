@@ -371,11 +371,12 @@ document.addEventListener('DOMContentLoaded', function() {
     $('.admin-file-manager').on('click', function() {
         var inputId = $(this).data('input');
         var previewId = $(this).data('preview');
-        var customUrl = $(this).data('url') || '/laravel-filemanager';
+        var customUrl = $(this).data('url');
         
         // Open file manager with custom URL
-        var route_prefix = customUrl;
-        window.open(route_prefix + '?type=image&input=' + inputId + '&preview=' + previewId, 'FileManager', 'width=900,height=600');
+        var route_prefix = customUrl || '/laravel-filemanager';
+        var url = route_prefix + '?type=image&input=' + inputId + '&preview=' + previewId;
+        window.open(url, 'FileManager', 'width=900,height=600,scrollbars=yes,resizable=yes');
     });
 });
 </script>

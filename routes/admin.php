@@ -35,10 +35,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
 
     Route::group(['middleware' => 'admin'], function () {
 
-        // Laravel File Manager Routes for Admin
-        Route::group(['prefix' => 'laravel-filemanager'], function () {
-            \UniSharp\LaravelFilemanager\Lfm::routes();
-        });
+
 
         Route::get('/', 'DashboardController@index');
         Route::get('/clear-cache', 'DashboardController@cacheClear');
