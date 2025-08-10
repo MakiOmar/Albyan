@@ -1,22 +1,33 @@
 @if($authUser->can('admin_personalization'))
 
-    <section class="mt-30">
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 class="section-title after-line">{{ trans('admin/main.course_card_styles') }}</h2>
-        </div>
+    <div class="mt-3">
+        <form action="{{ getAdminPanelUrl() }}/settings/main" method="post">
+            {{ csrf_field() }}
+            <input type="hidden" name="name" value="course_card_styles">
+            <input type="hidden" name="page" value="personalization">
 
-        <div class="row mt-20">
-            <div class="col-12">
-                <div class="row">
-                    <div class="col-12 col-lg-6">
-                        @include('admin.settings.personalization.course_card_styles.dark_overlay_style')
-                    </div>
-                    <div class="col-12 col-lg-6">
-                        @include('admin.settings.personalization.course_card_styles.gray_hover_style')
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-12 col-lg-4">
+                            @include('admin.settings.personalization.course_card_styles.dark_overlay_style')
+                        </div>
+                        <div class="col-12 col-lg-4">
+                            @include('admin.settings.personalization.course_card_styles.white_overlay_style')
+                        </div>
+                        <div class="col-12 col-lg-4">
+                            @include('admin.settings.personalization.course_card_styles.gray_hover_style')
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+
+            <div class="row mt-20">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-success">{{ trans('admin/main.save_change') }}</button>
+                </div>
+            </div>
+        </form>
+    </div>
 
 @endif

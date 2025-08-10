@@ -116,6 +116,16 @@ class SettingsController extends Controller
             }
         }
 
+        // Special handling for course_card_styles - use config values if no database setting exists
+        if ($name === 'course_card_styles' && empty($values)) {
+            $config = config('course_card_styles');
+            $values = [
+                'default_style' => $config['default_style'] ?? 'gray_hover',
+                'styles' => $config['styles'] ?? [],
+                'settings' => $config['settings'] ?? []
+            ];
+        }
+
         $data = [
             'pageTitle' => trans('admin/main.settings_title'),
             'values' => $values,

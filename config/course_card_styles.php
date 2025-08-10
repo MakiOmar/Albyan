@@ -23,6 +23,12 @@ return [
             'class' => 'course-card-dark-overlay',
             'enabled' => true,
         ],
+        'white_overlay' => [
+            'name' => 'White Overlay',
+            'description' => 'White overlay on images that disappears on hover',
+            'class' => 'course-card-white-overlay',
+            'enabled' => true,
+        ],
         'gray_hover' => [
             'name' => 'Gray to Color Hover',
             'description' => 'Gray images that become colored on hover',
@@ -35,6 +41,12 @@ return [
     'settings' => [
         'dark_overlay' => [
             'overlay_color' => 'rgba(0, 0, 0, 0.3)',
+            'overlay_opacity' => 1,
+            'hover_opacity' => 0,
+            'transition_duration' => '0.3s',
+        ],
+        'white_overlay' => [
+            'overlay_color' => 'rgba(255, 255, 255, 0.3)',
             'overlay_opacity' => 1,
             'hover_opacity' => 0,
             'transition_duration' => '0.3s',

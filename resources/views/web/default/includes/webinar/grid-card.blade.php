@@ -28,7 +28,7 @@
             </div>
             --}}
             <a href="{{ $webinar->getUrl() }}">
-                @if(getCourseCardStyle() === 'dark_overlay')
+                @if(getCourseCardStyle() === 'dark_overlay' || getCourseCardStyle() === 'white_overlay')
                     <div class="image-overlay"></div>
                 @endif
                 <img src="{{ $webinar->getImage() }}" class="img-cover" alt="{{ $webinar->title }}">
@@ -163,6 +163,30 @@
     }
     
     .course-card-dark-overlay .image-box img {
+        position: relative;
+        z-index: 0;
+    }
+    
+    /* White Overlay Style */
+    .course-card-white-overlay .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: {{ getCourseCardStyleSettings()['overlay_color'] ?? '#FFFFFF' }};
+        opacity: {{ (getCourseCardStyleSettings()['overlay_opacity'] ?? 30) / 100 }};
+        z-index: 1;
+        transition: opacity {{ getCourseCardStyleSettings()['transition_duration'] ?? 0.3 }}s ease;
+        pointer-events: none;
+        border-radius: 15px 15px 0 0;
+    }
+    
+    .course-card-white-overlay .image-box:hover .image-overlay {
+        opacity: 0;
+    }
+    
+    .course-card-white-overlay .image-box img {
         position: relative;
         z-index: 0;
     }

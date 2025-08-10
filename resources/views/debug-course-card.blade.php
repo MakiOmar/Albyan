@@ -14,6 +14,8 @@
         .course-card-gray-hover .image-box:hover img { filter: grayscale(0%) brightness(1); }
         .course-card-dark-overlay .image-overlay { transition: opacity 0.3s ease; }
         .course-card-dark-overlay .image-box:hover .image-overlay { opacity: 0; }
+        .course-card-white-overlay .image-overlay { transition: opacity 0.3s ease; }
+        .course-card-white-overlay .image-box:hover .image-overlay { opacity: 0; }
     </style>
 </head>
 <body>
@@ -39,7 +41,7 @@
         </div>
     </div>
     
-    <h3>Test Both Styles:</h3>
+    <h3>Test All Styles:</h3>
     
     <div style="display: flex; gap: 20px;">
         <div>
@@ -51,6 +53,20 @@
                 </div>
                 <div class="course-card-body">
                     <h4>Dark Overlay Course</h4>
+                    <p>Hover to see overlay fade.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <h4>White Overlay Style</h4>
+            <div class="course-card course-card-white-overlay">
+                <div class="image-box">
+                    <div class="image-overlay"></div>
+                    <img src="https://via.placeholder.com/300x200/4CAF50/FFFFFF?text=White+Overlay" alt="Course Image">
+                </div>
+                <div class="course-card-body">
+                    <h4>White Overlay Course</h4>
                     <p>Hover to see overlay fade.</p>
                 </div>
             </div>

@@ -102,8 +102,10 @@ return [
 // Course Card Styles
 'course_card_styles' => 'Course Card Styles',
 'dark_overlay_style' => 'Dark Overlay Style',
+'white_overlay_style' => 'White Overlay Style',
 'gray_hover_style' => 'Gray Hover Style',
 'dark_overlay_description' => 'Dark overlay on images that disappears on hover',
+'white_overlay_description' => 'White overlay on images that disappears on hover',
 'gray_hover_description' => 'Gray images that become colored on hover',
 'overlay_color' => 'Overlay Color',
 'overlay_opacity' => 'Overlay Opacity',
@@ -116,6 +118,7 @@ return [
 'transition_duration_help' => 'Set the duration of the hover transition in seconds',
 'enable_style' => 'Enable Style',
 'enable_dark_overlay' => 'Enable Dark Overlay Style',
+'enable_white_overlay' => 'Enable White Overlay Style',
 'enable_gray_hover' => 'Enable Gray Hover Style',
 'inactive' => 'Disable',
 'cancel' => 'Cancel',

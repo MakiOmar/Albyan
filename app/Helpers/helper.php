@@ -2876,6 +2876,11 @@ if (!function_exists('getCourseCardStyle')) {
             return 'dark_overlay';
         }
         
+        // Check if white overlay is enabled in admin settings
+        if (!empty($generalSettings['course_card_white_overlay_enabled'])) {
+            return 'white_overlay';
+        }
+        
         // Check if gray hover is enabled in admin settings
         if (!empty($generalSettings['course_card_gray_hover_enabled'])) {
             return 'gray_hover';
@@ -2897,6 +2902,8 @@ if (!function_exists('getCourseCardStyleClass')) {
         switch ($style) {
             case 'gray_hover':
                 return 'course-card-gray-hover';
+            case 'white_overlay':
+                return 'course-card-white-overlay';
             case 'dark_overlay':
             default:
                 return 'course-card-dark-overlay';
@@ -2919,6 +2926,12 @@ if (!function_exists('getCourseCardStyleSettings')) {
                     'overlay_color' => $generalSettings['course_card_dark_overlay_color'] ?? '#000000',
                     'overlay_opacity' => $generalSettings['course_card_dark_overlay_opacity'] ?? 30,
                     'transition_duration' => $generalSettings['course_card_dark_overlay_duration'] ?? 0.3,
+                ];
+            case 'white_overlay':
+                return [
+                    'overlay_color' => $generalSettings['course_card_white_overlay_color'] ?? '#FFFFFF',
+                    'overlay_opacity' => $generalSettings['course_card_white_overlay_opacity'] ?? 30,
+                    'transition_duration' => $generalSettings['course_card_white_overlay_duration'] ?? 0.3,
                 ];
             case 'gray_hover':
                 return [
