@@ -1,4 +1,4 @@
-<div class="webinar-card">
+<div class="webinar-card {{ getCourseCardStyleClass() }}">
     @if ( isset($index) && $featuredCount == ( $index + 1 ) )
     <svg class="position-absolute" style="top:-30px;left:-30px" width="104" height="104" viewBox="0 0 104 104" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M52.0006 9.41504C75.5192 9.41504 94.5866 28.4817 94.588 52.002C94.5893 75.5221 75.5242 94.5889 52.0056 94.5889C28.4869 94.5889 9.41958 75.5221 9.4181 52.002C9.41671 28.4817 28.4819 9.41504 52.0006 9.41504Z" stroke="#23BDEE" stroke-opacity="0.2" stroke-width="18.8302"/>
@@ -28,7 +28,9 @@
             </div>
             --}}
             <a href="{{ $webinar->getUrl() }}">
-                <div class="image-overlay"></div>
+                @if(getCourseCardStyle() === 'dark_overlay')
+                    <div class="image-overlay"></div>
+                @endif
                 <img src="{{ $webinar->getImage() }}" class="img-cover" alt="{{ $webinar->title }}">
             </a>
 
@@ -141,23 +143,43 @@
         display: block;
     }
     
-    .image-overlay {
+    /* Dark Overlay Style */
+    .course-card-dark-overlay .image-overlay {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.3);
+        background: {{ getCourseCardStyleSettings()['overlay_color'] ?? '#000000' }};
+        opacity: {{ (getCourseCardStyleSettings()['overlay_opacity'] ?? 30) / 100 }};
         z-index: 1;
-        transition: opacity 0.3s ease;
+        transition: opacity {{ getCourseCardStyleSettings()['transition_duration'] ?? 0.3 }}s ease;
         pointer-events: none;
         border-radius: 15px 15px 0 0;
     }
     
-    .image-box:hover .image-overlay {
+    .course-card-dark-overlay .image-box:hover .image-overlay {
         opacity: 0;
     }
     
+    .course-card-dark-overlay .image-box img {
+        position: relative;
+        z-index: 0;
+    }
+    
+    /* Gray Hover Style */
+    .course-card-gray-hover .image-box img {
+        filter: grayscale({{ getCourseCardStyleSettings()['gray_filter_intensity'] ?? 100 }}%) brightness({{ getCourseCardStyleSettings()['brightness'] ?? 0.8 }});
+        transition: filter {{ getCourseCardStyleSettings()['transition_duration'] ?? 0.3 }}s ease;
+        position: relative;
+        z-index: 0;
+    }
+    
+    .course-card-gray-hover .image-box:hover img {
+        filter: grayscale(0%) brightness(1);
+    }
+    
+    /* Common styles */
     .image-box img {
         position: relative;
         z-index: 0;

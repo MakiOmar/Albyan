@@ -13,7 +13,34 @@
     <meta name='twitter:description' content='{{ (!empty($ogDescription)) ? $ogDescription : $pageDescription }}'>
 @endif
 
-<link rel='shortcut icon' type='image/x-icon' href="{{ url(!empty($generalSettings['fav_icon']) ? $generalSettings['fav_icon'] : '') }}">
+<!-- Favicon Configuration -->
+@if(!empty($generalSettings['fav_icon']))
+    <!-- Standard favicon -->
+    <link rel="icon" href="{{ url($generalSettings['fav_icon']) }}">
+    <link rel="shortcut icon" href="{{ url($generalSettings['fav_icon']) }}">
+    
+    <!-- Modern browsers -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url($generalSettings['fav_icon']) }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url($generalSettings['fav_icon']) }}">
+    
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url($generalSettings['fav_icon']) }}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ url($generalSettings['fav_icon']) }}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{{ url($generalSettings['fav_icon']) }}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ url($generalSettings['fav_icon']) }}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ url($generalSettings['fav_icon']) }}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ url($generalSettings['fav_icon']) }}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ url($generalSettings['fav_icon']) }}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{{ url($generalSettings['fav_icon']) }}">
+    <link rel="apple-touch-icon" sizes="57x57" href="{{ url($generalSettings['fav_icon']) }}">
+    <link rel="apple-touch-icon" href="{{ url($generalSettings['fav_icon']) }}">
+@else
+    <!-- Fallback favicon -->
+    <link rel="icon" href="{{ url('/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ url('/favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ url('/favicon.ico') }}">
+@endif
+
 <link rel="manifest" href="/mix-manifest.json?v=4">
 <meta name="theme-color" content="#FFF">
 <!-- Windows Phone -->
@@ -22,11 +49,9 @@
 <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
 <!-- iOS Safari -->
 <meta name="apple-mobile-web-app-title" content="{{ !empty($generalSettings['site_name']) ? $generalSettings['site_name'] : '' }}">
-<link rel="apple-touch-icon" href="{{ url(!empty($generalSettings['fav_icon']) ? $generalSettings['fav_icon'] : '') }}">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <!-- Android -->
-<link rel='icon' href='{{ url(!empty($generalSettings['fav_icon']) ? $generalSettings['fav_icon'] : '') }}'>
 <meta name="application-name" content="{{ !empty($generalSettings['site_name']) ? $generalSettings['site_name'] : '' }}">
 <meta name="mobile-web-app-capable" content="yes">
 <!-- Other -->

@@ -1,4 +1,4 @@
-<div class="webinar-card webinar-list webinar-list-2 d-flex mt-30">
+<div class="webinar-card webinar-list webinar-list-2 d-flex mt-30 {{ getCourseCardStyleClass() }}">
     <div class="image-box">
         <div class="badges-lists">
             @if($webinar->bestTicket() < $webinar->price)
@@ -19,6 +19,9 @@
         </div>
 
         <a href="{{ $webinar->getUrl() }}">
+            @if(getCourseCardStyle() === 'dark_overlay')
+                <div class="image-overlay"></div>
+            @endif
             <img src="{{ $webinar->getImage() }}" class="img-cover" alt="{{ $webinar->title }}">
         </a>
 
@@ -89,3 +92,57 @@
         </div>
     </div>
 </div>
+
+<style>
+    .image-box {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .image-box a {
+        position: relative;
+        display: block;
+    }
+    
+    /* Dark Overlay Style */
+    .course-card-dark-overlay .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: {{ getCourseCardStyleSettings()['overlay_color'] ?? '#000000' }};
+        opacity: {{ (getCourseCardStyleSettings()['overlay_opacity'] ?? 30) / 100 }};
+        z-index: 1;
+        transition: opacity {{ getCourseCardStyleSettings()['transition_duration'] ?? 0.3 }}s ease;
+        pointer-events: none;
+        border-radius: 15px 15px 0 0;
+    }
+    
+    .course-card-dark-overlay .image-box:hover .image-overlay {
+        opacity: 0;
+    }
+    
+    .course-card-dark-overlay .image-box img {
+        position: relative;
+        z-index: 0;
+    }
+    
+    /* Gray Hover Style */
+    .course-card-gray-hover .image-box img {
+        filter: grayscale({{ getCourseCardStyleSettings()['gray_filter_intensity'] ?? 100 }}%) brightness({{ getCourseCardStyleSettings()['brightness'] ?? 0.8 }});
+        transition: filter {{ getCourseCardStyleSettings()['transition_duration'] ?? 0.3 }}s ease;
+        position: relative;
+        z-index: 0;
+    }
+    
+    .course-card-gray-hover .image-box:hover img {
+        filter: grayscale(0%) brightness(1);
+    }
+    
+    /* Common styles */
+    .image-box img {
+        position: relative;
+        z-index: 0;
+    }
+</style>

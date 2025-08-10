@@ -90,6 +90,11 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
         return view('web.default.cart.channels.stripe');
     });
 
+    // Debug route for course card styles
+    Route::get('/debug-course-card', function () {
+        return view('debug-course-card');
+    });
+
     // City Contact Routes
     Route::get('/contact/{citySlug}', 'CityContactController@showForm')->name('city.contact.form');
     Route::post('/contact/{citySlug}/submit', 'CityContactController@submitForm')->name('city.contact.submit');

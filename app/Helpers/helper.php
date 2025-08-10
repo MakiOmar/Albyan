@@ -2863,3 +2863,87 @@ if (!function_exists('saveCityContactConfig')) {
         }
     }
 }
+
+if (!function_exists('getCourseCardStyle')) {
+    function getCourseCardStyle()
+    {
+        // Get settings from database
+        $settings = \App\Models\Setting::where('name', 'general')->first();
+        $generalSettings = !empty($settings) ? json_decode($settings->value, true) : [];
+        
+        // Check if dark overlay is enabled in admin settings
+        if (!empty($generalSettings['course_card_dark_overlay_enabled'])) {
+            return 'dark_overlay';
+        }
+        
+        // Check if gray hover is enabled in admin settings
+        if (!empty($generalSettings['course_card_gray_hover_enabled'])) {
+            return 'gray_hover';
+        }
+        
+        // If no admin settings, use config file default
+        $config = config('course_card_styles');
+        $defaultStyle = $config['default_style'] ?? 'dark_overlay';
+        
+        return $defaultStyle;
+    }
+}
+
+if (!function_exists('getCourseCardStyleClass')) {
+    function getCourseCardStyleClass()
+    {
+        $style = getCourseCardStyle();
+        
+        switch ($style) {
+            case 'gray_hover':
+                return 'course-card-gray-hover';
+            case 'dark_overlay':
+            default:
+                return 'course-card-dark-overlay';
+        }
+    }
+}
+
+if (!function_exists('getCourseCardStyleSettings')) {
+    function getCourseCardStyleSettings()
+    {
+        // Get settings from database
+        $settings = \App\Models\Setting::where('name', 'general')->first();
+        $generalSettings = !empty($settings) ? json_decode($settings->value, true) : [];
+        
+        $style = getCourseCardStyle();
+        
+        switch ($style) {
+            case 'dark_overlay':
+                return [
+                    'overlay_color' => $generalSettings['course_card_dark_overlay_color'] ?? '#000000',
+                    'overlay_opacity' => $generalSettings['course_card_dark_overlay_opacity'] ?? 30,
+                    'transition_duration' => $generalSettings['course_card_dark_overlay_duration'] ?? 0.3,
+                ];
+            case 'gray_hover':
+                return [
+                    'gray_filter_intensity' => $generalSettings['course_card_gray_filter_intensity'] ?? 100,
+                    'brightness' => $generalSettings['course_card_brightness'] ?? 0.8,
+                    'transition_duration' => $generalSettings['course_card_gray_hover_duration'] ?? 0.3,
+                ];
+            default:
+                return [];
+        }
+    }
+}
+
+if (!function_exists('debugCourseCardStyle')) {
+    function debugCourseCardStyle()
+    {
+        $style = getCourseCardStyle();
+        $class = getCourseCardStyleClass();
+        $settings = getCourseCardStyleSettings();
+        
+        return [
+            'style' => $style,
+            'class' => $class,
+            'settings' => $settings,
+            'config_default' => config('course_card_styles.default_style'),
+        ];
+    }
+}

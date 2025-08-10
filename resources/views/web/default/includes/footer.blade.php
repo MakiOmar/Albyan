@@ -62,7 +62,7 @@
                 <div class="footer-logo" style="width: auto!important">
                     <a href="/">
                         @if(!empty($generalSettings['footer_logo']))
-                            <img src="{{ $generalSettings['footer_logo'] }}" class="img-cover" alt="footer logo">
+                            <img src="{{ $generalSettings['footer_logo'] }}" style="width: auto!important;max-width: 200px!important" alt="footer logo">
                         @endif
                     </a>
                 </div>
