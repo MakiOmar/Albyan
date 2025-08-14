@@ -13,7 +13,7 @@ return [
 
     // Default style for course card images
     // Options: 'dark_overlay', 'gray_hover'
-    'default_style' => env('COURSE_CARD_STYLE', 'gray_hover'),
+    'default_style' => env('COURSE_CARD_STYLE', 'white_overlay'),
 
     // Available styles configuration
     'styles' => [
