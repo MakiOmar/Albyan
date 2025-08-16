@@ -203,6 +203,23 @@
             border-color: #01477d !important;
         }
         
+        /* Style for active links (keeps them clickable) */
+        .pagination li.active a.active-link,
+        .pagination a.active-link {
+            background: #01477d !important;
+            color: white !important;
+            border-color: #01477d !important;
+            cursor: pointer;
+        }
+        
+        /* Hover effect for active links */
+        .pagination li.active a.active-link:hover,
+        .pagination a.active-link:hover {
+            background: #013a6b !important;
+            color: white !important;
+            border-color: #013a6b !important;
+        }
+        
         .loading {
             opacity: 0.6;
             pointer-events: none;
@@ -828,9 +845,8 @@
                 if ($activeLink.length > 0) {
                     // Our custom pagination
                     $activeLink.parent().addClass('active');
-                    // Convert link to span for active state
-                    const linkText = $activeLink.text();
-                    $activeLink.replaceWith('<span>' + linkText + '</span>');
+                    // Keep the link but add active class to it
+                    $activeLink.addClass('active-link');
                 } else {
                     // Laravel's pagination - find by href
                     $('.pagination li a').each(function() {
@@ -839,8 +855,7 @@
                             const pageFromHref = getParameterByName('page', href);
                             if (pageFromHref == page) {
                                 $(this).parent().addClass('active');
-                                const linkText = $(this).text();
-                                $(this).replaceWith('<span>' + linkText + '</span>');
+                                $(this).addClass('active-link');
                                 return false; // break the loop
                             }
                         }
@@ -861,6 +876,10 @@
                     // Check if this is the active page (Laravel adds 'active' class to the li)
                     if ($li.hasClass('active')) {
                         // This is already marked as active by Laravel
+                        // Add active-link class to the span if it exists
+                        if ($span.length > 0) {
+                            $span.addClass('active-link');
+                        }
                         return;
                     }
                     
@@ -871,8 +890,7 @@
                             const pageFromHref = getParameterByName('page', href);
                             if (pageFromHref == currentPage) {
                                 $li.addClass('active');
-                                $link.remove();
-                                $li.append('<span>' + currentPage + '</span>');
+                                $link.addClass('active-link');
                             }
                         }
                     }
