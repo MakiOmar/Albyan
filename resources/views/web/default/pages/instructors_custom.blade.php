@@ -62,7 +62,7 @@
         }
         
         .pagination .active span {
-            background: #007bff;
+            background: #01477d;
             color: white;
         }
         
@@ -184,9 +184,9 @@
         }
         
         .pagination .active span {
-            background: #01477d;
-            color: white;
-            border-color: #01477d;
+            background: #01477d !important;
+            color: white !important;
+            border-color: #01477d !important;
         }
         
         .pagination .disabled span {
@@ -194,6 +194,13 @@
             background: #f5f5f5;
             border-color: #ddd;
             cursor: not-allowed;
+        }
+        
+        /* Ensure active pagination always has the correct background */
+        .pagination li.active span {
+            background: #01477d !important;
+            color: white !important;
+            border-color: #01477d !important;
         }
         
         .loading {
