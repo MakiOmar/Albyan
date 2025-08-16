@@ -646,6 +646,9 @@
                 width: 'auto'
             });
             
+            // Initialize pagination active state on page load
+            initializePaginationActiveState();
+            
             // Handle filter changes (legacy for AJAX functionality)
             $('#categoryFilter, #perPageFilter').on('change', function() {
                 currentPage = 1;
@@ -674,16 +677,22 @@
                 const href = $(this).attr('href');
                 let page = 1;
                 
-                // Check if it's a data-page attribute
+                // Check if it's a data-page attribute (our custom pagination)
                 if ($(this).data('page')) {
                     page = $(this).data('page');
                 } else if (href) {
-                    // Extract page from href
+                    // Extract page from href (Laravel's pagination)
                     page = getParameterByName('page', href) || 1;
                 }
                 
                 console.log('Page to load:', page);
                 currentPage = parseInt(page);
+                
+                // Update active state immediately
+                updatePaginationActiveState(currentPage);
+                
+                // If it's Laravel's pagination, we might want to do a full page reload
+                // or handle it via AJAX. For now, let's use AJAX
                 loadInstructors();
             });
             
@@ -800,6 +809,67 @@
                     .replace(':from', pagination.from || 0)
                     .replace(':to', pagination.to || 0)
                     .replace(':total', pagination.total));
+            }
+            
+            function updatePaginationActiveState(page) {
+                // Remove active class from all pagination items
+                $('.pagination li').removeClass('active');
+                
+                // First try to find our custom pagination with data-page attribute
+                let $activeLink = $('.pagination li a[data-page="' + page + '"]');
+                
+                if ($activeLink.length > 0) {
+                    // Our custom pagination
+                    $activeLink.parent().addClass('active');
+                    // Convert link to span for active state
+                    const linkText = $activeLink.text();
+                    $activeLink.replaceWith('<span>' + linkText + '</span>');
+                } else {
+                    // Laravel's pagination - find by href
+                    $('.pagination li a').each(function() {
+                        const href = $(this).attr('href');
+                        if (href) {
+                            const pageFromHref = getParameterByName('page', href);
+                            if (pageFromHref == page) {
+                                $(this).parent().addClass('active');
+                                const linkText = $(this).text();
+                                $(this).replaceWith('<span>' + linkText + '</span>');
+                                return false; // break the loop
+                            }
+                        }
+                    });
+                }
+            }
+            
+            function initializePaginationActiveState() {
+                // Get current page from URL
+                const currentPage = getParameterByName('page') || 1;
+                
+                // Handle Laravel's pagination links (they don't have data-page attributes)
+                $('.pagination li').each(function() {
+                    const $li = $(this);
+                    const $link = $li.find('a');
+                    const $span = $li.find('span');
+                    
+                    // Check if this is the active page (Laravel adds 'active' class to the li)
+                    if ($li.hasClass('active')) {
+                        // This is already marked as active by Laravel
+                        return;
+                    }
+                    
+                    // Check if this link points to the current page
+                    if ($link.length > 0) {
+                        const href = $link.attr('href');
+                        if (href) {
+                            const pageFromHref = getParameterByName('page', href);
+                            if (pageFromHref == currentPage) {
+                                $li.addClass('active');
+                                $link.remove();
+                                $li.append('<span>' + currentPage + '</span>');
+                            }
+                        }
+                    }
+                });
             }
             
             function updateURL(params) {
