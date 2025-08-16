@@ -249,27 +249,86 @@
             border-bottom: 1px solid #e9ecef;
         }
         
-        /* Responsive adjustments */
+        /* Mobile-specific styles */
         @media (max-width: 768px) {
-            .instructors-filters .d-flex {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 15px;
+            .instructors-filters {
+                padding: 15px 0;
+                margin: 15px 0;
             }
             
-            .filter-dropdown {
-                min-width: auto;
-                margin-right: 0;
+            .filters-section {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                border: 1px solid #e9ecef;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            
+            .filter-item {
                 margin-bottom: 10px;
             }
             
-            .filter-dropdown:last-child {
+            .filter-item:last-child {
                 margin-bottom: 0;
+            }
+            
+            .filter-dropdown {
+                width: 100%;
+                min-width: auto;
+                margin: 0;
+                padding: 12px 15px;
+                font-size: 16px; /* Prevents zoom on iOS */
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                background: white;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+                background-repeat: no-repeat;
+                background-position: right 12px center;
+                background-size: 16px;
+                padding-right: 40px;
+            }
+            
+            .results-section {
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 6px;
+                border: 1px solid #e9ecef;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+            
+            .results-info {
+                font-size: 14px;
+                color: #666;
+                font-weight: 500;
+            }
+            
+            .pagination-section {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                border: 1px solid #e9ecef;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
             
             .pagination {
                 justify-content: center;
                 flex-wrap: wrap;
+                gap: 5px;
+            }
+            
+            .pagination li {
+                margin: 0 2px;
+            }
+            
+            .pagination a,
+            .pagination span {
+                padding: 8px 12px;
+                font-size: 14px;
+                min-width: 40px;
+                text-align: center;
             }
             
             .search-results-row .row {
@@ -279,6 +338,21 @@
             
             .search-results-row .text-end {
                 text-align: center !important;
+            }
+        }
+        
+        /* Desktop responsive adjustments */
+        @media (min-width: 769px) {
+            .instructors-filters .d-flex {
+                flex-direction: row;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .filter-dropdown {
+                min-width: auto;
+                margin-right: 0;
+                margin-bottom: 0;
             }
         }
     </style>
@@ -339,7 +413,7 @@
     </svg>
     
     <!-- CEO Section -->
-    <h2 class="fw-bold section-title-bg p-2">{{ trans('instructors.ceo_section') }}</h2>
+    <h2 class="fw-bold section-title-bg p-2 m-2">{{ trans('instructors.ceo_section') }}</h2>
     <br>
     <div class="row justify-content-center">
         @forelse($ceoUsers as $ceoUser)
@@ -359,23 +433,72 @@
     <hr class="my-4">
 
     <!-- Instructors Section -->
-    <h3 class="fw-bold section-title-bg p-2">{{ trans('instructors.instructors_section') }}</h3>
+    <h3 class="fw-bold section-title-bg p-2 m-2">{{ trans('instructors.instructors_section') }}</h3>
     <br>
     
     <!-- Filters and Pagination Row -->
     <div class="instructors-filters">
         <div class="container">
-            <div class="d-flex align-items-center justify-content-between">
-                <!-- Pagination on the left -->
-                <div class="pagination-container">
-                    @if($instructors->hasPages())
-                        {{ $instructors->appends(request()->query())->links() }}
-                    @endif
+            <!-- Mobile Layout -->
+            <div class="d-block d-md-none">
+                <!-- Filters Section -->
+                <div class="filters-section mb-3">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="filter-item">
+                            <select id="categoryFilter" class="form-control filter-dropdown w-100">
+                                <option value="">{{ trans('instructors.all_categories') }}</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" {{ request()->get('category_id') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->title }}
+                                    </option>
+                                    @if($category->subCategories->count() > 0)
+                                        @foreach($category->subCategories as $subCategory)
+                                            <option value="{{ $subCategory->id }}" {{ request()->get('category_id') == $subCategory->id ? 'selected' : '' }}>
+                                                &nbsp;&nbsp;&nbsp;{{ $subCategory->title }}
+                                            </option>
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <select id="perPageFilter" class="form-control filter-dropdown w-100">
+                                <option value="12" {{ request()->get('per_page', 20) == 12 ? 'selected' : '' }}>{{ trans('instructors.results_12') }}</option>
+                                <option value="20" {{ request()->get('per_page', 20) == 20 ? 'selected' : '' }}>{{ trans('instructors.results_20') }}</option>
+                                <option value="30" {{ request()->get('per_page', 20) == 30 ? 'selected' : '' }}>{{ trans('instructors.results_30') }}</option>
+                                <option value="50" {{ request()->get('per_page', 20) == 50 ? 'selected' : '' }}>{{ trans('instructors.results_50') }}</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 
+                <!-- Results Info Section -->
+                <div class="results-section mb-3 text-center">
+                    <div class="results-info">
+                        {{ trans('instructors.showing_results', [
+                            'from' => $instructors->firstItem() ?? 0,
+                            'to' => $instructors->lastItem() ?? 0,
+                            'total' => $instructors->total()
+                        ]) }}
+                    </div>
+                </div>
+                
+                <!-- Pagination Section -->
+                <div class="pagination-section">
+                    @if($instructors->hasPages())
+                        <div class="d-flex justify-content-center">
+                            {{ $instructors->appends(request()->query())->links() }}
+                        </div>
+                    @endif
+                </div>
+            </div>
+            
+            <!-- Desktop Layout -->
+            <div class="d-none d-md-flex align-items-center justify-content-between">
                 <!-- Filters on the right -->
                 <div class="d-flex align-items-center gap-4">
-                    <select id="categoryFilter" class="form-control filter-dropdown">
+                    <div class="m-1">
+                    <select id="categoryFilterDesktop" class="form-control filter-dropdown">
                         <option value="">{{ trans('instructors.all_categories') }}</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}" {{ request()->get('category_id') == $category->id ? 'selected' : '' }}>
@@ -390,25 +513,17 @@
                             @endif
                         @endforeach
                     </select>
-                    
-                    <select id="perPageFilter" class="form-control filter-dropdown">
+                    </div>
+                    <div class="m-1">
+                    <select id="perPageFilterDesktop" class="form-control filter-dropdown">
                         <option value="12" {{ request()->get('per_page', 20) == 12 ? 'selected' : '' }}>{{ trans('instructors.results_12') }}</option>
                         <option value="20" {{ request()->get('per_page', 20) == 20 ? 'selected' : '' }}>{{ trans('instructors.results_20') }}</option>
                         <option value="30" {{ request()->get('per_page', 20) == 30 ? 'selected' : '' }}>{{ trans('instructors.results_30') }}</option>
                         <option value="50" {{ request()->get('per_page', 20) == 50 ? 'selected' : '' }}>{{ trans('instructors.results_50') }}</option>
                     </select>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Search Bar and Results Info -->
-    <div class="container mb-3 search-results-row">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <input type="text" id="searchInput" class="form-control" placeholder="{{ trans('instructors.search_placeholder') }}" value="{{ request()->get('search') }}">
-            </div>
-            <div class="col-md-6 text-end">
+
                 <div class="results-info">
                     {{ trans('instructors.showing_results', [
                         'from' => $instructors->firstItem() ?? 0,
@@ -416,10 +531,31 @@
                         'total' => $instructors->total()
                     ]) }}
                 </div>
+
+                <!-- Pagination on the left -->
+                <div class="pagination-container">
+                    @if($instructors->hasPages())
+                        {{ $instructors->appends(request()->query())->links() }}
+                    @endif
+                </div>
             </div>
         </div>
     </div>
-    
+    {{--
+    <!-- Search Bar and Results Info -->
+    <div class="container mb-3 search-results-row">
+        <div class="row align-items-center">
+        
+            <div class="col-md-6">
+                <input type="text" id="searchInput" class="form-control" placeholder="{{ trans('instructors.search_placeholder') }}" value="{{ request()->get('search') }}">
+            </div>
+            
+            <div class="col-md-6 text-end">
+                
+            </div>
+        </div>
+    </div>
+    --}}
     <!-- Instructors List Container -->
     <div id="instructorsContainer">
         <div id="instructorsList" class="row justify-content-center">
@@ -441,7 +577,7 @@
     <hr class="my-4">
 
     <!-- Albayan Team Section -->
-    <h3 class="fw-bold section-title-bg p-2">{{ trans('instructors.team_section') }}</h3>
+    <h3 class="fw-bold section-title-bg p-2 m-2">{{ trans('instructors.team_section') }}</h3>
     <br>
     <div class="row justify-content-center">
         @forelse($teamMembers as $teamMember)
@@ -470,27 +606,63 @@
             let currentPage = 1;
             let isLoading = false;
             
-            // Initialize select2 for better dropdowns
-            $('#categoryFilter, #perPageFilter').select2({
+            // Sync mobile and desktop filters
+            function syncFilters() {
+                const categoryId = $('#categoryFilter').val() || $('#categoryFilterDesktop').val();
+                const perPage = $('#perPageFilter').val() || $('#perPageFilterDesktop').val();
+                
+                $('#categoryFilter, #categoryFilterDesktop').val(categoryId);
+                $('#perPageFilter, #perPageFilterDesktop').val(perPage);
+            }
+            
+            // Handle filter changes for both mobile and desktop
+            $('#categoryFilter, #categoryFilterDesktop, #perPageFilter, #perPageFilterDesktop').on('change', function() {
+                syncFilters();
+                
+                const categoryId = $('#categoryFilter').val();
+                const perPage = $('#perPageFilter').val();
+                
+                // Update URL parameters
+                const url = new URL(window.location);
+                if (categoryId) {
+                    url.searchParams.set('category_id', categoryId);
+                } else {
+                    url.searchParams.delete('category_id');
+                }
+                if (perPage) {
+                    url.searchParams.set('per_page', perPage);
+                }
+                url.searchParams.delete('page'); // Reset to first page
+                
+                window.location.href = url.toString();
+            });
+            
+            // Initial sync
+            syncFilters();
+            
+            // Initialize select2 for better dropdowns (desktop only)
+            $('#categoryFilterDesktop, #perPageFilterDesktop').select2({
                 minimumResultsForSearch: -1,
                 width: 'auto'
             });
             
-            // Handle filter changes
+            // Handle filter changes (legacy for AJAX functionality)
             $('#categoryFilter, #perPageFilter').on('change', function() {
                 currentPage = 1;
                 loadInstructors();
             });
             
-            // Handle search input with debounce
+            // Handle search input with debounce (only if search input exists)
             let searchTimeout;
-            $('#searchInput').on('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(function() {
-                    currentPage = 1;
-                    loadInstructors();
-                }, 500);
-            });
+            if ($('#searchInput').length) {
+                $('#searchInput').on('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(function() {
+                        currentPage = 1;
+                        loadInstructors();
+                    }, 500);
+                });
+            }
             
             // Handle pagination clicks - use event delegation for dynamically created elements
             $(document).on('click', '.pagination a', function(e) {
@@ -521,9 +693,9 @@
                 isLoading = true;
                 $('#instructorsContainer').addClass('loading');
                 
-                const categoryId = $('#categoryFilter').val();
-                const perPage = $('#perPageFilter').val();
-                const searchTerm = $('#searchInput').val().trim();
+                const categoryId = $('#categoryFilter').val() || $('#categoryFilterDesktop').val();
+                const perPage = $('#perPageFilter').val() || $('#perPageFilterDesktop').val();
+                const searchTerm = $('#searchInput').length ? $('#searchInput').val().trim() : '';
                 
                 const params = {
                     section: 'instructors',
