@@ -680,6 +680,9 @@
             // Initialize pagination active state on page load
             initializePaginationActiveState();
             
+            // Convert Laravel pagination spans to clickable links
+            convertPaginationSpansToLinks();
+            
             // Handle filter changes (legacy for AJAX functionality)
             $('#categoryFilter, #perPageFilter').on('change', function() {
                 currentPage = 1;
@@ -846,8 +849,10 @@
                 // Remove active class from all pagination items and links
                 $('.pagination li').removeClass('active');
                 $('.pagination a').removeClass('active-link');
+                $('.page-item').removeClass('active');
+                $('.page-link').removeClass('active-link');
                 
-                // Find the active link by data-page attribute
+                // Find the active link by data-page attribute (our converted links)
                 let $activeLink = $('.pagination li a[data-page="' + page + '"]');
                 
                 if ($activeLink.length > 0) {
@@ -856,21 +861,15 @@
                     $activeLink.addClass('active-link');
                 }
                 
-                // Also handle Bootstrap pagination classes
-                $('.page-item').removeClass('active');
-                $('.page-link').removeClass('active-link');
-                
-                $('.page-item').each(function() {
-                    const $link = $(this).find('.page-link');
-                    if ($link.length > 0) {
-                        const href = $link.attr('href');
-                        if (href) {
-                            const pageFromHref = getParameterByName('page', href);
-                            if (pageFromHref == page) {
-                                $(this).addClass('active');
-                                $link.addClass('active-link');
-                                return false;
-                            }
+                // Also handle original Laravel pagination links by href
+                $('.pagination li a').each(function() {
+                    const href = $(this).attr('href');
+                    if (href && !$(this).data('page')) { // Only check href if no data-page
+                        const pageFromHref = getParameterByName('page', href);
+                        if (pageFromHref == page) {
+                            $(this).parent().addClass('active');
+                            $(this).addClass('active-link');
+                            return false;
                         }
                     }
                 });
@@ -906,6 +905,37 @@
                                 $link.addClass('active-link');
                             }
                         }
+                    }
+                });
+            }
+            
+            function convertPaginationSpansToLinks() {
+                // Find all pagination spans that represent page numbers (not disabled or navigation)
+                $('.pagination li span.page-link').each(function() {
+                    const $span = $(this);
+                    const $li = $span.parent();
+                    const pageText = $span.text().trim();
+                    
+                    // Skip if it's a navigation arrow or disabled
+                    if (pageText === '‹' || pageText === '›' || pageText === '«' || pageText === '»' || $li.hasClass('disabled')) {
+                        return;
+                    }
+                    
+                    // Convert span to clickable link
+                    const pageNumber = parseInt(pageText);
+                    if (!isNaN(pageNumber)) {
+                        const $newLink = $('<a href="#" class="page-link" data-page="' + pageNumber + '">' + pageText + '</a>');
+                        $span.replaceWith($newLink);
+                        
+                        // Add click handler to the new link
+                        $newLink.on('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            console.log('Converted pagination link clicked:', pageNumber);
+                            currentPage = pageNumber;
+                            loadInstructors();
+                        });
                     }
                 });
             }
