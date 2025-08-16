@@ -719,12 +719,15 @@
                 console.log('Page to load:', page);
                 currentPage = parseInt(page);
                 
-                // Update active state immediately
-                updatePaginationActiveState(currentPage);
-                
-                // If it's Laravel's pagination, we might want to do a full page reload
-                // or handle it via AJAX. For now, let's use AJAX
-                loadInstructors();
+                // For better user experience, allow normal navigation for Laravel pagination
+                // This ensures all links remain clickable and functional
+                if (href && !$(this).data('page')) {
+                    // This is Laravel's pagination - do normal navigation
+                    window.location.href = href;
+                } else {
+                    // This is our custom pagination - use AJAX
+                    loadInstructors();
+                }
             });
             
             function loadInstructors() {
@@ -769,6 +772,9 @@
                         
                         // Update pagination
                         updatePagination(response.pagination);
+                        
+                        // Update active state after pagination is updated
+                        updatePaginationActiveState(currentPage);
                         
                         // Update URL without page reload
                         updateURL(params);
@@ -843,8 +849,9 @@
             }
             
             function updatePaginationActiveState(page) {
-                // Remove active class from all pagination items
+                // Remove active class from all pagination items and links
                 $('.pagination li').removeClass('active');
+                $('.pagination a').removeClass('active-link');
                 
                 // First try to find our custom pagination with data-page attribute
                 let $activeLink = $('.pagination li a[data-page="' + page + '"]');
@@ -852,7 +859,6 @@
                 if ($activeLink.length > 0) {
                     // Our custom pagination
                     $activeLink.parent().addClass('active');
-                    // Keep the link but add active class to it
                     $activeLink.addClass('active-link');
                 } else {
                     // Laravel's pagination - find by href
@@ -868,6 +874,25 @@
                         }
                     });
                 }
+                
+                // Also handle Bootstrap pagination classes
+                $('.page-item').removeClass('active');
+                $('.page-link').removeClass('active-link');
+                
+                $('.page-item').each(function() {
+                    const $link = $(this).find('.page-link');
+                    if ($link.length > 0) {
+                        const href = $link.attr('href');
+                        if (href) {
+                            const pageFromHref = getParameterByName('page', href);
+                            if (pageFromHref == page) {
+                                $(this).addClass('active');
+                                $link.addClass('active-link');
+                                return false;
+                            }
+                        }
+                    }
+                });
             }
             
             function initializePaginationActiveState() {
