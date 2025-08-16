@@ -719,15 +719,8 @@
                 console.log('Page to load:', page);
                 currentPage = parseInt(page);
                 
-                // For better user experience, allow normal navigation for Laravel pagination
-                // This ensures all links remain clickable and functional
-                if (href && !$(this).data('page')) {
-                    // This is Laravel's pagination - do normal navigation
-                    window.location.href = href;
-                } else {
-                    // This is our custom pagination - use AJAX
-                    loadInstructors();
-                }
+                // Use AJAX for all pagination - keep the original functionality
+                loadInstructors();
             });
             
             function loadInstructors() {
@@ -816,7 +809,8 @@
                     
                     for (let i = startPage; i <= endPage; i++) {
                         if (i === pagination.current_page) {
-                            paginationHtml += `<li class="active"><span>${i}</span></li>`;
+                            // Keep the current page as a clickable link but with active styling
+                            paginationHtml += `<li class="active"><a href="#" data-page="${i}" class="active-link">${i}</a></li>`;
                         } else {
                             paginationHtml += `<li><a href="#" data-page="${i}">${i}</a></li>`;
                         }
@@ -853,26 +847,13 @@
                 $('.pagination li').removeClass('active');
                 $('.pagination a').removeClass('active-link');
                 
-                // First try to find our custom pagination with data-page attribute
+                // Find the active link by data-page attribute
                 let $activeLink = $('.pagination li a[data-page="' + page + '"]');
                 
                 if ($activeLink.length > 0) {
-                    // Our custom pagination
+                    // Mark as active
                     $activeLink.parent().addClass('active');
                     $activeLink.addClass('active-link');
-                } else {
-                    // Laravel's pagination - find by href
-                    $('.pagination li a').each(function() {
-                        const href = $(this).attr('href');
-                        if (href) {
-                            const pageFromHref = getParameterByName('page', href);
-                            if (pageFromHref == page) {
-                                $(this).parent().addClass('active');
-                                $(this).addClass('active-link');
-                                return false; // break the loop
-                            }
-                        }
-                    });
                 }
                 
                 // Also handle Bootstrap pagination classes
