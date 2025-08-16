@@ -220,6 +220,13 @@
             border-color: #013a6b !important;
         }
         
+        /* Bootstrap pagination active state */
+        .page-item.active .page-link {
+            background: #013a6b !important;
+            color: white !important;
+            border-color: #013a6b !important;
+        }
+        
         .loading {
             opacity: 0.6;
             pointer-events: none;
