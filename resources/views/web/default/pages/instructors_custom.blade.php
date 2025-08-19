@@ -95,7 +95,7 @@
     </style>
 @endpush
 
-@push('styles')
+@push('styles_top')
     <style>
         .instructors-filters {
             background: #f8f9fa;
@@ -502,17 +502,7 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Results Info Section -->
-                <div class="results-section mb-3 text-center">
-                    <div class="results-info">
-                        {{ trans('instructors.showing_results', [
-                            'from' => $instructors->firstItem() ?? 0,
-                            'to' => $instructors->lastItem() ?? 0,
-                            'total' => $instructors->total()
-                        ]) }}
-                    </div>
-                </div>
+            
                 
                 <!-- Pagination Section -->
                 <div class="pagination-section">
@@ -555,20 +545,6 @@
                     </div>
                 </div>
 
-                <div class="results-info">
-                    {{ trans('instructors.showing_results', [
-                        'from' => $instructors->firstItem() ?? 0,
-                        'to' => $instructors->lastItem() ?? 0,
-                        'total' => $instructors->total()
-                    ]) }}
-                </div>
-
-                <!-- Pagination on the left -->
-                <div class="pagination-container">
-                    @if($instructors->hasPages())
-                        {{ $instructors->appends(request()->query())->links() }}
-                    @endif
-                </div>
             </div>
         </div>
     </div>
@@ -604,7 +580,28 @@
             @endforelse
         </div>
     </div>
-
+    <div class="container m-2">
+        <div class="row">
+            <div class="col-12 d-flex flex-column align-items-center justify-content-center">
+                <!-- Results Info Section -->
+                <div class="results-section mt-3 text-center">
+                    <div class="results-info">
+                        {{ trans('instructors.showing_results', [
+                            'from' => $instructors->firstItem() ?? 0,
+                            'to' => $instructors->lastItem() ?? 0,
+                            'total' => $instructors->total()
+                        ]) }}
+                    </div>
+                </div>
+                <!-- Pagination on the left -->
+                <div class="pagination-container m-2">
+                    @if($instructors->hasPages())
+                        {{ $instructors->appends(request()->query())->links() }}
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
     <hr class="my-4">
 
     <!-- Albayan Team Section -->
