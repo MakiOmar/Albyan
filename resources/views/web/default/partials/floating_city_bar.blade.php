@@ -36,6 +36,7 @@
     transition: all 0.3s ease;
     max-height: 80vh;
     overflow-y: auto;
+    text-align: left;
 }
 
 .floating-city-bar:hover {
@@ -143,7 +144,8 @@
     }
     
     .city-list {
-        display: flex;
+        display: inline-flex;
+        flex-direction: column;
         overflow-x: auto;
         padding: 10px;
     }
