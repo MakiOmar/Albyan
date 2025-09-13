@@ -9,13 +9,14 @@
 
 <head>
     @include('web.default.includes.metas')
+    <meta name="theme" content="{{ str_replace('web.', '', getTemplate()) }}">
     <title>{{ $pageTitle ?? '' }}{{ !empty($generalSettings['site_name']) ? (' | '.$generalSettings['site_name']) : '' }}</title>
 
     <!-- General CSS File -->
-    <link rel="stylesheet" href="/assets/default/css/app.css">
+    <link rel="stylesheet" href="/assets/default/css/app.min.css">
 
     @if($isRtl)
-        <link rel="stylesheet" href="/assets/default/css/rtl-app.css">
+        <link rel="stylesheet" href="/assets/default/css/rtl-app.min.css">
     @endif
 
     @stack('styles_top')

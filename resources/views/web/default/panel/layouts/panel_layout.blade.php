@@ -8,16 +8,17 @@
 @endphp
 <head>
     @include(getTemplate().'.includes.metas')
+    <meta name="theme" content="{{ str_replace('web.', '', getTemplate()) }}">
     <title>{{ $pageTitle ?? '' }}{{ !empty($generalSettings['site_name']) ? (' | '.$generalSettings['site_name']) : '' }}</title>
 
     <!-- General CSS File -->
     <link href="/assets/default/css/font.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="/assets/default/css/app.css">
-    <link rel="stylesheet" href="/assets/default/css/panel.css">
+    <link rel="stylesheet" href="/assets/default/css/app.min.css">
+    <link rel="stylesheet" href="/assets/default/css/panel.min.css">
 
     @if($isRtl)
-        <link rel="stylesheet" href="/assets/default/css/rtl-app.css">
+        <link rel="stylesheet" href="/assets/default/css/rtl-app.min.css">
     @endif
 
     @stack('styles_top')

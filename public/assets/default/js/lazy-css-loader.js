@@ -1,17 +1,64 @@
 /**
  * Lazy CSS Loader Utility
  * Loads CSS files only when needed based on user interaction
+ * Supports theme-specific CSS files and minified versions
  */
 class LazyCSSLoader {
     constructor() {
         this.loadedCSS = new Set();
         this.pendingCSS = new Map();
+        this.theme = this.detectTheme();
+        this.isRtl = this.detectRtl();
         this.init();
     }
 
     init() {
         // Set up event listeners for different interactions
         this.setupEventListeners();
+    }
+
+    detectTheme() {
+        // Try to detect theme from meta tag or data attribute
+        const themeMeta = document.querySelector('meta[name="theme"]');
+        if (themeMeta) {
+            return themeMeta.getAttribute('content');
+        }
+        
+        // Try to detect from body class or data attribute
+        const body = document.body;
+        const themeClass = Array.from(body.classList).find(cls => cls.startsWith('theme-'));
+        if (themeClass) {
+            return themeClass.replace('theme-', '');
+        }
+        
+        // Default to 'default' theme
+        return 'default';
+    }
+
+    detectRtl() {
+        // Check if RTL is enabled
+        const html = document.documentElement;
+        return html.dir === 'rtl' || html.lang === 'ar' || html.lang === 'fa' || 
+               body.classList.contains('rtl') || html.classList.contains('rtl');
+    }
+
+    getCSSPath(cssFile, useMinified = true) {
+        // Get the appropriate CSS path based on theme and RTL
+        const theme = this.theme;
+        const isRtl = this.isRtl;
+        const minified = useMinified ? '.min' : '';
+        
+        // Define CSS file mappings (only for lazy-loaded CSS files)
+        const cssMappings = {
+            'sweetalert2': `/assets/${theme}/vendors/sweetalert2/dist/sweetalert2${minified}.css`,
+            'toast': `/assets/${theme}/vendors/toast/jquery.toast${minified}.css`,
+            'swiper': `/assets/${theme}/vendors/swiper/swiper-bundle${minified}.css`,
+            'simplebar': `/assets/${theme}/vendors/simplebar/simplebar${minified}.css`,
+            'owl-carousel': `/assets/${theme}/vendors/owl-carousel2/owl.carousel${minified}.css`
+        };
+        
+        // Return the mapped path or fallback to default
+        return cssMappings[cssFile] || `/assets/${theme}/vendors/${cssFile}/${cssFile}${minified}.css`;
     }
 
     setupEventListeners() {
@@ -36,7 +83,7 @@ class LazyCSSLoader {
         document.addEventListener('click', (e) => {
             const target = e.target.closest('button, a, [data-confirm], [data-swal], .btn-delete, .btn-remove');
             if (target && this.mightTriggerAlert(target)) {
-                this.loadCSS('/assets/default/vendors/sweetalert2/dist/sweetalert2.min.css');
+                this.loadCSSWithFallback('sweetalert2');
             }
         }, { once: false, passive: true });
     }
@@ -44,13 +91,13 @@ class LazyCSSLoader {
     setupToastListeners() {
         // Load Toast CSS on form submissions or actions that might show toasts
         document.addEventListener('submit', () => {
-            this.loadCSS('/assets/default/vendors/toast/jquery.toast.min.css');
+            this.loadCSSWithFallback('toast');
         }, { once: false, passive: true });
 
         // Also load on any AJAX calls that might show toasts
         if (window.jQuery) {
             $(document).ajaxComplete(() => {
-                this.loadCSS('/assets/default/vendors/toast/jquery.toast.min.css');
+                this.loadCSSWithFallback('toast');
             });
         }
     }
@@ -59,14 +106,14 @@ class LazyCSSLoader {
         // Load Swiper CSS when swiper containers come into view
         const swiperContainers = document.querySelectorAll('.swiper, [data-swiper], .swiper-container');
         if (swiperContainers.length > 0) {
-            this.loadCSS('/assets/default/vendors/swiper/swiper-bundle.min.css');
+            this.loadCSSWithFallback('swiper');
         }
 
         // Also load on any element with swiper-related classes
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    this.loadCSS('/assets/default/vendors/swiper/swiper-bundle.min.css');
+                    this.loadCSSWithFallback('swiper');
                     observer.unobserve(entry.target);
                 }
             });
@@ -81,7 +128,7 @@ class LazyCSSLoader {
         // Load SimpleBar CSS when scrollable containers are detected
         const scrollableContainers = document.querySelectorAll('[data-simplebar], .simplebar, .scrollable, .custom-scrollbar');
         if (scrollableContainers.length > 0) {
-            this.loadCSS('/assets/default/vendors/simplebar/simplebar.css');
+            this.loadCSSWithFallback('simplebar');
         }
     }
 
@@ -89,14 +136,14 @@ class LazyCSSLoader {
         // Load Owl Carousel CSS when carousel containers come into view
         const carouselContainers = document.querySelectorAll('.owl-carousel, [data-owl-carousel], .carousel');
         if (carouselContainers.length > 0) {
-            this.loadCSS('/assets/default/vendors/owl-carousel2/owl.carousel.min.css');
+            this.loadCSSWithFallback('owl-carousel');
         }
 
         // Also load on any element with carousel-related classes
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    this.loadCSS('/assets/default/vendors/owl-carousel2/owl.carousel.min.css');
+                    this.loadCSSWithFallback('owl-carousel');
                     observer.unobserve(entry.target);
                 }
             });
@@ -133,7 +180,7 @@ class LazyCSSLoader {
         );
     }
 
-    loadCSS(href) {
+    loadCSS(href, fallbackHref = null) {
         // Don't load if already loaded or loading
         if (this.loadedCSS.has(href) || this.pendingCSS.has(href)) {
             return Promise.resolve();
@@ -153,11 +200,26 @@ class LazyCSSLoader {
             };
             link.onerror = () => {
                 this.pendingCSS.delete(href);
-                reject(new Error(`Failed to load CSS: ${href}`));
+                
+                // Try fallback if provided
+                if (fallbackHref && !this.loadedCSS.has(fallbackHref)) {
+                    console.warn(`Failed to load CSS: ${href}, trying fallback: ${fallbackHref}`);
+                    this.loadCSS(fallbackHref).then(resolve).catch(reject);
+                } else {
+                    reject(new Error(`Failed to load CSS: ${href}`));
+                }
             };
 
             document.head.appendChild(link);
         });
+    }
+
+    loadCSSWithFallback(cssFile) {
+        // Try theme-specific minified first, then fallback to default
+        const themePath = this.getCSSPath(cssFile, true);
+        const fallbackPath = this.getCSSPath(cssFile, true).replace(`/assets/${this.theme}/`, '/assets/default/');
+        
+        return this.loadCSS(themePath, fallbackPath);
     }
 
     // Public method to manually load CSS
@@ -169,6 +231,30 @@ class LazyCSSLoader {
     isLoaded(href) {
         return this.loadedCSS.has(href);
     }
+
+    // Get current theme information
+    getThemeInfo() {
+        return {
+            theme: this.theme,
+            isRtl: this.isRtl,
+            loadedCSS: Array.from(this.loadedCSS),
+            pendingCSS: Array.from(this.pendingCSS.keys())
+        };
+    }
+
+    // Preload CSS files (useful for critical CSS)
+    preloadCSS(cssFile) {
+        return this.loadCSSWithFallback(cssFile);
+    }
+
+    // Batch load multiple CSS files
+    loadMultipleCSS(cssFiles) {
+        return Promise.all(cssFiles.map(cssFile => this.loadCSSWithFallback(cssFile)));
+    }
+
+    // Note: Main application CSS files (app.min.css, rtl-app.min.css, panel.min.css) 
+    // are loaded immediately in the HTML head and should NOT be lazy loaded
+    // as they contain critical styles needed for initial page render
 }
 
 // Initialize the lazy CSS loader when DOM is ready

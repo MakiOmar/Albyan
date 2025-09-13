@@ -6,6 +6,7 @@
 @endphp
 <head>
     @include('web.default.includes.metas')
+    <meta name="theme" content="default">
     <title>{{ $pageTitle ?? '' }} </title>
 
     <!-- General CSS File -->
