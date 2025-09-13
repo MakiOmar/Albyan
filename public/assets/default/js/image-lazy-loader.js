@@ -14,12 +14,33 @@ class ImageLazyLoader {
         // First, fix any existing images with "undefined" src
         this.fixUndefinedImages();
         
+        // Add global protection against undefined src
+        this.setupGlobalProtection();
+        
         // Check if Intersection Observer is supported
         if ('IntersectionObserver' in window) {
             this.setupIntersectionObserver();
         } else {
             // Fallback for older browsers
             this.fallbackLazyLoad();
+        }
+    }
+
+    setupGlobalProtection() {
+        // Override the src setter to prevent undefined values
+        const originalDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+        if (originalDescriptor && originalDescriptor.set) {
+            Object.defineProperty(HTMLImageElement.prototype, 'src', {
+                set: function(value) {
+                    if (value === 'undefined' || value === undefined || value === null) {
+                        console.warn('🚫 Preventing undefined src assignment:', value);
+                        return; // Don't set the src
+                    }
+                    originalDescriptor.set.call(this, value);
+                },
+                get: originalDescriptor.get,
+                configurable: true
+            });
         }
     }
 
@@ -147,18 +168,24 @@ class ImageLazyLoader {
         imageLoader.onload = () => {
             // Image loaded successfully
             console.log('✅ Image loaded successfully:', img.alt || img.dataset.src);
+            console.log('🔍 Current data-src value:', img.dataset.src);
+            console.log('🔍 Data-src type:', typeof img.dataset.src);
+            
+            // Store the original data-src before any modifications
+            const originalDataSrc = img.dataset.src;
             
             // Only set src if data-src is valid
-            if (img.dataset.src && img.dataset.src !== 'undefined' && img.dataset.src.trim() !== '') {
-                img.src = img.dataset.src;
+            if (originalDataSrc && originalDataSrc !== 'undefined' && originalDataSrc.trim() !== '') {
+                console.log('✅ Setting src to:', originalDataSrc);
+                img.src = originalDataSrc;
                 img.classList.remove('lazy-loading');
                 img.classList.add('lazy-loaded');
                 
                 // Remove data-src to prevent reloading
                 img.removeAttribute('data-src');
                 
-                // Mark as loaded
-                this.loadedImages.add(img.dataset.src);
+                // Mark as loaded using the original value
+                this.loadedImages.add(originalDataSrc);
                 
                 // Trigger custom event
                 img.dispatchEvent(new CustomEvent('lazyLoaded', {
@@ -167,6 +194,7 @@ class ImageLazyLoader {
             } else {
                 // Invalid data-src, show error state
                 console.warn('⚠️ Invalid data-src, showing error state:', img.alt || 'unnamed image');
+                console.warn('⚠️ Data-src value was:', originalDataSrc);
                 img.classList.remove('lazy-loading');
                 img.classList.add('lazy-error');
             }
@@ -174,18 +202,24 @@ class ImageLazyLoader {
 
         imageLoader.onerror = () => {
             // Handle loading error
+            console.error('❌ Failed to load image:', img.dataset.src);
+            console.error('❌ Image alt:', img.alt);
+            console.error('❌ Attempted URL:', imageLoader.src);
+            
             img.classList.remove('lazy-loading');
             img.classList.add('lazy-error');
             
             // Set fallback image if available
             if (img.dataset.fallback) {
+                console.log('🔄 Using fallback image:', img.dataset.fallback);
                 img.src = img.dataset.fallback;
+            } else {
+                console.log('🔄 No fallback available, keeping error state');
             }
-            
-            console.warn('Failed to load image:', img.dataset.src);
         };
 
         // Start loading
+        console.log('🚀 Starting to load image:', img.dataset.src);
         imageLoader.src = img.dataset.src;
     }
 
