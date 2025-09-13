@@ -30,6 +30,7 @@ class ImageLazyLoader {
         this.observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
+                    console.log('🖼️ Image entering viewport:', entry.target.alt || entry.target.dataset.src);
                     this.loadImage(entry.target);
                     this.observer.unobserve(entry.target);
                 }
@@ -50,7 +51,7 @@ class ImageLazyLoader {
     }
 
     loadImage(img) {
-        if (this.loadedImages.has(img.src)) {
+        if (this.loadedImages.has(img.dataset.src)) {
             return;
         }
 
@@ -62,6 +63,7 @@ class ImageLazyLoader {
         
         imageLoader.onload = () => {
             // Image loaded successfully
+            console.log('✅ Image loaded successfully:', img.alt || img.dataset.src);
             img.src = img.dataset.src;
             img.classList.remove('lazy-loading');
             img.classList.add('lazy-loaded');
@@ -70,7 +72,7 @@ class ImageLazyLoader {
             img.removeAttribute('data-src');
             
             // Mark as loaded
-            this.loadedImages.add(img.src);
+            this.loadedImages.add(img.dataset.src);
             
             // Trigger custom event
             img.dispatchEvent(new CustomEvent('lazyLoaded', {

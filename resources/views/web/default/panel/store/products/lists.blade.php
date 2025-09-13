@@ -61,7 +61,7 @@
                     <div class="col-12">
                         <div class="webinar-card webinar-list panel-product-card d-flex">
                             <div class="image-box">
-                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%23f0f0f0'/%3E%3C/svg%3E" data-src="{{ $product->thumbnail }}" class="img-cover" alt="{{ $product->title }}" width="200" height="150">
+                                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $product->thumbnail }}" class="img-cover" alt="{{ $product->title }}" width="200" height="150">
 
                                 <div class="badges-lists">
                                     @if($product->ordering and !empty($product->inventory) and $product->getAvailability() < 1)
