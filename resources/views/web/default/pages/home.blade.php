@@ -136,7 +136,7 @@
 
                                                     <div class="user-inline-avatar mt-15 d-flex align-items-center">
                                                         <div class="avatar bg-gray200">
-                                                            <img src="{{ $feature->webinar->teacher->getAvatar() }}" class="img-cover" alt="{{ $feature->webinar->teacher->full_naem }}">
+                                                            <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $feature->webinar->teacher->getAvatar() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="{{ $feature->webinar->teacher->full_naem }}">
                                                         </div>
                                                         <a href="{{ $feature->webinar->teacher->getProfileUrl() }}" target="_blank" class="user-name font-14 ml-5">{{ $feature->webinar->teacher->full_name }}</a>
                                                     </div>

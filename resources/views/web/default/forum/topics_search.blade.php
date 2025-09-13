@@ -63,7 +63,7 @@
                                     <div class="col-12 col-md-6">
                                         <div class="d-flex align-items-center">
                                             <div class="topic-user-avatar rounded-circle">
-                                                <img src="{{ $topic->creator->getAvatar() }}" class="img-cover rounded-circle" alt="{{ $topic->creator->full_name }}">
+                                                <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $topic->creator->getAvatar() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover rounded-circle" alt="{{ $topic->creator->full_name }}">
                                             </div>
                                             <div class="ml-10 mw-100">
                                                 <a href="{{ $topic->getPostsUrl() }}" class="">

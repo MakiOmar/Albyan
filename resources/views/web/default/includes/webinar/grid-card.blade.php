@@ -31,7 +31,7 @@
                 @if(getCourseCardStyle() === 'dark_overlay' || getCourseCardStyle() === 'white_overlay')
                     <div class="image-overlay"></div>
                 @endif
-                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $webinar->getImage() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="{{ $webinar->title }}" width="300" height="200">
+                <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $webinar->getImage() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="{{ $webinar->title }}" width="300" height="200">
             </a>
 
 
@@ -51,7 +51,7 @@
         <figcaption class="webinar-card-body">
             <div class="user-inline-avatar d-flex align-items-center">
                 <div class="avatar bg-gray200">
-                    <img src="{{ $webinar->teacher->getAvatar() }}" class="img-cover" alt="{{ $webinar->teacher->full_name }}">
+                    <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $webinar->teacher->getAvatar() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="{{ $webinar->teacher->full_name }}">
                 </div>
                 <a href="{{ $webinar->teacher->getProfileUrl() }}" target="_blank" class="user-name ml-5 font-14">{{ $webinar->teacher->full_name }}</a>
             </div>

@@ -2,14 +2,14 @@
     <figure>
         <div class="image-box">
             <a href="{{ $product->getUrl() }}">
-                <img src="{{ $product->thumbnail }}" class="img-cover" alt="{{ $product->title }}">
+                <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $product->thumbnail ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="{{ $product->title }}">
             </a>
         </div>
 
         <figcaption class="mt-10">
             <div class="user-inline-avatar d-flex align-items-center">
                 <div class="avatar bg-gray200">
-                    <img src="{{ $product->creator->getAvatar() }}" class="img-cover" alt="{{ $product->creator->full_name }}">
+                    <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $product->creator->getAvatar() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="{{ $product->creator->full_name }}">
                 </div>
                 <a href="{{ $product->creator->getProfileUrl() }}" target="_blank" class="user-name ml-5 font-14">{{ $product->creator->full_name }}</a>
             </div>

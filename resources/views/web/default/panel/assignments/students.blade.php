@@ -153,7 +153,7 @@
                                         <td class="text-left">
                                             <div class="user-inline-avatar d-flex align-items-center">
                                                 <div class="avatar bg-gray200">
-                                                    <img src="{{ $history->student->getAvatar() }}" class="img-cover" alt="">
+                                                    <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $history->student->getAvatar() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="">
                                                 </div>
                                                 <div class=" ml-5">
                                                     <span class="d-block font-weight-500">{{ $history->student->full_name }}</span>

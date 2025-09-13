@@ -38,6 +38,49 @@ class ImageLazyLoader {
                 }
             }
         });
+        
+        // Also fix any images that might be loaded dynamically
+        this.setupMutationObserver();
+    }
+
+    setupMutationObserver() {
+        // Watch for dynamically added images
+        if ('MutationObserver' in window) {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeType === 1) { // Element node
+                            if (node.tagName === 'IMG') {
+                                this.fixSingleImage(node);
+                            }
+                            // Check for images within added nodes
+                            const images = node.querySelectorAll && node.querySelectorAll('img');
+                            if (images) {
+                                images.forEach(img => this.fixSingleImage(img));
+                            }
+                        }
+                    });
+                });
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        }
+    }
+
+    fixSingleImage(img) {
+        if (img.src === 'undefined' || img.src.includes('undefined')) {
+            console.warn('🔧 Fixing dynamically added undefined src for image:', img.alt || 'unnamed image');
+            img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+            img.classList.add('lazy-error');
+            
+            // If it has a data-src, try to load it
+            if (img.dataset.src && img.dataset.src !== 'undefined') {
+                this.loadImage(img);
+            }
+        }
     }
 
     setupIntersectionObserver() {

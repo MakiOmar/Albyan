@@ -125,7 +125,7 @@
                                         <th class="text-left">
                                             <div class="user-inline-avatar d-flex align-items-center">
                                                 <div class="avatar bg-gray200">
-                                                    <img src="{{ $comment->user->getAvatar() }}" class="img-cover" alt="">
+                                                    <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $comment->user->getAvatar() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="">
                                                 </div>
                                                 <span class="user-name ml-5 text-dark-blue font-weight-500">{{ $comment->user->full_name }}</span>
                                             </div>

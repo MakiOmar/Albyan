@@ -172,7 +172,7 @@
                                             @if(!empty($sale->buyer))
                                                 <div class="user-inline-avatar d-flex align-items-center">
                                                     <div class="avatar bg-gray200">
-                                                        <img src="{{ $sale->buyer->getAvatar() }}" class="img-cover" alt="">
+                                                        <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $sale->buyer->getAvatar() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="">
                                                     </div>
                                                     <div class=" ml-5">
                                                         <span class="d-block">{{ $sale->buyer->full_name }}</span>
