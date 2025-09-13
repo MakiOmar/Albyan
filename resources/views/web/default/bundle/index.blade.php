@@ -110,7 +110,7 @@
                 <div class="rounded-lg shadow-sm">
                     <div class="course-img {{ $bundle->video_demo ? 'has-video' :'' }}">
 
-                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $bundle->getImage() }}" class="img-cover" alt="{{ $bundle->title }}" width="400" height="300">
+                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $bundle->getImage() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="{{ $bundle->title }}" width="400" height="300">
 
                         @if($bundle->video_demo)
                             <div id="webinarDemoVideoBtn"

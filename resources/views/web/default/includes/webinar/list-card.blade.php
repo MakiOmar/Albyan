@@ -22,7 +22,7 @@
             @if(getCourseCardStyle() === 'dark_overlay' || getCourseCardStyle() === 'white_overlay')
                 <div class="image-overlay"></div>
             @endif
-            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $webinar->getImage() }}" class="img-cover" alt="{{ $webinar->title }}" width="300" height="200">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $webinar->getImage() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="{{ $webinar->title }}" width="300" height="200">
         </a>
 
         <div class="progress-and-bell d-flex align-items-center">

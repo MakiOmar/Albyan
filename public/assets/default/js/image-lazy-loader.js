@@ -44,13 +44,26 @@ class ImageLazyLoader {
     observeImages() {
         const lazyImages = document.querySelectorAll('img[data-src]');
         lazyImages.forEach(img => {
-            if (!this.loadedImages.has(img.src)) {
+            // Fix any images that already have "undefined" as src
+            if (img.src === 'undefined' || img.src.includes('undefined')) {
+                img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                img.classList.add('lazy-error');
+            }
+            
+            if (!this.loadedImages.has(img.dataset.src)) {
                 this.observer.observe(img);
             }
         });
     }
 
     loadImage(img) {
+        // Check if data-src exists and is not empty
+        if (!img.dataset.src || img.dataset.src === 'undefined' || img.dataset.src.trim() === '') {
+            console.warn('⚠️ No valid image source found for:', img.alt || 'unnamed image');
+            img.classList.add('lazy-error');
+            return;
+        }
+
         if (this.loadedImages.has(img.dataset.src)) {
             return;
         }

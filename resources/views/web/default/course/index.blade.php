@@ -67,7 +67,7 @@
                 <div class="col-12 col-lg-6">
                     <div class="course-img {{ $course->video_demo ? 'has-video' :'' }}">
 
-                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $course->getImage() }}" class="img-cover rounded-lg" alt="{{ $course->title }}" style="margin-top: 20px" width="400" height="300">
+                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $course->getImage() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover rounded-lg" alt="{{ $course->title }}" style="margin-top: 20px" width="400" height="300">
                         {{--
                         @if($course->video_demo)
                             <div id="webinarDemoVideoBtn"
