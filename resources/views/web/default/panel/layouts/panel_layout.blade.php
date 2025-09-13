@@ -11,6 +11,13 @@
     <meta name="theme" content="{{ str_replace('web.', '', getTemplate()) }}">
     <title>{{ $pageTitle ?? '' }}{{ !empty($generalSettings['site_name']) ? (' | '.$generalSettings['site_name']) : '' }}</title>
 
+    <!-- Font Preconnect Hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://stackpath.bootstrapcdn.com">
+    <link rel="preconnect" href="https://maxcdn.bootstrapcdn.com">
+
     <!-- General CSS File -->
     <link href="/assets/default/css/font.css" rel="stylesheet">
 
