@@ -18,6 +18,7 @@
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://stackpath.bootstrapcdn.com">
     <link rel="preconnect" href="https://maxcdn.bootstrapcdn.com">
+    <link rel="preconnect" href="https://connect.facebook.net">
 
     <!-- General CSS File -->
     <link rel="stylesheet" href="/assets/default/css/app.min.css?v={{ time() }}">

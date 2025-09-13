@@ -62,7 +62,7 @@
                     <div class="mr-15 mx-md-20"></div>
                 @endif
 
-                <form action="/search" method="get" class="form-inline my-2 my-lg-0 navbar-search position-relative" style="min-height: 40px; width: 100%; max-width: 300px;">
+                <form action="/search" method="get" class="form-inline my-2 my-lg-0 navbar-search position-relative" style="min-height: 40px;">
                     <input class="blue-bg form-control mr-5 rounded-pill text-white" type="text" name="search" placeholder="{{ trans('navbar.search_anything') }}" aria-label="Search" style="min-height: 40px; height: 40px; width: 100%;">
 
                     <button type="submit" class="btn-transparent d-flex align-items-center justify-content-center search-icon text-white" aria-label="{{ trans('navbar.search') }}" style="min-width: 40px; min-height: 40px; width: 40px; height: 40px; position: absolute; right: 0; top: 0;">
