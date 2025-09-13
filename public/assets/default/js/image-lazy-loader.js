@@ -34,14 +34,38 @@ class ImageLazyLoader {
                 set: function(value) {
                     if (value === 'undefined' || value === undefined || value === null) {
                         console.warn('🚫 Preventing undefined src assignment:', value);
+                        console.warn('🚫 Stack trace:', new Error().stack);
                         return; // Don't set the src
                     }
+                    console.log('🔧 Setting src to:', value, 'on element:', this);
                     originalDescriptor.set.call(this, value);
                 },
                 get: originalDescriptor.get,
                 configurable: true
             });
         }
+        
+        // Add global MutationObserver to watch for src changes
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+                    const img = mutation.target;
+                    if (img.tagName === 'IMG' && img.src === 'undefined') {
+                        console.error('🚨 MUTATION OBSERVER: img src became undefined!');
+                        console.error('🚨 Element:', img);
+                        console.error('🚨 Stack trace:', new Error().stack);
+                    }
+                }
+            });
+        });
+        
+        observer.observe(document.body, {
+            attributes: true,
+            attributeFilter: ['src'],
+            subtree: true
+        });
+        
+        console.log('🛡️ Global protection and mutation observer set up');
     }
 
     fixUndefinedImages() {
@@ -144,7 +168,8 @@ class ImageLazyLoader {
         console.log('🔍 Loading image:', {
             alt: img.alt,
             dataSrc: img.dataset.src,
-            currentSrc: img.src
+            currentSrc: img.src,
+            element: img
         });
         
         // Check if data-src exists and is not empty
@@ -161,36 +186,62 @@ class ImageLazyLoader {
 
         // Add loading class
         img.classList.add('lazy-loading');
+        console.log('🔄 Added lazy-loading class to:', img.alt);
         
         // Create a new image to preload
         const imageLoader = new Image();
+        console.log('🖼️ Created new Image object for:', img.dataset.src);
         
         imageLoader.onload = () => {
             // Image loaded successfully
             console.log('✅ Image loaded successfully:', img.alt || img.dataset.src);
             console.log('🔍 Current data-src value:', img.dataset.src);
             console.log('🔍 Data-src type:', typeof img.dataset.src);
+            console.log('🔍 Image element before modification:', img);
+            console.log('🔍 Current src before modification:', img.src);
             
             // Store the original data-src before any modifications
             const originalDataSrc = img.dataset.src;
+            console.log('🔍 Original data-src stored:', originalDataSrc);
             
             // Only set src if data-src is valid
             if (originalDataSrc && originalDataSrc !== 'undefined' && originalDataSrc.trim() !== '') {
                 console.log('✅ Setting src to:', originalDataSrc);
+                console.log('🔍 About to set img.src =', originalDataSrc);
+                
+                // Set the src
                 img.src = originalDataSrc;
+                
+                console.log('🔍 After setting src, img.src is now:', img.src);
+                console.log('🔍 Image element after setting src:', img);
+                
                 img.classList.remove('lazy-loading');
                 img.classList.add('lazy-loaded');
+                console.log('🔄 Updated classes - removed lazy-loading, added lazy-loaded');
                 
                 // Remove data-src to prevent reloading
                 img.removeAttribute('data-src');
+                console.log('🗑️ Removed data-src attribute');
                 
                 // Mark as loaded using the original value
                 this.loadedImages.add(originalDataSrc);
+                console.log('📝 Added to loaded images set:', originalDataSrc);
                 
                 // Trigger custom event
                 img.dispatchEvent(new CustomEvent('lazyLoaded', {
                     detail: { image: img }
                 }));
+                console.log('🎉 Dispatched lazyLoaded event');
+                
+                // Watch for any changes to the src attribute after we set it
+                setTimeout(() => {
+                    console.log('🔍 Final check - img.src after 100ms:', img.src);
+                    if (img.src === 'undefined') {
+                        console.error('🚨 CRITICAL: src became undefined after setting!');
+                        console.error('🚨 Image element:', img);
+                        console.error('🚨 Original data-src was:', originalDataSrc);
+                    }
+                }, 100);
             } else {
                 // Invalid data-src, show error state
                 console.warn('⚠️ Invalid data-src, showing error state:', img.alt || 'unnamed image');
