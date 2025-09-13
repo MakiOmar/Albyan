@@ -1965,37 +1965,76 @@ function getThemeFontsSettings()
     $result = '';
 
     if (!empty($settings) and count($settings)) {
-
+        
+        // Check if page is RTL
+        $generalSettings = App\Models\Setting::getGeneralSettings();
+        $rtlLanguages = !empty($generalSettings['rtl_languages']) ? $generalSettings['rtl_languages'] : [];
+        $isRtl = ((in_array(mb_strtoupper(app()->getLocale()), $rtlLanguages)) or (!empty($generalSettings['rtl_layout']) and $generalSettings['rtl_layout'] == 1));
+        
+        // Track loaded fonts to prevent duplicates
+        $loadedFonts = [];
+        
         foreach ($settings as $type => $setting) {
+            
+            // Skip main font if page is RTL (only load RTL font)
+            if ($isRtl && $type === 'main') {
+                continue;
+            }
+            
+            // Skip RTL font if page is not RTL (only load main font)
+            if (!$isRtl && $type === 'rtl') {
+                continue;
+            }
 
             if (!empty($settings[$type]['regular'])) {
-                $result .= "@font-face {
-                      font-family: '$type-font-family';
-                      font-style: normal;
-                      font-weight: 400;
-                      font-display: swap;
-                      src: url({$settings[$type]['regular']}) format('woff2');
-                    }";
+                $fontUrl = $settings[$type]['regular'];
+                
+                // Check if this font URL is already loaded (prevent duplicates)
+                if (!in_array($fontUrl, $loadedFonts)) {
+                    $loadedFonts[] = $fontUrl;
+                    
+                    $result .= "@font-face {
+                          font-family: '$type-font-family';
+                          font-style: normal;
+                          font-weight: 400;
+                          font-display: swap;
+                          src: url($fontUrl) format('woff2');
+                        }";
+                }
             }
 
             if (!empty($settings[$type]['bold'])) {
-                $result .= "@font-face {
-                      font-family: '$type-font-family';
-                      font-style: normal;
-                      font-weight: bold;
-                      font-display: swap;
-                      src: url({$settings[$type]['bold']}) format('woff2');
-                    }";
+                $fontUrl = $settings[$type]['bold'];
+                
+                // Check if this font URL is already loaded (prevent duplicates)
+                if (!in_array($fontUrl, $loadedFonts)) {
+                    $loadedFonts[] = $fontUrl;
+                    
+                    $result .= "@font-face {
+                          font-family: '$type-font-family';
+                          font-style: normal;
+                          font-weight: bold;
+                          font-display: swap;
+                          src: url($fontUrl) format('woff2');
+                        }";
+                }
             }
 
             if (!empty($settings[$type]['medium'])) {
-                $result .= "@font-face {
-                      font-family: '$type-font-family';
-                      font-style: normal;
-                      font-weight: 500;
-                      font-display: swap;
-                      src: url({$settings[$type]['medium']}) format('woff2');
-                    }";
+                $fontUrl = $settings[$type]['medium'];
+                
+                // Check if this font URL is already loaded (prevent duplicates)
+                if (!in_array($fontUrl, $loadedFonts)) {
+                    $loadedFonts[] = $fontUrl;
+                    
+                    $result .= "@font-face {
+                          font-family: '$type-font-family';
+                          font-style: normal;
+                          font-weight: 500;
+                          font-display: swap;
+                          src: url($fontUrl) format('woff2');
+                        }";
+                }
             }
 
         }
