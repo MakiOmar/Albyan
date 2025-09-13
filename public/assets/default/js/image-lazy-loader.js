@@ -1,7 +1,9 @@
 /**
- * Modern Image Lazy Loading System
+ * Modern Image Lazy Loading System - VERSION 4.0
  * Uses Intersection Observer API for optimal performance
  * Maintains CLS scores by preserving image dimensions
+ * Applies lazy loading to ALL img tags except logos
+ * Automatically sets up lazy loading for images without data-src
  */
 class ImageLazyLoader {
     constructor() {
@@ -154,23 +156,49 @@ class ImageLazyLoader {
     }
 
     observeImages() {
-        const lazyImages = document.querySelectorAll('img[data-src]');
-        console.log(`🔍 Found ${lazyImages.length} lazy images to observe`);
+        // Get all img tags except logos
+        const allImages = document.querySelectorAll('img');
+        const lazyImages = Array.from(allImages).filter(img => {
+            // Skip logos - check for logo-related classes, alt text, or src patterns
+            const isLogo = img.classList.contains('logo') || 
+                          img.classList.contains('navbar-logo') ||
+                          img.classList.contains('footer-logo') ||
+                          img.classList.contains('site-logo') ||
+                          img.alt.toLowerCase().includes('logo') ||
+                          img.src.toLowerCase().includes('logo') ||
+                          img.src.toLowerCase().includes('favicon') ||
+                          img.id.toLowerCase().includes('logo');
+            
+            return !isLogo;
+        });
+        
+        console.log(`🔍 Found ${allImages.length} total images, ${lazyImages.length} non-logo images to observe`);
         
         lazyImages.forEach((img, index) => {
             console.log(`🔍 Image ${index + 1}:`, {
                 alt: img.alt,
                 dataSrc: img.dataset.src,
                 currentSrc: img.src,
-                classes: img.className
+                classes: img.className,
+                id: img.id
             });
+            
+            // If image doesn't have data-src, set it up for lazy loading
+            if (!img.dataset.src && img.src && !img.src.includes('data:image/gif')) {
+                console.log(`🔄 Setting up lazy loading for image:`, img.alt);
+                img.dataset.src = img.src;
+                img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                img.classList.add('lazy-loading');
+            }
             
             // Check if image already has a real src (not placeholder)
             if (img.src && img.src !== 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' && !img.src.includes('undefined')) {
                 console.log(`⏭️ Image ${index + 1} already has real src, marking as loaded:`, img.alt);
                 img.classList.remove('lazy-loading');
                 img.classList.add('lazy-loaded');
-                this.loadedImages.add(img.dataset.src);
+                if (img.dataset.src) {
+                    this.loadedImages.add(img.dataset.src);
+                }
                 return; // Skip observing this image
             }
             
@@ -181,10 +209,11 @@ class ImageLazyLoader {
                 img.classList.add('lazy-error');
             }
             
-            if (!this.loadedImages.has(img.dataset.src)) {
+            // Only observe if we have a data-src and haven't loaded it yet
+            if (img.dataset.src && !this.loadedImages.has(img.dataset.src)) {
                 this.observer.observe(img);
                 console.log(`👁️ Started observing image ${index + 1}:`, img.alt);
-            } else {
+            } else if (img.dataset.src) {
                 console.log(`⏭️ Image ${index + 1} already loaded, skipping:`, img.alt);
             }
         });
@@ -311,11 +340,31 @@ class ImageLazyLoader {
 
     fallbackLazyLoad() {
         // Fallback for browsers without Intersection Observer
-        const lazyImages = document.querySelectorAll('img[data-src]');
+        const allImages = document.querySelectorAll('img');
+        const lazyImages = Array.from(allImages).filter(img => {
+            // Skip logos - check for logo-related classes, alt text, or src patterns
+            const isLogo = img.classList.contains('logo') || 
+                          img.classList.contains('navbar-logo') ||
+                          img.classList.contains('footer-logo') ||
+                          img.classList.contains('site-logo') ||
+                          img.alt.toLowerCase().includes('logo') ||
+                          img.src.toLowerCase().includes('logo') ||
+                          img.src.toLowerCase().includes('favicon') ||
+                          img.id.toLowerCase().includes('logo');
+            
+            return !isLogo;
+        });
         
         const checkImages = () => {
             lazyImages.forEach(img => {
-                if (this.isInViewport(img) && !this.loadedImages.has(img.src)) {
+                // Set up lazy loading if not already done
+                if (!img.dataset.src && img.src && !img.src.includes('data:image/gif')) {
+                    img.dataset.src = img.src;
+                    img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                    img.classList.add('lazy-loading');
+                }
+                
+                if (img.dataset.src && this.isInViewport(img) && !this.loadedImages.has(img.dataset.src)) {
                     this.loadImage(img);
                 }
             });
@@ -376,7 +425,7 @@ class ImageLazyLoader {
 }
 
 // Initialize when DOM is ready
-console.log('📜 image-lazy-loader.js script loaded - VERSION 3.0');
+console.log('📜 image-lazy-loader.js script loaded - VERSION 4.0');
 console.log('📜 Current time:', new Date().toISOString());
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📜 DOMContentLoaded event fired, initializing ImageLazyLoader');
