@@ -104,7 +104,7 @@
             @if(!empty($socials) && count($socials))
                 @foreach($socials as $social)
                     <a href="{{ $social['link'] }}" target="_blank" class="mr-15 border border-white rounded-circle m-1 p-1">
-                        <img src="{{ $social['image'] }}" alt="{{ $social['title'] }}">
+                        <img src="{{ $social['image'] }}" alt="{{ $social['title'] }}" width="24" height="24">
                     </a>
                 @endforeach
             @endif
