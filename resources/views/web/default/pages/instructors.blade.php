@@ -7,7 +7,7 @@
 
 @section('content')
     <section class="site-top-banner search-top-banner opacity-04 position-relative">
-        <img src="{{ getPageBackgroundSettings($page) }}" class="img-cover" alt=""/>
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='400' viewBox='0 0 1200 400'%3E%3Crect width='1200' height='400' fill='%23f0f0f0'/%3E%3C/svg%3E" data-src="{{ getPageBackgroundSettings($page) }}" class="img-cover" alt="{{ trans('public.instructors_background') }}" width="1200" height="400"/>
 
         <div class="container h-100">
             <div class="row h-100 align-items-center justify-content-center text-center">

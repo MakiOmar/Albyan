@@ -59,10 +59,10 @@
                                 @foreach($testimonials as $testimonial)
                                     <div class="swiper-slide">
                                         <div class="testimonials-card position-relative py-15 py-lg-30 px-10 px-lg-20 rounded-sm shadow bg-white text-center">
-                                            <img class="google-icon" src="/store/1/icons/google.png">
+                                            <img class="google-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%23f0f0f0'/%3E%3C/svg%3E" data-src="/store/1/icons/google.png" alt="Google" width="24" height="24">
                                             <div class="d-flex flex-column align-items-center">
                                                 <div class="testimonials-user-avatar">
-                                                    <img src="{{ $testimonial->user_avatar }}" alt="{{ $testimonial->user_name }}" class="img-cover rounded-circle">
+                                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 50 50'%3E%3Crect width='50' height='50' fill='%23f0f0f0'/%3E%3C/svg%3E" data-src="{{ $testimonial->user_avatar }}" alt="{{ $testimonial->user_name }}" class="img-cover rounded-circle" width="50" height="50">
                                                 </div>
                                                 <h4 class="font-16 font-weight-bold text-secondary mt-30">{{ $testimonial->user_name }}</h4>
                                                 <span class="d-block font-14 text-gray">{{ $testimonial->user_bio }}</span>
@@ -113,7 +113,7 @@
                         
                             <div class="d-flex justify-content-center align-items-center">
                                 <div class="ms-2 d-flex">
-                                    <img class="google-icon" src="/store/1/icons/google.png">
+                                    <img class="google-icon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%23f0f0f0'/%3E%3C/svg%3E" data-src="/store/1/icons/google.png" alt="Google" width="24" height="24">
                                     @include('web.default.includes.webinar.rate',['rate' => $rating_reviews['rating'], 'dontShowRate' => false])
                                 </div>
                             </div>

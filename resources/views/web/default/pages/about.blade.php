@@ -73,27 +73,27 @@
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
                     <a href="/store/1/certs/333.jpg" data-lightbox="gallery">
-                        <img src="/store/1/certs/333.jpg" alt="Slide 1">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%23f0f0f0'/%3E%3C/svg%3E" data-src="/store/1/certs/333.jpg" alt="Certificate 1" width="200" height="150">
                     </a>
                 </div>
                 <div class="swiper-slide">
                     <a href="/store/1/certs/dsgdsfd898.jpg" data-lightbox="gallery">
-                        <img src="/store/1/certs/dsgdsfd898.jpg" alt="Slide 2">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%23f0f0f0'/%3E%3C/svg%3E" data-src="/store/1/certs/dsgdsfd898.jpg" alt="Certificate 2" width="200" height="150">
                     </a>
                 </div>
                 <div class="swiper-slide">
                     <a href="/store/1/certs/1copy.jpg" data-lightbox="gallery">
-                        <img src="/store/1/certs/1copy.jpg" alt="Slide 2">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%23f0f0f0'/%3E%3C/svg%3E" data-src="/store/1/certs/1copy.jpg" alt="Certificate 3" width="200" height="150">
                     </a>
                 </div>
                 <div class="swiper-slide">
                     <a href="/store/1/certs/fsfsdflkl.jpg" data-lightbox="gallery">
-                        <img src="/store/1/certs/fsfsdflkl.jpg" alt="Slide 4">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%23f0f0f0'/%3E%3C/svg%3E" data-src="/store/1/certs/fsfsdflkl.jpg" alt="Certificate 4" width="200" height="150">
                     </a>
                 </div>
                 <div class="swiper-slide">
                     <a href="store/1/certs/foi87.png" data-lightbox="gallery">
-                        <img src="store/1/certs/foi87.png" alt="Slide 4">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%23f0f0f0'/%3E%3C/svg%3E" data-src="store/1/certs/foi87.png" alt="Certificate 5" width="200" height="150">
                     </a>
                 </div>
             </div>

@@ -31,7 +31,7 @@
                 @if(getCourseCardStyle() === 'dark_overlay' || getCourseCardStyle() === 'white_overlay')
                     <div class="image-overlay"></div>
                 @endif
-                <img src="{{ $webinar->getImage() }}" class="img-cover" alt="{{ $webinar->title }}">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect width='300' height='200' fill='%23f0f0f0'/%3E%3C/svg%3E" data-src="{{ $webinar->getImage() }}" class="img-cover" alt="{{ $webinar->title }}" width="300" height="200">
             </a>
 
 

@@ -46,7 +46,7 @@
             @foreach($trendCategories as $trend)
                 <div class="col-md-3 p-2">
                     <a href="{{ $trend->category->getUrl() }}" class="btn trendy-category btn-outline text-dark rounded-pill px-4 py-2 d-flex align-items-center" style="border: 1px solid #000">
-                        <img src="{{ $trend->getIcon() }}" class="ml-1" style="max-height: 20px" alt="{{ $trend->category->title }}">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Crect width='20' height='20' fill='%23f0f0f0'/%3E%3C/svg%3E" data-src="{{ $trend->getIcon() }}" class="ml-1" style="max-height: 20px" alt="{{ $trend->category->title }}" width="20" height="20">
                         {{ $trend->category->title }}
                     </a>
                 </div>

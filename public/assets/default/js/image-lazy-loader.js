@@ -1,0 +1,175 @@
+/**
+ * Modern Image Lazy Loading System
+ * Uses Intersection Observer API for optimal performance
+ * Maintains CLS scores by preserving image dimensions
+ */
+class ImageLazyLoader {
+    constructor() {
+        this.observer = null;
+        this.loadedImages = new Set();
+        this.init();
+    }
+
+    init() {
+        // Check if Intersection Observer is supported
+        if ('IntersectionObserver' in window) {
+            this.setupIntersectionObserver();
+        } else {
+            // Fallback for older browsers
+            this.fallbackLazyLoad();
+        }
+    }
+
+    setupIntersectionObserver() {
+        const options = {
+            root: null,
+            rootMargin: '50px', // Start loading 50px before image enters viewport
+            threshold: 0.1
+        };
+
+        this.observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    this.loadImage(entry.target);
+                    this.observer.unobserve(entry.target);
+                }
+            });
+        }, options);
+
+        // Observe all lazy images
+        this.observeImages();
+    }
+
+    observeImages() {
+        const lazyImages = document.querySelectorAll('img[data-src]');
+        lazyImages.forEach(img => {
+            if (!this.loadedImages.has(img.src)) {
+                this.observer.observe(img);
+            }
+        });
+    }
+
+    loadImage(img) {
+        if (this.loadedImages.has(img.src)) {
+            return;
+        }
+
+        // Add loading class
+        img.classList.add('lazy-loading');
+        
+        // Create a new image to preload
+        const imageLoader = new Image();
+        
+        imageLoader.onload = () => {
+            // Image loaded successfully
+            img.src = img.dataset.src;
+            img.classList.remove('lazy-loading');
+            img.classList.add('lazy-loaded');
+            
+            // Remove data-src to prevent reloading
+            img.removeAttribute('data-src');
+            
+            // Mark as loaded
+            this.loadedImages.add(img.src);
+            
+            // Trigger custom event
+            img.dispatchEvent(new CustomEvent('lazyLoaded', {
+                detail: { image: img }
+            }));
+        };
+
+        imageLoader.onerror = () => {
+            // Handle loading error
+            img.classList.remove('lazy-loading');
+            img.classList.add('lazy-error');
+            
+            // Set fallback image if available
+            if (img.dataset.fallback) {
+                img.src = img.dataset.fallback;
+            }
+            
+            console.warn('Failed to load image:', img.dataset.src);
+        };
+
+        // Start loading
+        imageLoader.src = img.dataset.src;
+    }
+
+    fallbackLazyLoad() {
+        // Fallback for browsers without Intersection Observer
+        const lazyImages = document.querySelectorAll('img[data-src]');
+        
+        const checkImages = () => {
+            lazyImages.forEach(img => {
+                if (this.isInViewport(img) && !this.loadedImages.has(img.src)) {
+                    this.loadImage(img);
+                }
+            });
+        };
+
+        // Check on scroll and resize
+        window.addEventListener('scroll', this.throttle(checkImages, 100));
+        window.addEventListener('resize', this.throttle(checkImages, 100));
+        
+        // Initial check
+        checkImages();
+    }
+
+    isInViewport(element) {
+        const rect = element.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
+
+    throttle(func, limit) {
+        let inThrottle;
+        return function() {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
+        };
+    }
+
+    // Public method to refresh lazy loading for dynamically added images
+    refresh() {
+        if (this.observer) {
+            this.observeImages();
+        } else {
+            this.fallbackLazyLoad();
+        }
+    }
+
+    // Public method to manually load an image
+    loadImageNow(img) {
+        if (img && img.dataset.src) {
+            this.loadImage(img);
+        }
+    }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    window.imageLazyLoader = new ImageLazyLoader();
+});
+
+// Also initialize if DOM is already loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        window.imageLazyLoader = new ImageLazyLoader();
+    });
+} else {
+    window.imageLazyLoader = new ImageLazyLoader();
+}
+
+// Export for module systems
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = ImageLazyLoader;
+}

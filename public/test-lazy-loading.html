@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lazy Loading Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin: 40px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-image {
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>🖼️ Image Lazy Loading Test</h1>
+    
+    <div class="status info">
+        <strong>Test Status:</strong> This page tests the image lazy loading functionality.
+        Scroll down to see images load as they enter the viewport.
+    </div>
+
+    <div class="test-section">
+        <h2>Test 1: Course Images</h2>
+        <p>These images should load with lazy loading and maintain their dimensions:</p>
+        
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23f0f0f0'/%3E%3C/svg%3E" 
+             data-src="https://picsum.photos/400/300?random=1" 
+             class="test-image" 
+             alt="Test Course 1" 
+             width="400" height="300">
+        
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23f0f0f0'/%3E%3C/svg%3E" 
+             data-src="https://picsum.photos/400/300?random=2" 
+             class="test-image" 
+             alt="Test Course 2" 
+             width="400" height="300">
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Product Images</h2>
+        <p>Smaller product images with different aspect ratios:</p>
+        
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%23f0f0f0'/%3E%3C/svg%3E" 
+             data-src="https://picsum.photos/200/150?random=3" 
+             class="test-image" 
+             alt="Test Product 1" 
+             width="200" height="150">
+        
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%23f0f0f0'/%3E%3C/svg%3E" 
+             data-src="https://picsum.photos/200/150?random=4" 
+             class="test-image" 
+             alt="Test Product 2" 
+             width="200" height="150">
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Background Images</h2>
+        <p>Large background-style images:</p>
+        
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='400' viewBox='0 0 1200 400'%3E%3Crect width='1200' height='400' fill='%23f0f0f0'/%3E%3C/svg%3E" 
+             data-src="https://picsum.photos/1200/400?random=5" 
+             class="test-image" 
+             alt="Test Background 1" 
+             width="1200" height="400">
+    </div>
+
+    <div class="test-section">
+        <h2>Test 4: Small Icons</h2>
+        <p>Small icon images:</p>
+        
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%23f0f0f0'/%3E%3C/svg%3E" 
+             data-src="https://picsum.photos/24/24?random=6" 
+             class="test-image" 
+             alt="Test Icon 1" 
+             width="24" height="24">
+        
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Crect width='20' height='20' fill='%23f0f0f0'/%3E%3C/svg%3E" 
+             data-src="https://picsum.photos/20/20?random=7" 
+             class="test-image" 
+             alt="Test Icon 2" 
+             width="20" height="20">
+    </div>
+
+    <div class="test-section">
+        <h2>Test 5: Error Handling</h2>
+        <p>This image should show an error state (invalid URL):</p>
+        
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%23f0f0f0'/%3E%3C/svg%3E" 
+             data-src="https://invalid-url-that-does-not-exist.com/image.jpg" 
+             class="test-image" 
+             alt="Test Error Image" 
+             width="200" height="150">
+    </div>
+
+    <div class="status success">
+        <strong>✅ Test Complete!</strong> 
+        All images should have loaded with smooth transitions and no layout shifts.
+        Check the browser's Network tab to see images loading only when they enter the viewport.
+    </div>
+
+    <!-- Include the lazy loading script -->
+    <script src="/assets/default/js/image-lazy-loader.js"></script>
+    
+    <script>
+        // Add some debugging
+        document.addEventListener('lazyLoaded', function(e) {
+            console.log('✅ Image loaded:', e.detail.image.alt);
+        });
+        
+        // Check if lazy loader is working
+        if (window.imageLazyLoader) {
+            console.log('✅ Image lazy loader initialized successfully');
+        } else {
+            console.error('❌ Image lazy loader failed to initialize');
+        }
+    </script>
+</body>
+</html>
