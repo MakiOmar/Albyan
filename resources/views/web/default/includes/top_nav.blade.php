@@ -1,7 +1,7 @@
 @php
     $userLanguages = !empty($generalSettings['site_language']) ? [$generalSettings['site_language'] => getLanguages($generalSettings['site_language'])] : [];
 
-    if (!empty($generalSettings['user_languages']) and is_array($generalSettings['user_languages'])) {
+    if (!empty($generalSettings['user_languages']) && is_array($generalSettings['user_languages'])) {
         $userLanguages = getLanguages($generalSettings['user_languages']);
     }
 
@@ -10,7 +10,6 @@
     foreach($userLanguages as $key => $userLanguage) {
         $localLanguage[localeToCountryCode($key)] = $userLanguage;
     }
-
 @endphp
 
 <div class="top-navbar d-flex border-bottom blue-bg">
@@ -42,8 +41,7 @@
                 {{-- Currency --}}
                 @include('web.default.includes.top_nav.currency')
 
-
-                @if(!empty($localLanguage) and count($localLanguage) > 1)
+                @if(!empty($localLanguage) && count($localLanguage) > 1)
                     <form action="/locale" method="post" class="mr-15 mx-md-20">
                         {{ csrf_field() }}
 
@@ -64,7 +62,6 @@
                     <div class="mr-15 mx-md-20"></div>
                 @endif
 
-
                 <form action="/search" method="get" class="form-inline my-2 my-lg-0 navbar-search position-relative">
                     <input class="blue-bg form-control mr-5 rounded-pill text-white" type="text" name="search" placeholder="{{ trans('navbar.search_anything') }}" aria-label="Search">
 
@@ -74,10 +71,11 @@
                 </form>
             </div>
         </div>
+        
         @php
             $socials = getSocials();
             
-            if (!empty($socials) and count($socials)) {
+            if (!empty($socials) && count($socials)) {
                 $socials = collect($socials)->sortBy('order')->values()->toArray();
 
                 foreach ($socials as $id => $social) {
@@ -101,8 +99,9 @@
                 }
             }
         @endphp
+        
         <div class="footer-social d-flex align-items-center">
-            @if(!empty($socials) and count($socials))
+            @if(!empty($socials) && count($socials))
                 @foreach($socials as $social)
                     <a href="{{ $social['link'] }}" target="_blank" class="mr-15 border border-white rounded-circle m-1 p-1">
                         <img src="{{ $social['image'] }}" alt="{{ $social['title'] }}">
@@ -110,9 +109,9 @@
                 @endforeach
             @endif
         </div>
-        <div class="xs-w-100 d-flex align-items-center justify-content-between ">
+        
+        <div class="xs-w-100 d-flex align-items-center justify-content-between">
             <div class="d-flex">
-
                 @include(getTemplate().'.includes.shopping-cart-dropdwon')
 
                 <div class="border-left mx-5 mx-lg-15"></div>
@@ -125,7 +124,6 @@
         </div>
     </div>
 </div>
-
 
 @push('scripts_bottom')
     <link href="/assets/default/vendors/flagstrap/css/flags.css" rel="stylesheet">
