@@ -7,10 +7,12 @@ class ImageLazyLoader {
     constructor() {
         this.observer = null;
         this.loadedImages = new Set();
+        console.log('🚀 ImageLazyLoader constructor called');
         this.init();
     }
 
     init() {
+        console.log('🔧 ImageLazyLoader init() called');
         // First, fix any existing images with "undefined" src
         this.fixUndefinedImages();
         
@@ -19,8 +21,10 @@ class ImageLazyLoader {
         
         // Check if Intersection Observer is supported
         if ('IntersectionObserver' in window) {
+            console.log('✅ IntersectionObserver supported, setting up observer');
             this.setupIntersectionObserver();
         } else {
+            console.log('⚠️ IntersectionObserver not supported, using fallback');
             // Fallback for older browsers
             this.fallbackLazyLoad();
         }
@@ -151,15 +155,28 @@ class ImageLazyLoader {
 
     observeImages() {
         const lazyImages = document.querySelectorAll('img[data-src]');
-        lazyImages.forEach(img => {
+        console.log(`🔍 Found ${lazyImages.length} lazy images to observe`);
+        
+        lazyImages.forEach((img, index) => {
+            console.log(`🔍 Image ${index + 1}:`, {
+                alt: img.alt,
+                dataSrc: img.dataset.src,
+                currentSrc: img.src,
+                classes: img.className
+            });
+            
             // Fix any images that already have "undefined" as src
             if (img.src === 'undefined' || img.src.includes('undefined')) {
+                console.warn('⚠️ Found image with undefined src before observing:', img.alt);
                 img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
                 img.classList.add('lazy-error');
             }
             
             if (!this.loadedImages.has(img.dataset.src)) {
                 this.observer.observe(img);
+                console.log(`👁️ Started observing image ${index + 1}:`, img.alt);
+            } else {
+                console.log(`⏭️ Image ${index + 1} already loaded, skipping:`, img.alt);
             }
         });
     }
@@ -341,8 +358,11 @@ class ImageLazyLoader {
 }
 
 // Initialize when DOM is ready
+console.log('📜 image-lazy-loader.js script loaded');
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('📜 DOMContentLoaded event fired, initializing ImageLazyLoader');
     window.imageLazyLoader = new ImageLazyLoader();
+    console.log('📜 ImageLazyLoader instance created:', window.imageLazyLoader);
 });
 
 // Also initialize if DOM is already loaded
