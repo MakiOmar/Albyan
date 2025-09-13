@@ -182,12 +182,13 @@ class ImageLazyLoader {
     }
 
     loadImage(img) {
-        console.log('🔍 Loading image:', {
+        console.log('🔍 Loading image - VERSION 2.0:', {
             alt: img.alt,
             dataSrc: img.dataset.src,
             currentSrc: img.src,
             element: img
         });
+        console.log('🔍 loadImage method called at:', new Date().toISOString());
         
         // Check if data-src exists and is not empty
         if (!img.dataset.src || img.dataset.src === 'undefined' || img.dataset.src.trim() === '') {
@@ -358,7 +359,8 @@ class ImageLazyLoader {
 }
 
 // Initialize when DOM is ready
-console.log('📜 image-lazy-loader.js script loaded');
+console.log('📜 image-lazy-loader.js script loaded - VERSION 2.0');
+console.log('📜 Current time:', new Date().toISOString());
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📜 DOMContentLoaded event fired, initializing ImageLazyLoader');
     window.imageLazyLoader = new ImageLazyLoader();
