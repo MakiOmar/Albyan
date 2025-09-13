@@ -100,11 +100,11 @@
             }
         @endphp
         
-        <div class="footer-social d-flex align-items-center">
+        <div class="footer-social d-flex align-items-center" style="min-height: 40px; width: 100%; flex-wrap: nowrap;">
             @if(!empty($socials) && count($socials))
                 @foreach($socials as $social)
-                    <a href="{{ $social['link'] }}" target="_blank" class="mr-15 border border-white rounded-circle m-1 p-1">
-                        <img src="{{ $social['image'] }}" alt="{{ $social['title'] }}" width="24" height="24">
+                    <a href="{{ $social['link'] }}" target="_blank" class="mr-15 border border-white rounded-circle m-1 p-1" style="min-width: 40px; min-height: 40px; display: flex; align-items: center; justify-content: center;">
+                        <img src="{{ $social['image'] }}" alt="{{ $social['title'] }}" width="24" height="24" style="display: block;">
                     </a>
                 @endforeach
             @endif
