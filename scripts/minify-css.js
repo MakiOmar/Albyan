@@ -57,7 +57,16 @@ class CSSBuildTool {
      * Process a single CSS file
      */
     processCSSFile(theme, cssFile) {
-        const publicPath = path.join(__dirname, '..', 'public', 'assets', theme, 'vendors');
+        // Determine the correct path based on file type
+        let publicPath;
+        if (cssFile.startsWith('css/')) {
+            // App CSS files are in the main assets directory
+            publicPath = path.join(__dirname, '..', 'public', 'assets', theme);
+        } else {
+            // Vendor CSS files are in the vendors subdirectory
+            publicPath = path.join(__dirname, '..', 'public', 'assets', theme, 'vendors');
+        }
+        
         const originalPath = path.join(publicPath, cssFile);
         const minifiedPath = originalPath.replace('.css', '.min.css');
 
