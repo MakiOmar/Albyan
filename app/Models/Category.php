@@ -87,7 +87,7 @@ class Category extends Model implements TranslatableContract
 
     static function getCategories()
     {
-        $categories = cache()->remember(self::$cacheKey, 24 * 60 * 60, function () {
+        $categories = cache()->remember(self::$cacheKey, 7 * 24 * 60 * 60, function () {
             return self::whereNull('parent_id')
                 ->with([
                     'subCategories' => function ($query) {

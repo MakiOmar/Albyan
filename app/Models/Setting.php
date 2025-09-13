@@ -134,7 +134,7 @@ class Setting extends Model implements TranslatableContract
     static function getSetting(&$static, $name, $key = null)
     {
         if (!isset($static)) {
-            $static = cache()->remember('settings.' . $name, 24 * 60 * 60, function () use ($name) {
+            $static = cache()->remember('settings.' . $name, 7 * 24 * 60 * 60, function () use ($name) {
                 return self::where('name', $name)->first();
             });
         }
