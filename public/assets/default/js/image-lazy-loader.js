@@ -76,8 +76,8 @@ class ImageLazyLoader {
             img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
             img.classList.add('lazy-error');
             
-            // If it has a data-src, try to load it
-            if (img.dataset.src && img.dataset.src !== 'undefined') {
+            // If it has a valid data-src, try to load it
+            if (img.dataset.src && img.dataset.src !== 'undefined' && img.dataset.src.trim() !== '') {
                 this.loadImage(img);
             }
         }
@@ -120,14 +120,21 @@ class ImageLazyLoader {
     }
 
     loadImage(img) {
+        console.log('🔍 Loading image:', {
+            alt: img.alt,
+            dataSrc: img.dataset.src,
+            currentSrc: img.src
+        });
+        
         // Check if data-src exists and is not empty
         if (!img.dataset.src || img.dataset.src === 'undefined' || img.dataset.src.trim() === '') {
-            console.warn('⚠️ No valid image source found for:', img.alt || 'unnamed image');
+            console.warn('⚠️ No valid image source found for:', img.alt || 'unnamed image', 'data-src:', img.dataset.src);
             img.classList.add('lazy-error');
             return;
         }
 
         if (this.loadedImages.has(img.dataset.src)) {
+            console.log('⏭️ Image already loaded:', img.dataset.src);
             return;
         }
 
@@ -140,20 +147,29 @@ class ImageLazyLoader {
         imageLoader.onload = () => {
             // Image loaded successfully
             console.log('✅ Image loaded successfully:', img.alt || img.dataset.src);
-            img.src = img.dataset.src;
-            img.classList.remove('lazy-loading');
-            img.classList.add('lazy-loaded');
             
-            // Remove data-src to prevent reloading
-            img.removeAttribute('data-src');
-            
-            // Mark as loaded
-            this.loadedImages.add(img.dataset.src);
-            
-            // Trigger custom event
-            img.dispatchEvent(new CustomEvent('lazyLoaded', {
-                detail: { image: img }
-            }));
+            // Only set src if data-src is valid
+            if (img.dataset.src && img.dataset.src !== 'undefined' && img.dataset.src.trim() !== '') {
+                img.src = img.dataset.src;
+                img.classList.remove('lazy-loading');
+                img.classList.add('lazy-loaded');
+                
+                // Remove data-src to prevent reloading
+                img.removeAttribute('data-src');
+                
+                // Mark as loaded
+                this.loadedImages.add(img.dataset.src);
+                
+                // Trigger custom event
+                img.dispatchEvent(new CustomEvent('lazyLoaded', {
+                    detail: { image: img }
+                }));
+            } else {
+                // Invalid data-src, show error state
+                console.warn('⚠️ Invalid data-src, showing error state:', img.alt || 'unnamed image');
+                img.classList.remove('lazy-loading');
+                img.classList.add('lazy-error');
+            }
         };
 
         imageLoader.onerror = () => {
