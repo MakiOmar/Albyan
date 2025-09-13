@@ -1,16 +1,16 @@
 <div class="dropdown">
 
     @if((empty($userCarts) or count($userCarts) < 1) and !empty($userCartDiscount))
-        <a href="/cart" class="btn btn-transparent">
-            <i data-feather="shopping-cart" width="20" height="20" class="mr-10"></i>
+        <a href="/cart" class="btn btn-transparent" style="min-width: 50px; min-height: 40px; width: 50px; height: 40px; display: flex; align-items: center; justify-content: center;">
+            <i data-feather="shopping-cart" width="20" height="20" class="mr-10" style="display: block;"></i>
         </a>
     @else
         <button type="button" {{ (empty($userCarts) or count($userCarts) < 1) ? 'disabled' : '' }} class="btn btn-transparent dropdown-toggle" id="navbarShopingCart" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false" aria-label="{{ trans('cart.shopping_cart') }}">
-            <i data-feather="shopping-cart" width="20" height="20" class="mr-10"></i>
+                aria-haspopup="true" aria-expanded="false" aria-label="{{ trans('cart.shopping_cart') }}" style="min-width: 50px; min-height: 40px; width: 50px; height: 40px; position: relative; display: flex; align-items: center; justify-content: center;">
+            <i data-feather="shopping-cart" width="20" height="20" class="mr-10" style="display: block;"></i>
 
             @if(!empty($userCarts) and count($userCarts))
-                <span class="badge badge-circle-primary d-flex align-items-center justify-content-center">{{ count($userCarts) }}</span>
+                <span class="badge badge-circle-primary d-flex align-items-center justify-content-center" style="position: absolute; top: -5px; right: -5px; min-width: 18px; min-height: 18px; width: 18px; height: 18px; font-size: 10px; line-height: 1;">{{ count($userCarts) }}</span>
             @endif
         </button>
     @endif
