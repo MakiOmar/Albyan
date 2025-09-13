@@ -86,15 +86,15 @@
     {{-- Statistics 
     @include('web.default.pages.includes.home_statistics')
     --}}
-    <blockquote class="blockquote text-center p-4 border-start border-4">
-        <h2>عن المعهد</h2>
-        <p class="mb-0" style="font-size: 16px;max-width: 768px;margin: auto;">
+    <blockquote class="blockquote text-center p-4 border-start border-4" style="min-height: 200px; width: 100%;">
+        <h2 style="margin-bottom: 1rem;">عن المعهد</h2>
+        <p class="mb-0" style="font-size: 16px; max-width: 768px; margin: auto; line-height: 1.6;">
             معهد البيان للخدمات التعليمية يقدم تجربة تعليمية متميزة مع نخبة من المحاضرين والخبراء في مختلف المجالات. 
             يقدم المعهد مئات الدبلومات التدريبية الاحترافية المصممة لتلبية احتياجات سوق العمل، مع خيارات مرنة في الحضور من مقر المعهد أو الدراسة أون لاين. 
             يمنح المعهد شهادات معتمدة محلياً ودولياً تعزز من مكانتك المهنية وينظم حفل تخرج سنوي ضخم لتكريم أعداد كبيرة من خريجي المعهد بمختلف التخصصات بحضور شخصيات هامة. 
             انضم إلى معهد البيان للارتقاء بمسارك المهني.
         </p>
-        <footer class="blockquote-footer mt-2">معهد البيان للخدمات التعليمية</footer>
+        <footer class="blockquote-footer mt-2" style="margin-top: 1rem !important;">معهد البيان للخدمات التعليمية</footer>
     </blockquote>
     @foreach($homeSections as $homeSection)
         @if($homeSection->name == \App\Models\HomeSection::$featured_classes and !empty($featureWebinars) and !$featureWebinars->isEmpty())
