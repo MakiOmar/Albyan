@@ -165,6 +165,15 @@ class ImageLazyLoader {
                 classes: img.className
             });
             
+            // Check if image already has a real src (not placeholder)
+            if (img.src && img.src !== 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' && !img.src.includes('undefined')) {
+                console.log(`⏭️ Image ${index + 1} already has real src, marking as loaded:`, img.alt);
+                img.classList.remove('lazy-loading');
+                img.classList.add('lazy-loaded');
+                this.loadedImages.add(img.dataset.src);
+                return; // Skip observing this image
+            }
+            
             // Fix any images that already have "undefined" as src
             if (img.src === 'undefined' || img.src.includes('undefined')) {
                 console.warn('⚠️ Found image with undefined src before observing:', img.alt);
@@ -182,7 +191,7 @@ class ImageLazyLoader {
     }
 
     loadImage(img) {
-        console.log('🔍 Loading image - VERSION 2.0:', {
+        console.log('🔍 Loading image - VERSION 3.0:', {
             alt: img.alt,
             dataSrc: img.dataset.src,
             currentSrc: img.src,
@@ -194,6 +203,14 @@ class ImageLazyLoader {
         if (!img.dataset.src || img.dataset.src === 'undefined' || img.dataset.src.trim() === '') {
             console.warn('⚠️ No valid image source found for:', img.alt || 'unnamed image', 'data-src:', img.dataset.src);
             img.classList.add('lazy-error');
+            return;
+        }
+
+        // Check if image is already loaded (has a real src, not placeholder)
+        if (img.src && img.src !== 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' && !img.src.includes('undefined')) {
+            console.log('⏭️ Image already has real src, skipping lazy load:', img.src);
+            img.classList.remove('lazy-loading');
+            img.classList.add('lazy-loaded');
             return;
         }
 
@@ -359,7 +376,7 @@ class ImageLazyLoader {
 }
 
 // Initialize when DOM is ready
-console.log('📜 image-lazy-loader.js script loaded - VERSION 2.0');
+console.log('📜 image-lazy-loader.js script loaded - VERSION 3.0');
 console.log('📜 Current time:', new Date().toISOString());
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📜 DOMContentLoaded event fired, initializing ImageLazyLoader');
