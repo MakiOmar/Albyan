@@ -269,7 +269,7 @@ if (function_exists('apache_get_modules')) {
     <title>Server Requirements &dash; Laravel PHP Framework</title>
     <link href="//stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
-        @import url(//fonts.googleapis.com/css?family=Lato:300,400,700);
+        /* @import url(//fonts.googleapis.com/css?family=Lato:300,400,700); - DISABLED */
 
         body {
             margin: 0;
