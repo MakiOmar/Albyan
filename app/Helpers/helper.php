@@ -2067,7 +2067,7 @@ function getDefaultLocale()
 
     /// I did not use the helper method because the Setting model uses translation and may get stuck in the loop.
 
-    $setting = cache()->remember('settings.getDefaultLocale', 7 * 24 * 60 * 60, function () use ($name) {
+    $setting = cache()->remember('settings.getDefaultLocale', 30 * 24 * 60 * 60, function () use ($name) {
         $setting = \Illuminate\Support\Facades\DB::table('settings')
             ->where('page', $name)
             ->where('name', $name)
