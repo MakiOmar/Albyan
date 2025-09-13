@@ -65,7 +65,7 @@
                 <div class="rounded-lg shadow-sm">
                     <div class="course-img {{ $upcomingCourse->video_demo ? 'has-video' :'' }}">
 
-                        <img src="{{ $upcomingCourse->getImage() }}" class="img-cover" alt="">
+                        <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $upcomingCourse->getImage() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="">
 
                         @if($upcomingCourse->video_demo)
                             <div id="webinarDemoVideoBtn"

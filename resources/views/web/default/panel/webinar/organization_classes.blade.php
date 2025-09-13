@@ -110,7 +110,7 @@
                     <div class="col-12">
                         <div class="webinar-card webinar-list d-flex">
                             <div class="image-box">
-                                <img src="{{ $webinar->getImage() }}" class="img-cover" alt="">
+                                <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $webinar->getImage() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="">
 
                                 <div class="badges-lists">
                                     @switch($webinar->status)

@@ -11,6 +11,9 @@ class ImageLazyLoader {
     }
 
     init() {
+        // First, fix any existing images with "undefined" src
+        this.fixUndefinedImages();
+        
         // Check if Intersection Observer is supported
         if ('IntersectionObserver' in window) {
             this.setupIntersectionObserver();
@@ -18,6 +21,23 @@ class ImageLazyLoader {
             // Fallback for older browsers
             this.fallbackLazyLoad();
         }
+    }
+
+    fixUndefinedImages() {
+        // Fix any images that already have "undefined" as src
+        const allImages = document.querySelectorAll('img');
+        allImages.forEach(img => {
+            if (img.src === 'undefined' || img.src.includes('undefined')) {
+                console.warn('🔧 Fixing undefined src for image:', img.alt || 'unnamed image');
+                img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                img.classList.add('lazy-error');
+                
+                // If it has a data-src, try to load it
+                if (img.dataset.src && img.dataset.src !== 'undefined') {
+                    this.loadImage(img);
+                }
+            }
+        });
     }
 
     setupIntersectionObserver() {
@@ -167,6 +187,12 @@ class ImageLazyLoader {
         if (img && img.dataset.src) {
             this.loadImage(img);
         }
+    }
+
+    // Public method to fix undefined images and refresh lazy loading
+    fixAndRefresh() {
+        this.fixUndefinedImages();
+        this.refresh();
     }
 }
 

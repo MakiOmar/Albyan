@@ -2,7 +2,7 @@
     <figure>
         <div class="image-box">
             <a href="{{ $bundle->getUrl() }}">
-                <img src="{{ $bundle->getImage() }}" class="img-cover" alt="{{ $bundle->title }}">
+                <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $bundle->getImage() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="{{ $bundle->title }}">
             </a>
         </div>
 

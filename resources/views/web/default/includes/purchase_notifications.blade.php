@@ -12,7 +12,7 @@
                     text: `<a href="{{ $purchaseNotification->content->getUrl() }}" target="_blank">
                         <div class="purchase-notification d-flex w-100 h-100">
                             <div class="purchase-notification-image">
-                                <img src="{{ $purchaseNotification->content->getImage() }}" alt="{{ $purchaseNotification->content->title }}" class="img-cover">
+                                <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $purchaseNotification->content->getImage() ?: '/assets/default/img/placeholder.svg' }}" alt="{{ $purchaseNotification->content->title }}" class="img-cover">
                             </div>
                             <div class="ml-10">
                                 <h4 class="font-14 font-weight-bold text-dark">{{ $purchaseNotification->notif_title }}</h4>

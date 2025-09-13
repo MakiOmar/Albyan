@@ -22,7 +22,7 @@
                     <div class="col-12">
                         <div class="webinar-card webinar-list d-flex">
                             <div class="image-box">
-                                <img src="{{ $favItem->getImage() }}" class="img-cover" alt="">
+                                <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $favItem->getImage() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="">
 
                                 @if(!empty($favorite->webinar_id) and $favItem->type == 'webinar')
                                     <div class="progress">

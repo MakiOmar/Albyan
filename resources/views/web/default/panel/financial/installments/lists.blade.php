@@ -75,9 +75,9 @@
                             <div class="webinar-card webinar-list panel-installment-card d-flex">
                                 <div class="image-box">
                                     @if(in_array($itemType, ['course', 'bundle']))
-                                        <img src="{{ $orderItem->getImage() }}" class="img-cover" alt="">
+                                        <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $orderItem->getImage() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="">
                                     @elseif($itemType == 'product')
-                                        <img src="{{ $orderItem->thumbnail }}" class="img-cover" alt="">
+                                        <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $orderItem->thumbnail ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="">
                                     @elseif($itemType == "subscribe")
                                         <div class="d-flex align-items-center justify-content-center w-100 h-100">
                                             <img src="/assets/default/img/icons/installment/subscribe_default.svg" alt="">

@@ -62,7 +62,7 @@
                         <div class="col-12">
                             <div class="webinar-card webinar-list d-flex">
                                 <div class="image-box">
-                                    <img src="{{ $item->getImage() }}" class="img-cover" alt="">
+                                    <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $item->getImage() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="">
 
                                     @if(!empty($sale->webinar))
                                         <div class="badges-lists">

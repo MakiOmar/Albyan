@@ -2,7 +2,7 @@
     <figure>
         <div class="image-box">
             <a href="{{ $webinar->getUrl() }}">
-                <img src="{{ $webinar->getImage() }}" class="img-cover" alt="{{ $webinar->title }}">
+                <img width="200" height="150" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $webinar->getImage() ?: '/assets/default/img/placeholder.svg' }}" class="img-cover" alt="{{ $webinar->title }}">
             </a>
         </div>
 
