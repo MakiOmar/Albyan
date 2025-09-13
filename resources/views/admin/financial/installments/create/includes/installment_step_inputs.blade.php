@@ -35,7 +35,7 @@
     </div>
 
     <div class="col-1 text-left">
-        <button type="button" class="js-remove-btn btn btn-danger"><i class="fa fa-times"></i></button>
+        <button type="button" class="js-remove-btn btn btn-danger" aria-label="{{ trans('admin/main.remove') }}"><i class="fa fa-times"></i></button>
     </div>
 </div>
 

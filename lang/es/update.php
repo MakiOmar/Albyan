@@ -1056,7 +1056,7 @@ return [
 'google_console' => 'Google console',
 'extra_meta_tags_hint1' => 'You can define additional meta tags like the following examples:',
 'extra_meta_tags_hint2' => '<meta name="google-site-verification" content=""******" /> ',
-'extra_meta_tags_hint3' => '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">',
+'extra_meta_tags_hint3' => '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">',
 'extra_meta_tags_hint4' => 'or other meta tags',
 
 

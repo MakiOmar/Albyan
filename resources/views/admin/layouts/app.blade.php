@@ -107,7 +107,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <img src="" class="w-100" height="350px" alt="">
+                    <img src="" class="w-100" height="350px" alt="{{ trans('admin/main.image_preview') }}">
                 </div>
 
                 <div class="modal-footer">

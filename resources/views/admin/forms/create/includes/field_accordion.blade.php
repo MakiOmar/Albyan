@@ -70,7 +70,7 @@
                         <div class="js-field-options ml-1 {{ (!empty($formField) and in_array($formField->type, ['dropdown', 'checkbox', 'radio'])) ? '' : 'd-none' }}">
                             <div class="d-flex align-items-center justify-content-between mb-4">
                                 <strong class="d-block">{{ trans('admin/main.add_options') }}</strong>
-                                <button type="button" class="btn btn-success add-field-option-btn "><i class="fa fa-plus"></i> {{ trans('admin/main.add') }}</button>
+                                <button type="button" class="btn btn-success add-field-option-btn " aria-label="{{ trans('admin/main.add') }}"><i class="fa fa-plus"></i> {{ trans('admin/main.add') }}</button>
                             </div>
 
                             <ul class="js-field-options-lists draggable-content-lists draggable-form-field-options-lists-{{ !empty($formField) ? $formField->id : '' }}"
@@ -118,10 +118,10 @@
                 </div>
 
                 <div class="mt-20 d-flex align-items-center">
-                    <button type="button" class="js-save-form-field btn btn-sm btn-primary">{{ trans('public.save') }}</button>
+                    <button type="button" class="js-save-form-field btn btn-sm btn-primary" aria-label="{{ trans('public.save') }}">{{ trans('public.save') }}</button>
 
                     @if(empty($formField))
-                        <button type="button" class="btn btn-sm btn-danger ml-10 cancel-accordion">{{ trans('public.close') }}</button>
+                        <button type="button" class="btn btn-sm btn-danger ml-10 cancel-accordion" aria-label="{{ trans('public.close') }}">{{ trans('public.close') }}</button>
                     @endif
                 </div>
             </div>

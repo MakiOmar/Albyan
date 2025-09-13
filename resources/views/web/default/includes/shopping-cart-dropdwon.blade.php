@@ -6,7 +6,7 @@
         </a>
     @else
         <button type="button" {{ (empty($userCarts) or count($userCarts) < 1) ? 'disabled' : '' }} class="btn btn-transparent dropdown-toggle" id="navbarShopingCart" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
+                aria-haspopup="true" aria-expanded="false" aria-label="{{ trans('cart.shopping_cart') }}">
             <i data-feather="shopping-cart" width="20" height="20" class="mr-10"></i>
 
             @if(!empty($userCarts) and count($userCarts))

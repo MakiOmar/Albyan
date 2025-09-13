@@ -62,7 +62,7 @@
     @foreach($progressSteps as $key => $step)
         <div class="progress-item d-flex align-items-center">
             <a href="@if(!empty($organization_id)) /panel/manage/{{ $user_type ?? 'instructors' }}/{{ $user->id }}/edit/step/{{ $key }} @else /panel/setting/step/{{ $key }} @endif" class="progress-icon p-10 d-flex align-items-center justify-content-center rounded-circle {{ $key == $currentStep ? 'active' : '' }}" data-toggle="tooltip" data-placement="top" title="{{ trans($step['lang']) }}">
-                <img src="/assets/default/img/icons/{{ $step['icon'] }}.svg" class="img-cover" alt="">
+                <img src="/assets/default/img/icons/{{ $step['icon'] }}.svg" class="img-cover" alt="{{ trans($step['lang']) }}">
             </a>
 
             <div class="ml-10">

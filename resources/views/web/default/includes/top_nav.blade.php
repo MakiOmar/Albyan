@@ -65,7 +65,7 @@
                 <form action="/search" method="get" class="form-inline my-2 my-lg-0 navbar-search position-relative">
                     <input class="blue-bg form-control mr-5 rounded-pill text-white" type="text" name="search" placeholder="{{ trans('navbar.search_anything') }}" aria-label="Search">
 
-                    <button type="submit" class="btn-transparent d-flex align-items-center justify-content-center search-icon text-white">
+                    <button type="submit" class="btn-transparent d-flex align-items-center justify-content-center search-icon text-white" aria-label="{{ trans('navbar.search') }}">
                         <i data-feather="search" width="20" height="20" class="mr-10"></i>
                     </button>
                 </form>

@@ -204,7 +204,7 @@
                                     @if($course->isWebinar())
                                         <div class="mt-20 d-flex text-gray col-6">
                                             <div class="d-flex align-items-center">
-                                                <img src="/assets/default/img/icons/sessions.svg" width="20" alt="">
+                                                <img src="/assets/default/img/icons/sessions.svg" width="20" alt="{{ trans('public.sessions_icon') }}">
                                                 <span class="ml-5 font-14 font-weight-500">{{ trans('public.sessions') }}:</span>
                                             </div>
                                             <span class="font-14">{{ $course->sessions->count() }}</span>
@@ -214,7 +214,7 @@
                                     @if($course->isTextCourse())
                                         <div class="mt-20 d-flex text-gray col-6">
                                             <div class="d-flex align-items-center">
-                                                <img src="/assets/default/img/icons/sessions.svg" width="20" alt="">
+                                                <img src="/assets/default/img/icons/sessions.svg" width="20" alt="{{ trans('public.sessions_icon') }}">
                                                 <span class="ml-5 font-14 font-weight-500">{{ trans('webinars.text_lessons') }}:</span>
                                             </div>
                                             <span class="font-14">{{ $course->textLessons->count() }}</span>
@@ -224,7 +224,7 @@
                                     @if($course->isCourse() or $course->isTextCourse())
                                         <div class="mt-20 d-flex  text-gray col-6">
                                             <div class="d-flex align-items-center">
-                                                <img src="/assets/default/img/icons/sessions.svg" width="20" alt="">
+                                                <img src="/assets/default/img/icons/sessions.svg" width="20" alt="{{ trans('public.sessions_icon') }}">
                                                 <span class="ml-5 font-14 font-weight-500">{{ trans('public.files') }}:</span>
                                             </div>
                                             <span class="font-14">{{ $course->files->count() }}</span>
@@ -676,7 +676,7 @@
                         @if($course->isWebinar())
                             <div class="mt-20 d-flex align-items-center justify-content-between text-gray">
                                 <div class="d-flex align-items-center">
-                                    <img src="/assets/default/img/icons/sessions.svg" width="20" alt="">
+                                    <img src="/assets/default/img/icons/sessions.svg" width="20" alt="{{ trans('public.sessions_icon') }}">
                                     <span class="ml-5 font-14 font-weight-500">{{ trans('public.sessions') }}:</span>
                                 </div>
                                 <span class="font-14">{{ $course->sessions->count() }}</span>
@@ -686,7 +686,7 @@
                         @if($course->isTextCourse())
                             <div class="mt-20 d-flex align-items-center justify-content-between text-gray">
                                 <div class="d-flex align-items-center">
-                                    <img src="/assets/default/img/icons/sessions.svg" width="20" alt="">
+                                    <img src="/assets/default/img/icons/sessions.svg" width="20" alt="{{ trans('public.sessions_icon') }}">
                                     <span class="ml-5 font-14 font-weight-500">{{ trans('webinars.text_lessons') }}:</span>
                                 </div>
                                 <span class="font-14">{{ $course->textLessons->count() }}</span>
@@ -696,7 +696,7 @@
                         @if($course->isCourse() or $course->isTextCourse())
                             <div class="mt-20 d-flex align-items-center justify-content-between text-gray">
                                 <div class="d-flex align-items-center">
-                                    <img src="/assets/default/img/icons/sessions.svg" width="20" alt="">
+                                    <img src="/assets/default/img/icons/sessions.svg" width="20" alt="{{ trans('public.sessions_icon') }}">
                                     <span class="ml-5 font-14 font-weight-500">{{ trans('public.files') }}:</span>
                                 </div>
                                 <span class="font-14">{{ $course->files->count() }}</span>

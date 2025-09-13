@@ -77,7 +77,7 @@
     <div id="certificateModal" class="d-none">
         <h3 class="section-title after-line">{{ trans('site.certificate_is_valid') }}</h3>
         <div class="mt-25 d-flex flex-column align-items-center">
-            <img src="/assets/default/img/check.png" alt="" width="120" height="117">
+            <img src="/assets/default/img/check.png" alt="{{ trans('site.certificate_valid_icon') }}" width="120" height="117">
             <p class="mt-10">{{ trans('site.certificate_is_valid_hint') }}</p>
             <div class="w-75">
 

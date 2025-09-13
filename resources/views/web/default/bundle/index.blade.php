@@ -305,7 +305,7 @@
 
                         <div class="mt-20 d-flex align-items-center justify-content-between text-gray">
                             <div class="d-flex align-items-center">
-                                <img src="/assets/default/img/icons/sessions.svg" width="20" alt="">
+                                <img src="/assets/default/img/icons/sessions.svg" width="20" alt="{{ trans('public.courses_icon') }}">
                                 <span class="ml-5 font-14 font-weight-500">{{ trans('product.courses') }}:</span>
                             </div>
                             <span class="font-14">{{ $bundle->bundleWebinars->count() }}</span>
@@ -313,7 +313,7 @@
 
                         <div class="mt-20 d-flex align-items-center justify-content-between text-gray">
                             <div class="d-flex align-items-center">
-                                <img src="/assets/default/img/icons/sessions.svg" width="20" alt="">
+                                <img src="/assets/default/img/icons/sessions.svg" width="20" alt="{{ trans('public.courses_icon') }}">
                                 <span class="ml-5 font-14 font-weight-500">{{ trans('public.created_at') }}:</span>
                             </div>
                             <span class="font-14">{{ dateTimeFormat($bundle->created_at,'j M Y') }}</span>

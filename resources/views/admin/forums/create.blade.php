@@ -142,7 +142,7 @@
                                     <div class="d-flex align-items-center justify-content-between mb-4">
                                         <strong class="d-block">{{ trans('update.new_sub_forums') }}</strong>
 
-                                        <button type="button" class="btn btn-success add-btn"><i class="fa fa-plus"></i> Add</button>
+                                        <button type="button" class="btn btn-success add-btn" aria-label="{{ trans('admin/main.add') }}"><i class="fa fa-plus"></i> Add</button>
                                     </div>
 
                                     <ul class="draggable-lists list-group">
@@ -164,7 +164,7 @@
                                                         />
 
                                                         <div class="input-group-append">
-                                                            <button type="button" class="btn remove-btn btn-danger"><i class="fa fa-times"></i></button>
+                                                            <button type="button" class="btn remove-btn btn-danger" aria-label="{{ trans('admin/main.remove') }}"><i class="fa fa-times"></i></button>
                                                         </div>
                                                     </div>
 
@@ -229,7 +229,7 @@
                                 </div>
 
                                 <div class="text-right mt-4">
-                                    <button class="btn btn-primary">{{ trans('admin/main.submit') }}</button>
+                                    <button class="btn btn-primary" aria-label="{{ trans('admin/main.submit') }}">{{ trans('admin/main.submit') }}</button>
                                 </div>
                             </form>
 
@@ -246,7 +246,7 @@
                                            placeholder="{{ trans('admin/main.choose_title') }}"/>
 
                                     <div class="input-group-append">
-                                        <button type="button" class="btn remove-btn btn-danger"><i class="fa fa-times"></i></button>
+                                        <button type="button" class="btn remove-btn btn-danger" aria-label="{{ trans('admin/main.remove') }}"><i class="fa fa-times"></i></button>
                                     </div>
                                 </div>
 

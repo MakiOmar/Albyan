@@ -21,7 +21,7 @@
                             <div class="col-12 col-md-6">
                                 <div id="addAccountTypes">
 
-                                    <button type="button" class="btn btn-success add-btn mb-4 fa fa-plus"></button>
+                                    <button type="button" class="btn btn-success add-btn mb-4 fa fa-plus" aria-label="{{ trans('admin/main.add') }}"></button>
 
                                     <div class="form-group d-flex align-items-start main-row">
                                         <div class="px-2 py-1 border flex-grow-1">

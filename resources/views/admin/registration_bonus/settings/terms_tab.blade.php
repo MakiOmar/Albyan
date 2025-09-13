@@ -54,7 +54,7 @@
 
             <div id="addAccountTypes">
 
-                <button type="button" class="btn btn-success add-btn mb-4 fa fa-plus"></button>
+                <button type="button" class="btn btn-success add-btn mb-4 fa fa-plus" aria-label="{{ trans('admin/main.add') }}"></button>
 
                 @if(!empty($termsValue) and !empty($termsValue['items']))
 

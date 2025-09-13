@@ -12,7 +12,7 @@
             <div class="row">
                 <div class="col-6 col-md-3 mt-30 mt-md-0 d-flex align-items-center justify-content-center">
                     <div class="d-flex flex-column align-items-center text-center">
-                        <img src="/assets/default/img/activity/webinars.svg" width="64" height="64" alt="">
+                        <img src="/assets/default/img/activity/webinars.svg" width="64" height="64" alt="{{ trans('panel.webinars_icon') }}">
                         <strong class="font-30 text-dark-blue font-weight-bold mt-5">{{ !empty($webinars) ? $webinarsCount : 0}}</strong>
                         <span class="font-16 text-gray font-weight-500">{{ trans('panel.classes') }}</span>
                     </div>
@@ -20,7 +20,7 @@
 
                 <div class="col-6 col-md-3 mt-30 mt-md-0 d-flex align-items-center justify-content-center">
                     <div class="d-flex flex-column align-items-center text-center">
-                        <img src="/assets/default/img/activity/hours.svg" width="64" height="64" alt="">
+                        <img src="/assets/default/img/activity/hours.svg" width="64" height="64" alt="{{ trans('panel.hours_icon') }}">
                         <strong class="font-30 text-dark-blue font-weight-bold mt-5">{{ convertMinutesToHourAndMinute($webinarHours) }}</strong>
                         <span class="font-16 text-gray font-weight-500">{{ trans('home.hours') }}</span>
                     </div>
@@ -28,7 +28,7 @@
 
                 <div class="col-6 col-md-3 mt-30 mt-md-0 d-flex align-items-center justify-content-center mt-5 mt-md-0">
                     <div class="d-flex flex-column align-items-center text-center">
-                        <img src="/assets/default/img/activity/sales.svg" width="64" height="64" alt="">
+                        <img src="/assets/default/img/activity/sales.svg" width="64" height="64" alt="{{ trans('panel.sales_icon') }}">
                         <strong class="font-30 text-dark-blue font-weight-bold mt-5">{{ handlePrice($webinarSalesAmount) }}</strong>
                         <span class="font-16 text-gray font-weight-500">{{ trans('cart.total') .' '. trans('panel.webinar_sales') }}</span>
                     </div>
@@ -36,7 +36,7 @@
 
                 <div class="col-6 col-md-3 mt-30 mt-md-0 d-flex align-items-center justify-content-center mt-5 mt-md-0">
                     <div class="d-flex flex-column align-items-center text-center">
-                        <img src="/assets/default/img/activity/download-sales.svg" width="64" height="64" alt="">
+                        <img src="/assets/default/img/activity/download-sales.svg" width="64" height="64" alt="{{ trans('panel.download_sales_icon') }}">
                         <strong class="font-30 text-dark-blue font-weight-bold mt-5">{{ handlePrice($courseSalesAmount) }}</strong>
                         <span class="font-16 text-gray font-weight-500">{{ trans('cart.total') .' '.trans('panel.course_sales') }}</span>
                     </div>

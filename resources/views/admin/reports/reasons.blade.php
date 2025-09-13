@@ -51,7 +51,7 @@
                                                            class="form-control w-auto flex-grow-1"
                                                            placeholder="{{ trans('admin/main.choose_title') }}"/>
 
-                                                    <button type="button" class="btn btn-success add-btn fas fa-plus ml-2"></button>
+                                                    <button type="button" class="btn btn-success add-btn fas fa-plus ml-2" aria-label="{{ trans('admin/main.add') }}"></button>
                                                 </div>
                                                 <div class="text-muted text-small mt-1">{{ trans('admin/main.report_reasons_hint') }}</div>
                                             </div>

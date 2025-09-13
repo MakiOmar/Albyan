@@ -1,6 +1,6 @@
 <section class="home-sections">
     
-    <img src="/store/1/Group1321314336.png" style="position: absolute;z-index: -1;left: 0;top: -50px;height: 170px;">  
+    <img src="/store/1/Group1321314336.png" style="position: absolute;z-index: -1;left: 0;top: -50px;height: 170px;" alt="{{ trans('public.categories_background_decoration') }}">  
         <div class="container text-center">
             <h2 class="section-title section-title-bg mb-4" style="min-width: 200px;position: relative; display: inline-block">
 
@@ -54,5 +54,5 @@
             
         </div>
     </div>  
-    <img src="/store/1/Ellipse.png" style="position: absolute;z-index: -1;right: 0;bottom: -50px;height: 170px;"> 
+    <img src="/store/1/Ellipse.png" style="position: absolute;z-index: -1;right: 0;bottom: -50px;height: 170px;" alt="{{ trans('public.categories_background_decoration_right') }}"> 
 </section>

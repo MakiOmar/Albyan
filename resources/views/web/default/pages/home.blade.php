@@ -509,7 +509,7 @@
                                     <div class="swiper-slide">
                                        
                                         <div class="testimonials-card light-gray-bg position-relative py-15 py-lg-30 px-10 px-lg-20 rounded-sm text-center">
-                                            <img class="google-icon" src="/store/1/icons/google.png">
+                                            <img class="google-icon" src="/store/1/icons/google.png" alt="{{ trans('public.google_icon') }}">
                                             <div class="d-flex flex-column align-items-center">
                                                 <div class="testimonials-user-avatar">
                                                     <img src="{{ $testimonial->user_avatar }}" alt="{{ $testimonial->user_name }}" class="img-cover rounded-circle">
@@ -564,7 +564,7 @@
                         
                             <div class="d-flex justify-content-center align-items-center">
                                 <div class="ms-2 d-flex">
-                                    <img class="google-icon" src="/store/1/icons/google.png">
+                                    <img class="google-icon" src="/store/1/icons/google.png" alt="{{ trans('public.google_icon') }}">
                                     @include('web.default.includes.webinar.rate',['rate' => $rating_reviews['rating'], 'dontShowRate' => false])
                                 </div>
                             </div>
@@ -613,7 +613,7 @@
                                             @endif
 
                                             <div class="plan-icon">
-                                                <img src="{{ $subscribe->icon }}" class="img-cover" alt="">
+                                                <img src="{{ $subscribe->icon }}" class="img-cover" alt="{{ $subscribe->title ?? trans('public.subscription_icon') }}">
                                             </div>
 
                                             <h3 class="mt-20 font-30 text-secondary">{{ $subscribe->title }}</h3>
@@ -1024,6 +1024,16 @@
     <script src="/assets/default/vendors/parallax/parallax.min.js"></script>
     <script src="/assets/default/js/parts/home.min.js"></script>
     <script>
+        // Fix owl carousel dot buttons accessibility
+        $(document).ready(function() {
+            // Add aria-labels to owl carousel dot buttons after initialization
+            setTimeout(function() {
+                $('.owl-dots .owl-dot').each(function(index) {
+                    $(this).attr('aria-label', '{{ trans("public.go_to_slide") }} ' + (index + 1));
+                });
+            }, 1000);
+        });
+        
         function toggleText(button) {
             let hiddenText = button.previousElementSibling;
             if (hiddenText.classList.contains('d-none')) {

@@ -134,7 +134,7 @@
                                             <div class="d-flex align-items-center justify-content-between mb-4">
                                                 <strong class="d-block">{{ trans('update.multi_value') }}</strong>
 
-                                                <button type="button" class="btn btn-success add-btn"><i class="fa fa-plus"></i> Add</button>
+                                                <button type="button" class="btn btn-success add-btn" aria-label="{{ trans('admin/main.add') }}"><i class="fa fa-plus"></i> Add</button>
                                             </div>
 
                                             <div class="multi-values-card">
@@ -150,7 +150,7 @@
                                                                        placeholder="{{ trans('admin/main.choose_title') }}"/>
 
                                                                 <div class="input-group-append">
-                                                                    <button type="button" class="btn remove-btn btn-danger"><i class="fa fa-times"></i></button>
+                                                                    <button type="button" class="btn remove-btn btn-danger" aria-label="{{ trans('admin/main.remove') }}"><i class="fa fa-times"></i></button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -180,7 +180,7 @@
                    placeholder="{{ trans('admin/main.choose_title') }}"/>
 
             <div class="input-group-append">
-                <button type="button" class="btn remove-btn btn-danger"><i class="fa fa-times"></i></button>
+                <button type="button" class="btn remove-btn btn-danger" aria-label="{{ trans('admin/main.remove') }}"><i class="fa fa-times"></i></button>
             </div>
         </div>
     </div>

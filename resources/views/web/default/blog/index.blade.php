@@ -2,7 +2,7 @@
 
 @section('content')
     <section class="site-top-banner search-top-banner opacity-04 position-relative">
-        <img src="{{ getPageBackgroundSettings('blog') }}" class="img-cover" alt=""/>
+        <img src="{{ getPageBackgroundSettings('blog') }}" class="img-cover" alt="{{ trans('public.blog_background') }}"/>
 
         <div class="container h-100">
             <div class="row h-100 align-items-center justify-content-center text-center">

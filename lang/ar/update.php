@@ -1057,7 +1057,7 @@ return [
 'google_console' => 'وحدة تحكم جوجل',
 'extra_meta_tags_hint1' => 'يمكنك تحديد وسوم ميتا إضافية مثل الأمثلة التالية:',
 'extra_meta_tags_hint2' => '<meta name="google-site-verification" content=""******" /> ',
-'extra_meta_tags_hint3' => '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">',
+'extra_meta_tags_hint3' => '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">',
 'extra_meta_tags_hint4' => 'أو وسوم ميتا أخرى',
 
 // New Course Data

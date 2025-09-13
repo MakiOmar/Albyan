@@ -47,7 +47,7 @@
                                                 <label>رسالة الخطأ</label>
                                                 <textarea name="form[error_message]" class="form-control" rows="2" required>{{ $formConfig['error_message'] }}</textarea>
                                             </div>
-                                            <button type="submit" class="btn btn-primary">حفظ الإعدادات</button>
+                                            <button type="submit" class="btn btn-primary" aria-label="{{ trans('admin/main.save_settings') }}">حفظ الإعدادات</button>
                                         </form>
                                     </div>
                                 </div>
@@ -70,7 +70,7 @@
                                                 <label>قالب البريد الإلكتروني</label>
                                                 <input type="text" name="email[template]" class="form-control" value="{{ $emailConfig['template'] }}" required>
                                             </div>
-                                            <button type="submit" class="btn btn-primary">حفظ الإعدادات</button>
+                                            <button type="submit" class="btn btn-primary" aria-label="{{ trans('admin/main.save_settings') }}">حفظ الإعدادات</button>
                                         </form>
                                     </div>
                                 </div>
@@ -83,7 +83,7 @@
                                 <div class="card">
                                     <div class="card-header d-flex justify-content-between align-items-center">
                                         <h4>إدارة المدن</h4>
-                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addCityModal">
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addCityModal" aria-label="{{ trans('admin/main.add_new_city') }}">
                                             إضافة مدينة جديدة
                                         </button>
                                     </div>
@@ -156,7 +156,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">إضافة مدينة جديدة</h5>
-                    <button type="button" class="close" data-dismiss="modal">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ trans('public.close') }}">
                         <span>&times;</span>
                     </button>
                 </div>
@@ -179,7 +179,7 @@
                             <label>علم المدينة (اختياري)</label>
                                                 <div class="input-group">
                         <div class="input-group-prepend">
-                            <button type="button" class="input-group-text admin-file-manager" data-input="city_flag" data-preview="city_flag_preview" data-url="{{ getAdminPanelUrl() }}/laravel-filemanager">
+                            <button type="button" class="input-group-text admin-file-manager" data-input="city_flag" data-preview="city_flag_preview" data-url="{{ getAdminPanelUrl() }}/laravel-filemanager" aria-label="{{ trans('admin/main.upload_file') }}">
                                 <i class="fa fa-arrow-up" class="text-white"></i>
                             </button>
                         </div>
@@ -217,8 +217,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
-                        <button type="submit" class="btn btn-primary">إضافة</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="{{ trans('public.cancel') }}">إلغاء</button>
+                        <button type="submit" class="btn btn-primary" aria-label="{{ trans('admin/main.add') }}">إضافة</button>
                     </div>
                 </form>
             </div>
@@ -231,7 +231,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">تعديل المدينة</h5>
-                    <button type="button" class="close" data-dismiss="modal">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ trans('public.close') }}">
                         <span>&times;</span>
                     </button>
                 </div>
@@ -254,7 +254,7 @@
                             <label>علم المدينة (اختياري)</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <button type="button" class="input-group-text admin-file-manager" data-input="edit_city_flag" data-preview="edit_city_flag_preview" data-url="{{ getAdminPanelUrl() }}/laravel-filemanager">
+                                    <button type="button" class="input-group-text admin-file-manager" data-input="edit_city_flag" data-preview="edit_city_flag_preview" data-url="{{ getAdminPanelUrl() }}/laravel-filemanager" aria-label="{{ trans('admin/main.upload_file') }}">
                                         <i class="fa fa-arrow-up" class="text-white"></i>
                                     </button>
                                 </div>
@@ -298,8 +298,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
-                        <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="{{ trans('public.cancel') }}">إلغاء</button>
+                        <button type="submit" class="btn btn-primary" aria-label="{{ trans('admin/main.save_changes') }}">حفظ التغييرات</button>
                     </div>
                 </form>
             </div>

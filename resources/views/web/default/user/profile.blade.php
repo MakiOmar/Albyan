@@ -82,7 +82,7 @@
             <div class="row mt-30 w-100 d-flex align-items-center justify-content-around">
                 <div class="col-6 col-md-3 user-profile-state d-flex flex-column align-items-center">
                     <div class="state-icon orange p-15 rounded-lg">
-                        <img src="/assets/default/img/profile/students.svg" alt="">
+                        <img src="/assets/default/img/profile/students.svg" alt="{{ trans('public.students_icon') }}">
                     </div>
                     <span class="font-20 text-dark-blue font-weight-bold mt-5">{{ $user->students_count }}</span>
                     <span class="font-14 text-gray">{{ trans('quiz.students') }}</span>
@@ -90,7 +90,7 @@
 
                 <div class="col-6 col-md-3 user-profile-state d-flex flex-column align-items-center">
                     <div class="state-icon blue p-15 rounded-lg">
-                        <img src="/assets/default/img/profile/webinars.svg" alt="">
+                        <img src="/assets/default/img/profile/webinars.svg" alt="{{ trans('public.webinars_icon') }}">
                     </div>
                     <span class="font-20 text-dark-blue font-weight-bold mt-5">{{ count($webinars) }}</span>
                     <span class="font-14 text-gray">{{ trans('webinars.classes') }}</span>
@@ -98,7 +98,7 @@
 
                 <div class="col-6 col-md-3 mt-20 mt-md-0 user-profile-state d-flex flex-column align-items-center">
                     <div class="state-icon green p-15 rounded-lg">
-                        <img src="/assets/default/img/profile/reviews.svg" alt="">
+                        <img src="/assets/default/img/profile/reviews.svg" alt="{{ trans('public.reviews_icon') }}">
                     </div>
                     <span class="font-20 text-dark-blue font-weight-bold mt-5">{{ $user->reviewsCount() }}</span>
                     <span class="font-14 text-gray">{{ trans('product.reviews') }}</span>
@@ -107,7 +107,7 @@
 
                 <div class="col-6 col-md-3 mt-20 mt-md-0 user-profile-state d-flex flex-column align-items-center">
                     <div class="state-icon royalblue p-15 rounded-lg">
-                        <img src="/assets/default/img/profile/appointments.svg" alt="">
+                        <img src="/assets/default/img/profile/appointments.svg" alt="{{ trans('public.appointments_icon') }}">
                     </div>
                     <span class="font-20 text-dark-blue font-weight-bold mt-5">{{ $appointments }}</span>
                     <span class="font-14 text-gray">{{ trans('site.appointments') }}</span>

@@ -67,7 +67,7 @@
                     <div class="d-flex align-items-center justify-content-between mb-4">
                         <strong class="d-block">{{ trans('update.buttons') }}</strong>
 
-                        <button type="button" data-parent="mobile_app_buttons" data-main-row="mobileAppMainRow" class="btn btn-success add-btn"><i class="fa fa-plus"></i> {{ trans('admin/main.add') }}</button>
+                        <button type="button" data-parent="mobile_app_buttons" data-main-row="mobileAppMainRow" class="btn btn-success add-btn" aria-label="{{ trans('admin/main.add') }}"><i class="fa fa-plus"></i> {{ trans('admin/main.add') }}</button>
                     </div>
 
 
@@ -83,7 +83,7 @@
                                     />
 
                                     <div class="input-group-append">
-                                        <button type="button" class="btn remove-btn btn-danger"><i class="fa fa-times"></i></button>
+                                        <button type="button" class="btn remove-btn btn-danger" aria-label="{{ trans('admin/main.remove') }}"><i class="fa fa-times"></i></button>
                                     </div>
                                 </div>
 
@@ -152,7 +152,7 @@
                placeholder="{{ trans('admin/main.choose_title') }}"/>
 
         <div class="input-group-append">
-            <button type="button" class="btn remove-btn btn-danger"><i class="fa fa-times"></i></button>
+            <button type="button" class="btn remove-btn btn-danger" aria-label="{{ trans('admin/main.remove') }}"><i class="fa fa-times"></i></button>
         </div>
     </div>
 

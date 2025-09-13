@@ -12,7 +12,7 @@
             <div class="row">
                 <div class="col-6 col-md-3 mt-30 mt-md-0 d-flex align-items-center justify-content-center">
                     <div class="d-flex flex-column align-items-center text-center">
-                        <img src="/assets/default/img/activity/webinars.svg" width="64" height="64" alt="">
+                        <img src="/assets/default/img/activity/webinars.svg" width="64" height="64" alt="{{ trans('panel.physical_products_icon') }}">
                         <strong class="font-30 text-dark-blue font-weight-bold mt-5">{{ $physicalProducts }}</strong>
                         <span class="font-16 text-gray font-weight-500">{{ trans('update.physical_products') }}</span>
                     </div>
@@ -20,7 +20,7 @@
 
                 <div class="col-6 col-md-3 mt-30 mt-md-0 d-flex align-items-center justify-content-center">
                     <div class="d-flex flex-column align-items-center text-center">
-                        <img src="/assets/default/img/activity/hours.svg" width="64" height="64" alt="">
+                        <img src="/assets/default/img/activity/hours.svg" width="64" height="64" alt="{{ trans('panel.virtual_products_icon') }}">
                         <strong class="font-30 text-dark-blue font-weight-bold mt-5">{{ $virtualProducts }}</strong>
                         <span class="font-16 text-gray font-weight-500">{{ trans('update.virtual_products') }}</span>
                     </div>
@@ -28,7 +28,7 @@
 
                 <div class="col-6 col-md-3 mt-30 mt-md-0 d-flex align-items-center justify-content-center mt-5 mt-md-0">
                     <div class="d-flex flex-column align-items-center text-center">
-                        <img src="/assets/default/img/activity/sales.svg" width="64" height="64" alt="">
+                        <img src="/assets/default/img/activity/sales.svg" width="64" height="64" alt="{{ trans('panel.physical_sales_icon') }}">
                         <strong class="font-30 text-dark-blue font-weight-bold mt-5">{{ !empty($physicalSales) ? handlePrice($physicalSales) : 0 }}</strong>
                         <span class="font-16 text-gray font-weight-500">{{ trans('update.physical_sales') }}</span>
                     </div>
@@ -36,7 +36,7 @@
 
                 <div class="col-6 col-md-3 mt-30 mt-md-0 d-flex align-items-center justify-content-center mt-5 mt-md-0">
                     <div class="d-flex flex-column align-items-center text-center">
-                        <img src="/assets/default/img/activity/download-sales.svg" width="64" height="64" alt="">
+                        <img src="/assets/default/img/activity/download-sales.svg" width="64" height="64" alt="{{ trans('panel.virtual_sales_icon') }}">
                         <strong class="font-30 text-dark-blue font-weight-bold mt-5">{{ !empty($virtualSales) ? handlePrice($virtualSales) : 0 }}</strong>
                         <span class="font-16 text-gray font-weight-500">{{ trans('update.virtual_sales') }}</span>
                     </div>

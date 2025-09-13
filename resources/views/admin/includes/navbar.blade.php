@@ -1,4 +1,4 @@
-<button type="button" class="sidebar-close">
+<button type="button" class="sidebar-close" aria-label="{{ trans('admin/main.close_sidebar') }}">
     <i class="fa fa-times"></i>
 </button>
 

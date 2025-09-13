@@ -238,7 +238,8 @@
 
 <body class="@if($isRtl) rtl @endif">
     <!-- This site is converting visitors into subscribers and customers with https://respond.io -->
-    <script id="respondio__widget" src="https://cdn.respond.io/webchat/widget/widget.js?cId=63dbb8bd5ba43dbcf09b1bfc5df85fd"></script><!-- https://respond.io -->
+    <!--<script id="respondio__widget" src="https://cdn.respond.io/webchat/widget/widget.js?cId=63dbb8bd5ba43dbcf09b1bfc5df85fd"></script>--><!-- https://respond.io -->
+    
     
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WTTKXKPQ"

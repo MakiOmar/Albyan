@@ -56,13 +56,13 @@
             <label class="input-label">{{ trans('update.banner') }}</label>
             <div class="input-group">
                 <div class="input-group-prepend">
-                    <button type="button" class="input-group-text admin-file-manager" data-input="banner" data-preview="holder">
+                    <button type="button" class="input-group-text admin-file-manager" data-input="banner" data-preview="holder" aria-label="{{ trans('admin/main.upload_file') }}">
                         <i class="fa fa-upload"></i>
                     </button>
                 </div>
                 <input type="text" name="banner" id="banner" value="{{ !empty($installment) ? $installment->banner : old('banner') }}" class="form-control @error('banner')  is-invalid @enderror"/>
                 <div class="input-group-append">
-                    <button type="button" class="input-group-text admin-file-view" data-input="banner">
+                    <button type="button" class="input-group-text admin-file-view" data-input="banner" aria-label="{{ trans('admin/main.view_file') }}">
                         <i class="fa fa-eye"></i>
                     </button>
                 </div>
@@ -83,7 +83,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <h5 class="fs-15">{{ trans('update.options') }}</h5>
 
-                <button type="button" class="js-add-btn btn btn-success">
+                <button type="button" class="js-add-btn btn btn-success" aria-label="{{ trans('admin/main.add') }}">
                     <i class="fa fa-plus"></i>
                     {{ trans('update.add_option') }}
                 </button>
@@ -99,7 +99,7 @@
                                class="form-control w-auto flex-grow-1" value="{{ $option }}"/>
 
                         <div class="input-group-append">
-                            <button type="button" class="js-remove-btn btn btn-danger"><i class="fa fa-times"></i></button>
+                            <button type="button" class="js-remove-btn btn btn-danger" aria-label="{{ trans('admin/main.remove') }}"><i class="fa fa-times"></i></button>
                         </div>
                     </div>
                 @endforeach
@@ -111,7 +111,7 @@
                            class="form-control w-auto flex-grow-1"/>
 
                     <div class="input-group-append">
-                        <button type="button" class="js-remove-btn btn btn-danger"><i class="fa fa-times"></i></button>
+                        <button type="button" class="js-remove-btn btn btn-danger" aria-label="{{ trans('admin/main.remove') }}"><i class="fa fa-times"></i></button>
                     </div>
                 </div>
             </div>

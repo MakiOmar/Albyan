@@ -890,7 +890,7 @@
     @if(!empty($getPanelSidebarSettings) and !empty($getPanelSidebarSettings['background']))
         <div class="sidebar-create-class d-none d-md-block">
             <a href="{{ !empty($getPanelSidebarSettings['link']) ? $getPanelSidebarSettings['link'] : '' }}" class="sidebar-create-class-btn d-block text-right p-5">
-                <img src="{{ !empty($getPanelSidebarSettings['background']) ? $getPanelSidebarSettings['background'] : '' }}" alt="">
+                <img src="{{ !empty($getPanelSidebarSettings['background']) ? $getPanelSidebarSettings['background'] : '' }}" alt="{{ trans('panel.create_class_banner') }}">
             </a>
         </div>
     @endif

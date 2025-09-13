@@ -49,7 +49,7 @@
             <a href="/panel/notifications" class="mt-15 font-weight-500 text-dark-blue d-inline-block">{{ trans('panel.view_all_events') }}</a>
 
             <div class="dashboard-banner">
-                <img src="{{ getPageBackgroundSettings('dashboard') }}" alt="" class="img-cover">
+                <img src="{{ getPageBackgroundSettings('dashboard') }}" alt="{{ trans('panel.dashboard_background') }}" class="img-cover">
             </div>
         </div>
     </section>
@@ -60,7 +60,7 @@
             <div class="col-12 col-lg-3 mt-35">
                 <div class="bg-white account-balance rounded-sm panel-shadow py-15 py-md-30 px-10 px-md-20">
                     <div class="text-center">
-                        <img src="/assets/default/img/activity/36.svg" class="account-balance-icon" alt="">
+                        <img src="/assets/default/img/activity/36.svg" class="account-balance-icon" alt="{{ trans('panel.account_balance_icon') }}">
 
                         <h3 class="font-16 font-weight-500 text-gray mt-25">{{ trans('panel.account_balance') }}</h3>
                         <span class="mt-5 d-block font-30 text-secondary">{{ handlePrice($authUser->getAccountingBalance()) }}</span>
@@ -86,7 +86,7 @@
             <div class="col-12 col-lg-3 mt-35">
                 <a href="@if($authUser->isUser()) /panel/webinars/purchases @else /panel/meetings/requests @endif" class="dashboard-stats rounded-sm panel-shadow p-10 p-md-20 d-flex align-items-center">
                     <div class="stat-icon requests">
-                        <img src="/assets/default/img/icons/request.svg" alt="">
+                        <img src="/assets/default/img/icons/request.svg" alt="{{ trans('panel.requests_icon') }}">
                     </div>
                     <div class="d-flex flex-column ml-15">
                         <span class="font-30 text-secondary">{{ !empty($pendingAppointments) ? $pendingAppointments : (!empty($webinarsCount) ? $webinarsCount : 0) }}</span>
@@ -108,7 +108,7 @@
             <div class="col-12 col-lg-3 mt-35">
                 <a href="/panel/support" class="dashboard-stats rounded-sm panel-shadow p-10 p-md-20 d-flex align-items-center">
                     <div class="stat-icon support-messages">
-                        <img src="/assets/default/img/icons/support.svg" alt="">
+                        <img src="/assets/default/img/icons/support.svg" alt="{{ trans('panel.support_icon') }}">
                     </div>
                     <div class="d-flex flex-column ml-15">
                         <span class="font-30 text-secondary">{{ !empty($supportsCount) ? $supportsCount : 0 }}</span>
@@ -118,7 +118,7 @@
 
                 <a href="@if($authUser->isUser()) /panel/webinars/my-comments @else /panel/webinars/comments @endif" class="dashboard-stats rounded-sm panel-shadow p-10 p-md-20 d-flex align-items-center mt-15 mt-md-30">
                     <div class="stat-icon comments">
-                        <img src="/assets/default/img/icons/comment.svg" alt="">
+                        <img src="/assets/default/img/icons/comment.svg" alt="{{ trans('panel.comments_icon') }}">
                     </div>
                     <div class="d-flex flex-column ml-15">
                         <span class="font-30 text-secondary">{{ !empty($commentsCount) ? $commentsCount : 0 }}</span>
