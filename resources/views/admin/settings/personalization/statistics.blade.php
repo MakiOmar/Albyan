@@ -6,7 +6,6 @@
 @endphp
 
 @push('styles_top')
-    <link rel="stylesheet" href="/assets/default/vendors/sweetalert2/dist/sweetalert2.min.css">
     <link href="/assets/default/vendors/sortable/jquery-ui.min.css"/>
     <link rel="stylesheet" href="/assets/admin/vendor/bootstrap-colorpicker/bootstrap-colorpicker.min.css">
 @endpush

@@ -20,7 +20,6 @@
     @if($isRtl)
         <link rel="stylesheet" href="/assets/admin/css/rtl.css">
     @endif
-    <link rel="stylesheet" href="/assets/default/vendors/toast/jquery.toast.min.css">
     <link rel="stylesheet" href="/assets/admin/css/custom.css">
 </head>
 <body class="@if($isRtl) rtl @endif">
@@ -90,6 +89,7 @@
 </script>
 
 <!-- Template JS File -->
+<script src="/assets/default/js/lazy-css-loader.js"></script>
 <script src="/assets/admin/js/scripts.js"></script>
 <script src="/assets/admin/js/custom.js"></script>
 

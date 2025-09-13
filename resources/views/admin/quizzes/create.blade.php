@@ -1,7 +1,6 @@
 @extends('admin.layouts.app')
 
 @push('styles_top')
-    <link rel="stylesheet" href="/assets/default/vendors/sweetalert2/dist/sweetalert2.min.css">
     <link href="/assets/default/vendors/sortable/jquery-ui.min.css"/>
 @endpush
 

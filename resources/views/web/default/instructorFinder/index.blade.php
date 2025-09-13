@@ -1,7 +1,6 @@
 @extends('web.default.layouts.app')
 
 @push('styles_top')
-    <link rel="stylesheet" href="/assets/default/vendors/swiper/swiper-bundle.min.css">
     <link rel="stylesheet" href="/assets/vendors/leaflet/leaflet.css">
     <link rel="stylesheet" href="/assets/vendors/leaflet/leaflet.markercluster/markerCluster.css">
     <link rel="stylesheet" href="/assets/vendors/leaflet/leaflet.markercluster/markerCluster.Default.css">

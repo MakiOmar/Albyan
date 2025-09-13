@@ -13,9 +13,6 @@
     <!-- General CSS File -->
     <link href="/assets/default/css/font.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="/assets/default/vendors/sweetalert2/dist/sweetalert2.min.css">
-    <link rel="stylesheet" href="/assets/default/vendors/toast/jquery.toast.min.css">
-    <link rel="stylesheet" href="/assets/default/vendors/simplebar/simplebar.css">
     <link rel="stylesheet" href="/assets/default/css/app.css">
     <link rel="stylesheet" href="/assets/default/css/panel.css">
 
@@ -159,6 +156,7 @@
 @stack('styles_bottom')
 @stack('scripts_bottom')
 
+<script src="/assets/default/js/lazy-css-loader.js"></script>
 <script src="/assets/default/js//parts/main.min.js"></script>
 <script src="/assets/default/js/panel/public.min.js"></script>
 <script src="/assets/default/js/parts/content_delete.min.js"></script>

@@ -11,7 +11,6 @@
     <!-- General CSS File -->
     <link rel="stylesheet" href="/assets/admin/vendor/bootstrap/bootstrap.min.css"/>
     <link rel="stylesheet" href="/assets/vendors/fontawesome/css/all.min.css"/>
-    <link rel="stylesheet" href="/assets/default/vendors/toast/jquery.toast.min.css">
 
 
     @stack('libraries_top')
@@ -170,6 +169,8 @@
 
 @stack('styles_bottom')
 @stack('scripts_bottom')
+
+<script src="/assets/default/js/lazy-css-loader.js"></script>
 <!-- Loading Overlay -->
 <div class="loading-overlay">
     <div class="loading-content">

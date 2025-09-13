@@ -1,8 +1,6 @@
  @extends('admin.layouts.app')
 
 @push('libraries_top')
-    <link rel="stylesheet" href="/assets/admin/vendor/owl.carousel/owl.carousel.min.css">
-    <link rel="stylesheet" href="/assets/admin/vendor/owl.carousel/owl.theme.min.css">
 
 @endpush
 

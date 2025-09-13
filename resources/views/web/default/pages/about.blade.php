@@ -30,7 +30,6 @@
         }
 </style>
 </head>
-<link rel="stylesheet" href="/assets/default/vendors/swiper/swiper-bundle.min.css">
 <!-- Lightbox2 CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
 
