@@ -21,7 +21,7 @@
     <!-- General CSS File -->
     <link href="/assets/default/css/font.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="/assets/default/css/app.min.css">
+    <link rel="stylesheet" href="/assets/default/css/app.min.css?v={{ time() }}">
     <link rel="stylesheet" href="/assets/default/css/panel.min.css">
 
     @if($isRtl)

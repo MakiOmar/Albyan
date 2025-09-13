@@ -20,7 +20,7 @@
     <link rel="preconnect" href="https://maxcdn.bootstrapcdn.com">
 
     <!-- General CSS File -->
-    <link rel="stylesheet" href="/assets/default/css/app.min.css">
+    <link rel="stylesheet" href="/assets/default/css/app.min.css?v={{ time() }}">
 
     @if($isRtl)
         <link rel="stylesheet" href="/assets/default/css/rtl-app.min.css">
