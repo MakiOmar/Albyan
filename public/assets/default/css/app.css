@@ -14887,6 +14887,10 @@ p {
   }
 }
 
+.language-select {
+  min-width: 108px;
+}
+
 .language-select .dropdown-menu {
   padding: 20px;
   min-width: 15rem;
