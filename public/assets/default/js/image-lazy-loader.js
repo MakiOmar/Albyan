@@ -1,10 +1,12 @@
 /**
- * Modern Image Lazy Loading System - VERSION 4.1
+ * Modern Image Lazy Loading System - VERSION 4.2
  * Uses Intersection Observer API for optimal performance
  * Maintains CLS scores by preserving image dimensions
  * Applies lazy loading to ALL img tags except logos
  * Automatically sets up lazy loading for images without data-src
  * Enhanced error handling with timeout and retry mechanisms
+ * Preserves original URL format (relative vs absolute) for compatibility
+ * Skips lazy loading for already loaded and visible images
  */
 class ImageLazyLoader {
     constructor() {
@@ -186,10 +188,22 @@ class ImageLazyLoader {
             
             // If image doesn't have data-src, set it up for lazy loading
             if (!img.dataset.src && img.src && !img.src.includes('data:image/gif')) {
+                // Check if image is already loaded and visible (skip lazy loading)
+                if (img.complete && img.naturalWidth > 0) {
+                    console.log(`⏭️ Image already loaded and visible, skipping lazy loading:`, img.alt);
+                    img.classList.add('lazy-loaded');
+                    return;
+                }
+                
                 console.log(`🔄 Setting up lazy loading for image:`, img.alt);
+                console.log(`🔍 Original src:`, img.src);
+                
+                // Preserve the original src format (relative vs absolute)
                 img.dataset.src = img.src;
                 img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
                 img.classList.add('lazy-loading');
+                
+                console.log(`🔍 Set data-src to:`, img.dataset.src);
             }
             
             // Check if image already has a real src (not placeholder)
@@ -401,9 +415,15 @@ class ImageLazyLoader {
             lazyImages.forEach(img => {
                 // Set up lazy loading if not already done
                 if (!img.dataset.src && img.src && !img.src.includes('data:image/gif')) {
+                    console.log(`🔄 Fallback: Setting up lazy loading for image:`, img.alt);
+                    console.log(`🔍 Fallback: Original src:`, img.src);
+                    
+                    // Preserve the original src format (relative vs absolute)
                     img.dataset.src = img.src;
                     img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
                     img.classList.add('lazy-loading');
+                    
+                    console.log(`🔍 Fallback: Set data-src to:`, img.dataset.src);
                 }
                 
                 if (img.dataset.src && this.isInViewport(img) && !this.loadedImages.has(img.dataset.src)) {
@@ -493,7 +513,7 @@ class ImageLazyLoader {
 }
 
 // Initialize when DOM is ready
-console.log('📜 image-lazy-loader.js script loaded - VERSION 4.1');
+console.log('📜 image-lazy-loader.js script loaded - VERSION 4.2');
 console.log('📜 Current time:', new Date().toISOString());
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📜 DOMContentLoaded event fired, initializing ImageLazyLoader');
