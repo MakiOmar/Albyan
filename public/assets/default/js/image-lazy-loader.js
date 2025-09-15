@@ -1,9 +1,10 @@
 /**
- * Modern Image Lazy Loading System - VERSION 4.0
+ * Modern Image Lazy Loading System - VERSION 4.1
  * Uses Intersection Observer API for optimal performance
  * Maintains CLS scores by preserving image dimensions
  * Applies lazy loading to ALL img tags except logos
  * Automatically sets up lazy loading for images without data-src
+ * Enhanced error handling with timeout and retry mechanisms
  */
 class ImageLazyLoader {
     constructor() {
@@ -254,6 +255,7 @@ class ImageLazyLoader {
         
         // Create a new image to preload
         const imageLoader = new Image();
+        imageLoader.crossOrigin = 'anonymous'; // Allow cross-origin requests
         console.log('🖼️ Created new Image object for:', img.dataset.src);
         
         imageLoader.onload = () => {
@@ -315,11 +317,14 @@ class ImageLazyLoader {
             }
         };
 
-        imageLoader.onerror = () => {
+        imageLoader.onerror = (error) => {
             // Handle loading error
             console.error('❌ Failed to load image:', img.dataset.src);
             console.error('❌ Image alt:', img.alt);
             console.error('❌ Attempted URL:', imageLoader.src);
+            console.error('❌ Error details:', error);
+            console.error('❌ Error type:', error.type);
+            console.error('❌ Error target:', error.target);
             
             img.classList.remove('lazy-loading');
             img.classList.add('lazy-error');
@@ -328,9 +333,46 @@ class ImageLazyLoader {
             if (img.dataset.fallback) {
                 console.log('🔄 Using fallback image:', img.dataset.fallback);
                 img.src = img.dataset.fallback;
+                img.classList.remove('lazy-error');
+                img.classList.add('lazy-loaded');
             } else {
-                console.log('🔄 No fallback available, keeping error state');
+                // Try to load the image directly as a fallback
+                console.log('🔄 No fallback available, trying direct load');
+                const directImage = new Image();
+                directImage.onload = () => {
+                    console.log('✅ Direct load successful:', img.dataset.src);
+                    img.src = img.dataset.src;
+                    img.classList.remove('lazy-error');
+                    img.classList.add('lazy-loaded');
+                };
+                directImage.onerror = () => {
+                    console.log('🔄 Direct load failed, using placeholder');
+                    img.src = '/assets/default/img/placeholder.svg';
+                    img.classList.remove('lazy-error');
+                    img.classList.add('lazy-loaded');
+                };
+                directImage.src = img.dataset.src;
             }
+        };
+
+        // Set a timeout for image loading
+        const loadTimeout = setTimeout(() => {
+            console.warn('⏰ Image loading timeout:', img.dataset.src);
+            imageLoader.onerror(new Error('Loading timeout'));
+        }, 10000); // 10 second timeout
+
+        // Clear timeout when image loads successfully
+        const originalOnload = imageLoader.onload;
+        imageLoader.onload = () => {
+            clearTimeout(loadTimeout);
+            originalOnload();
+        };
+
+        // Clear timeout when image fails to load
+        const originalOnerror = imageLoader.onerror;
+        imageLoader.onerror = (error) => {
+            clearTimeout(loadTimeout);
+            originalOnerror(error);
         };
 
         // Start loading
@@ -422,15 +464,52 @@ class ImageLazyLoader {
         this.fixUndefinedImages();
         this.refresh();
     }
+
+    // Public method to retry failed images
+    retryFailedImages() {
+        const failedImages = document.querySelectorAll('img.lazy-error');
+        console.log(`🔄 Retrying ${failedImages.length} failed images`);
+        
+        failedImages.forEach(img => {
+            if (img.dataset.src) {
+                console.log('🔄 Retrying image:', img.alt || img.dataset.src);
+                img.classList.remove('lazy-error');
+                img.classList.add('lazy-loading');
+                this.loadImage(img);
+            }
+        });
+    }
+
+    // Method to check if an image URL is accessible
+    async checkImageAccessibility(url) {
+        try {
+            const response = await fetch(url, { method: 'HEAD' });
+            return response.ok;
+        } catch (error) {
+            console.warn('⚠️ Image accessibility check failed:', url, error);
+            return false;
+        }
+    }
 }
 
 // Initialize when DOM is ready
-console.log('📜 image-lazy-loader.js script loaded - VERSION 4.0');
+console.log('📜 image-lazy-loader.js script loaded - VERSION 4.1');
 console.log('📜 Current time:', new Date().toISOString());
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📜 DOMContentLoaded event fired, initializing ImageLazyLoader');
     window.imageLazyLoader = new ImageLazyLoader();
     console.log('📜 ImageLazyLoader instance created:', window.imageLazyLoader);
+    
+    // Add global method to retry failed images
+    window.retryFailedImages = () => {
+        if (window.imageLazyLoader) {
+            window.imageLazyLoader.retryFailedImages();
+        } else {
+            console.error('❌ ImageLazyLoader not available');
+        }
+    };
+    
+    console.log('📜 Global method available: window.retryFailedImages()');
 });
 
 // Also initialize if DOM is already loaded
