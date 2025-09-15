@@ -17,6 +17,9 @@
     <link rel="preconnect" href="https://maxcdn.bootstrapcdn.com">
     <link rel="preconnect" href="https://connect.facebook.net">
 
+    <!-- Font Preload -->
+    <link rel="preload" href="https://albyaninstitute.com/store/1/fonts/cairo-regular-webfont.woff2" as="font" type="font/woff2" crossorigin>
+
     <!-- General CSS File -->
     <link rel="stylesheet" href="/assets/admin/vendor/bootstrap/bootstrap.min.css"/>
     <link rel="stylesheet" href="/assets/vendors/fontawesome/css/all.min.css"/>
