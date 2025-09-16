@@ -37,7 +37,7 @@
                                         <tr>
                                             <td>
                                                 @if(!empty($category->icon))
-                                                    <img src="{{ $category->icon }}" width="30" alt="">
+                                                    <img src="{{ $category->icon }}" width="30" alt="{{ $category->title }}">
                                                 @else
                                                     -
                                                 @endif
