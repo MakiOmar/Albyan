@@ -22,7 +22,7 @@
     </style>
 </head>
 <body>
-<iframe src="{{ $iframUrl }}" frameborder="0"></iframe>
+<iframe src="{{ $iframUrl }}" frameborder="0" title="Payment Gateway"></iframe>
 </body>
 </html>
 

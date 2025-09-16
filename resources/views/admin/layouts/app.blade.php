@@ -45,6 +45,10 @@
         {!! getThemeColorsSettings(true) !!}
     </style>
     <style>
+        .mask{
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
         /* Loading overlay styles */
         .loading-overlay {
             position: fixed;

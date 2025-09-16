@@ -87,7 +87,8 @@
                                              scrolling="no" 
                                              marginheight="0" 
                                              marginwidth="0"
-                                             src="https://maps.google.com/maps?q={{ $city['latitude'] }},{{ $city['longitude'] }}&hl=ar&z=15&output=embed">
+                                             src="https://maps.google.com/maps?q={{ $city['latitude'] }},{{ $city['longitude'] }}&hl=ar&z=15&output=embed"
+                                             title="City Location Map - {{ $city['name'] ?? 'Location' }}">
                                          </iframe>
                                      </div>
                                     <a href="https://maps.google.com/?q={{ $city['latitude'] }},{{ $city['longitude'] }}" target="_blank" class="map-link">

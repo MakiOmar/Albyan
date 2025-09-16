@@ -46,7 +46,7 @@
             @foreach($trendCategories as $trend)
                 <div class="col-md-3 p-2">
                     <a href="{{ $trend->category->getUrl() }}" class="btn trendy-category btn-outline text-dark rounded-pill px-4 py-2 d-flex align-items-center" style="border: 1px solid #000">
-                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $trend->getIcon() }}" class="ml-1" style="max-height: 20px" alt="{{ $trend->category->title }}" width="20" height="20">
+                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $trend->getIcon() }}" class="ml-1" style="height: 20px;width: 20px;" alt="{{ $trend->category->title }}" width="20" height="20">
                         {{ $trend->category->title }}
                     </a>
                 </div>

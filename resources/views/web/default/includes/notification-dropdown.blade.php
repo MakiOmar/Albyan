@@ -1,5 +1,5 @@
 <div class="dropdown">
-    <button type="button" class="btn btn-transparent dropdown-toggle" {{ (empty($unReadNotifications) or count($unReadNotifications) < 1) ? 'disabled' : '' }} id="navbarNotification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="{{ trans('panel.notifications') }}">
+    <button type="button" class="btn btn-transparent dropdown-toggle" {{ (empty($unReadNotifications) or count($unReadNotifications) < 1) ? 'disabled' : '' }} id="navbarNotification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="{{ trans('panel.notifications') }}" style="width: 30px;height: 48px;">
         <i data-feather="bell" width="20" height="20" class="mr-10"></i>
 
         @if(!empty($unReadNotifications) and count($unReadNotifications))

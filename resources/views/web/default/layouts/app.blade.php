@@ -39,6 +39,16 @@
         {!! getThemeFontsSettings() !!}
 
         {!! getThemeColorsSettings() !!}
+        .flagstrap button{
+            color: #fff;
+        }
+        #login-button{
+            font-weight: bold;
+        }
+        .btn-border-white {
+            background-color: #01477d;
+            color: #fff;
+        }
     </style>
 
 
@@ -57,6 +67,28 @@
             --main-color: #01477d;
             --font-size-large: 20px;
         }
+        @media (min-width: 768px) {
+            .slider-container{
+                height: 600px;
+                width: 100vw;
+                background-color: rgba(0,0,0,0.3);
+                padding: 0;
+            }
+            .slider-container #homeHeroVideoBackground {
+                position: relative;
+                height: 600px;
+            }
+        }
+        #app{
+            overflow-x: hidden;
+        }
+        .mask {
+            display: none;
+        }
+        .slider-container{
+            overflow: hidden;
+        }
+        
         .blue-bg{
             background-color: var(--main-color)!important;
         }
@@ -252,7 +284,7 @@
     
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WTTKXKPQ"
-        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 <div id="app" class="{{ (!empty($floatingBar) and $floatingBar->position == 'top' and $floatingBar->fixed) ? 'has-fixed-top-floating-bar' : '' }}">
     @if(!empty($floatingBar) and $floatingBar->position == 'top')

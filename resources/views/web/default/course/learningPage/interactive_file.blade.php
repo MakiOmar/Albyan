@@ -10,7 +10,7 @@
 @if(!empty($iframe))
     {!! $iframe !!}
 @else
-    <iframe src="{{ $path }}" frameborder="0" allowfullscreen class="interactive-file-iframe"></iframe>
+    <iframe src="{{ $path }}" frameborder="0" allowfullscreen class="interactive-file-iframe" title="Interactive Course Content"></iframe>
 @endif
 </body>
 </html>

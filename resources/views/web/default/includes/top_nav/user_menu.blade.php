@@ -95,7 +95,7 @@
         </div>
     </div>
 @else
-    <div class="d-flex align-items-center ml-md-50">
+    <div class="d-flex align-items-center ml-md-50" style="min-width: 200px;">
         <a href="/login" id="login-button" class="login-register-button py-10 px-10 mr-10 text-dark-blue font-14 text-white bg-white blue-txt">{{ trans('auth.login') }}</a>
         <a href="/register" id="register-button" class="login-register-button py-10 px-10 text-dark-blue font-14 text-white">{{ trans('auth.register') }}</a>
     </div>
