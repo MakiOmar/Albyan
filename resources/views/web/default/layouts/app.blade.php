@@ -87,6 +87,7 @@
         }
         .slider-container{
             overflow: hidden;
+            background-color: rgba(0,0,0,0.3);
         }
         
         .blue-bg{
@@ -189,11 +190,12 @@
                         display: none;
                     }
                     .text-blue {
-                        color: #699ab1;
+                        color: #01477d;
                         cursor: pointer;
                         background: none;
                         border: none;
                         cursor: pointer;
+                        font-weight: bold;
                     }
                     .testimonials-container .testimonials-card {
                         min-height: 275px;

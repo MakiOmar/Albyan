@@ -40,7 +40,7 @@
 
                                         <tr>
                                             <td>
-                                                <img src="{{ $category->icon }}" width="30" alt="{{ $category->title }}">
+                                                <img src="{{ $category->icon }}" width="30" alt="">
                                             </td>
                                             <td class="text-left">{{ $category->title }}</td>
                                             <td>{{ $category->getSelfAndChideProductsCount(\App\Models\Product::$physical) }}</td>

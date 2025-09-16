@@ -57,7 +57,7 @@
                                                     <a href="{{ $category->getUrl() }}" class="{{ (!empty($category->subCategories) and count($category->subCategories)) ? 'js-has-subcategory' : '' }}">
                                                         <div class="d-flex align-items-center">
                                                             @if(!empty($category->icon))
-                                                                <img src="{{ $category->icon }}" class="cat-dropdown-menu-icon mr-10" alt="{{ $category->title }} icon">
+                                                                <img src="{{ $category->icon }}" class="cat-dropdown-menu-icon mr-10" alt="">
                                                             @endif
 
                                                             {{ $category->title }}
@@ -75,7 +75,7 @@
                                                                 <li>
                                                                     <a href="{{ $subCategory->getUrl() }}">
                                                                         @if(!empty($subCategory->icon))
-                                                                            <img src="{{ $subCategory->icon }}" class="cat-dropdown-menu-icon mr-10" alt="{{ $subCategory->title }} icon">
+                                                                            <img src="{{ $subCategory->icon }}" class="cat-dropdown-menu-icon mr-10" alt="">
                                                                         @endif
 
                                                                         {{ $subCategory->title }}

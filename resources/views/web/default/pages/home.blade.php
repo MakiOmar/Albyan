@@ -512,7 +512,7 @@
                                                 <div class="testimonials-user-avatar">
                                                     <img src="{{ $testimonial->user_avatar }}" alt="{{ $testimonial->user_name }}" class="img-cover rounded-circle">
                                                 </div>
-                                                <h4 class="font-16 font-weight-bold text-secondary mt-30">{{ $testimonial->user_name }}</h4>
+                                                <h3 class="font-16 font-weight-bold text-secondary mt-30">{{ $testimonial->user_name }}</h3>
                                                 <span class="d-block font-14 text-gray">{{ $testimonial->user_bio }}</span>
                                                 @include('web.default.includes.webinar.rate',['rate' => $testimonial->rate, 'dontShowRate' => true])
                                             </div>
@@ -524,7 +524,7 @@
                                                 $visibleText = implode(' ', array_slice($words, 0, $maxWords));
                                                 $hiddenText = implode(' ', array_slice($words, $maxWords));
                                             @endphp
-                                            <p class="mt-25 text-gray font-14">
+                                            <p class="mt-25 font-14">
                                                 {!! e($visibleText) !!}
                                                 @if(!empty($hiddenText))
                                                     <span class="hidden-text d-none">{!! e($hiddenText) !!}</span>
@@ -558,7 +558,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card text-center p-4 shadow-lg">
-                            <h5 class="fw-bold">معهد البيان للخدمات التعليمية</h5>
+                            <h1 class="fw-bold">معهد البيان للخدمات التعليمية</h1>
                         
                             <div class="d-flex justify-content-center align-items-center">
                                 <div class="ms-2 d-flex">

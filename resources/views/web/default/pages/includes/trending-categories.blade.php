@@ -10,7 +10,7 @@
                         <div class="trending-card d-flex flex-column align-items-center w-100">
                             <div class="trending-image d-flex align-items-center justify-content-center w-100" style="background-color: {{ $trend->color }}">
                                 <div class="icon mb-3">
-                                    <img src="{{ $trend->getIcon() }}" width="10" class="img-cover" alt="{{ $trend->category->title }}">
+                                    <img src="{{ $trend->getIcon() }}" width="10" class="img-cover" alt="">
                                 </div>
                             </div>
 

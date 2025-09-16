@@ -68,7 +68,7 @@
                 </div>
 
                 <div class="footer-social mt-2 mb-4">
-                    <h3>تابعنا على</h3>
+                    <h1>تابعنا على</h1>
                     @include('web.default.includes.title_border')
                     @if(!empty($socials) and count($socials))
                     <div class="mt-2">
@@ -81,7 +81,7 @@
                     @endif
                 </div>
 
-                <h3>روابط هامة</h3>
+                <h1>روابط هامة</h1>
                 @include('web.default.includes.title_border')
                 
                 <ul class="list-unstyled  mt-4">
@@ -93,14 +93,14 @@
             </div>
 
             <div class="col-md-4 info-section">
-              <h3>معلومات عنا</h3>
+              <h1>معلومات عنا</h1>
               @include('web.default.includes.title_border')
                 <p class=" mt-4">معهد البيان للخدمات التعليمية يقدم تجربة تعليمية متميزة مع نخبة من المحاضرين والخبراء في مختلف المجالات. يقدم المعهد مئات الدبلومات التدريبية الاحترافية المصممة لتلبية احتياجات سوق العمل، مع خيارات مرنة في الحضور من مقر المعهد أو الدراسة أون لاين. يمنح المعهد شهادات معتمدة محلياً ودولياً تعزز من مكانتك المهنية وينظم حفل تخرج سنوي ضخم لتكريم اعداد كبيرة من خريجي المعهدبمختلف التخصصات بحضور شخصيات هامة. انضم إلى معهد البيان للارتقاء بمسارك المهني. </p>
             </div>
 
                         
             <div class="col-md-5 info-section">
-                <h3>اتصل بنا</h3>
+                <h1>اتصل بنا</h1>
                 @include('web.default.includes.title_border')
                 <ul class="list-unstyled mt-4">
                 <li class="pb-2 d-flex align-items-center">

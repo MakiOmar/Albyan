@@ -109,7 +109,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card text-center p-4 shadow-lg">
-                            <h5 class="fw-bold">معهد البيان للخدمات التعليمية</h5>
+                            <h1 class="fw-bold">معهد البيان للخدمات التعليمية</h1>
                         
                             <div class="d-flex justify-content-center align-items-center">
                                 <div class="ms-2 d-flex">
