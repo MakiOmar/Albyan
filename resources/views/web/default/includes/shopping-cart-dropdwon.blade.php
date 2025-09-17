@@ -1,4 +1,3 @@
-{{--
 <div class="dropdown">
 
     @if((empty($userCarts) or count($userCarts) < 1) and !empty($userCartDiscount))
@@ -76,4 +75,3 @@
         </div>
     </div>
 </div>
---}}

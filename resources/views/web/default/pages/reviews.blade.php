@@ -65,7 +65,7 @@
                                                     <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $testimonial->user_avatar }}" alt="{{ $testimonial->user_name }}" class="img-cover rounded-circle" width="50" height="50">
                                                 </div>
                                                 <h4 class="font-16 font-weight-bold text-secondary mt-30">{{ $testimonial->user_name }}</h4>
-                                                <span class="d-block font-14 text-gray">{{ $testimonial->user_bio }}</span>
+                                                <span class="d-block font-14">{{ $testimonial->user_bio }}</span>
                                                 @include('web.default.includes.webinar.rate',['rate' => $testimonial->rate, 'dontShowRate' => true])
                                             </div>
                                             @php
@@ -75,7 +75,7 @@
                                                 $visibleText = implode(' ', array_slice($words, 0, $maxWords));
                                                 $hiddenText = implode(' ', array_slice($words, $maxWords));
                                             @endphp
-                                            <p class="mt-25 text-gray font-14">
+                                            <p class="mt-25 font-14">
                                                 {!! nl2br(e($visibleText)) !!}
                                                 @if(!empty($hiddenText))
                                                     <span class="hidden-text d-none">{!! nl2br(e($hiddenText)) !!}</span>

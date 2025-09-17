@@ -275,6 +275,15 @@
                 padding: 5px 8px;
             }
         }
+        @media (min-width: 76px) and (max-width: 1200px) {
+            .footer-social a {
+                padding: 2px !important;
+                margin: 3px !important;
+            }
+        }
+        @media (min-width: 768px) and (max-width: 1200px) {
+            
+        }
     </style>
     
 </head>
