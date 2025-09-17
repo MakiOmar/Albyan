@@ -1,5 +1,5 @@
 <div class="dropdown">
-    <button type="button" class="btn btn-transparent dropdown-toggle" {{ (empty($unReadNotifications) or count($unReadNotifications) < 1) ? 'disabled' : '' }} id="navbarNotification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="{{ trans('panel.notifications') }}" style="width: 30px;height: 48px;">
+    <button type="button" class="btn btn-transparent dropdown-toggle" {{ (empty($unReadNotifications) or count($unReadNotifications) < 1) ? 'disabled' : '' }} id="navbarNotification{{ isset($isMobileFooter) ? 'Mobile' : '' }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="{{ trans('panel.notifications') }}" style="width: 30px;height: 48px;">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell mr-10"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
 
         @if(!empty($unReadNotifications) and count($unReadNotifications))
@@ -7,7 +7,7 @@
         @endif
     </button>
 
-    <div class="dropdown-menu pt-20" aria-labelledby="navbarNotification">
+    <div class="dropdown-menu pt-20" aria-labelledby="navbarNotification{{ isset($isMobileFooter) ? 'Mobile' : '' }}">
         <div class="d-flex flex-column h-100">
             <div class="mb-auto navbar-notification-card" data-simplebar>
                 <div class="d-md-none border-bottom mb-20 pb-10 text-right">

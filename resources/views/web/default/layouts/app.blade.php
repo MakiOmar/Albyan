@@ -308,6 +308,9 @@
         .mobile-footer-btn-container .dropdown-toggle::after {
             display: none;
         }
+        #mobile-footer-bar .dropdown-menu {
+            transform: initial !important;
+        }
         .mobile-footer-content {
             display: flex;
             justify-content: space-between;
@@ -764,11 +767,13 @@
             
             <!-- Shopping Cart -->
             <div class="mobile-footer-btn-container">
+                @php $isMobileFooter = true; @endphp
                 @include('web.default.includes.shopping-cart-dropdwon')
             </div>
             
             <!-- Notifications -->
             <div class="mobile-footer-btn-container">
+                @php $isMobileFooter = true; @endphp
                 @include('web.default.includes.notification-dropdown')
             </div>
         </div>
