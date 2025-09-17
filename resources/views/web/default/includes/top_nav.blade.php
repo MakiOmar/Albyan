@@ -13,7 +13,7 @@
 @endphp
 
 <div class="top-navbar d-flex border-bottom blue-bg">
-    <div id="top-nav-container" class="container d-flex justify-content-between align-items-center flex-column flex-lg-row">
+    <div id="top-nav-container" class="container d-flex justify-content-between align-items-center flex-lg-row">
         <div class="top-contact-box border-bottom d-flex flex-column flex-md-row align-items-center justify-content-center">
 
             @if(getOthersPersonalizationSettings('platform_phone_and_email_position') == 'header')

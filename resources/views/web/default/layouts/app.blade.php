@@ -275,6 +275,164 @@
                 padding: 5px 8px;
             }
         }
+        @media (max-width: 960px) {
+            .footer-social,
+            .navbar-search,
+            .shopping-cart-dropdown,
+            .notification-dropdown {
+                display: none !important;
+            }
+            
+            #mobile-footer-bar {
+                display: block !important;
+            }
+        }
+        
+        /* Mobile Footer Bar Styles */
+        .mobile-footer-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #01477d;
+            border-top: 1px solid #fff;
+            z-index: 1000;
+            padding: 10px 0;
+        }
+        
+        .mobile-footer-content {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .mobile-footer-btn {
+            background: none;
+            border: none;
+            color: white;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            min-height: 40px;
+            transition: background-color 0.3s;
+        }
+        
+        .mobile-footer-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .mobile-footer-btn-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mobile-footer-btn-container .dropdown-toggle {
+            background: none;
+            border: none;
+            color: white;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            min-height: 40px;
+        }
+        
+        .mobile-footer-btn-container .dropdown-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .mobile-social-bar {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+            background: #01477d;
+            border-top: 1px solid #fff;
+            padding: 15px;
+        }
+        
+        .mobile-social-content {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .mobile-social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+        
+        .mobile-social-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .mobile-search-form {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+            background: #01477d;
+            border-top: 1px solid #fff;
+            padding: 15px;
+        }
+        
+        .mobile-search-content {
+            display: flex;
+            gap: 10px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .mobile-search-content input {
+            flex: 1;
+            border-radius: 20px;
+            border: none;
+            padding: 8px 15px;
+        }
+        
+        .mobile-search-content button {
+            border-radius: 20px;
+            padding: 8px 15px;
+        }
+        
+        /* Mobile Footer Dropdown Styles */
+        .mobile-footer-bar .dropdown-menu {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 10px;
+            min-width: 250px;
+        }
+        
+        .mobile-footer-bar .dropdown-menu.show {
+            display: block;
+        }
+        
+        /* Ensure mobile footer bar has proper z-index for dropdowns */
+        .mobile-footer-bar {
+            z-index: 1050;
+        }
+        
+        .mobile-footer-bar .dropdown-menu {
+            z-index: 1051;
+        }
         @media (max-width: 767px) {
             #top-nav-container {
                 flex-direction: column !important;
@@ -286,6 +444,11 @@
                 margin: 3px !important;
                 min-width: 20px !important;
                 min-height: 20px !important;
+            }
+        }
+        @media (min-width: 768px) {
+            .container-md, .container-sm, .container {
+                max-width: 1200px !important;
             }
         }
     </style>
@@ -502,10 +665,137 @@
         });
     }
     applyParentImageColorChange('.trendy-category', 'hover', '#ffffff', true);
+    
+    // Mobile Footer Bar Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileSocialToggle = document.getElementById('mobile-social-toggle');
+        const mobileSearchToggle = document.getElementById('mobile-search-toggle');
+        const mobileSocialBar = document.getElementById('mobile-social-bar');
+        const mobileSearchForm = document.getElementById('mobile-search-form');
+        
+        if (mobileSocialToggle && mobileSocialBar) {
+            mobileSocialToggle.addEventListener('click', function() {
+                // Close search form if open
+                if (mobileSearchForm) {
+                    mobileSearchForm.classList.add('d-none');
+                }
+                
+                // Toggle social bar
+                mobileSocialBar.classList.toggle('d-none');
+            });
+        }
+        
+        if (mobileSearchToggle && mobileSearchForm) {
+            mobileSearchToggle.addEventListener('click', function() {
+                // Close social bar if open
+                if (mobileSocialBar) {
+                    mobileSocialBar.classList.add('d-none');
+                }
+                
+                // Toggle search form
+                mobileSearchForm.classList.toggle('d-none');
+            });
+        }
+        
+        // Close mobile bars when clicking outside
+        document.addEventListener('click', function(event) {
+            if (mobileSocialBar && !mobileSocialBar.contains(event.target) && !mobileSocialToggle.contains(event.target)) {
+                mobileSocialBar.classList.add('d-none');
+            }
+            
+            if (mobileSearchForm && !mobileSearchForm.contains(event.target) && !mobileSearchToggle.contains(event.target)) {
+                mobileSearchForm.classList.add('d-none');
+            }
+        });
+        
+        // Close mobile bars on window resize to desktop
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 960) {
+                if (mobileSocialBar) mobileSocialBar.classList.add('d-none');
+                if (mobileSearchForm) mobileSearchForm.classList.add('d-none');
+            }
+        });
+    });
 </script>
 
     @include('web.default.partials.floating_city_bar')
     @include('web.default.includes.whatsapp-chat')
+
+    <!-- Mobile Footer Bar -->
+    <div id="mobile-footer-bar" class="mobile-footer-bar d-none">
+        <div class="mobile-footer-content">
+            <!-- Social Media Icon -->
+            <button id="mobile-social-toggle" class="mobile-footer-btn" title="Social Media">
+                <i data-feather="share-2" width="20" height="20"></i>
+            </button>
+            
+            <!-- Search Icon -->
+            <button id="mobile-search-toggle" class="mobile-footer-btn" title="Search">
+                <i data-feather="search" width="20" height="20"></i>
+            </button>
+            
+            <!-- Shopping Cart -->
+            <div class="mobile-footer-btn-container">
+                @include('web.default.includes.shopping-cart-dropdwon')
+            </div>
+            
+            <!-- Notifications -->
+            <div class="mobile-footer-btn-container">
+                @include('web.default.includes.notification-dropdown')
+            </div>
+        </div>
+        
+        <!-- Mobile Social Media Bar -->
+        <div id="mobile-social-bar" class="mobile-social-bar d-none">
+            <div class="mobile-social-content">
+                @php
+                    $socials = getSocials();
+                    
+                    if (!empty($socials) && count($socials)) {
+                        $socials = collect($socials)->sortBy('order')->values()->toArray();
+
+                        foreach ($socials as $id => $social) {
+                            if ($social['title'] == 'Facebook') {
+                                $socials[$id]['image'] = '/store/1/socials/211902_social_facebook.png';
+                            } elseif ($social['title'] == 'Twitter') {
+                                $socials[$id]['image'] = '/store/1/socials/11244080_x_twitter.png';
+                            } elseif ($social['title'] == 'Instagram') {
+                                $socials[$id]['image'] = '/store/1/socials/1161953_instagram_icon.png';
+                            } elseif ($social['title'] == 'Whatsapp') {
+                                $socials[$id]['image'] = '/store/1/socials/7156624_whatsapp.png';
+                            } elseif ($social['title'] == 'Snapchat') {
+                                $socials[$id]['image'] = '/store/1/socials/1851684_snap chat.png';
+                            } elseif ($social['title'] == 'Linkedin') {
+                                $socials[$id]['image'] = '/store/1/socials/367593_linkedin.png';
+                            } elseif ($social['title'] == 'Tik Tok') {
+                                $socials[$id]['image'] = '/store/1/socials/8547041_tiktok.png';
+                            } elseif ($social['title'] == 'Youtube') {
+                                $socials[$id]['image'] = '/store/1/socials/4375133_youtube.png';
+                            }
+                        }
+                    }
+                @endphp
+                
+                @if(!empty($socials) && count($socials))
+                    @foreach($socials as $social)
+                        <a href="{{ $social['link'] }}" target="_blank" class="mobile-social-link">
+                            <img src="{{ $social['image'] }}" alt="{{ $social['title'] }}" width="24" height="24">
+                        </a>
+                    @endforeach
+                @endif
+            </div>
+        </div>
+        
+        <!-- Mobile Search Form -->
+        <div id="mobile-search-form" class="mobile-search-form d-none">
+            <form action="/search" method="get" class="mobile-search-content">
+                <input class="form-control" type="text" name="search" placeholder="{{ trans('navbar.search_anything') }}" aria-label="Search">
+                <button type="submit" class="btn btn-primary">
+                    <i data-feather="search" width="16" height="16"></i>
+                </button>
+            </form>
+        </div>
+    </div>
 
 </body>
 </html>
