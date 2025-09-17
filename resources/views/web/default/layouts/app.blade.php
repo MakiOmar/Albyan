@@ -437,16 +437,28 @@
         
         /* Mobile Footer Dropdown Styles */
         .mobile-footer-bar .dropdown-menu {
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            margin-bottom: 10px;
-            min-width: 250px;
+            position: absolute !important;
+            bottom: 100% !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            margin-bottom: 10px !important;
+            min-width: 250px !important;
+            top: auto !important;
+            right: auto !important;
         }
         
         .mobile-footer-bar .dropdown-menu.show {
-            display: block;
+            display: block !important;
+        }
+        
+        /* Override Bootstrap's x-placement positioning for mobile footer */
+        .mobile-footer-bar .dropdown-menu[x-placement] {
+            position: absolute !important;
+            bottom: 100% !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            top: auto !important;
+            right: auto !important;
         }
         
         /* Ensure mobile footer bar has proper z-index for dropdowns */
