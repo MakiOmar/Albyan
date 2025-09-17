@@ -282,7 +282,12 @@
             .notification-dropdown {
                 display: none !important;
             }
-            
+
+            /* prevent content being hidden behind footer bar */
+            body {
+                padding-bottom: calc(60px + env(safe-area-inset-bottom)) !important;
+            }
+
             #mobile-footer-bar {
                 display: block !important;
             }
@@ -296,31 +301,34 @@
             right: 0;
             background: #01477d;
             border-top: 1px solid #fff;
-            z-index: 1000;
-            padding: 10px 0;
+            z-index: 1050;
+            padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+            box-shadow: 0 -6px 16px rgba(0,0,0,0.18);
         }
         
         .mobile-footer-content {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
             align-items: center;
             max-width: 100%;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 12px;
+            gap: 8px;
         }
         
         .mobile-footer-btn {
             background: none;
             border: none;
             color: white;
-            padding: 8px;
-            border-radius: 50%;
+            padding: 10px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 40px;
-            min-height: 40px;
+            min-width: 44px;
+            min-height: 44px;
             transition: background-color 0.3s;
+            flex: 1 1 25%;
         }
         
         .mobile-footer-btn:hover {
@@ -331,19 +339,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex: 1 1 25%;
         }
         
         .mobile-footer-btn-container .dropdown-toggle {
             background: none;
             border: none;
             color: white;
-            padding: 8px;
-            border-radius: 50%;
+            padding: 10px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 40px;
-            min-height: 40px;
+            min-width: 44px;
+            min-height: 44px;
+            width: 100%;
         }
         
         .mobile-footer-btn-container .dropdown-toggle:hover {
@@ -352,12 +362,14 @@
         
         .mobile-social-bar {
             position: absolute;
-            bottom: 100%;
+            bottom: calc(100% + 8px);
             left: 0;
             right: 0;
             background: #01477d;
             border-top: 1px solid #fff;
-            padding: 15px;
+            padding: 12px;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 -8px 18px rgba(0,0,0,0.15);
         }
         
         .mobile-social-content {
@@ -371,10 +383,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
             transition: background-color 0.3s;
         }
         
@@ -384,31 +396,38 @@
         
         .mobile-search-form {
             position: absolute;
-            bottom: 100%;
+            bottom: calc(100% + 8px);
             left: 0;
             right: 0;
             background: #01477d;
             border-top: 1px solid #fff;
-            padding: 15px;
+            padding: 12px;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 -8px 18px rgba(0,0,0,0.15);
         }
         
         .mobile-search-content {
             display: flex;
-            gap: 10px;
-            max-width: 300px;
+            gap: 8px;
+            max-width: 360px;
             margin: 0 auto;
         }
         
         .mobile-search-content input {
             flex: 1;
-            border-radius: 20px;
+            border-radius: 10px;
             border: none;
-            padding: 8px 15px;
+            padding: 10px 14px;
         }
         
         .mobile-search-content button {
-            border-radius: 20px;
-            padding: 8px 15px;
+            border-radius: 10px;
+            padding: 10px 14px;
+        }
+
+        /* Feather icons in footer bar */
+        .mobile-footer-bar svg {
+            stroke: #fff;
         }
         
         /* Mobile Footer Dropdown Styles */
@@ -725,13 +744,20 @@
     <div id="mobile-footer-bar" class="mobile-footer-bar d-none">
         <div class="mobile-footer-content">
             <!-- Social Media Icon -->
-            <button id="mobile-social-toggle" class="mobile-footer-btn" title="Social Media">
-                <i data-feather="share-2" width="20" height="20"></i>
+            <button id="mobile-social-toggle" class="mobile-footer-btn" title="Social Media" aria-label="Social Media">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16 6l-4-4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 2v14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
             </button>
             
             <!-- Search Icon -->
-            <button id="mobile-search-toggle" class="mobile-footer-btn" title="Search">
-                <i data-feather="search" width="20" height="20"></i>
+            <button id="mobile-search-toggle" class="mobile-footer-btn" title="Search" aria-label="Search">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+                    <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
             </button>
             
             <!-- Shopping Cart -->

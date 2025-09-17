@@ -2,12 +2,12 @@
 
     @if((empty($userCarts) or count($userCarts) < 1) and !empty($userCartDiscount))
         <a href="/cart" class="btn btn-transparent" style="min-width: 50px; min-height: 40px; width: 50px; height: 40px; display: flex; align-items: center; justify-content: center;">
-            <i data-feather="shopping-cart" width="20" height="20" class="mr-10" style="display: block;"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-10" style="display: block;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
         </a>
     @else
         <button type="button" {{ (empty($userCarts) or count($userCarts) < 1) ? 'disabled' : '' }} class="btn btn-transparent dropdown-toggle" id="navbarShopingCart" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false" aria-label="{{ trans('cart.shopping_cart') }}" style="width: 50px; height: 40px; position: relative;">
-            <i data-feather="shopping-cart"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
 
             @if(!empty($userCarts) and count($userCarts))
                 <span class="badge badge-circle-primary d-flex align-items-center justify-content-center" style="position: absolute; top: -5px; right: -5px; min-width: 18px; min-height: 18px; width: 18px; height: 18px; font-size: 10px; line-height: 1;">{{ count($userCarts) }}</span>
@@ -67,7 +67,7 @@
                     </div>
                 @else
                     <div class="d-flex align-items-center text-center py-50">
-                        <i data-feather="shopping-cart" width="20" height="20" class="mr-10"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-10"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
                         <span class="">{{ trans('cart.your_cart_empty') }}</span>
                     </div>
                 @endif
