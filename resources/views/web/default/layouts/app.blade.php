@@ -276,7 +276,7 @@
             }
         }
         @media (max-width: 767px) {
-            .container.d-flex.justify-content-between.align-items-center.flex-column.flex-lg-row {
+            #top-nav-container {
                 flex-direction: column !important;
             }
         }
