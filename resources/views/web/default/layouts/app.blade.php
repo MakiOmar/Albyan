@@ -305,7 +305,9 @@
             padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
             box-shadow: 0 -6px 16px rgba(0,0,0,0.18);
         }
-        
+        .mobile-footer-btn-container .dropdown-toggle::after {
+            display: none;
+        }
         .mobile-footer-content {
             display: flex;
             justify-content: space-between;
