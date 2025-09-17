@@ -275,14 +275,18 @@
                 padding: 5px 8px;
             }
         }
-        @media (min-width: 76px) and (max-width: 1200px) {
-            .footer-social a {
-                padding: 2px !important;
-                margin: 3px !important;
+        @media (max-width: 767px) {
+            .container.d-flex.justify-content-between.align-items-center.flex-column.flex-lg-row {
+                flex-direction: column !important;
             }
         }
         @media (min-width: 768px) and (max-width: 1200px) {
-            
+            .footer-social a.mr-15 {
+                padding: 2px !important;
+                margin: 3px !important;
+                min-width: 20px !important;
+                min-height: 20px !important;
+            }
         }
     </style>
     
