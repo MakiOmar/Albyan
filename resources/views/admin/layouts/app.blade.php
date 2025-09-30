@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
 @php
     $rtlLanguages = !empty($generalSettings['rtl_languages']) ? $generalSettings['rtl_languages'] : [];
@@ -35,6 +36,7 @@
     @endif
     <link rel="stylesheet" href="/assets/admin/vendor/daterangepicker/daterangepicker.min.css">
     <link rel="stylesheet" href="/assets/default/vendors/select2/select2.min.css">
+    <link rel="stylesheet" href="/assets/default/vendors/sweetalert2/dist/sweetalert2.min.css">
 
     @stack('styles_top')
     @stack('scripts_top')
@@ -45,6 +47,9 @@
         {!! getThemeColorsSettings(true) !!}
     </style>
     <style>
+        .js-field-form .js-field-form, .js-ajax-type{
+            width: 300px!important;
+        }
         .mask{
             overflow-x: hidden;
             max-width: 100vw;
@@ -146,6 +151,7 @@
 <script src="/assets/admin/vendor/bootstrap/bootstrap.min.js"></script>
 <script src="/assets/admin/vendor/nicescroll/jquery.nicescroll.min.js"></script>
 <script src="/assets/admin/vendor/moment/moment.min.js"></script>
+<script src="/assets/default/vendors/sweetalert2/dist/sweetalert2.min.js"></script>
 <script src="/assets/admin/js/stisla.js"></script>
 <script src="/assets/default/vendors/toast/jquery.toast.min.js"></script>
 
