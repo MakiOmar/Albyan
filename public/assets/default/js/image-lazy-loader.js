@@ -93,7 +93,7 @@ class ImageLazyLoader {
     }
 
     observeImages() {
-        // Get all img tags except logos
+        // Get all img tags except logos and explicit exclusions
         const allImages = document.querySelectorAll('img');
         const lazyImages = Array.from(allImages).filter(img => {
             // Skip logos - check for logo-related classes, alt text, or src patterns
@@ -106,7 +106,10 @@ class ImageLazyLoader {
                           img.src.toLowerCase().includes('favicon') ||
                           img.id.toLowerCase().includes('logo');
             
-            return !isLogo;
+            // Skip captcha image
+            const isCaptcha = (img.id && img.id === 'captchaImageComment');
+            
+            return !isLogo && !isCaptcha;
         });
         
         lazyImages.forEach((img, index) => {
@@ -250,7 +253,10 @@ class ImageLazyLoader {
                           img.src.toLowerCase().includes('favicon') ||
                           img.id.toLowerCase().includes('logo');
             
-            return !isLogo;
+            // Skip captcha image
+            const isCaptcha = (img.id && img.id === 'captchaImageComment');
+            
+            return !isLogo && !isCaptcha;
         });
         
         const checkImages = () => {
