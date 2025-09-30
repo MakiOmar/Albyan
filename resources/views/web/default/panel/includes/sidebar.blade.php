@@ -621,7 +621,6 @@
             </li>
         @endcan
 
-        {{--
         @if(!$authUser->isUser() or (!empty($referralSettings) and $referralSettings['status'] and $authUser->affiliate) or (!empty(getRegistrationBonusSettings('status')) and $authUser->enable_registration_bonus))
             @can('panel_marketing')
                 <li class="sidenav-item {{ (request()->is('panel/marketing') or request()->is('panel/marketing/*')) ? 'sidenav-item-active' : '' }}">
@@ -651,9 +650,11 @@
 
                             @if(!empty($referralSettings) and $referralSettings['status'] and $authUser->affiliate)
                                 @can('panel_marketing_affiliates')
-                                    <li class="mt-5 {{ (request()->is('panel/marketing/affiliates')) ? 'active' : '' }}">
-                                        <a href="/panel/marketing/affiliates">{{ trans('panel.affiliates') }}</a>
-                                    </li>
+                                    @if(!empty($authUser->affiliate) && $authUser->affiliate)
+                                        <li class="mt-5 {{ (request()->is('panel/marketing/affiliates')) ? 'active' : '' }}">
+                                            <a href="/panel/marketing/affiliates">{{ trans('panel.affiliates') }}</a>
+                                        </li>
+                                    @endif
                                 @endcan
                             @endif
 
@@ -683,7 +684,6 @@
                 </li>
             @endcan
         @endif
-        --}}
 
         @if(getFeaturesSettings('forums_status'))
             @can('panel_forums')
