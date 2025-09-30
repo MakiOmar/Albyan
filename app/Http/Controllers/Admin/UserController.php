@@ -228,6 +228,35 @@ class UserController extends Controller
         return view('admin.users.instructors', $data);
     }
 
+    public function usersByRole(Request $request, $role)
+    {
+        $this->authorize('admin_users_list');
+
+        // Resolve role by id or name
+        $roleModel = is_numeric($role)
+            ? Role::find($role)
+            : Role::where('name', $role)->orWhere('caption', $role)->first();
+
+        if (empty($roleModel)) {
+            abort(404);
+        }
+
+        $query = User::where('role_id', $roleModel->id);
+        $query = $this->filters($query, $request);
+
+        $users = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        $users = $this->addUsersExtraInfo($users);
+
+        $data = [
+            'pageTitle' => $roleModel->caption . ' ' . trans('admin/main.list'),
+            'users' => $users,
+            'role' => $roleModel,
+        ];
+
+        return view('admin.users.custom_role', $data);
+    }
+
     private function addUsersExtraInfo($users)
     {
         foreach ($users as $user) {

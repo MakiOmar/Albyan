@@ -184,6 +184,9 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
 
             /* end-all-login-sessions */
             Route::get('/{user_id}/end-all-login-sessions', "UserLoginHistoryController@endAllUserSessions");
+
+            // Custom Roles - list users by role name or id
+            Route::get('/role/{role}', 'UserController@usersByRole');
         });
 
         Route::group(['prefix' => 'supports'], function () {

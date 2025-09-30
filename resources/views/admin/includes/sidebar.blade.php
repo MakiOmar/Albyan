@@ -379,7 +379,7 @@
             @endif
 
             @can('admin_users')
-                <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/staffs', false)) or request()->is(getAdminPanelUrl('/students', false)) or request()->is(getAdminPanelUrl('/instructors', false)) or request()->is(getAdminPanelUrl('/organizations', false))) ? 'active' : '' }}">
+                <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/staffs', false)) or request()->is(getAdminPanelUrl('/students', false)) or request()->is(getAdminPanelUrl('/instructors', false)) or request()->is(getAdminPanelUrl('/organizations', false)) or request()->is(getAdminPanelUrl('/users/role*', false))) ? 'active' : '' }}">
                     <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
                         <i class="fas fa-users"></i>
                         <span>{{ trans('admin/main.users_list') }}</span>
@@ -415,6 +415,17 @@
                                 <a class="nav-link" href="{{ getAdminPanelUrl() }}/users/create">{{ trans('admin/main.new') }}</a>
                             </li>
                         @endcan()
+
+                        @php
+                            $customRoles = \App\Models\Role::orderBy('caption','asc')->get()->filter(function($r){
+                                return !in_array($r->name, [\App\Models\Role::$admin, \App\Models\Role::$user, \App\Models\Role::$teacher, \App\Models\Role::$organization]);
+                            });
+                        @endphp
+                        @foreach($customRoles as $customRole)
+                            <li class="{{ (request()->is(getAdminPanelUrl('/users/role/'.$customRole->id, false))) ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ getAdminPanelUrl() }}/users/role/{{ $customRole->id }}">{{ $customRole->caption }}</a>
+                            </li>
+                        @endforeach
                     </ul>
                 </li>
             @endcan
@@ -1616,7 +1627,7 @@
                     </ul>
                 </li>
             @endcan
-
+            --}}
             @can('admin_referrals')
                 <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/referrals*', false))) ? 'active' : '' }}">
                     <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
@@ -1639,6 +1650,7 @@
                 </li>
             @endcan
 
+            {{--
             @can('admin_registration_bonus')
                 <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/registration_bonus*', false))) ? 'active' : '' }}">
                     <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
