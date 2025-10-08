@@ -10,6 +10,9 @@
 
 <!-- Floating City Bar -->
 <div id="floating-city-bar" class="floating-city-bar">
+    <button id="city-bar-close" class="city-bar-close" aria-label="Close">
+        <span>&times;</span>
+    </button>
     {{--<div class="city-bar-header">
         <span class="city-bar-title">تواصل معنا</span>
     </div>--}}
@@ -43,7 +46,7 @@
     border-radius: 0 15px 15px 0;
     padding: 20px 8px;
     cursor: pointer;
-    z-index: 1001;
+    z-index: 999;
     box-shadow: 3px 0 10px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
     writing-mode: vertical-rl;
@@ -59,7 +62,7 @@
     color: white;
     font-weight: bold;
     font-size: 1rem;
-    letter-spacing: 2px;
+    letter-spacing: 0;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
@@ -79,6 +82,37 @@
 
 .floating-city-bar.open {
     left: 0;
+}
+
+/* Close Button */
+.city-bar-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #000;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.city-bar-close:hover {
+    background: #333;
+    transform: scale(1.1);
+}
+
+.city-bar-close span {
+    color: white;
+    font-size: 24px;
+    line-height: 1;
+    font-weight: bold;
 }
 
 .city-bar-header {
@@ -174,7 +208,16 @@
     
     .toggle-text {
         font-size: 0.9rem;
-        letter-spacing: 1px;
+        letter-spacing: 0;
+    }
+    
+    .city-bar-close {
+        width: 26px;
+        height: 26px;
+    }
+    
+    .city-bar-close span {
+        font-size: 20px;
     }
     
     .floating-city-bar {
@@ -277,6 +320,13 @@ $(document).ready(function() {
     $('#city-bar-toggle').on('click', function() {
         $('#floating-city-bar').toggleClass('open');
         $(this).toggleClass('active');
+    });
+    
+    // Close button click handler
+    $('#city-bar-close').on('click', function(e) {
+        e.stopPropagation();
+        $('#floating-city-bar').removeClass('open');
+        $('#city-bar-toggle').removeClass('active');
     });
     
     // Close city bar when clicking outside
