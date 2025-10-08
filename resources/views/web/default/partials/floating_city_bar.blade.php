@@ -77,7 +77,7 @@
     transform: translateY(-50%);
     border-radius: 0 15px 15px 0;
     z-index: 1000;
-    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
     max-height: 80vh;
     overflow-y: initial;
     text-align: left;
@@ -86,6 +86,10 @@
 
 .floating-city-bar.open {
     left: 0;
+}
+
+.floating-city-bar:hover {
+    opacity: 1;
 }
 
 /* Close Button */
