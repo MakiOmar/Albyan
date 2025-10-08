@@ -102,16 +102,6 @@
         /* Mobile responsive */
         @media (max-width: 768px) {
             .whatsapp-chat-widget {
-                bottom: 114px;
-                left: 15px;
-            }
-            
-            .whatsapp-chat-button {
-                width: 50px;
-                height: 50px;
-            }
-
-            .whatsapp-tooltip {
                 display: none;
             }
         }
