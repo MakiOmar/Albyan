@@ -78,6 +78,7 @@
     max-height: 80vh;
     overflow-y: initial;
     text-align: left;
+    opacity: 0.8;
 }
 
 .floating-city-bar.open {
