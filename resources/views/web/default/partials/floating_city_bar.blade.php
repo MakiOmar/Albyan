@@ -48,14 +48,17 @@
     cursor: pointer;
     z-index: 999;
     box-shadow: 3px 0 10px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
+    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     writing-mode: vertical-rl;
     text-orientation: mixed;
 }
 
 .city-bar-toggle:hover {
     background: linear-gradient(135deg, #1a7bb8 0%, #136390 100%);
-    padding-right: 12px;
+}
+
+.city-bar-toggle.hidden {
+    left: -100px;
 }
 
 .toggle-text {
@@ -207,6 +210,10 @@
         padding: 15px 6px;
     }
     
+    .city-bar-toggle.hidden {
+        left: -100px;
+    }
+    
     .toggle-text {
         font-size: 0.9rem;
         letter-spacing: 0;
@@ -320,21 +327,21 @@ $(document).ready(function() {
     // Toggle button click handler
     $('#city-bar-toggle').on('click', function() {
         $('#floating-city-bar').toggleClass('open');
-        $(this).toggleClass('active');
+        $(this).toggleClass('hidden');
     });
     
     // Close button click handler
     $('#city-bar-close').on('click', function(e) {
         e.stopPropagation();
         $('#floating-city-bar').removeClass('open');
-        $('#city-bar-toggle').removeClass('active');
+        $('#city-bar-toggle').removeClass('hidden');
     });
     
     // Close city bar when clicking outside
     $(document).on('click', function(event) {
         if (!$(event.target).closest('#floating-city-bar, #city-bar-toggle').length) {
             $('#floating-city-bar').removeClass('open');
-            $('#city-bar-toggle').removeClass('active');
+            $('#city-bar-toggle').removeClass('hidden');
         }
     });
     
@@ -347,7 +354,7 @@ $(document).ready(function() {
         // Close the bar after selection
         setTimeout(function() {
             $('#floating-city-bar').removeClass('open');
-            $('#city-bar-toggle').removeClass('active');
+            $('#city-bar-toggle').removeClass('hidden');
         }, 200);
     });
     
