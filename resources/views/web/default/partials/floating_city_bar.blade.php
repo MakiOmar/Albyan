@@ -76,7 +76,7 @@
     z-index: 1000;
     transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     max-height: 80vh;
-    overflow-y: auto;
+    overflow-y: initial;
     text-align: left;
 }
 
@@ -87,7 +87,7 @@
 /* Close Button */
 .city-bar-close {
     position: absolute;
-    top: 10px;
+    top: -20px;
     right: 10px;
     width: 30px;
     height: 30px;
