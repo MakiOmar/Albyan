@@ -21,7 +21,7 @@
         .city-name {
             font-size: 2rem;
             font-weight: bold;
-            color: #007bff;
+            color: #fff;
             margin-bottom: 10px;
         }
         
