@@ -205,7 +205,7 @@
 @media (max-width: 768px) {
     .city-bar-toggle {
         top: auto;
-        bottom: 20%;
+        bottom: 50%;
         transform: none;
         padding: 15px 6px;
     }
