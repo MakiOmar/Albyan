@@ -87,7 +87,7 @@
                 <ul class="list-unstyled  mt-4">
                     <li class="pb-2"><a href="/contact">اتصل بنا</a></li>
                     <li class="pb-2"><a href="/certificate_validation">التحقق من صحة الشهادة</a></li>
-                    <li class="pb-2"><a href="/pages/terms-and-conditions">الشروط والقواعد</a></li>
+                    <li class="pb-2"><a href="/pages/privacy-policy">الشروط والقواعد</a></li>
                     <li class="pb-2"><a href="/about">معلومات عنا</a></li>
                 </ul>
             </div>

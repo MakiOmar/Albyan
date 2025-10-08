@@ -102,7 +102,7 @@
         /* Mobile responsive */
         @media (max-width: 768px) {
             .whatsapp-chat-widget {
-                bottom: 15px;
+                bottom: 114px;
                 left: 15px;
             }
             

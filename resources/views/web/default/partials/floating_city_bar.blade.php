@@ -131,11 +131,15 @@
         position: fixed;
         bottom: 0;
         left: 0;
-        right: 0;
-        top: auto;
+        right: auto;
+        top: 35%;
         transform: none;
         border-radius: 15px 15px 0 0;
         max-height: 60vh;
+        max-width: 168px;
+    }
+    .footer .footer-copyright-card .container{
+        flex-direction: column;
     }
     
     .floating-city-bar:hover {
@@ -148,6 +152,7 @@
         flex-direction: column;
         overflow-x: auto;
         padding: 10px;
+        padding-left: 0;
     }
     
     .city-item {

@@ -633,6 +633,7 @@
 
                     <div class="collapse {{ (request()->is('panel/marketing') or request()->is('panel/marketing/*')) ? 'show' : '' }}" id="marketingCollapse">
                         <ul class="sidenav-item-collapse">
+                            {{--
                             @if(!$authUser->isUser())
 
                                 @can('panel_marketing_special_offers')
@@ -647,7 +648,7 @@
                                     </li>
                                 @endcan
                             @endif
-
+                            --}}
                             @if(!empty($referralSettings) and $referralSettings['status'] and $authUser->affiliate)
                                 @can('panel_marketing_affiliates')
                                     @if(!empty($authUser->affiliate) && $authUser->affiliate)
@@ -657,7 +658,7 @@
                                     @endif
                                 @endcan
                             @endif
-
+                            {{--
                             @if(!empty(getRegistrationBonusSettings('status')) and $authUser->enable_registration_bonus)
                                 @can('panel_marketing_registration_bonus')
                                     <li class="mt-5 {{ (request()->is('panel/marketing/registration_bonus')) ? 'active' : '' }}">
@@ -679,6 +680,7 @@
                                     </li>
                                 @endcan
                             @endif
+                            --}}
                         </ul>
                     </div>
                 </li>

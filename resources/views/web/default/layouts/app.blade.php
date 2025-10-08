@@ -49,6 +49,29 @@
             background-color: #01477d;
             color: #fff;
         }
+        
+        .forms-body img{
+            max-height: 150px;
+        }
+        .custom-radio .custom-control-label::before {
+            border-radius: 7px;
+        }
+
+        .custom-radio .custom-control-label::before {
+           position: relative;
+           top:auto;
+           left:auto;
+           right:auto;
+           bottom:auto;
+           margin-right:10px;
+        }
+        body.rtl .custom-radio .custom-control-label::before {
+            margin-left:10px;
+            margin-right:0;
+        }
+        .custom-radio .custom-control-label{
+            display: flex;
+        }
     </style>
 
 

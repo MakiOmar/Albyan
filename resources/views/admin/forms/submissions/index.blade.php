@@ -115,6 +115,12 @@
                                                 </a>
 
                                                 @include('admin.includes.delete_button',['url' => getAdminPanelUrl().'/forms/submissions/'.$submission->id.'/delete'])
+                                                @if($submission->form->url == 'aff-apply')
+                                                    <a href="#"
+                                                       class="btn-transparent btn-sm text-primary" data-toggle="tooltip" data-form="{{ $submission->form->id }}" data-placement="top" title="Accept">
+                                                        <i class="fa fa-check"></i>
+                                                    </a>
+                                                @endif
 
                                             </td>
                                         </tr>

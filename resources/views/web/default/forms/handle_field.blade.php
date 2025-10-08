@@ -106,14 +106,14 @@
 
             <div class="form-group">
                 <label class="input-label">{{ $field->title }}:</label>
-
+                <div class="d-flex">
                 @foreach($field->options as $option)
                     <div class="custom-control custom-checkbox mt-10">
                         <input type="checkbox" name="fields[{{ $field->id }}][]" value="{{ $option->id }}" class="custom-control-input" id="checkbox{{ $option->id }}" {{ in_array($option->id, $checkboxValues) ? 'checked' : "" }}>
                         <label class="custom-control-label font-14" for="checkbox{{ $option->id }}">{{ $option->title }}</label>
                     </div>
                 @endforeach
-
+                </div>
                 @error($field->id)
                 <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
@@ -124,13 +124,14 @@
         @if(!empty($field->options) and count($field->options))
             <div class="form-group">
                 <label class="input-label">{{ $field->title }}:</label>
-
+                <div class="d-flex">
                 @foreach($field->options as $option)
                     <div class="custom-control custom-radio mt-10">
                         <input type="radio" name="fields[{{ $field->id }}]" value="{{ $option->id }}" class="custom-control-input" id="radio{{ $option->id }}" {{ (!empty($values) and !empty($values[$field->id]) and $values[$field->id] == $option->id) ? 'checked' : ((!empty(old('fields.'.$field->id)) and old('fields.'.$field->id) == $option->id) ? 'checked' : '') }}>
                         <label class="custom-control-label font-14" for="radio{{ $option->id }}">{{ $option->title }}</label>
-                    </div>
-                @endforeach
+                        </div>
+                    @endforeach
+                </div>
 
                 @error($field->id)
                 <div class="invalid-feedback d-block">{{ $message }}</div>

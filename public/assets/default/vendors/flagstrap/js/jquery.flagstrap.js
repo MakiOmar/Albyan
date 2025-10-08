@@ -406,6 +406,7 @@
                 // Build a clickable drop down option item, insert the flag and label, attach click event
                 var flagStrapItem = $('<a/>')
                     .attr('data-val', $(this).val())
+                    .attr('href', '#')
                     .html(flagIcon)
                     .append(text)
                     .on('click', function (e) {
