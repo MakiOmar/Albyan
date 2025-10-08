@@ -407,5 +407,6 @@ return [
     'Wednesday' => 'Wednesday',
     'Thursday'  => 'Thursday',
     'Friday'    => 'Friday',
+    'our_branches' => 'Our Branches',
 
 ];

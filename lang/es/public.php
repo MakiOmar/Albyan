@@ -365,4 +365,5 @@ return [
     'zoom_jwt_token' => 'Zoom JWT Token',
     'how_zoom_jwt_token' => 'Cómo crear token Zoom JWT',
     'instructor_is_not_available' => 'El formador no está disponible temporalmente.',
+    'our_branches' => 'Nuestras Sucursales',
 ];

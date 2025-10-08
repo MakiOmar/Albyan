@@ -371,4 +371,5 @@ return [
     'Wednesday' => 'الأربعاء',
     'Thursday'  => 'الخميس',
     'Friday'    => 'الجمعة',
+    'our_branches' => 'فروعنا',
 ];
