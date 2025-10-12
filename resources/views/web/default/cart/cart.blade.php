@@ -157,7 +157,7 @@
                                 <p class="text-gray mt-25">{{ trans('cart.in_user_group',['group_name' => $userGroup->name , 'percent' => $userGroup->discount]) }}</p>
                             @endif
 
-                            <form action="/carts/coupon/validate" method="Post">
+                            <form action="/cart/coupon/validate" method="Post">
                                 {{ csrf_field() }}
                                 <div class="form-group">
                                     <input type="text" name="coupon" id="coupon_input" class="form-control mt-25"
@@ -239,7 +239,7 @@
                             <p class="text-gray mt-15">{{ trans('cart.in_user_group',['group_name' => $userGroup->name , 'percent' => $userGroup->discount]) }}</p>
                         @endif
 
-                        <form action="/carts/coupon/validate" method="Post">
+                        <form action="/cart/coupon/validate" method="Post">
                             {{ csrf_field() }}
                             <div class="form-group">
                                 <input type="text" name="coupon" id="coupon_input_modal" class="form-control mt-15"
