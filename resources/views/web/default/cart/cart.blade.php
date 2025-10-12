@@ -153,9 +153,6 @@
                         <div class="rounded-sm shadow mt-20 py-25 px-20">
                             <p class="text-gray font-14">{{ trans('cart.coupon_code_hint') }}</p>
 
-                            @if(!empty($userGroup) and !empty($userGroup->discount))
-                                <p class="text-gray mt-25">{{ trans('cart.in_user_group',['group_name' => $userGroup->name , 'percent' => $userGroup->discount]) }}</p>
-                            @endif
 
                             <form action="/cart/coupon/validate" method="Post">
                                 {{ csrf_field() }}
@@ -235,9 +232,6 @@
                     <div class="rounded-sm shadow-sm p-15">
                         <p class="text-gray font-14">{{ trans('cart.coupon_code_hint') }}</p>
 
-                        @if(!empty($userGroup) and !empty($userGroup->discount))
-                            <p class="text-gray mt-15">{{ trans('cart.in_user_group',['group_name' => $userGroup->name , 'percent' => $userGroup->discount]) }}</p>
-                        @endif
 
                         <form action="/cart/coupon/validate" method="Post">
                             {{ csrf_field() }}
