@@ -42,7 +42,7 @@ mix
 // .js('resources/js/parts/time-counter-down.js', 'public/assets/default/js/parts/time-counter-down.min.js')
 // .js('resources/js/parts/navbar.js', 'public/assets/default/js/parts/navbar.min.js')
 // .js('resources/js/parts/certificate_validation.js', 'public/assets/default/js/parts/certificate_validation.min.js')
-// .js('resources/js/parts/cart.js', 'public/assets/default/js/parts/cart.min.js')
+.js('resources/js/parts/cart.js', 'public/assets/default/js/parts/cart.min.js')
 // .js('resources/js/parts/payment.js', 'public/assets/default/js/parts/payment.min.js')
 // .js('resources/js/parts/text_lesson.js', 'public/assets/default/js/parts/text_lesson.min.js')
 // .js('resources/js/parts/top_nav_flags.js', 'public/assets/default/js/parts/top_nav_flags.min.js')
