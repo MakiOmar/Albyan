@@ -598,7 +598,10 @@ class CartController extends Controller
 
         $paymentChannels = PaymentChannel::where('status', 'active')->get();
 
-        $discountCoupon = Discount::where('id', $discountId)->first();
+        $discountCoupon = null;
+        if (!empty($discountId)) {
+            $discountCoupon = Discount::where('id', $discountId)->first();
+        }
 
         if (empty($discountCoupon) or $discountCoupon->checkValidDiscount() != 'ok') {
             $discountCoupon = null;
@@ -712,7 +715,7 @@ class CartController extends Controller
             'final_total_amount' => $order->total_amount,
             'delivery_fee' => $order->product_delivery_fee,
             'coupon_discount' => $totalCouponDiscount,
-            'discount_id' => $discountId
+            'discount_id' => $discountId ?? null
         ]);
 
         $productsFee = $this->productDeliveryFeeBySeller($carts);
@@ -801,7 +804,7 @@ class CartController extends Controller
             'total_order_amount' => $order->total_amount,
             'total_discount_applied' => $order->total_discount,
             'coupon_discount' => $totalCouponDiscount,
-            'discount_id' => $discountId,
+            'discount_id' => $discountId ?? null,
             'order_items_count' => $order->orderItems()->count(),
             'cart_items_processed' => $carts->count()
         ]);
