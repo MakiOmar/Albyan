@@ -39,6 +39,13 @@
         {!! getThemeFontsSettings() !!}
 
         {!! getThemeColorsSettings() !!}
+        #navbarNotification .badge.badge-circle-danger{
+            position: absolute;
+        }
+        .rtl .search-icon{
+            right: auto !important;
+            left: 0px !important;
+        }
         .flagstrap button{
             color: #fff;
         }
