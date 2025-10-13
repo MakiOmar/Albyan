@@ -114,34 +114,12 @@ class CartController extends Controller
         $user = auth()->user();
         $coupon = $request->get('coupon');
 
-        \Log::info('=== COUPON VALIDATION START ===', [
-            'user_id' => $user->id,
-            'coupon_code' => $coupon,
-            'request_ip' => $request->ip()
-        ]);
-
         $discountCoupon = Discount::where('code', $coupon)
             ->first();
 
         if (!empty($discountCoupon)) {
-            \Log::info('Coupon Found', [
-                'coupon_id' => $discountCoupon->id,
-                'coupon_code' => $discountCoupon->code,
-                'coupon_type' => $discountCoupon->discount_type,
-                'coupon_percent' => $discountCoupon->percent,
-                'coupon_amount' => $discountCoupon->amount,
-                'coupon_source' => $discountCoupon->source,
-                'coupon_expired_at' => $discountCoupon->expired_at
-            ]);
-
             $checkDiscount = $discountCoupon->checkValidDiscount();
             if ($checkDiscount != 'ok') {
-                \Log::warning('Coupon Validation Failed', [
-                    'coupon_code' => $coupon,
-                    'validation_error' => $checkDiscount,
-                    'user_id' => $user->id
-                ]);
-
                 return response()->json([
                     'status' => 422,
                     'msg' => $checkDiscount
@@ -151,24 +129,10 @@ class CartController extends Controller
             $carts = Cart::where('creator_id', $user->id)
                 ->get();
 
-            \Log::info('Cart Items for Coupon Validation', [
-                'cart_count' => $carts->count(),
-                'cart_ids' => $carts->pluck('id')->toArray()
-            ]);
-
             if (!empty($carts) and !$carts->isEmpty()) {
                 $calculate = $this->calculatePrice($carts, $user, $discountCoupon);
 
                 if (!empty($calculate)) {
-                    \Log::info('Coupon Validation Success - Price Calculation', [
-                        'coupon_code' => $coupon,
-                        'original_subtotal' => $calculate["sub_total"],
-                        'total_discount' => $calculate["total_discount"],
-                        'tax_amount' => $calculate["tax_price"],
-                        'final_total' => $calculate["total"],
-                        'user_id' => $user->id
-                    ]);
-
                     return response()->json([
                         'status' => 200,
                         'discount_id' => $discountCoupon->id,
@@ -178,14 +142,7 @@ class CartController extends Controller
                     ], 200);
                 }
             }
-        } else {
-            \Log::warning('Coupon Not Found', [
-                'coupon_code' => $coupon,
-                'user_id' => $user->id
-            ]);
         }
-
-        \Log::info('=== COUPON VALIDATION END ===');
 
         return response()->json([
             'status' => 422,
@@ -425,12 +382,6 @@ class CartController extends Controller
 
     public function calculatePrice($carts, $user, $discountCoupon = null)
     {
-        \Log::info('=== CHECKOUT PRICE CALCULATION START ===', [
-            'user_id' => $user->id,
-            'cart_count' => $carts->count(),
-            'coupon_code' => $discountCoupon ? $discountCoupon->code : null
-        ]);
-
         $financialSettings = getFinancialSettings();
 
         $subTotal = 0;
@@ -447,31 +398,8 @@ class CartController extends Controller
 
         $taxIsDifferent = (count($cartHasWebinar) or count($cartHasBundle) or count($cartHasMeeting) or count($cartHasInstallmentPayment));
 
-        \Log::info('Cart Analysis', [
-            'has_webinars' => count($cartHasWebinar),
-            'has_bundles' => count($cartHasBundle),
-            'has_meetings' => count($cartHasMeeting),
-            'has_installments' => count($cartHasInstallmentPayment),
-            'tax_is_different' => $taxIsDifferent,
-            'tax_rate' => $tax
-        ]);
-
-        // Process each cart item
-        foreach ($carts as $index => $cart) {
+        foreach ($carts as $cart) {
             $orderPrices = $this->handleOrderPrices($cart, $user, $taxIsDifferent, $discountCoupon);
-            
-            \Log::info("Cart Item #{$index} Processing", [
-                'cart_id' => $cart->id,
-                'webinar_id' => $cart->webinar_id,
-                'bundle_id' => $cart->bundle_id,
-                'meeting_id' => $cart->reserve_meeting_id,
-                'product_id' => $cart->product_order_id,
-                'sub_total' => $orderPrices['sub_total'],
-                'item_discount' => $orderPrices['total_discount'],
-                'tax_price' => $orderPrices['tax_price'],
-                'commission' => $orderPrices['commission']
-            ]);
-
             $subTotal += $orderPrices['sub_total'];
             $totalDiscount += $orderPrices['total_discount'];
             $tax = $orderPrices['tax'];
@@ -481,36 +409,11 @@ class CartController extends Controller
             $taxIsDifferent = $orderPrices['tax_is_different'];
         }
 
-        \Log::info('After Processing All Cart Items', [
-            'sub_total' => $subTotal,
-            'item_discounts_total' => $totalDiscount,
-            'tax_price_total' => $taxPrice,
-            'commission_total' => $commission
-        ]);
-
-        // Apply coupon discount
-        $couponDiscount = 0;
         if (!empty($discountCoupon)) {
-            $couponDiscount = $this->handleDiscountPrice($discountCoupon, $carts, $subTotal);
-            $totalDiscount += $couponDiscount;
-            
-            \Log::info('Coupon Discount Applied', [
-                'coupon_code' => $discountCoupon->code,
-                'coupon_type' => $discountCoupon->discount_type,
-                'coupon_percent' => $discountCoupon->percent,
-                'coupon_amount' => $discountCoupon->amount,
-                'coupon_discount' => $couponDiscount,
-                'total_discount_after_coupon' => $totalDiscount
-            ]);
+            $totalDiscount += $this->handleDiscountPrice($discountCoupon, $carts, $subTotal);
         }
 
-        // Ensure discount doesn't exceed subtotal
         if ($totalDiscount > $subTotal) {
-            \Log::warning('Discount exceeded subtotal, capping discount', [
-                'original_discount' => $totalDiscount,
-                'subtotal' => $subTotal,
-                'capped_discount' => $subTotal
-            ]);
             $totalDiscount = $subTotal;
         }
 
@@ -520,13 +423,10 @@ class CartController extends Controller
         $total = $subTotalWithoutDiscount + $taxPrice + $productDeliveryFee;
 
         if ($total < 0) {
-            \Log::warning('Final total is negative, setting to zero', [
-                'calculated_total' => $total
-            ]);
             $total = 0;
         }
 
-        $finalResult = [
+        return [
             'sub_total' => round($subTotal, 2),
             'total_discount' => round($totalDiscount, 2),
             'tax' => $tax,
@@ -537,42 +437,11 @@ class CartController extends Controller
             'product_delivery_fee' => round($productDeliveryFee, 2),
             'tax_is_different' => $taxIsDifferent
         ];
-
-        \Log::info('=== FINAL PRICE CALCULATION ===', [
-            'sub_total' => $finalResult['sub_total'],
-            'item_discounts' => round($totalDiscount - $couponDiscount, 2),
-            'coupon_discount' => round($couponDiscount, 2),
-            'total_discount' => $finalResult['total_discount'],
-            'subtotal_after_discount' => round($subTotalWithoutDiscount, 2),
-            'tax_rate' => $finalResult['tax'],
-            'tax_amount' => $finalResult['tax_price'],
-            'delivery_fee' => $finalResult['product_delivery_fee'],
-            'final_total' => $finalResult['total'],
-            'calculation_breakdown' => [
-                'original_subtotal' => $subTotal,
-                'minus_total_discount' => $totalDiscount,
-                'equals_discounted_subtotal' => $subTotalWithoutDiscount,
-                'plus_tax' => $taxPrice,
-                'plus_delivery' => $productDeliveryFee,
-                'equals_final_total' => $total
-            ]
-        ]);
-
-        \Log::info('=== CHECKOUT PRICE CALCULATION END ===');
-
-        return $finalResult;
     }
 
     public function checkout(Request $request, $carts = null)
     {
         $user = auth()->user();
-
-        \Log::info('=== CHECKOUT PROCESS START ===', [
-            'user_id' => $user->id,
-            'has_discount_id' => !empty($request->get('discount_id')),
-            'discount_id' => $request->get('discount_id'),
-            'request_ip' => $request->ip()
-        ]);
 
         if (empty($carts)) {
             $carts = Cart::where('creator_id', $user->id)
@@ -705,19 +574,6 @@ class CartController extends Controller
             'created_at' => time(),
         ]);
 
-        \Log::info('Order Created', [
-            'order_id' => $order->id,
-            'user_id' => $user->id,
-            'order_status' => $order->status,
-            'original_amount' => $order->amount,
-            'tax_amount' => $order->tax,
-            'total_discount' => $order->total_discount,
-            'final_total_amount' => $order->total_amount,
-            'delivery_fee' => $order->product_delivery_fee,
-            'coupon_discount' => $totalCouponDiscount,
-            'discount_id' => $discountId ?? null
-        ]);
-
         $productsFee = $this->productDeliveryFeeBySeller($carts);
         $sellersProductsCount = $this->physicalProductCountBySeller($carts);
 
@@ -754,19 +610,6 @@ class CartController extends Controller
             $subTotalWithoutDiscount = $price - $allDiscountPrice;
             $totalAmount = $subTotalWithoutDiscount + $taxPrice + $productDeliveryFee;
 
-            \Log::info("Order Item #{$cart->id} Calculation", [
-                'cart_id' => $cart->id,
-                'order_id' => $order->id,
-                'original_price' => $price,
-                'item_discount' => $totalDiscount,
-                'coupon_discount_portion' => $totalCouponDiscount > 0 ? (($totalCouponDiscount * (($price / $calculate["sub_total"]) * 100)) / 100) : 0,
-                'total_discount_applied' => $allDiscountPrice,
-                'subtotal_after_discount' => $subTotalWithoutDiscount,
-                'tax_amount' => $taxPrice,
-                'delivery_fee' => $productDeliveryFee,
-                'final_item_total' => $totalAmount
-            ]);
-
             $ticket = $cart->ticket;
             if (!empty($ticket) and !$ticket->isValid()) {
                 $ticket = null;
@@ -797,17 +640,6 @@ class CartController extends Controller
                 'created_at' => time(),
             ]);
         }
-
-        \Log::info('=== CHECKOUT PROCESS COMPLETE ===', [
-            'order_id' => $order->id,
-            'user_id' => $user->id,
-            'total_order_amount' => $order->total_amount,
-            'total_discount_applied' => $order->total_discount,
-            'coupon_discount' => $totalCouponDiscount,
-            'discount_id' => $discountId ?? null,
-            'order_items_count' => $order->orderItems()->count(),
-            'cart_items_processed' => $carts->count()
-        ]);
 
         return $order;
     }
