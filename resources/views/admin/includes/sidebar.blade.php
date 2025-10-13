@@ -458,7 +458,7 @@
                     </ul>
                 </li>
             @endcan()
-            {{--
+            
             @can('admin_group')
                 <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/users/groups*', false))) ? 'active' : '' }}">
                     <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
@@ -479,6 +479,7 @@
                     </ul>
                 </li>
             @endcan
+            {{--
             @can('admin_users_badges')
                 <li class="{{ (request()->is(getAdminPanelUrl('/users/badges', false))) ? 'active' : '' }}">
                     <a class="nav-link" href="{{ getAdminPanelUrl() }}/users/badges">
