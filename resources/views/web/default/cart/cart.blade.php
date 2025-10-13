@@ -1,5 +1,8 @@
 @extends(getTemplate().'.layouts.app')
 
+@push('styles_top')
+    <link rel="stylesheet" href="/assets/default/vendors/sweetalert2/dist/sweetalert2.min.css">
+@endpush
 
 @section('content')
     <section class="cart-banner position-relative text-center">
@@ -273,6 +276,7 @@
         });
     </script>
 
+    <script src="/assets/default/vendors/sweetalert2/dist/sweetalert2.min.js"></script>
     <script src="/assets/default/js/parts/get-regions.min.js"></script>
     <script src="/assets/default/js/parts/main.min.js"></script>
     <script src="/assets/default/js/parts/cart.min.js"></script>
