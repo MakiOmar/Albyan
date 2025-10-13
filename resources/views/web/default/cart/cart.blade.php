@@ -260,6 +260,12 @@
         var selectProvinceLang = '{{ trans('update.select_province') }}';
         var selectCityLang = '{{ trans('update.select_city') }}';
         var selectDistrictLang = '{{ trans('update.select_district') }}';
+        
+        // Delete alert variables
+        var deleteAlertTitle = '{{ trans('public.are_you_sure') }}';
+        var deleteAlertHint = '{{ trans('public.deleteAlertHint') }}';
+        var deleteAlertConfirm = '{{ trans('public.deleteAlertConfirm') }}';
+        var deleteAlertCancel = '{{ trans('public.cancel') }}';
         jQuery(document).ready(function($){
             $('#toCheckout').on( 'click', function(){
                 $('#cartForm').submit();
@@ -271,4 +277,22 @@
     <script src="/assets/default/js/parts/main.min.js"></script>
     <script src="/assets/default/js/parts/cart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Debug: Check if variables are defined
+        console.log('Delete alert variables:', {
+            deleteAlertTitle: typeof deleteAlertTitle !== 'undefined' ? deleteAlertTitle : 'undefined',
+            deleteAlertHint: typeof deleteAlertHint !== 'undefined' ? deleteAlertHint : 'undefined',
+            deleteAlertConfirm: typeof deleteAlertConfirm !== 'undefined' ? deleteAlertConfirm : 'undefined',
+            deleteAlertCancel: typeof deleteAlertCancel !== 'undefined' ? deleteAlertCancel : 'undefined'
+        });
+        
+        // Debug: Check if SweetAlert is available
+        console.log('SweetAlert available:', typeof Swal !== 'undefined');
+        
+        // Debug: Check if delete-action handler is bound
+        jQuery(document).ready(function($) {
+            console.log('Delete action elements found:', $('.delete-action').length);
+        });
+    </script>
 @endpush
