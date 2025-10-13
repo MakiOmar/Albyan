@@ -32,7 +32,7 @@ mix
 // .js('resources/js/parts/learningPage/forum.js', 'public/assets/learning_page/forum.min.js')
 
 // scripts
-// .js('resources/js/parts/main.js', 'public/assets/default/js/parts/main.min.js')
+.js('resources/js/parts/main.js', 'public/assets/default/js/parts/main.min.js')
 // .js('resources/js/parts/cookie-security.js', 'public/assets/default/js/parts/cookie-security.min.js')
 // .js('resources/js/parts/home.js', 'public/assets/default/js/parts/home.min.js')
 // .js('resources/js/parts/webinar_show.js', 'public/assets/default/js/parts/webinar_show.min.js')

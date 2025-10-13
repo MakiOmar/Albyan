@@ -268,6 +268,7 @@
     </script>
 
     <script src="/assets/default/js/parts/get-regions.min.js"></script>
+    <script src="/assets/default/js/parts/main.min.js"></script>
     <script src="/assets/default/js/parts/cart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 @endpush
