@@ -23,6 +23,11 @@ class ForumController extends Controller
 {
     public function __construct()
     {
+        // Skip check in CLI mode (for route:list, etc.)
+        if (app()->runningInConsole()) {
+            return;
+        }
+
         $forumsStatus = getFeaturesSettings('forums_status');
 
         if (empty($forumsStatus) or $forumsStatus == '0') {

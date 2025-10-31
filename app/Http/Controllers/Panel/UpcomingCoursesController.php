@@ -22,6 +22,11 @@ class UpcomingCoursesController extends Controller
 
     public function __construct()
     {
+        // Skip check during console commands (like route:list)
+        if (app()->runningInConsole()) {
+            return;
+        }
+
         if (empty(getFeaturesSettings('upcoming_courses_status'))) {
             abort(404);
         }

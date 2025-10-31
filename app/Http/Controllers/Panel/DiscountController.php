@@ -19,6 +19,11 @@ class DiscountController extends Controller
 
     public function __construct()
     {
+        // Skip check during console commands (like route:list)
+        if (app()->runningInConsole()) {
+            return;
+        }
+
         if (empty(getFeaturesSettings("frontend_coupons_status"))) {
             abort(404);
         }

@@ -25,6 +25,11 @@ class CommentsController extends Controller
 
     public function __construct(Request $request)
     {
+        // Skip route parameter access in CLI mode
+        if (app()->runningInConsole()) {
+            return;
+        }
+
         $page = Route::current()->parameter('page');
         $this->page = $page;
 
