@@ -159,8 +159,8 @@ Route::group([], function () {
     Route::group(['prefix' => 'payments'], function () {
         Route::post('/request', 'PaymentsController@paymentRequest');
         Route::post('/credit', 'PaymentsController@paymentByCredit');
-        Route::get('/verify/{gateway}', ['as' => 'payment_verify', 'uses' => 'PaymentController@paymentVerify']);
-        Route::post('/verify/{gateway}', ['as' => 'payment_verify_post', 'uses' => 'PaymentController@paymentVerify']);
+        Route::get('/verify/{gateway}', ['as' => 'payment_verify', 'uses' => 'PaymentsController@paymentVerify']);
+        Route::post('/verify/{gateway}', ['as' => 'payment_verify_post', 'uses' => 'PaymentsController@paymentVerify']);
     });
     Route::group(['prefix' => 'profile-setting'], function () {
         Route::get('/', ['uses' => 'UsersController@setting']);
