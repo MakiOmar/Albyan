@@ -202,7 +202,6 @@ return [
         Mews\Captcha\CaptchaServiceProvider::class,
         Jorenvh\Share\Providers\ShareServiceProvider::class,
         //KingFlamez\Rave\RaveServiceProvider::class,
-        \UniSharp\LaravelFilemanager\LaravelFilemanagerServiceProvider::class,
 
         App\Providers\MinioStorageServiceProvider::class,
         Ssheduardo\Redsys\RedsysServiceProvider::class,
