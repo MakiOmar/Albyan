@@ -21,3 +21,5 @@ yarn-error.log
 /.idea
 /.vscode
 .vscode/sftp.json
+LARAVEL_UPGRADE_STATUS.md
+composer.json.backup
