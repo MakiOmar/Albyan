@@ -179,11 +179,6 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
         Route::get('/{id}/delete', 'CartManagerController@destroy');
     });
 
-    // Laravel File Manager Routes - accessible by both web and admin users
-    Route::group(['prefix' => 'laravel-filemanager'], function () {
-        \UniSharp\LaravelFilemanager\Lfm::routes();
-    });
-
     Route::group(['middleware' => 'web.auth'], function () {
 
         Route::group(['prefix' => 'reviews'], function () {
