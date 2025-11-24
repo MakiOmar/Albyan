@@ -132,7 +132,8 @@ class UsersController extends Controller
                     $value = (new UserLevelOfTraining())->getValue($value);
                 }
                 if ($input == 'location') {
-                    $value = DB::raw("POINT(" . $value['latitude'] . "," . $value['longitude'] . ")");
+                    // SECURITY FIX: Validate and sanitize coordinates to prevent SQL injection
+                    $value = DB::raw("ST_GeomFromText('POINT(" . (float)$value['latitude'] . " " . (float)$value['longitude'] . ")')");
                 }
                 if ($input == 'password') {
                     $value = User::generatePassword($value);
