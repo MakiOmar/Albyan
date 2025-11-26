@@ -6,6 +6,7 @@
 /public/storage
 /storage/*.key
 /storage
+/storage/debugger
 /stage
 /vendor
 .env
