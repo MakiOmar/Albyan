@@ -291,11 +291,13 @@ class InstructorFinderController extends Controller
             $userAgeQuery = UserMeta::where('name', 'age');
 
             if (!empty($minAge)) {
-                $userAgeQuery->whereRaw('value >= ' . $minAge);
+                // SECURITY FIX: Use parameterized query to prevent SQL injection
+                $userAgeQuery->whereRaw('CAST(value AS UNSIGNED) >= ?', [(int)$minAge]);
             }
 
             if (!empty($maxAge)) {
-                $userAgeQuery->whereRaw('value <= ' . $maxAge);
+                // SECURITY FIX: Use parameterized query to prevent SQL injection
+                $userAgeQuery->whereRaw('CAST(value AS UNSIGNED) <= ?', [(int)$maxAge]);
             }
 
             $userIds = $userAgeQuery->pluck('user_id')->toArray();

@@ -43,7 +43,25 @@ Route::group(['prefix' => 'cookie-security'], function () {
 });
 
 /* Emergency Database Update */
+// SECURITY FIX: This route has been secured - only accessible in local environment with admin authentication
+// RECOMMENDATION: Remove this route entirely in production and use proper deployment scripts instead
 Route::get('/emergencyDatabaseUpdate', function () {
+    // Only allow in local environment and require admin authentication
+    if (!app()->environment('local')) {
+        abort(404);
+    }
+    
+    // Require admin authentication
+    if (!auth()->check() || !auth()->user()->isAdmin()) {
+        abort(403, 'Unauthorized');
+    }
+    
+    // Additional IP restriction (optional but recommended)
+    $allowedIPs = ['127.0.0.1', '::1'];
+    if (!in_array(request()->ip(), $allowedIPs)) {
+        abort(403, 'IP not allowed');
+    }
+    
     \Illuminate\Support\Facades\Artisan::call('migrate', [
         '--force' => true
     ]);
@@ -62,7 +80,7 @@ Route::get('/emergencyDatabaseUpdate', function () {
         'migrations' => $msg1,
         'sections' => $msg2,
     ]);
-});
+})->middleware(['auth', 'admin']);
 
 Route::group(['namespace' => 'Auth', 'middleware' => ['check_mobile_app','share', 'check_maintenance', 'check_restriction']], function () {
     Route::get('/login', 'LoginController@showLoginForm');

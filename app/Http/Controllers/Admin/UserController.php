@@ -1409,7 +1409,10 @@ class UserController extends Controller
                 "province_id" => $data['province_id'] ?? null,
                 "city_id" => $data['city_id'] ?? null,
                 "district_id" => $data['district_id'] ?? null,
-                "location" => (!empty($data['latitude']) and !empty($data['longitude'])) ? DB::raw("POINT(" . $data['latitude'] . "," . $data['longitude'] . ")") : null,
+                // SECURITY FIX: Validate and sanitize coordinates to prevent SQL injection
+                "location" => (!empty($data['latitude']) and !empty($data['longitude'])) 
+                    ? DB::raw("ST_GeomFromText('POINT(" . (float)$data['latitude'] . " " . (float)$data['longitude'] . ")')") 
+                    : null,
             ]);
 
             $updateUserMeta = [
