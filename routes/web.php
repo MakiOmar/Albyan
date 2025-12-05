@@ -483,3 +483,7 @@ Route::get('sitemap-upcoming-courses.xml', [App\Http\Controllers\SitemapControll
 Route::get('sitemap-courses-index.xml', [App\Http\Controllers\SitemapController::class, 'coursesIndex'])->name('sitemap.courses.index');
 Route::get('sitemap-courses-page-{page}.xml', [App\Http\Controllers\SitemapController::class, 'coursesPaginated'])->name('sitemap.courses.paginated');
 
+// RSS Feed routes
+Route::get('rss/courses', [App\Http\Controllers\RssController::class, 'courses'])->name('rss.courses');
+Route::get('rss/blog', [App\Http\Controllers\RssController::class, 'blog'])->name('rss.blog');
+
