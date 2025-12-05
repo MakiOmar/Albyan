@@ -40,8 +40,8 @@ class RssController extends Controller
                             'title' => $course->title,
                             'link' => $encodedUrl,
                             'description' => strip_tags($course->description ?? ''),
-                            'pubDate' => $course->created_at ? Carbon::createFromTimestamp($course->created_at)->setTimezone('UTC')->format('D, d M Y H:i:s') . ' +0000' : now()->setTimezone('UTC')->format('D, d M Y H:i:s') . ' +0000',
-                            'author' => ($course->teacher->email ?? 'admin@example.com') . ' (' . ($course->teacher->full_name ?? 'Admin') . ')',
+                            'pubDate' => $course->created_at ? gmdate('D, d M Y H:i:s', $course->created_at) . ' +0000' : gmdate('D, d M Y H:i:s') . ' +0000',
+                            'author' => $self->formatAuthor($course->teacher),
                             'guid' => $encodedUrl,
                         ];
                     })->toArray(),
@@ -90,8 +90,8 @@ class RssController extends Controller
                             'title' => $post->title,
                             'link' => $encodedUrl,
                             'description' => $fullDescription,
-                            'pubDate' => $post->created_at ? Carbon::createFromTimestamp($post->created_at)->setTimezone('UTC')->format('D, d M Y H:i:s') . ' +0000' : now()->setTimezone('UTC')->format('D, d M Y H:i:s') . ' +0000',
-                            'author' => ($post->author->email ?? 'admin@example.com') . ' (' . ($post->author->full_name ?? 'Admin') . ')',
+                            'pubDate' => $post->created_at ? gmdate('D, d M Y H:i:s', $post->created_at) . ' +0000' : gmdate('D, d M Y H:i:s') . ' +0000',
+                            'author' => $self->formatAuthor($post->author),
                             'guid' => $encodedUrl,
                             'category' => $post->category->title ?? null,
                         ];
@@ -122,8 +122,8 @@ class RssController extends Controller
         $xml .= '    <link>' . htmlspecialchars($data['link'], ENT_XML1, 'UTF-8') . '</link>' . "\n";
         $xml .= '    <description>' . htmlspecialchars($data['description'], ENT_XML1, 'UTF-8') . '</description>' . "\n";
         $xml .= '    <language>en-us</language>' . "\n";
-        $xml .= '    <lastBuildDate>' . now()->setTimezone('UTC')->format('D, d M Y H:i:s') . ' +0000</lastBuildDate>' . "\n";
-        $xml .= '    <pubDate>' . now()->setTimezone('UTC')->format('D, d M Y H:i:s') . ' +0000</pubDate>' . "\n";
+        $xml .= '    <lastBuildDate>' . gmdate('D, d M Y H:i:s') . ' +0000</lastBuildDate>' . "\n";
+        $xml .= '    <pubDate>' . gmdate('D, d M Y H:i:s') . ' +0000</pubDate>' . "\n";
         $xml .= '    <ttl>60</ttl>' . "\n";
         $xml .= '    <atom:link href="' . htmlspecialchars($data['feedUrl'], ENT_XML1, 'UTF-8') . '" rel="self" type="application/rss+xml" />' . "\n";
         
@@ -154,27 +154,56 @@ class RssController extends Controller
     }
 
     /**
+     * Format author for RSS feed (email format required)
+     */
+    private function formatAuthor($user)
+    {
+        if (!$user) {
+            return 'admin@example.com (Admin)';
+        }
+        
+        $email = $user->email ?? 'admin@example.com';
+        $name = $user->full_name ?? 'Admin';
+        
+        return $email . ' (' . $name . ')';
+    }
+
+    /**
      * Encode URL properly for RSS feeds
      */
     private function encodeUrl($url)
     {
+        // Parse the URL
         $parsedUrl = parse_url($url);
-        if (!$parsedUrl) {
-            return $url;
+        if (!$parsedUrl || !isset($parsedUrl['scheme']) || !isset($parsedUrl['host'])) {
+            // If parsing fails, try to encode the whole URL
+            return str_replace(' ', '%20', $url);
         }
         
-        $scheme = $parsedUrl['scheme'] ?? 'https';
-        $host = $parsedUrl['host'] ?? '';
+        $scheme = $parsedUrl['scheme'];
+        $host = $parsedUrl['host'];
         $path = $parsedUrl['path'] ?? '';
         $query = $parsedUrl['query'] ?? '';
+        $fragment = $parsedUrl['fragment'] ?? '';
         
-        // Encode each segment of the path
-        $pathSegments = explode('/', trim($path, '/'));
-        $encodedPath = '/' . implode('/', array_map('rawurlencode', $pathSegments));
+        // Encode each segment of the path separately
+        $pathSegments = array_filter(explode('/', $path));
+        $encodedSegments = array_map(function($segment) {
+            // Decode first in case it's already partially encoded, then encode properly
+            return rawurlencode(rawurldecode($segment));
+        }, $pathSegments);
         
+        $encodedPath = '/' . implode('/', $encodedSegments);
+        
+        // Build the encoded URL
         $encodedUrl = $scheme . '://' . $host . $encodedPath;
+        
         if ($query) {
             $encodedUrl .= '?' . $query;
+        }
+        
+        if ($fragment) {
+            $encodedUrl .= '#' . rawurlencode($fragment);
         }
         
         return $encodedUrl;
@@ -198,7 +227,7 @@ class RssController extends Controller
                     'title' => 'Error Loading Feed',
                     'link' => $baseUrl,
                     'description' => 'An error occurred while generating the RSS feed: ' . htmlspecialchars($message, ENT_XML1, 'UTF-8'),
-                    'pubDate' => now()->setTimezone('UTC')->format('D, d M Y H:i:s') . ' +0000',
+                    'pubDate' => gmdate('D, d M Y H:i:s') . ' +0000',
                     'author' => 'System',
                     'guid' => $baseUrl . '/error',
                 ],
