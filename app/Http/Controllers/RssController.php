@@ -28,19 +28,21 @@ class RssController extends Controller
                     ->limit(50)
                     ->get();
 
+                $self = $this;
                 return $this->generateRssFeed([
                     'title' => $siteName . ' - Courses',
                     'description' => 'Latest courses and webinars from ' . $siteName,
                     'link' => $baseUrl . '/courses',
                     'feedUrl' => $baseUrl . '/rss/courses',
-                    'items' => $courses->map(function ($course) use ($baseUrl) {
+                    'items' => $courses->map(function ($course) use ($baseUrl, $self) {
+                        $encodedUrl = $self->encodeUrl($baseUrl . '/course/' . $course->slug);
                         return [
                             'title' => $course->title,
-                            'link' => $baseUrl . '/course/' . $course->slug,
+                            'link' => $encodedUrl,
                             'description' => strip_tags($course->description ?? ''),
-                            'pubDate' => $course->created_at ? Carbon::createFromTimestamp($course->created_at)->format('D, d M Y H:i:s T') : now()->format('D, d M Y H:i:s T'),
-                            'author' => $course->teacher->full_name ?? 'Admin',
-                            'guid' => $baseUrl . '/course/' . $course->slug,
+                            'pubDate' => $course->created_at ? Carbon::createFromTimestamp($course->created_at)->setTimezone('UTC')->format('D, d M Y H:i:s') . ' +0000' : now()->setTimezone('UTC')->format('D, d M Y H:i:s') . ' +0000',
+                            'author' => ($course->teacher->email ?? 'admin@example.com') . ' (' . ($course->teacher->full_name ?? 'Admin') . ')',
+                            'guid' => $encodedUrl,
                         ];
                     })->toArray(),
                 ]);
@@ -72,23 +74,25 @@ class RssController extends Controller
                     ->limit(50)
                     ->get();
 
+                $self = $this;
                 return $this->generateRssFeed([
                     'title' => $siteName . ' - Blog',
                     'description' => 'Latest blog posts from ' . $siteName,
                     'link' => $baseUrl . '/blog',
                     'feedUrl' => $baseUrl . '/rss/blog',
-                    'items' => $posts->map(function ($post) use ($baseUrl) {
+                    'items' => $posts->map(function ($post) use ($baseUrl, $self) {
                         $description = strip_tags($post->description ?? '');
                         $content = strip_tags($post->content ?? '');
                         $fullDescription = !empty($description) ? $description : $content;
+                        $encodedUrl = $self->encodeUrl($baseUrl . $post->getUrl());
                         
                         return [
                             'title' => $post->title,
-                            'link' => $baseUrl . $post->getUrl(),
+                            'link' => $encodedUrl,
                             'description' => $fullDescription,
-                            'pubDate' => $post->created_at ? Carbon::createFromTimestamp($post->created_at)->format('D, d M Y H:i:s T') : now()->format('D, d M Y H:i:s T'),
-                            'author' => $post->author->full_name ?? $post->author->email ?? 'Admin',
-                            'guid' => $baseUrl . $post->getUrl(),
+                            'pubDate' => $post->created_at ? Carbon::createFromTimestamp($post->created_at)->setTimezone('UTC')->format('D, d M Y H:i:s') . ' +0000' : now()->setTimezone('UTC')->format('D, d M Y H:i:s') . ' +0000',
+                            'author' => ($post->author->email ?? 'admin@example.com') . ' (' . ($post->author->full_name ?? 'Admin') . ')',
+                            'guid' => $encodedUrl,
                             'category' => $post->category->title ?? null,
                         ];
                     })->toArray(),
@@ -118,8 +122,8 @@ class RssController extends Controller
         $xml .= '    <link>' . htmlspecialchars($data['link'], ENT_XML1, 'UTF-8') . '</link>' . "\n";
         $xml .= '    <description>' . htmlspecialchars($data['description'], ENT_XML1, 'UTF-8') . '</description>' . "\n";
         $xml .= '    <language>en-us</language>' . "\n";
-        $xml .= '    <lastBuildDate>' . now()->format('D, d M Y H:i:s T') . '</lastBuildDate>' . "\n";
-        $xml .= '    <pubDate>' . now()->format('D, d M Y H:i:s T') . '</pubDate>' . "\n";
+        $xml .= '    <lastBuildDate>' . now()->setTimezone('UTC')->format('D, d M Y H:i:s') . ' +0000</lastBuildDate>' . "\n";
+        $xml .= '    <pubDate>' . now()->setTimezone('UTC')->format('D, d M Y H:i:s') . ' +0000</pubDate>' . "\n";
         $xml .= '    <ttl>60</ttl>' . "\n";
         $xml .= '    <atom:link href="' . htmlspecialchars($data['feedUrl'], ENT_XML1, 'UTF-8') . '" rel="self" type="application/rss+xml" />' . "\n";
         
@@ -150,6 +154,33 @@ class RssController extends Controller
     }
 
     /**
+     * Encode URL properly for RSS feeds
+     */
+    private function encodeUrl($url)
+    {
+        $parsedUrl = parse_url($url);
+        if (!$parsedUrl) {
+            return $url;
+        }
+        
+        $scheme = $parsedUrl['scheme'] ?? 'https';
+        $host = $parsedUrl['host'] ?? '';
+        $path = $parsedUrl['path'] ?? '';
+        $query = $parsedUrl['query'] ?? '';
+        
+        // Encode each segment of the path
+        $pathSegments = explode('/', trim($path, '/'));
+        $encodedPath = '/' . implode('/', array_map('rawurlencode', $pathSegments));
+        
+        $encodedUrl = $scheme . '://' . $host . $encodedPath;
+        if ($query) {
+            $encodedUrl .= '?' . $query;
+        }
+        
+        return $encodedUrl;
+    }
+
+    /**
      * Generate error RSS feed
      */
     private function generateErrorRss($message)
@@ -167,7 +198,7 @@ class RssController extends Controller
                     'title' => 'Error Loading Feed',
                     'link' => $baseUrl,
                     'description' => 'An error occurred while generating the RSS feed: ' . htmlspecialchars($message, ENT_XML1, 'UTF-8'),
-                    'pubDate' => now()->format('D, d M Y H:i:s T'),
+                    'pubDate' => now()->setTimezone('UTC')->format('D, d M Y H:i:s') . ' +0000',
                     'author' => 'System',
                     'guid' => $baseUrl . '/error',
                 ],
