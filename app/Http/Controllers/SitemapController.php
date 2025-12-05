@@ -7,7 +7,7 @@ use App\Models\Webinar;
 use App\Models\UpcomingCourse;
 use App\Models\Category;
 use App\Models\BlogCategory;
-use App\Models\User;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
