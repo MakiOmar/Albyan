@@ -147,8 +147,8 @@ class RssController extends Controller
             $xml .= '      <guid isPermaLink="true">' . htmlspecialchars($item['guid'], ENT_XML1, 'UTF-8') . '</guid>' . "\n";
             
             if (isset($item['author'])) {
-                $xml .= '      <author>' . htmlspecialchars($item['author'], ENT_XML1, 'UTF-8') . '</author>' . "\n";
-                // Also add dc:creator for compatibility
+                // Use dc:creator instead of author to avoid validation errors
+                // RSS 2.0 items should not include both author and dc:creator
                 $authorParts = explode(' (', $item['author']);
                 $authorName = isset($authorParts[1]) ? rtrim($authorParts[1], ')') : 'Admin';
                 $xml .= '      <dc:creator><![CDATA[' . htmlspecialchars($authorName, ENT_XML1, 'UTF-8') . ']]></dc:creator>' . "\n";
