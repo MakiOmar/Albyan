@@ -23,7 +23,7 @@ class RssController extends Controller
                 // Get latest published courses (limit to 50 for RSS feed)
                 $courses = Webinar::where('status', Webinar::$active)
                     ->where('type', '!=', 'text_lesson')
-                    ->with('teacher')
+                    ->with(['teacher', 'category'])
                     ->orderBy('created_at', 'desc')
                     ->limit(50)
                     ->get();
@@ -34,8 +34,11 @@ class RssController extends Controller
                     'description' => 'Latest courses and webinars from ' . $siteName,
                     'link' => $baseUrl . '/courses',
                     'feedUrl' => $baseUrl . '/rss/courses',
+                    'language' => config('app.locale', 'en-us'),
                     'items' => $courses->map(function ($course) use ($baseUrl, $self) {
                         $encodedUrl = $self->encodeUrl($baseUrl . '/course/' . $course->slug);
+                        $imageUrl = $course->getImage() ? url($course->getImage()) : null;
+                        
                         return [
                             'title' => $course->title,
                             'link' => $encodedUrl,
@@ -43,6 +46,8 @@ class RssController extends Controller
                             'pubDate' => $course->created_at ? gmdate('D, d M Y H:i:s', $course->created_at) . ' +0000' : gmdate('D, d M Y H:i:s') . ' +0000',
                             'author' => $self->formatAuthor($course->teacher),
                             'guid' => $encodedUrl,
+                            'category' => $course->category->title ?? null,
+                            'image' => $imageUrl,
                         ];
                     })->toArray(),
                 ]);
@@ -80,11 +85,13 @@ class RssController extends Controller
                     'description' => 'Latest blog posts from ' . $siteName,
                     'link' => $baseUrl . '/blog',
                     'feedUrl' => $baseUrl . '/rss/blog',
+                    'language' => config('app.locale', 'en-us'),
                     'items' => $posts->map(function ($post) use ($baseUrl, $self) {
                         $description = strip_tags($post->description ?? '');
                         $content = strip_tags($post->content ?? '');
                         $fullDescription = !empty($description) ? $description : $content;
                         $encodedUrl = $self->encodeUrl($baseUrl . $post->getUrl());
+                        $imageUrl = !empty($post->image) ? url($post->image) : null;
                         
                         return [
                             'title' => $post->title,
@@ -94,6 +101,7 @@ class RssController extends Controller
                             'author' => $self->formatAuthor($post->author),
                             'guid' => $encodedUrl,
                             'category' => $post->category->title ?? null,
+                            'image' => $imageUrl,
                         ];
                     })->toArray(),
                 ]);
@@ -114,17 +122,19 @@ class RssController extends Controller
     private function generateRssFeed(array $data)
     {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-        $xml .= '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">' . "\n";
+        $xml .= '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:media="http://search.yahoo.com/mrss/" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/">' . "\n";
         $xml .= '  <channel>' . "\n";
         
         // Channel information
         $xml .= '    <title>' . htmlspecialchars($data['title'], ENT_XML1, 'UTF-8') . '</title>' . "\n";
         $xml .= '    <link>' . htmlspecialchars($data['link'], ENT_XML1, 'UTF-8') . '</link>' . "\n";
         $xml .= '    <description>' . htmlspecialchars($data['description'], ENT_XML1, 'UTF-8') . '</description>' . "\n";
-        $xml .= '    <language>en-us</language>' . "\n";
+        $xml .= '    <language>' . ($data['language'] ?? config('app.locale', 'en-us')) . '</language>' . "\n";
         $xml .= '    <lastBuildDate>' . gmdate('D, d M Y H:i:s') . ' +0000</lastBuildDate>' . "\n";
         $xml .= '    <pubDate>' . gmdate('D, d M Y H:i:s') . ' +0000</pubDate>' . "\n";
         $xml .= '    <ttl>60</ttl>' . "\n";
+        $xml .= '    <sy:updatePeriod>hourly</sy:updatePeriod>' . "\n";
+        $xml .= '    <sy:updateFrequency>1</sy:updateFrequency>' . "\n";
         $xml .= '    <atom:link href="' . htmlspecialchars($data['feedUrl'], ENT_XML1, 'UTF-8') . '" rel="self" type="application/rss+xml" />' . "\n";
         
         // Items
@@ -138,10 +148,20 @@ class RssController extends Controller
             
             if (isset($item['author'])) {
                 $xml .= '      <author>' . htmlspecialchars($item['author'], ENT_XML1, 'UTF-8') . '</author>' . "\n";
+                // Also add dc:creator for compatibility
+                $authorParts = explode(' (', $item['author']);
+                $authorName = isset($authorParts[1]) ? rtrim($authorParts[1], ')') : 'Admin';
+                $xml .= '      <dc:creator><![CDATA[' . htmlspecialchars($authorName, ENT_XML1, 'UTF-8') . ']]></dc:creator>' . "\n";
             }
             
             if (isset($item['category']) && !empty($item['category'])) {
                 $xml .= '      <category>' . htmlspecialchars($item['category'], ENT_XML1, 'UTF-8') . '</category>' . "\n";
+            }
+            
+            // Add media:content for image if available
+            if (isset($item['image']) && !empty($item['image'])) {
+                $imageUrl = $this->encodeUrl($item['image']);
+                $xml .= '      <media:content url="' . htmlspecialchars($imageUrl, ENT_XML1, 'UTF-8') . '" medium="image" />' . "\n";
             }
             
             $xml .= '    </item>' . "\n";
