@@ -34,17 +34,20 @@ class RssController extends Controller
                     'description' => 'Latest courses and webinars from ' . $siteName,
                     'link' => $baseUrl . '/courses',
                     'feedUrl' => $baseUrl . '/rss/courses',
-                    'language' => config('app.locale', 'en-us'),
+                    'language' => 'ar',
                     'items' => $courses->map(function ($course) use ($baseUrl, $self) {
                         $encodedUrl = $self->encodeUrl($baseUrl . '/course/' . $course->slug);
                         $imageUrl = $course->getImage() ? url($course->getImage()) : null;
                         
+                        $description = strip_tags($course->description ?? '');
+                        $truncatedDescription = mb_strlen($description) > 200 ? mb_substr($description, 0, 200) . '...' : $description;
+                        
                         return [
                             'title' => $course->title,
                             'link' => $encodedUrl,
-                            'description' => strip_tags($course->description ?? ''),
+                            'description' => $truncatedDescription,
                             'pubDate' => $course->created_at ? gmdate('D, d M Y H:i:s', $course->created_at) . ' +0000' : gmdate('D, d M Y H:i:s') . ' +0000',
-                            'author' => $self->formatAuthor($course->teacher),
+                            'author' => $course->category->title ?? 'General',
                             'guid' => $encodedUrl,
                             'category' => $course->category->title ?? null,
                             'image' => $imageUrl,
@@ -85,7 +88,7 @@ class RssController extends Controller
                     'description' => 'Latest blog posts from ' . $siteName,
                     'link' => $baseUrl . '/blog',
                     'feedUrl' => $baseUrl . '/rss/blog',
-                    'language' => config('app.locale', 'en-us'),
+                    'language' => 'ar',
                     'items' => $posts->map(function ($post) use ($baseUrl, $self) {
                         $description = strip_tags($post->description ?? '');
                         $content = strip_tags($post->content ?? '');
@@ -93,12 +96,14 @@ class RssController extends Controller
                         $encodedUrl = $self->encodeUrl($baseUrl . $post->getUrl());
                         $imageUrl = !empty($post->image) ? url($post->image) : null;
                         
+                        $truncatedDescription = mb_strlen($fullDescription) > 200 ? mb_substr($fullDescription, 0, 200) . '...' : $fullDescription;
+                        
                         return [
                             'title' => $post->title,
                             'link' => $encodedUrl,
-                            'description' => $fullDescription,
+                            'description' => $truncatedDescription,
                             'pubDate' => $post->created_at ? gmdate('D, d M Y H:i:s', $post->created_at) . ' +0000' : gmdate('D, d M Y H:i:s') . ' +0000',
-                            'author' => $self->formatAuthor($post->author),
+                            'author' => $post->category->title ?? 'General',
                             'guid' => $encodedUrl,
                             'category' => $post->category->title ?? null,
                             'image' => $imageUrl,
@@ -147,11 +152,8 @@ class RssController extends Controller
             $xml .= '      <guid isPermaLink="true">' . htmlspecialchars($item['guid'], ENT_XML1, 'UTF-8') . '</guid>' . "\n";
             
             if (isset($item['author'])) {
-                // Use dc:creator instead of author to avoid validation errors
-                // RSS 2.0 items should not include both author and dc:creator
-                $authorParts = explode(' (', $item['author']);
-                $authorName = isset($authorParts[1]) ? rtrim($authorParts[1], ')') : 'Admin';
-                $xml .= '      <dc:creator><![CDATA[' . htmlspecialchars($authorName, ENT_XML1, 'UTF-8') . ']]></dc:creator>' . "\n";
+                // Use category name as creator (dc:creator)
+                $xml .= '      <dc:creator><![CDATA[' . htmlspecialchars($item['author'], ENT_XML1, 'UTF-8') . ']]></dc:creator>' . "\n";
             }
             
             if (isset($item['category']) && !empty($item['category'])) {
