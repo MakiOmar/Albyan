@@ -6,6 +6,7 @@ use App\Models\FeatureWebinar;
 use App\Models\Faq;
 use App\Models\Prerequisite;
 use App\Models\Tag;
+use App\Models\Translation\WebinarTranslation;
 use App\Models\Webinar;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -21,7 +22,7 @@ class WordpressCourseSyncService
      */
     public function syncSingleCourse(int $webinarId): array
     {
-        $course = Webinar::with(['category', 'tags', 'faqs', 'prerequisites', 'feature'])
+        $course = Webinar::with(['category', 'tags', 'faqs', 'prerequisites', 'feature', 'translations'])
             ->find($webinarId);
 
         if (!$course) {
@@ -102,9 +103,6 @@ class WordpressCourseSyncService
      */
     public function buildCoursePayload(Webinar $course): array
     {
-        // Get translation data (default locale)
-        $translation = $course->translate();
-
         // Build category data
         $category = null;
         $categorySlug = null;
@@ -127,13 +125,22 @@ class WordpressCourseSyncService
         // Build prerequisites array (Laravel course IDs - will need mapping on WordPress side)
         $prerequisites = $course->prerequisites->pluck('prerequisite_id')->toArray();
 
-        // Check if featured - FIXED: use null check instead of instanceof
+        // Check if featured
         $isFeatured = !is_null($course->feature);
 
         // Build full image URLs
         $imageCover = $course->image_cover ? url($course->image_cover) : null;
         $thumbnail = $course->thumbnail ? url($course->thumbnail) : null;
         $videoDemo = $course->video_demo ? url($course->video_demo) : null;
+
+        // Get translation directly from translations table (Arabic only)
+        // Try Arabic locale first, then fallback to first available translation
+        $translation = $course->translations->where('locale', 'ar')->first()
+            ?? $course->translations->first();
+
+        $title = $translation->title ?? '';
+        $description = $translation->description ?? '';
+        $seoDescription = $translation->seo_description ?? '';
 
         return [
             // Identification
@@ -142,10 +149,10 @@ class WordpressCourseSyncService
             'type'       => $course->type,
             'status'     => $course->status,
 
-            // Text content
-            'title'            => $translation->title ?? '',
-            'description'     => $translation->description ?? '',
-            'seo_description' => $translation->seo_description ?? '',
+            // Text content (using accessor methods that handle translations)
+            'title'            => $title,
+            'description'     => $description,
+            'seo_description' => $seoDescription,
 
             // Media
             'image_cover'       => $imageCover,
@@ -194,3 +201,4 @@ class WordpressCourseSyncService
         ];
     }
 }
+
