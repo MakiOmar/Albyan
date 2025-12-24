@@ -133,39 +133,32 @@ class WordpressCourseSyncService
         $thumbnail = $course->thumbnail ? url($course->thumbnail) : null;
         $videoDemo = $course->video_demo ? url($course->video_demo) : null;
 
-        // Get translation directly from webinar_translations table
-        // Try multiple locale variations (ar, AR, arabic) and case-insensitive search
-        $translation = WebinarTranslation::where('webinar_id', $course->id)
-            ->where(function ($query) {
-                $query->where('locale', 'ar')
-                      ->orWhere('locale', 'AR')
-                      ->orWhere('locale', 'arabic')
-                      ->orWhereRaw('LOWER(locale) = ?', ['ar']);
-            })
+        // Get translation directly from webinar_translations table using DB facade
+        // This bypasses any model accessors or issues
+        $translationData = \DB::table('webinar_translations')
+            ->where('webinar_id', $course->id)
+            ->where('locale', 'ar')
             ->first();
 
         // Fallback to any translation if Arabic not found
-        if (!$translation) {
-            $translation = WebinarTranslation::where('webinar_id', $course->id)->first();
+        if (!$translationData) {
+            $translationData = \DB::table('webinar_translations')
+                ->where('webinar_id', $course->id)
+                ->first();
         }
 
-        // Extract data - use getRawOriginal() to get raw database value, bypassing any accessors
-        if ($translation) {
-            // Use getRawOriginal() to get the actual database value
-            $title = trim($translation->getRawOriginal('title') ?? '');
-            $description = $translation->getRawOriginal('description') ?? '';
-            $seoDescription = $translation->getRawOriginal('seo_description') ?? '';
+        // Extract data directly from DB result (bypasses model completely)
+        if ($translationData) {
+            $title = trim($translationData->title ?? '');
+            $description = $translationData->description ?? '';
+            $seoDescription = $translationData->seo_description ?? '';
             
-            // If getRawOriginal returns null, fallback to regular attribute access
-            if (empty($title)) {
-                $title = trim($translation->title ?? '');
-            }
-            if (empty($description)) {
-                $description = $translation->description ?? '';
-            }
-            if (empty($seoDescription)) {
-                $seoDescription = $translation->seo_description ?? '';
-            }
+            // Log success
+            Log::info("Translation found for course {$course->id}", [
+                'webinar_id' => $course->id,
+                'locale' => $translationData->locale ?? 'unknown',
+                'title_length' => strlen($title),
+            ]);
         } else {
             // No translation found - use Webinar model accessors as fallback
             $title = trim($course->title ?? '');
@@ -180,12 +173,17 @@ class WordpressCourseSyncService
         
         // Final check - if title is still empty, log error with debug info
         if (empty($title)) {
+            // Check if record exists using raw DB query
+            $exists = \DB::table('webinar_translations')
+                ->where('webinar_id', $course->id)
+                ->where('locale', 'ar')
+                ->exists();
+            
             Log::error("Title is empty for course {$course->id} after all fallbacks", [
                 'webinar_id' => $course->id,
-                'translation_exists' => $translation !== null,
-                'translation_id' => $translation->id ?? null,
-                'translation_locale' => $translation->locale ?? 'none',
-                'raw_title' => $translation ? $translation->getRawOriginal('title') : null,
+                'translation_data_exists' => $translationData !== null,
+                'db_record_exists' => $exists,
+                'translation_locale' => $translationData->locale ?? 'none',
             ]);
         }
 
