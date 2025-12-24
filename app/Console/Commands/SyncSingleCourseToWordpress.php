@@ -34,6 +34,11 @@ class SyncSingleCourseToWordpress extends Command
 
         $result = $service->syncSingleCourse($webinarId);
 
+        // Debug: Show payload if validation fails
+        if (!$result['success'] && strpos($result['error'] ?? '', 'Payload validation failed') !== false) {
+            $this->warn('Payload validation failed. Check logs for details.');
+        }
+
         if (!$result['success']) {
             $this->error('Sync failed: ' . ($result['error'] ?? 'Unknown error'));
             if (isset($result['status'])) {
