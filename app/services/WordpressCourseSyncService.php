@@ -134,9 +134,14 @@ class WordpressCourseSyncService
         $videoDemo = $course->video_demo ? url($course->video_demo) : null;
 
         // Get translation directly from webinar_translations table
-        // Query the table directly to ensure we get the data
+        // Try multiple locale variations (ar, AR, arabic) and case-insensitive search
         $translation = WebinarTranslation::where('webinar_id', $course->id)
-            ->where('locale', 'ar')
+            ->where(function ($query) {
+                $query->where('locale', 'ar')
+                      ->orWhere('locale', 'AR')
+                      ->orWhere('locale', 'arabic')
+                      ->orWhereRaw('LOWER(locale) = ?', ['ar']);
+            })
             ->first();
 
         // Fallback to any translation if Arabic not found
@@ -144,10 +149,45 @@ class WordpressCourseSyncService
             $translation = WebinarTranslation::where('webinar_id', $course->id)->first();
         }
 
-        // Extract data with null safety
-        $title = $translation ? ($translation->title ?? '') : '';
-        $description = $translation ? ($translation->description ?? '') : '';
-        $seoDescription = $translation ? ($translation->seo_description ?? '') : '';
+        // Extract data - use getRawOriginal() to get raw database value, bypassing any accessors
+        if ($translation) {
+            // Use getRawOriginal() to get the actual database value
+            $title = trim($translation->getRawOriginal('title') ?? '');
+            $description = $translation->getRawOriginal('description') ?? '';
+            $seoDescription = $translation->getRawOriginal('seo_description') ?? '';
+            
+            // If getRawOriginal returns null, fallback to regular attribute access
+            if (empty($title)) {
+                $title = trim($translation->title ?? '');
+            }
+            if (empty($description)) {
+                $description = $translation->description ?? '';
+            }
+            if (empty($seoDescription)) {
+                $seoDescription = $translation->seo_description ?? '';
+            }
+        } else {
+            // No translation found - use Webinar model accessors as fallback
+            $title = trim($course->title ?? '');
+            $description = $course->description ?? '';
+            $seoDescription = $course->seo_description ?? '';
+            
+            Log::warning("No translation found in webinar_translations for course {$course->id}, using model accessors", [
+                'webinar_id' => $course->id,
+                'title_from_accessor' => $title,
+            ]);
+        }
+        
+        // Final check - if title is still empty, log error with debug info
+        if (empty($title)) {
+            Log::error("Title is empty for course {$course->id} after all fallbacks", [
+                'webinar_id' => $course->id,
+                'translation_exists' => $translation !== null,
+                'translation_id' => $translation->id ?? null,
+                'translation_locale' => $translation->locale ?? 'none',
+                'raw_title' => $translation ? $translation->getRawOriginal('title') : null,
+            ]);
+        }
 
         return [
             // Identification
