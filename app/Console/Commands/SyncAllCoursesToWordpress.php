@@ -18,7 +18,9 @@ class SyncAllCoursesToWordpress extends Command
                             {--type= : Filter by type (webinar, course, text_lesson)}
                             {--limit= : Limit the number of courses to sync}
                             {--offset=0 : Start from this offset}
-                            {--skip-existing : Skip courses that already exist in WordPress}';
+                            {--skip-existing : Skip courses that already exist in WordPress}
+                            {--retries=3 : Number of retry attempts for failed requests (default: 3)}
+                            {--retry-delay=2 : Delay in seconds between retries (default: 2)}';
 
     /**
      * The console command description.
@@ -89,6 +91,9 @@ class SyncAllCoursesToWordpress extends Command
         $bar = $this->output->createProgressBar($courses->count());
         $bar->start();
 
+        $maxRetries = (int) $this->option('retries');
+        $retryDelay = (int) $this->option('retry-delay');
+
         foreach ($courses as $course) {
             $processed++;
 
@@ -98,14 +103,26 @@ class SyncAllCoursesToWordpress extends Command
                 // For now, we'll sync and let WordPress handle duplicates
             }
 
-            $result = $service->syncSingleCourse($course->id);
+            $result = $service->syncSingleCourse($course->id, $maxRetries, $retryDelay);
 
             if ($result['success']) {
                 $successful++;
+                // Show retry info if it took multiple attempts
+                if (isset($result['attempts']) && $result['attempts'] > 1) {
+                    $this->newLine();
+                    $this->comment("Course ID {$course->id} synced after {$result['attempts']} attempt(s)");
+                }
             } else {
                 $failed++;
                 $this->newLine();
-                $this->error("Failed to sync course ID {$course->id}: " . ($result['error'] ?? 'Unknown error'));
+                $errorMsg = $result['error'] ?? 'Unknown error';
+                $attempts = $result['attempts'] ?? 1;
+                
+                if (isset($result['retryable']) && $result['retryable']) {
+                    $this->error("Failed to sync course ID {$course->id} after {$attempts} attempt(s): {$errorMsg}");
+                } else {
+                    $this->error("Failed to sync course ID {$course->id}: {$errorMsg}");
+                }
             }
 
             $bar->advance();

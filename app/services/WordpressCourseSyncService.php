@@ -15,12 +15,14 @@ use Illuminate\Support\Facades\Log;
 class WordpressCourseSyncService
 {
     /**
-     * Sync a single course to WordPress
+     * Sync a single course to WordPress with retry mechanism
      *
      * @param int $webinarId
+     * @param int $maxRetries Maximum number of retry attempts (default: 3)
+     * @param int $retryDelay Delay in seconds between retries (default: 2)
      * @return array
      */
-    public function syncSingleCourse(int $webinarId): array
+    public function syncSingleCourse(int $webinarId, int $maxRetries = 3, int $retryDelay = 2): array
     {
         $course = Webinar::with(['category', 'tags', 'faqs', 'prerequisites', 'feature', 'translations'])
             ->find($webinarId);
@@ -46,53 +48,135 @@ class WordpressCourseSyncService
 
         $endpoint = rtrim($baseUrl, '/') . '/wp-json/rocket-lms/v1/course';
 
-        try {
-            $response = Http::withHeaders([
-                'Accept'            => 'application/json',
-                'Content-Type'      => 'application/json',
-                'X-RocketLMS-Token' => $apiToken,
-            ])->post($endpoint, $payload);
+        $attempt = 0;
+        $lastError = null;
 
-            $status = $response->status();
-            $body = $response->json();
+        while ($attempt <= $maxRetries) {
+            try {
+                $response = Http::timeout(60) // Increase timeout to 60 seconds
+                    ->withHeaders([
+                        'Accept'            => 'application/json',
+                        'Content-Type'      => 'application/json',
+                        'X-RocketLMS-Token' => $apiToken,
+                    ])->post($endpoint, $payload);
 
-            if ($response->successful()) {
-                Log::info("Course {$webinarId} synced successfully to WordPress", [
+                $status = $response->status();
+                $body = $response->json();
+
+                if ($response->successful()) {
+                    if ($attempt > 0) {
+                        Log::info("Course {$webinarId} synced successfully to WordPress after {$attempt} retry(ies)", [
+                            'webinar_id' => $webinarId,
+                            'attempts'   => $attempt + 1,
+                            'response'    => $body,
+                        ]);
+                    } else {
+                        Log::info("Course {$webinarId} synced successfully to WordPress", [
+                            'webinar_id' => $webinarId,
+                            'response'   => $body,
+                        ]);
+                    }
+
+                    return [
+                        'success' => true,
+                        'status'  => $status,
+                        'body'    => $body,
+                        'attempts' => $attempt + 1,
+                    ];
+                }
+
+                // For HTTP errors (4xx, 5xx), don't retry - these are not transient
+                Log::error("Failed to sync course {$webinarId} to WordPress", [
                     'webinar_id' => $webinarId,
+                    'status'     => $status,
                     'response'   => $body,
+                    'attempt'    => $attempt + 1,
                 ]);
 
                 return [
-                    'success' => true,
+                    'success' => false,
                     'status'  => $status,
                     'body'    => $body,
+                    'error'   => $body['message'] ?? 'Unknown error from WordPress',
+                    'attempts' => $attempt + 1,
                 ];
+            } catch (\Exception $e) {
+                $lastError = $e;
+                $errorMessage = $e->getMessage();
+                
+                // Check if this is a timeout or connection error that we should retry
+                $isRetryable = $this->isRetryableError($errorMessage);
+                
+                if (!$isRetryable || $attempt >= $maxRetries) {
+                    // Don't retry for non-retryable errors or if we've exhausted retries
+                    Log::error("Exception while syncing course {$webinarId} to WordPress", [
+                        'webinar_id' => $webinarId,
+                        'error'      => $errorMessage,
+                        'attempt'    => $attempt + 1,
+                        'retryable'  => $isRetryable,
+                        'trace'      => $e->getTraceAsString(),
+                    ]);
+
+                    return [
+                        'success' => false,
+                        'error'   => 'Exception: ' . $errorMessage,
+                        'attempts' => $attempt + 1,
+                        'retryable' => $isRetryable,
+                    ];
+                }
+
+                // Log retry attempt
+                Log::warning("Retrying sync for course {$webinarId} (attempt " . ($attempt + 1) . "/{$maxRetries})", [
+                    'webinar_id' => $webinarId,
+                    'error'      => $errorMessage,
+                    'retry_delay' => $retryDelay,
+                ]);
+
+                // Wait before retrying (exponential backoff: 2s, 4s, 8s, etc.)
+                sleep($retryDelay * ($attempt + 1));
+                $attempt++;
             }
-
-            Log::error("Failed to sync course {$webinarId} to WordPress", [
-                'webinar_id' => $webinarId,
-                'status'     => $status,
-                'response'   => $body,
-            ]);
-
-            return [
-                'success' => false,
-                'status'  => $status,
-                'body'    => $body,
-                'error'   => $body['message'] ?? 'Unknown error from WordPress',
-            ];
-        } catch (\Exception $e) {
-            Log::error("Exception while syncing course {$webinarId} to WordPress", [
-                'webinar_id' => $webinarId,
-                'error'      => $e->getMessage(),
-                'trace'      => $e->getTraceAsString(),
-            ]);
-
-            return [
-                'success' => false,
-                'error'   => 'Exception: ' . $e->getMessage(),
-            ];
         }
+
+        // Should never reach here, but just in case
+        return [
+            'success' => false,
+            'error'   => 'Exception: ' . ($lastError ? $lastError->getMessage() : 'Unknown error'),
+            'attempts' => $attempt + 1,
+        ];
+    }
+
+    /**
+     * Check if an error is retryable (timeout, connection errors, etc.)
+     *
+     * @param string $errorMessage
+     * @return bool
+     */
+    protected function isRetryableError(string $errorMessage): bool
+    {
+        $retryablePatterns = [
+            'timeout',
+            'timed out',
+            'connection',
+            'network',
+            'resolve',
+            'could not resolve',
+            'failed to connect',
+            'operation timed out',
+            'curl error 28', // cURL timeout
+            'curl error 6',  // cURL couldn't resolve host
+            'curl error 7',  // cURL couldn't connect
+        ];
+
+        $errorMessageLower = strtolower($errorMessage);
+
+        foreach ($retryablePatterns as $pattern) {
+            if (strpos($errorMessageLower, $pattern) !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
