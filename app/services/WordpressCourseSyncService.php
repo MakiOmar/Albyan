@@ -7,6 +7,7 @@ use App\Models\Faq;
 use App\Models\Prerequisite;
 use App\Models\Tag;
 use App\Models\Webinar;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -187,9 +188,9 @@ class WordpressCourseSyncService
             'timezone'  => $course->timezone,
             'start_date' => $course->start_date,
 
-            // Timestamps
-            'created_at' => $course->created_at ? $course->created_at->toIso8601String() : null,
-            'updated_at' => $course->updated_at ? $course->updated_at->toIso8601String() : null,
+            // Timestamps (stored as Unix timestamps, convert to ISO 8601)
+            'created_at' => $course->created_at ? Carbon::createFromTimestamp($course->created_at)->toIso8601String() : null,
+            'updated_at' => $course->updated_at ? Carbon::createFromTimestamp($course->updated_at)->toIso8601String() : null,
         ];
     }
 }
