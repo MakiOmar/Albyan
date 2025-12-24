@@ -133,14 +133,21 @@ class WordpressCourseSyncService
         $thumbnail = $course->thumbnail ? url($course->thumbnail) : null;
         $videoDemo = $course->video_demo ? url($course->video_demo) : null;
 
-        // Get translation directly from translations table (Arabic only)
-        // Try Arabic locale first, then fallback to first available translation
-        $translation = $course->translations->where('locale', 'ar')->first()
-            ?? $course->translations->first();
+        // Get translation directly from webinar_translations table
+        // Query the table directly to ensure we get the data
+        $translation = WebinarTranslation::where('webinar_id', $course->id)
+            ->where('locale', 'ar')
+            ->first();
 
-        $title = $translation->title ?? '';
-        $description = $translation->description ?? '';
-        $seoDescription = $translation->seo_description ?? '';
+        // Fallback to any translation if Arabic not found
+        if (!$translation) {
+            $translation = WebinarTranslation::where('webinar_id', $course->id)->first();
+        }
+
+        // Extract data with null safety
+        $title = $translation ? ($translation->title ?? '') : '';
+        $description = $translation ? ($translation->description ?? '') : '';
+        $seoDescription = $translation ? ($translation->seo_description ?? '') : '';
 
         return [
             // Identification
