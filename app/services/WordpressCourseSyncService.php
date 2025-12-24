@@ -133,58 +133,56 @@ class WordpressCourseSyncService
         $thumbnail = $course->thumbnail ? url($course->thumbnail) : null;
         $videoDemo = $course->video_demo ? url($course->video_demo) : null;
 
-        // Get translation directly from webinar_translations table using DB facade
-        // This bypasses any model accessors or issues
-        $translationData = \DB::table('webinar_translations')
-            ->where('webinar_id', $course->id)
-            ->where('locale', 'ar')
-            ->first();
-
-        // Fallback to any translation if Arabic not found
-        if (!$translationData) {
+        // Use the Webinar model accessors (same way the rest of the app does it)
+        // These use getTranslateAttributeValue() which handles locale fallback automatically
+        // Set the locale to Arabic before accessing to ensure we get Arabic translation
+        $originalLocale = app()->getLocale();
+        app()->setLocale('ar');
+        
+        // Use the model accessors - they handle translation lookup automatically
+        $title = trim($course->title ?? '');
+        $description = $course->description ?? '';
+        $seoDescription = $course->seo_description ?? '';
+        
+        // Restore original locale
+        app()->setLocale($originalLocale);
+        
+        // If title is still empty, try direct DB query as fallback
+        if (empty($title)) {
             $translationData = \DB::table('webinar_translations')
                 ->where('webinar_id', $course->id)
-                ->first();
-        }
-
-        // Extract data directly from DB result (bypasses model completely)
-        if ($translationData) {
-            $title = trim($translationData->title ?? '');
-            $description = $translationData->description ?? '';
-            $seoDescription = $translationData->seo_description ?? '';
-            
-            // Log success
-            Log::info("Translation found for course {$course->id}", [
-                'webinar_id' => $course->id,
-                'locale' => $translationData->locale ?? 'unknown',
-                'title_length' => strlen($title),
-            ]);
-        } else {
-            // No translation found - use Webinar model accessors as fallback
-            $title = trim($course->title ?? '');
-            $description = $course->description ?? '';
-            $seoDescription = $course->seo_description ?? '';
-            
-            Log::warning("No translation found in webinar_translations for course {$course->id}, using model accessors", [
-                'webinar_id' => $course->id,
-                'title_from_accessor' => $title,
-            ]);
-        }
-        
-        // Final check - if title is still empty, log error with debug info
-        if (empty($title)) {
-            // Check if record exists using raw DB query
-            $exists = \DB::table('webinar_translations')
-                ->where('webinar_id', $course->id)
                 ->where('locale', 'ar')
-                ->exists();
+                ->first();
             
-            Log::error("Title is empty for course {$course->id} after all fallbacks", [
-                'webinar_id' => $course->id,
-                'translation_data_exists' => $translationData !== null,
-                'db_record_exists' => $exists,
-                'translation_locale' => $translationData->locale ?? 'none',
-            ]);
+            if ($translationData) {
+                $title = trim($translationData->title ?? '');
+                $description = $translationData->description ?? '';
+                $seoDescription = $translationData->seo_description ?? '';
+                
+                Log::info("Used direct DB query for course {$course->id} translation", [
+                    'webinar_id' => $course->id,
+                ]);
+            } else {
+                // Try any locale as last resort
+                $translationData = \DB::table('webinar_translations')
+                    ->where('webinar_id', $course->id)
+                    ->first();
+                
+                if ($translationData) {
+                    $title = trim($translationData->title ?? '');
+                    $description = $translationData->description ?? '';
+                    $seoDescription = $translationData->seo_description ?? '';
+                }
+            }
+            
+            if (empty($title)) {
+                Log::error("Title is empty for course {$course->id} after all methods", [
+                    'webinar_id' => $course->id,
+                    'db_record_exists' => \DB::table('webinar_translations')
+                        ->where('webinar_id', $course->id)
+                        ->exists(),
+                ]);
+            }
         }
 
         return [

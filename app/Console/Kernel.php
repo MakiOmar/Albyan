@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         Commands\SearchReplaceCommand::class,
         Commands\GenerateSitemap::class,
         Commands\SyncSingleCourseToWordpress::class,
+        Commands\SyncAllCoursesToWordpress::class,
     ];
 
     /**
