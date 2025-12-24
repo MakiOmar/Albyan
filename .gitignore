@@ -24,3 +24,6 @@ yarn-error.log
 .vscode/sftp.json
 LARAVEL_UPGRADE_STATUS.md
 composer.json.backup
+wordpress-rocket-lms-sync-plugin.zip
+/wordpress-rocket-lms-sync-plugin
+/learnpress

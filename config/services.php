@@ -55,4 +55,21 @@ return [
     "msg91" => [
         'key' => '', // set from Channel
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | WordPress / LearnPress Sync
+    |--------------------------------------------------------------------------
+    |
+    | These values are used when sending courses from Laravel (Rocket LMS)
+    | to a separate WordPress + LearnPress installation.
+    |
+    | WORDPRESS_SYNC_BASE_URL should be your WP site URL (e.g. https://example.com)
+    | WORDPRESS_SYNC_API_TOKEN should match the token configured in the WP plugin.
+    |
+    */
+    'wordpress_sync' => [
+        'base_url'  => env('WORDPRESS_SYNC_BASE_URL'),
+        'api_token' => env('WORDPRESS_SYNC_API_TOKEN'),
+    ],
 ];

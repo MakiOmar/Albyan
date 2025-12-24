@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\NotifyGroupsNearEndCommand::class,
         Commands\SearchReplaceCommand::class,
         Commands\GenerateSitemap::class,
+        Commands\SyncSingleCourseToWordpress::class,
     ];
 
     /**
