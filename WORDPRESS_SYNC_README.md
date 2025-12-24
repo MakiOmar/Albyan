@@ -94,7 +94,7 @@ php artisan wp:sync-course {webinar_id}
 Example:
 
 ```bash
-php artisan wp:sync-course 123
+php artisan wp:sync-course 2496
 ```
 
 Output:
