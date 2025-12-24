@@ -65,12 +65,15 @@ class SyncAllCoursesToWordpress extends Command
         $offset = (int) $this->option('offset');
         $limit = $this->option('limit') ? (int) $this->option('limit') : null;
 
+        // Always use skip() and take() together - MySQL requires LIMIT when using OFFSET
         if ($limit) {
             $query->skip($offset)->take($limit);
             $this->info("Processing courses {$offset} to " . ($offset + $limit) . " (limit: {$limit})");
         } else {
-            $query->skip($offset);
-            $this->info("Processing courses starting from offset {$offset}");
+            // If no limit specified, use a large number to get all remaining records
+            // Using PHP_INT_MAX would work, but a reasonable large number is safer
+            $query->skip($offset)->take(999999);
+            $this->info("Processing courses starting from offset {$offset} (all remaining)");
         }
 
         $this->newLine();
