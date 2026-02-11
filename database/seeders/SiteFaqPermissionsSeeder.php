@@ -9,6 +9,8 @@ use Illuminate\Database\Seeder;
 /**
  * Seeds only Site FAQs permissions (sections 1195-1199) for role_id 2.
  * Run after SectionsTableSeeder. Use when full PermissionsTableSeeder fails.
+ *
+ * On production: prefer running php artisan site-faq:install (ensures sections + permissions in one step).
  */
 class SiteFaqPermissionsSeeder extends Seeder
 {
