@@ -138,6 +138,33 @@
         });
     }
 
+    // Category courses sections: dynamic count, one Swiper per section
+    document.querySelectorAll('.category-courses-swiper').forEach(function (container) {
+        const section = container.closest('section');
+        const paginationEl = section ? section.querySelector('.category-courses-swiper-pagination') : null;
+        if (!paginationEl) return;
+        const swip = new Swiper(container, {
+            slidesPerView: 1,
+            spaceBetween: 16,
+            loop: false,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: true,
+                pauseOnMouseEnter: true,
+            },
+            pagination: {
+                el: paginationEl,
+                clickable: true,
+            },
+            breakpoints: defaultBreakpoints,
+        });
+        $(container).mouseenter(() => {
+            swip.autoplay.stop();
+        });
+        $(container).mouseleave(() => {
+            swip.autoplay.start();
+        });
+    });
 
     $('.instructors-swiper-container').owlCarousel({
         loop: true,
