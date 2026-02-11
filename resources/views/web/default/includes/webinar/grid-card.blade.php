@@ -1,5 +1,5 @@
 <div class="webinar-card {{ getCourseCardStyleClass() }}">
-    @if ( isset($index) && $featuredCount == ( $index + 1 ) )
+    @if ( isset($index) && isset($featuredCount) && $featuredCount == ( $index + 1 ) )
     <svg class="position-absolute" style="top:-30px;left:-30px" width="104" height="104" viewBox="0 0 104 104" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M52.0006 9.41504C75.5192 9.41504 94.5866 28.4817 94.588 52.002C94.5893 75.5221 75.5242 94.5889 52.0056 94.5889C28.4869 94.5889 9.41958 75.5221 9.4181 52.002C9.41671 28.4817 28.4819 9.41504 52.0006 9.41504Z" stroke="#23BDEE" stroke-opacity="0.2" stroke-width="18.8302"/>
                     </svg>

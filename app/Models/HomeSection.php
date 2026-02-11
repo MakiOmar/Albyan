@@ -33,6 +33,7 @@ class HomeSection extends Model
         'organizations',
         'blog',
         'upcoming_courses',
+        'category_courses',
     ];
 
     static $featured_classes = 'featured_classes';
@@ -57,4 +58,30 @@ class HomeSection extends Model
     static $organizations = 'organizations';
     static $blog = 'blog';
     static $upcoming_courses = 'upcoming_courses';
+    static $category_courses = 'category_courses';
+
+    protected $casts = [
+        'value' => 'array',
+    ];
+
+    public function category()
+    {
+        return $this->belongsTo(\App\Models\Category::class, 'category_id', 'id');
+    }
+
+    /**
+     * Mode for category_courses section: 'recent' or 'specific'.
+     */
+    public function getCategoryCoursesMode()
+    {
+        return $this->value['mode'] ?? 'recent';
+    }
+
+    /**
+     * Webinar IDs for category_courses section when mode is 'specific'.
+     */
+    public function getCategoryCoursesWebinarIds()
+    {
+        return $this->value['webinar_ids'] ?? [];
+    }
 }

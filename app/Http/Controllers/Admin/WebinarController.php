@@ -851,20 +851,31 @@ class WebinarController extends Controller
     public function search(Request $request)
     {
         $term = $request->get('term');
-
         $option = $request->get('option', null);
+        $categoryId = $request->get('category_id', null);
 
-        $query = Webinar::select('id')
-            ->whereTranslationLike('title', "%$term%");
+        $query = Webinar::whereTranslationLike('title', "%$term%");
 
         if (!empty($option) and $option == 'just_webinar') {
             $query->where('type', Webinar::$webinar);
             $query->where('status', Webinar::$active);
         }
 
-        $webinar = $query->get();
+        if (!empty($categoryId)) {
+            $query->where('category_id', $categoryId);
+        }
 
-        return response()->json($webinar, 200);
+        $webinars = $query->get();
+
+        // Return id and title for Select2 and other consumers
+        $result = $webinars->map(function ($webinar) {
+            return [
+                'id' => $webinar->id,
+                'title' => $webinar->title,
+            ];
+        });
+
+        return response()->json($result->values(), 200);
     }
 
     public function exportExcel(Request $request)

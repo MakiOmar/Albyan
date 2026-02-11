@@ -258,6 +258,37 @@
                 </div>
             </section>
         @endif
+
+        {{-- Category courses section: slider of courses from selected category --}}
+        @if($homeSection->name == \App\Models\HomeSection::$category_courses && isset($categorySectionData[$homeSection->id]) && !empty($categorySectionData[$homeSection->id]['webinars']) && !$categorySectionData[$homeSection->id]['webinars']->isEmpty())
+            @php
+                $catSectionData = $categorySectionData[$homeSection->id];
+                $catCategory = $catSectionData['category'];
+                $catWebinars = $catSectionData['webinars'];
+            @endphp
+            <section class="home-sections home-sections-swiper container">
+                <div class="d-flex justify-content-between ">
+                    <div>
+                        <h2 class="section-title">{{ $catCategory->title }}</h2>
+                    </div>
+                    <a href="{{ $catCategory->getUrl() }}" class="btn btn-border-white">{{ trans('home.view_all') }}</a>
+                </div>
+                <div class="mt-10 position-relative">
+                    <div class="swiper-container category-courses-swiper px-12">
+                        <div class="swiper-wrapper py-20">
+                            @foreach($catWebinars as $catWebinar)
+                                <div class="swiper-slide">
+                                    @include('web.default.includes.webinar.grid-card',['webinar' => $catWebinar])
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <div class="swiper-pagination category-courses-swiper-pagination"></div>
+                    </div>
+                </div>
+            </section>
+        @endif
             {{--
         @if($homeSection->name == \App\Models\HomeSection::$latest_classes and !empty($latestWebinars) and !$latestWebinars->isEmpty())
             <section class="home-sections home-sections-swiper container">

@@ -7,6 +7,7 @@ use App\Mixins\Installment\InstallmentPlans;
 use App\Models\AdvertisingBanner;
 use App\Models\Blog;
 use App\Models\Bundle;
+use App\Models\Category;
 use App\Models\FeatureWebinar;
 use App\Models\HomePageStatistic;
 use App\Models\HomeSection;
@@ -324,6 +325,62 @@ class HomeController extends Controller
             $forumSection = getForumSectionSettings();
         }
 
+        $categorySectionData = [];
+        $categoryCoursesSections = $homeSections->where('name', HomeSection::$category_courses)->filter(function ($section) {
+            return !empty($section->category_id);
+        });
+        foreach ($categoryCoursesSections as $section) {
+            $category = Category::find($section->category_id);
+            if (!$category) {
+                continue;
+            }
+            $mode = $section->getCategoryCoursesMode();
+            $webinarIds = $section->getCategoryCoursesWebinarIds();
+
+            if ($mode === 'specific' && !empty($webinarIds)) {
+                $webinars = Webinar::whereIn('id', $webinarIds)
+                    ->where('category_id', $section->category_id)
+                    ->where('status', Webinar::$active)
+                    ->where('private', false)
+                    ->with([
+                        'teacher' => function ($qu) {
+                            $qu->select('id', 'full_name', 'avatar');
+                        },
+                        'reviews' => function ($query) {
+                            $query->where('status', 'active');
+                        },
+                        'tickets',
+                        'feature',
+                        'category',
+                    ])
+                    ->orderByRaw('FIELD(id, ' . implode(',', array_map('intval', $webinarIds)) . ')')
+                    ->get();
+            } else {
+                $webinars = Webinar::where('category_id', $section->category_id)
+                    ->where('status', Webinar::$active)
+                    ->where('private', false)
+                    ->orderBy('updated_at', 'desc')
+                    ->with([
+                        'teacher' => function ($qu) {
+                            $qu->select('id', 'full_name', 'avatar');
+                        },
+                        'reviews' => function ($query) {
+                            $query->where('status', 'active');
+                        },
+                        'tickets',
+                        'feature',
+                        'category',
+                    ])
+                    ->limit(12)
+                    ->get();
+            }
+
+            $categorySectionData[$section->id] = [
+                'category' => $category,
+                'webinars' => $webinars,
+            ];
+        }
+
         $advertisingBanners = AdvertisingBanner::where('published', true)
             ->whereIn('position', ['home1', 'home2'])
             ->get();
@@ -387,6 +444,7 @@ class HomeController extends Controller
             'rewardProgramSection' => $rewardProgramSection ?? null,
             'becomeInstructorSection' => $becomeInstructorSection ?? null,
             'forumSection' => $forumSection ?? null,
+            'categorySectionData' => $categorySectionData,
         ];
 
         return view(getTemplate() . '.pages.home', $data);

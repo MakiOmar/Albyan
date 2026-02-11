@@ -171,8 +171,7 @@ class CategoryController extends Controller
 
         $option = $request->get('option', null);
 
-        $query = Category::select('id')
-            ->whereTranslationLike('title', "%$term%");
+        $query = Category::whereTranslationLike('title', "%$term%");
 
         /*if (!empty($option)) {
 
@@ -180,7 +179,15 @@ class CategoryController extends Controller
 
         $categories = $query->get();
 
-        return response()->json($categories, 200);
+        // Return id and title for Select2 and other consumers
+        $result = $categories->map(function ($category) {
+            return [
+                'id' => $category->id,
+                'title' => $category->title,
+            ];
+        });
+
+        return response()->json($result->values(), 200);
     }
 
     public function setSubCategory(Category $category, $subCategories, $hasSubCategories, $locale)
