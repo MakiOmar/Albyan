@@ -14,6 +14,7 @@ use App\Models\HomeSection;
 use App\Models\Product;
 use App\Models\Role;
 use App\Models\Sale;
+use App\Models\SiteFaq;
 use App\Models\SpecialOffer;
 use App\Models\Subscribe;
 use App\Models\Ticket;
@@ -381,6 +382,11 @@ class HomeController extends Controller
             ];
         }
 
+        $siteFaqs = [];
+        if (in_array(HomeSection::$faq_section, $selectedSectionsName)) {
+            $siteFaqs = SiteFaq::where('status', 'active')->orderBy('order')->get();
+        }
+
         $advertisingBanners = AdvertisingBanner::where('published', true)
             ->whereIn('position', ['home1', 'home2'])
             ->get();
@@ -445,6 +451,7 @@ class HomeController extends Controller
             'becomeInstructorSection' => $becomeInstructorSection ?? null,
             'forumSection' => $forumSection ?? null,
             'categorySectionData' => $categorySectionData,
+            'siteFaqs' => $siteFaqs,
         ];
 
         return view(getTemplate() . '.pages.home', $data);

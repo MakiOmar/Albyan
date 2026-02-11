@@ -34,6 +34,7 @@ class HomeSection extends Model
         'blog',
         'upcoming_courses',
         'category_courses',
+        'faq_section',
     ];
 
     static $featured_classes = 'featured_classes';
@@ -59,6 +60,7 @@ class HomeSection extends Model
     static $blog = 'blog';
     static $upcoming_courses = 'upcoming_courses';
     static $category_courses = 'category_courses';
+    static $faq_section = 'faq_section';
 
     protected $casts = [
         'value' => 'array',

@@ -245,6 +245,13 @@ class PermissionsTableSeeder extends Seeder
         \App\Models\Permission::updateOrCreate(['id' => 1153], ['role_id' => 2, 'section_id' => 1153, 'allow' => 1]);
         \App\Models\Permission::updateOrCreate(['id' => 1154], ['role_id' => 2, 'section_id' => 1154, 'allow' => 1]);
 
+        // site_faqs 1195 - 1199
+        \App\Models\Permission::updateOrCreate(['id' => 1195], ['role_id' => 2, 'section_id' => 1195, 'allow' => 1]);
+        \App\Models\Permission::updateOrCreate(['id' => 1196], ['role_id' => 2, 'section_id' => 1196, 'allow' => 1]);
+        \App\Models\Permission::updateOrCreate(['id' => 1197], ['role_id' => 2, 'section_id' => 1197, 'allow' => 1]);
+        \App\Models\Permission::updateOrCreate(['id' => 1198], ['role_id' => 2, 'section_id' => 1198, 'allow' => 1]);
+        \App\Models\Permission::updateOrCreate(['id' => 1199], ['role_id' => 2, 'section_id' => 1199, 'allow' => 1]);
+
         // admin_advertising 1200 - 1229
         \App\Models\Permission::updateOrCreate(['id' => 1200], ['role_id' => 2, 'section_id' => 1200, 'allow' => 1]);
         \App\Models\Permission::updateOrCreate(['id' => 1201], ['role_id' => 2, 'section_id' => 1201, 'allow' => 1]);

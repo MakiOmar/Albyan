@@ -17,6 +17,21 @@
         .category-courses-home-section {
             margin-bottom: 90px;
         }
+        /* Site FAQ section: max width and answer styling */
+        .home-faq-section {
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .home-faq-section .home-faq-answer {
+            background: var(--secondary);
+            color: #fff;
+            padding-top: 1rem;
+        }
+        .home-faq-section .home-faq-answer a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: underline;
+        }
     </style>
 @endpush
 
@@ -290,6 +305,30 @@
                     <div class="d-flex justify-content-center">
                         <div class="swiper-pagination category-courses-swiper-pagination"></div>
                     </div>
+                </div>
+            </section>
+        @endif
+
+        {{-- Site FAQs section: accordions --}}
+        @if($homeSection->name == \App\Models\HomeSection::$faq_section && !empty($siteFaqs) && !$siteFaqs->isEmpty())
+            <section class="home-sections container mb-5 home-faq-section">
+                <h2 class="section-title">{{ trans('home.faq_section_title') }}</h2>
+                <div class="accordion mt-4" id="homeFaqAccordion">
+                    @foreach($siteFaqs as $index => $siteFaq)
+                        <div class="card border rounded-sm mb-2">
+                            <div class="card-header p-0 bg-transparent border-0" id="headingFaq{{ $siteFaq->id }}">
+                                <button class="btn btn-link btn-block text-left d-flex align-items-center justify-content-between py-3 px-4 font-weight-bold text-dark-blue js-faq-accordion-btn {{ $index > 0 ? 'collapsed' : '' }}" type="button" data-toggle="collapse" data-target="#collapseFaq{{ $siteFaq->id }}" aria-expanded="{{ $index === 0 ? 'true' : 'false' }}" aria-controls="collapseFaq{{ $siteFaq->id }}">
+                                    <span>{{ $siteFaq->title }}</span>
+                                    <span class="js-faq-chevron ml-2" data-feather="chevron-{{ $index === 0 ? 'up' : 'down' }}" width="20" height="20" style="flex-shrink: 0;"></span>
+                                </button>
+                            </div>
+                            <div id="collapseFaq{{ $siteFaq->id }}" class="collapse {{ $index === 0 ? 'show' : '' }}" aria-labelledby="headingFaq{{ $siteFaq->id }}" data-parent="#homeFaqAccordion">
+                                <div class="card-body home-faq-answer pb-3 px-4">
+                                    {!! $siteFaq->answer !!}
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </section>
         @endif
@@ -1085,6 +1124,26 @@
                         showMoreBtn.click();
                     }
                 });
+            });
+        });
+
+        // FAQ accordion: toggle Feather chevron (down = closed, up = open)
+        $(function () {
+            var $accordion = $('#homeFaqAccordion');
+            if (!$accordion.length || typeof feather === 'undefined') return;
+            function setChevron($btn, isOpen) {
+                var $chevron = $btn.find('.js-faq-chevron');
+                if (!$chevron.length) return;
+                $chevron.attr('data-feather', isOpen ? 'chevron-up' : 'chevron-down');
+                feather.replace({ class: 'js-faq-chevron' });
+            }
+            $accordion.find('.collapse').on('show.bs.collapse', function () {
+                var $card = $(this).closest('.card');
+                $accordion.find('.js-faq-accordion-btn').each(function () {
+                    setChevron($(this), $(this).closest('.card').is($card));
+                });
+            }).on('hide.bs.collapse', function () {
+                setChevron($(this).closest('.card').find('.js-faq-accordion-btn'), false);
             });
         });
 

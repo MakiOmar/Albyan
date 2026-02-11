@@ -798,6 +798,15 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             ->name('admin.testimonials.fetchGoogleReviews');
         });
 
+        Route::group(['prefix' => 'site-faqs'], function () {
+            Route::get('/', 'SiteFaqController@index');
+            Route::get('/create', 'SiteFaqController@create');
+            Route::post('/store', 'SiteFaqController@store');
+            Route::get('/{id}/edit', 'SiteFaqController@edit');
+            Route::post('/{id}/update', 'SiteFaqController@update');
+            Route::get('/{id}/delete', 'SiteFaqController@delete');
+        });
+
         Route::group(['prefix' => 'contacts'], function () {
             Route::get('/', 'ContactController@index');
             Route::get('/{id}/reply', 'ContactController@reply');

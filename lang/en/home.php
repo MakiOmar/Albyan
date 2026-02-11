@@ -84,4 +84,6 @@ return [
     'platform_address' => 'Address',
     'order_summary' => 'Order Summary',
   	'blog_search_placeholder' => 'Search for blog posts...',
+
+    'faq_section_title' => 'Frequently Asked Questions',
 ];

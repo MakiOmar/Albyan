@@ -814,6 +814,7 @@
                 $authUser->can('admin_pages') or
                 $authUser->can('admin_additional_pages') or
                 $authUser->can('admin_testimonials') or
+                $authUser->can('admin_site_faqs') or
                 $authUser->can('admin_tags') or
                 $authUser->can('admin_regions') or
                 $authUser->can('admin_store') or
@@ -1015,6 +1016,26 @@
                         @can('admin_testimonials_create')
                             <li class="{{ (request()->is(getAdminPanelUrl('/testimonials/create', false))) ? 'active' : '' }}">
                                 <a class="nav-link" href="{{ getAdminPanelUrl() }}/testimonials/create">{{ trans('admin/main.new') }}</a>
+                            </li>
+                        @endcan()
+                    </ul>
+                </li>
+            @endcan
+            @can('admin_site_faqs')
+                <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/site-faqs*', false))) ? 'active' : '' }}">
+                    <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
+                        <i class="fas fa-question-circle"></i>
+                        <span>{{ trans('admin/main.site_faqs') }}</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        @can('admin_site_faqs_list')
+                            <li class="{{ (request()->is(getAdminPanelUrl('/site-faqs', false))) ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ getAdminPanelUrl() }}/site-faqs">{{ trans('admin/main.lists') }}</a>
+                            </li>
+                        @endcan()
+                        @can('admin_site_faqs_create')
+                            <li class="{{ (request()->is(getAdminPanelUrl('/site-faqs/create', false))) ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ getAdminPanelUrl() }}/site-faqs/create">{{ trans('admin/main.new') }}</a>
                             </li>
                         @endcan()
                     </ul>

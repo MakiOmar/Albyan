@@ -269,12 +269,19 @@ class SectionsTableSeeder extends Seeder
         Section::updateOrCreate(['id' => 1104], ['name' => 'admin_promotion_delete', 'section_group_id' => 1100, 'caption' => 'Promotion delete']);
 
 
-        // testimonials 1150 - 1199
+        // testimonials 1150 - 1189
         Section::updateOrCreate(['id' => 1150], ['name' => 'admin_testimonials', 'caption' => 'testimonials']);
         Section::updateOrCreate(['id' => 1151], ['name' => 'admin_testimonials_list', 'section_group_id' => 1150, 'caption' => 'testimonials list']);
         Section::updateOrCreate(['id' => 1152], ['name' => 'admin_testimonials_create', 'section_group_id' => 1150, 'caption' => 'testimonials create']);
         Section::updateOrCreate(['id' => 1153], ['name' => 'admin_testimonials_edit', 'section_group_id' => 1150, 'caption' => 'testimonials edit']);
         Section::updateOrCreate(['id' => 1154], ['name' => 'admin_testimonials_delete', 'section_group_id' => 1150, 'caption' => 'testimonials delete']);
+
+        // site_faqs 1195 - 1199
+        Section::updateOrCreate(['id' => 1195], ['name' => 'admin_site_faqs', 'caption' => 'site faqs']);
+        Section::updateOrCreate(['id' => 1196], ['name' => 'admin_site_faqs_list', 'section_group_id' => 1195, 'caption' => 'site faqs list']);
+        Section::updateOrCreate(['id' => 1197], ['name' => 'admin_site_faqs_create', 'section_group_id' => 1195, 'caption' => 'site faqs create']);
+        Section::updateOrCreate(['id' => 1198], ['name' => 'admin_site_faqs_edit', 'section_group_id' => 1195, 'caption' => 'site faqs edit']);
+        Section::updateOrCreate(['id' => 1199], ['name' => 'admin_site_faqs_delete', 'section_group_id' => 1195, 'caption' => 'site faqs delete']);
 
         // admin_advertising 1200 - 1229
         Section::updateOrCreate(['id' => 1200], ['name' => 'admin_advertising', 'caption' => 'advertising']);
