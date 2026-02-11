@@ -13,6 +13,10 @@
                 padding: 10px
             }
         }
+        /* Category courses home section: bottom spacing */
+        .category-courses-home-section {
+            margin-bottom: 90px;
+        }
     </style>
 @endpush
 
@@ -266,7 +270,7 @@
                 $catCategory = $catSectionData['category'];
                 $catWebinars = $catSectionData['webinars'];
             @endphp
-            <section class="home-sections home-sections-swiper container">
+            <section class="home-sections home-sections-swiper container category-courses-home-section">
                 <div class="d-flex justify-content-between ">
                     <div>
                         <h2 class="section-title">{{ $catCategory->title }}</h2>
