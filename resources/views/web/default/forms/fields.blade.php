@@ -36,6 +36,7 @@
             <button type="submit" class="btn btn-primary">{{ trans('update.submit_form') }}</button>
         </div>
     </form>
+
 @endsection
 
 @push('scripts_bottom')

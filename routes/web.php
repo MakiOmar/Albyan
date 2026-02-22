@@ -441,6 +441,10 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
     Route::get('/forms/{url}', 'FormsController@index');
     Route::post('/forms/{url}/store', 'FormsController@store');
 
+    /* Landing page (form ID from config LANDING_FORM_ID) */
+    Route::get('/landing', 'FormsController@landing');
+    Route::post('/landing/store', 'FormsController@landingStore');
+
     Route::get('/our-instructors', 'InstructorsCustomController@index');
     Route::get('/Reviews', function () {
         $cacheKey = 'google_reviews';

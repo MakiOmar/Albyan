@@ -10,6 +10,129 @@ use Illuminate\Http\Request;
 
 class FormsController extends Controller
 {
+    /**
+     * Resolve the landing form by config (LANDING_FORM_ID). Returns form or null.
+     */
+    private function getLandingForm()
+    {
+        $formId = config('landing.form_id');
+        if (empty($formId)) {
+            return null;
+        }
+
+        return Form::query()
+            ->where('id', $formId)
+            ->where('enable', true)
+            ->with([
+                'fields' => function ($query) {
+                    $query->orderBy('order', 'asc');
+                    $query->with([
+                        'options' => function ($query) {
+                            $query->orderBy('order', 'asc');
+                        }
+                    ]);
+                }
+            ])
+            ->first();
+    }
+
+    public function landing(Request $request)
+    {
+        $form = $this->getLandingForm();
+        if (empty($form)) {
+            abort(404);
+        }
+
+        $user = auth()->user();
+        $data = [
+            'pageTitle' => $form->title,
+            'form' => $form,
+        ];
+
+        if (!empty($form->start_date) && $form->start_date > time()) {
+            return view('web.default.forms.not_start', $data);
+        }
+
+        if (!empty($form->end_date) && $form->end_date < time()) {
+            return view('web.default.forms.expired', $data);
+        }
+
+        if ($form->enable_login && empty($user)) {
+            return view('web.default.forms.please_login', $data);
+        }
+
+        if (!$this->checkAccess($form, $user)) {
+            return view('web.default.forms.access_denied', $data);
+        }
+
+        $hasSubmission = false;
+        if (!$form->enable_resubmission && !empty($user)) {
+            $submission = FormSubmission::query()
+                ->where('form_id', $form->id)
+                ->where('user_id', $user->id)
+                ->first();
+            $hasSubmission = !empty($submission);
+        }
+
+        if ($hasSubmission) {
+            return view('web.default.forms.already_submitted', $data);
+        }
+
+        if ($form->enable_tank_you_message && $request->get('tanks') == '1') {
+            return view('web.default.forms.tanks', $data);
+        }
+
+        return view('web.default.forms.landing', $data);
+    }
+
+    public function landingStore(Request $request)
+    {
+        $form = $this->getLandingForm();
+        if (empty($form)) {
+            abort(404);
+        }
+
+        $user = auth()->user();
+        if (!$this->checkAccess($form, $user)) {
+            abort(403);
+        }
+
+        $errors = $this->checkRequiredFields($request, $form);
+        if (!empty($errors) && count($errors) > 0) {
+            return back()->withErrors($errors)->withInput($request->all());
+        }
+
+        $fieldsData = $request->get('fields', []);
+        $submission = FormSubmission::query()->create([
+            'user_id' => !empty($user) ? $user->id : null,
+            'form_id' => $form->id,
+            'created_at' => time(),
+        ]);
+
+        foreach ($fieldsData as $fieldId => $value) {
+            FormSubmissionItem::query()->create([
+                'submission_id' => $submission->id,
+                'form_field_id' => $fieldId,
+                'value' => is_array($value) ? json_encode($value) : $value,
+            ]);
+        }
+
+        $notifyOptions = [
+            '[u.name]' => !empty($user) ? $user->full_name : trans('update.guest_(not_login)'),
+            '[form_title]' => $form->title,
+            '[time.date]' => dateTimeFormat($submission->created_at, 'j M Y H:i'),
+        ];
+        sendNotification('submit_form_by_users', $notifyOptions, 1);
+
+        $redirectUrl = $form->enable_tank_you_message ? '/landing?tanks=1' : '/';
+        $toastData = [
+            'title' => trans('public.request_success'),
+            'msg' => trans('update.the_form_information_has_been_saved_successfully'),
+            'status' => 'success',
+        ];
+
+        return redirect($redirectUrl)->with(['toast' => $toastData]);
+    }
 
     public function index(Request $request, $url)
     {
