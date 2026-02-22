@@ -28,7 +28,8 @@
         .landing-page-content {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
-            padding: 30px;
+            padding: 10px;
+            margin-top: 20px;
             max-width: 560px;
             width: 100%;
         }
