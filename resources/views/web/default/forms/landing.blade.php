@@ -28,7 +28,7 @@
 
         @include('web.default.forms.handle_field', ['fields' => $form->fields])
 
-        <div class="d-flex align-items-center justify-content-end mt-30">
+        <div class="d-flex align-items-center justify-content-center mt-30">
             <button type="button" class="js-clear-form btn btn-danger mr-10">{{ trans('update.clear_form') }}</button>
             <button type="submit" class="btn btn-primary">{{ trans('update.submit_form') }}</button>
         </div>
@@ -40,13 +40,13 @@
             @php
                 $whatsappDigits = preg_replace('/\D/', '', config('landing.whatsapp_number'));
             @endphp
-            <a href="https://wa.me/{{ $whatsappDigits }}" target="_blank" rel="noopener noreferrer" class="btn btn-lg d-flex align-items-center justify-content-center" style="min-width: 220px; background-color: #43c353; border-color: #43c353;">
-                <i data-feather="message-circle" class="mr-2 mb-2" width="22" height="22"></i>
+            <a href="https://wa.me/{{ $whatsappDigits }}" target="_blank" rel="noopener noreferrer" class="btn btn-lg d-flex align-items-center justify-content-center mb-2" style="min-width: 220px; background-color: #43c353; border-color: #43c353;">
+                <i data-feather="message-circle" class="mr-2" width="22" height="22"></i>
                 {{ trans('update.contact_on_whatsapp') }}
             </a>
         @endif
         @if(!empty(config('landing.call_number')))
-            <a href="tel:{{ config('landing.call_number') }}" class="btn btn-primary btn-lg d-flex align-items-center justify-content-center" style="min-width: 220px;">
+            <a href="tel:{{ config('landing.call_number') }}" class="btn btn-secondary btn-lg d-flex align-items-center justify-content-center" style="min-width: 220px;">
                 <i data-feather="phone" class="mr-2" width="22" height="22"></i>
                 {{ trans('update.call_us') }}
             </a>
