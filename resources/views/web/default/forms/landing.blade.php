@@ -1,6 +1,7 @@
-@extends('web.default.forms.layout')
+@extends('web.default.layouts.landing')
 
-@section('formContent')
+@section('content')
+    {{-- Expiry notice --}}
     @if(!empty($form->end_date))
         <div class="d-flex align-items-center mb-40 rounded-lg border border-gray200 p-15">
             <div class="size-40 d-flex-center rounded-circle bg-gray200">
@@ -13,18 +14,10 @@
         </div>
     @endif
 
-    {{-- Institute image --}}
-    <div class="d-flex-center flex-column">
-        @if(!empty($form->image))
-            <div class="">
-                <img src="{{ $form->image }}" alt="{{ $form->heading_title }}" class="img-fluid rounded">
-            </div>
-        @endif
-        @if(!empty($form->heading_title))
-            <h3 class="font-24 mt-30">{{ $form->heading_title }}</h3>
-        @endif
-    </div>
-
+    {{-- Heading and description (no form image; background is /store/1/1.png) --}}
+    @if(!empty($form->heading_title))
+        <h3 class="font-24">{{ $form->heading_title }}</h3>
+    @endif
     @if(!empty($form->description))
         <div class="forms-body-welcome-message white-space-pre-wrap mt-15 font-14 text-gray">{!! $form->description !!}</div>
     @endif
@@ -61,7 +54,13 @@
     </div>
 @endsection
 
+@push('styles_top')
+    <link rel="stylesheet" href="/assets/default/vendors/daterangepicker/daterangepicker.min.css">
+@endpush
+
 @push('scripts_bottom')
     <script src="/assets/default/js/admin/form_submissions_details.min.js"></script>
+    <script src="/assets/default/vendors/daterangepicker/daterangepicker.min.js"></script>
+    <script src="/assets/default/js/parts/forms.min.js"></script>
     <script>if (typeof feather !== 'undefined') feather.replace();</script>
 @endpush
