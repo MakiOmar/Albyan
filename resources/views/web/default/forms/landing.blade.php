@@ -47,7 +47,7 @@
             @php
                 $whatsappDigits = preg_replace('/\D/', '', config('landing.whatsapp_number'));
             @endphp
-            <a href="https://wa.me/{{ $whatsappDigits }}" target="_blank" rel="noopener noreferrer" class="btn btn-success btn-lg d-flex align-items-center justify-content-center" style="min-width: 220px;">
+            <a href="https://wa.me/{{ $whatsappDigits }}" target="_blank" rel="noopener noreferrer" class="btn btn-lg d-flex align-items-center justify-content-center" style="min-width: 220px; background-color: #43c353; border-color: #43c353;">
                 <i data-feather="message-circle" class="mr-2" width="22" height="22"></i>
                 {{ trans('update.contact_on_whatsapp') }}
             </a>
