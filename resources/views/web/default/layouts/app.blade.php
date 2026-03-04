@@ -9,6 +9,7 @@
 
 <head>
     @include('web.default.includes.metas')
+    <meta name="robots" content="noindex,nofollow">
     <meta name="theme" content="{{ str_replace('web.', '', getTemplate()) }}">
     <title>{{ $pageTitle ?? '' }}{{ !empty($generalSettings['site_name']) ? (' | '.$generalSettings['site_name']) : '' }}</title>
 
