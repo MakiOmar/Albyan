@@ -27,3 +27,5 @@ composer.json.backup
 wordpress-rocket-lms-sync-plugin.zip
 /wordpress-rocket-lms-sync-plugin
 /learnpress
+public/.htaccess
+public/robots.txt
