@@ -3,7 +3,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name='robots' content="{{ $pageRobot ?? 'NOODP, nofollow, noindex' }}">
+<meta name='robots' content="{{ $pageRobot ?? 'index, follow, all' }}">
 
 @if (isset($pageDescription) and !empty($pageDescription))
     <meta name="description" content="{{ $pageDescription }}">
@@ -72,6 +72,41 @@
 <meta name='twitter:image' content='{{ url($pageMetaImage) }}'>
 <meta property='og:locale' content='{{ url(!empty($generalSettings['locale']) ? $generalSettings['locale'] : 'en_US') }}'>
 <meta property='og:type' content='website'>
+
+{{-- Multilingual SEO: canonical + hreflang (only when URL is locale-prefixed) --}}
+<link rel="canonical" href="{{ url()->current() }}">
+@php
+    $supportedLocalesMap = getUserLanguagesLists();
+    $supportedLocaleCodes = array_values(array_unique(array_map(function ($code) {
+        return mb_strtolower($code);
+    }, array_keys($supportedLocalesMap))));
+
+    $firstSegment = mb_strtolower((string) request()->segment(1));
+    $isLocalePrefixed = !empty($firstSegment) && in_array($firstSegment, $supportedLocaleCodes, true);
+
+    $hreflangUrlByLocale = [];
+    if ($isLocalePrefixed) {
+        $pathSegments = array_values(array_filter(explode('/', request()->path())));
+
+        // Remove existing locale prefix segment so we can re-apply it for each hreflang.
+        if (!empty($pathSegments) && in_array(mb_strtolower($pathSegments[0]), $supportedLocaleCodes, true)) {
+            array_shift($pathSegments);
+        }
+
+        $buildUrlForLocale = function ($localeCode) use ($pathSegments) {
+            $segments = array_merge([$localeCode], $pathSegments);
+            return url('/') . '/' . implode('/', $segments);
+        };
+
+        foreach ($supportedLocaleCodes as $localeCode) {
+            $hreflangUrlByLocale[$localeCode] = $buildUrlForLocale($localeCode);
+        }
+    }
+@endphp
+@foreach($hreflangUrlByLocale as $localeCode => $href)
+    <link rel="alternate" hreflang="{{ $localeCode }}" href="{{ $href }}">
+@endforeach
+
 
 {!! getSeoMetas('extra_meta_tags') !!}
 

@@ -59,27 +59,35 @@ class SitemapController extends Controller
     {
         $staticPages = [
             '/' => ['priority' => 1.0, 'changeFreq' => 'daily'],
-            '/courses' => ['priority' => 0.9, 'changeFreq' => 'daily'],
-            '/webinars' => ['priority' => 0.9, 'changeFreq' => 'daily'],
+            '/classes' => ['priority' => 0.9, 'changeFreq' => 'daily'],
             '/blog' => ['priority' => 0.8, 'changeFreq' => 'daily'],
             '/instructors' => ['priority' => 0.7, 'changeFreq' => 'weekly'],
-            '/categories' => ['priority' => 0.7, 'changeFreq' => 'weekly'],
+            '/organizations' => ['priority' => 0.7, 'changeFreq' => 'weekly'],
+            '/reward-courses' => ['priority' => 0.65, 'changeFreq' => 'daily'],
             '/about' => ['priority' => 0.6, 'changeFreq' => 'monthly'],
             '/contact' => ['priority' => 0.6, 'changeFreq' => 'monthly'],
-            '/terms' => ['priority' => 0.5, 'changeFreq' => 'monthly'],
-            '/privacy' => ['priority' => 0.5, 'changeFreq' => 'monthly'],
         ];
 
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
+        $locales = $this->getSupportedLocaleCodes();
         
         foreach ($staticPages as $url => $settings) {
-            $urls[] = [
-                'loc' => $baseUrl . $url,
-                'lastmod' => now()->toAtomString(),
-                'priority' => $settings['priority'],
-                'changefreq' => $settings['changeFreq'],
-            ];
+            $path = trim($url, '/'); // '/' => '' (home)
+
+            foreach ($locales as $localeCode) {
+                $loc = $baseUrl . '/' . $localeCode;
+                if (!empty($path)) {
+                    $loc .= '/' . $path;
+                }
+
+                $urls[] = [
+                    'loc' => $loc,
+                    'lastmod' => now()->toAtomString(),
+                    'priority' => $settings['priority'],
+                    'changefreq' => $settings['changeFreq'],
+                ];
+            }
         }
 
         return $urls;
@@ -196,6 +204,7 @@ class SitemapController extends Controller
     {
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
+        $locales = $this->getSupportedLocaleCodes();
         
         // Get all instructors/teachers who have published courses
         $instructors = User::whereHas('webinars', function ($query) {
@@ -205,12 +214,14 @@ class SitemapController extends Controller
             ->get();
 
         foreach ($instructors as $instructor) {
-            $urls[] = [
-                'loc' => $baseUrl . '/instructor/' . $instructor->id,
-                'lastmod' => now()->toAtomString(),
-                'priority' => 0.6,
-                'changefreq' => 'weekly',
-            ];
+            foreach ($locales as $localeCode) {
+                $urls[] = [
+                    'loc' => $baseUrl . '/' . $localeCode . '/users/' . $instructor->id . '/profile',
+                    'lastmod' => now()->toAtomString(),
+                    'priority' => 0.6,
+                    'changefreq' => 'weekly',
+                ];
+            }
         }
 
         return $urls;
@@ -353,6 +364,23 @@ class SitemapController extends Controller
             return response($this->generateErrorXml($e->getMessage()), 500)
                 ->header('Content-Type', 'application/xml; charset=utf-8');
         }
+    }
+
+    private function getSupportedLocaleCodes(): array
+    {
+        $supportedLocalesMap = getUserLanguagesLists();
+
+        // hreflang/canonical use language codes (e.g. `en`, `ar`), not country/flag codes.
+        $codes = array_values(array_unique(array_map(function ($code) {
+            return mb_strtolower($code);
+        }, array_keys($supportedLocalesMap))));
+
+        if (!empty($codes)) {
+            return $codes;
+        }
+
+        $default = mb_strtolower(getDefaultLocale());
+        return !empty($default) ? [$default] : ['en'];
     }
 
     /**

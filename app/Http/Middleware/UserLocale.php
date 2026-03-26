@@ -22,7 +22,11 @@ class UserLocale
 
         $locale = $defaultLocale;
 
-        if (auth()->check()) {
+        // SEO: if the URL contains a locale segment, prefer it over cookie/user language.
+        $routeLocale = $request->route('locale');
+        if (!empty($routeLocale)) {
+            $locale = mb_strtoupper($routeLocale);
+        } elseif (auth()->check()) {
             $user = auth()->user();
             $locale = !empty($user->language) ? $user->language : $defaultLocale;
         } else {

@@ -9,7 +9,7 @@
 
 <head>
     @include('web.default.includes.metas')
-    <meta name="robots" content="noindex,nofollow">
+    {{-- robots meta tag is controlled by `resources/views/web/default/includes/metas.blade.php` --}}
     <meta name="theme" content="{{ str_replace('web.', '', getTemplate()) }}">
     <title>{{ $pageTitle ?? '' }}{{ !empty($generalSettings['site_name']) ? (' | '.$generalSettings['site_name']) : '' }}</title>
 

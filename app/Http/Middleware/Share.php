@@ -75,6 +75,10 @@ class Share
         }
         App::setLocale(session('locale'));
 
+        // Used by the language switcher to reliably redirect back to the current page.
+        // Without this, some pages (like home) may not include `previous_url`, causing redirects to stay on `/`.
+        view()->share('previousUrl', $request->fullUrl());
+
         view()->share('categories', \App\Models\Category::getCategories());
         view()->share('navbarPages', getNavbarLinks());
 

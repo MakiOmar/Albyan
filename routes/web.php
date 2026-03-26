@@ -103,7 +103,10 @@ Route::group(['namespace' => 'Auth', 'middleware' => ['check_mobile_app','share'
     Route::get('/reff/{code}', 'ReferralController@referral');
 });
 
-Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impersonate', 'share', 'check_maintenance', 'check_restriction']], function () {
+Route::group([
+    'namespace' => 'Web',
+    'middleware' => ['check_mobile_app', 'impersonate', 'share', 'check_maintenance', 'check_restriction'],
+], function () {
     Route::get('/stripe', function () {
         return view('web.default.cart.channels.stripe');
     });
@@ -472,6 +475,48 @@ Route::group(['namespace' => 'Web', 'middleware' => ['check_mobile_app', 'impers
     });
     Route::post('/certificates/search', [WebinarCertificateController::class, 'search'])->name('certificates.search');
 
+});
+
+// Locale-prefixed SEO routes for content that does NOT have a language-specific slug in the URL.
+// Keep courses/blog detail URLs without locale because they already use per-language slugs.
+Route::group([
+    'prefix' => '{locale}',
+    'where' => ['locale' => '^[A-Za-z]{2}$'],
+    'namespace' => 'Web',
+    'middleware' => ['check_mobile_app', 'impersonate', 'share', 'check_maintenance', 'check_restriction'],
+], function () {
+    Route::get('/', 'HomeController@index');
+
+    Route::get('/classes', 'ClassesController@index');
+    Route::get('/reward-courses', 'RewardCoursesController@index');
+
+    Route::group(['prefix' => 'blog'], function () {
+        Route::get('/', 'BlogController@index');
+    });
+
+    Route::group(['prefix' => 'instructors'], function () {
+        Route::get('/', 'UserController@instructors');
+    });
+
+    Route::group(['prefix' => 'organizations'], function () {
+        Route::get('/', 'UserController@organizations');
+    });
+
+    Route::group(['prefix' => 'contact'], function () {
+        Route::get('/', 'ContactController@index');
+    });
+
+    Route::group(['prefix' => 'pages'], function () {
+        Route::get('/{link}', 'PagesController@index');
+    });
+
+    Route::group(['prefix' => 'users'], function () {
+        Route::get('/{id}/profile', 'UserController@profile');
+    });
+
+    Route::get('/about', function () {
+        return view('web.default.pages.about');
+    });
 });
 
 Route::get('tabby/success', [App\Http\Controllers\TabbyController::class, 'success'])->name('tabby.success');
