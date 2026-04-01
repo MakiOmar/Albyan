@@ -30,14 +30,30 @@ class WebinarsExport implements FromCollection, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            trans('admin/main.id'),
-            trans('admin/pages/webinars.title'),
-            trans('admin/pages/webinars.course_type'),
-            trans('admin/pages/webinars.teacher_name'),
-            trans('admin/pages/webinars.sale_count'),
-            trans('admin/pages/webinars.price'),
-            trans('admin/main.created_at'),
-            trans('admin/main.status'),
+            'id',
+            'slug',
+            'locale',
+            'title',
+            'description',
+            'seo_description',
+            'type',
+            'teacher_id',
+            'category_id',
+            'price',
+            'status',
+            'thumbnail',
+            'image_cover',
+            'duration',
+            'capacity',
+            'start_date',
+            'private',
+            'downloadable',
+            'support',
+            'certificate',
+            'forum',
+            'subscribe',
+            'points',
+            'message_for_reviewer',
         ];
     }
 
@@ -46,15 +62,34 @@ class WebinarsExport implements FromCollection, WithHeadings, WithMapping
      */
     public function map($webinar): array
     {
+        $locale = getDefaultLocale();
+        $translation = $webinar->translate($locale);
+
         return [
             $webinar->id,
-            $webinar->title,
+            $webinar->slug,
+            $locale,
+            !empty($translation) ? $translation->title : $webinar->title,
+            !empty($translation) ? $translation->description : null,
+            !empty($translation) ? $translation->seo_description : null,
             $webinar->type,
-            $webinar->teacher->full_name,
-            $webinar->sales->count(),
+            $webinar->teacher_id,
+            $webinar->category_id,
             $webinar->price,
-            dateTimeFormat($webinar->created_at, 'j M Y | H:i'),
             $webinar->status,
+            $webinar->thumbnail,
+            $webinar->image_cover,
+            $webinar->duration,
+            $webinar->capacity,
+            $webinar->start_date,
+            (int)$webinar->private,
+            (int)$webinar->downloadable,
+            (int)$webinar->support,
+            (int)$webinar->certificate,
+            (int)$webinar->forum,
+            (int)$webinar->subscribe,
+            $webinar->points,
+            $webinar->message_for_reviewer,
         ];
     }
 }

@@ -230,11 +230,14 @@
                 <div class="col-12 col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            @can('admin_webinars_export_excel')
-                                <div class="text-right">
+                            <div class="text-right d-flex justify-content-end align-items-center">
+                                @can('admin_webinars_create')
+                                    <a href="{{ getAdminPanelUrl() }}/webinars/imports" class="btn btn-outline-primary mr-10">{{ trans('admin/main.import') }}</a>
+                                @endcan
+                                @can('admin_webinars_export_excel')
                                     <a href="{{ getAdminPanelUrl() }}/webinars/excel?{{ http_build_query(request()->all()) }}" class="btn btn-primary">{{ trans('admin/main.export_xls') }}</a>
-                                </div>
-                            @endcan
+                                @endcan
+                            </div>
                         </div>
 
                         <div class="card-body">
