@@ -70,7 +70,7 @@ class WebinarImportController extends Controller
             return back()->with(['toast' => $toastData]);
         }
 
-        $absolutePath = storage_path('app/' . $storedPath);
+        $absolutePath = Storage::disk('local')->path($storedPath);
         $totalRows = $this->detectTotalRows($absolutePath);
 
         $courseImport = CourseImport::query()->create([
