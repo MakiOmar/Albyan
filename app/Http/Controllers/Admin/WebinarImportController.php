@@ -8,6 +8,7 @@ use App\Imports\WebinarsImport;
 use App\Models\CourseImport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Excel as ExcelFormat;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class WebinarImportController extends Controller
@@ -64,7 +65,13 @@ class WebinarImportController extends Controller
         ]);
 
         try {
-            Excel::queueImport(new WebinarsImport($courseImport->id), $courseImport->file_path, 'local');
+            $readerType = $this->getReaderTypeFromExtension((string)$file->getClientOriginalExtension());
+
+            if (empty($readerType)) {
+                throw new \InvalidArgumentException('Unsupported import file type.');
+            }
+
+            Excel::queueImport(new WebinarsImport($courseImport->id), $courseImport->file_path, 'local', $readerType);
         } catch (\Throwable $e) {
             $courseImport->update([
                 'status' => CourseImport::$failed,
@@ -161,5 +168,17 @@ class WebinarImportController extends Controller
         } catch (\Throwable $e) {
             return 0;
         }
+    }
+
+    private function getReaderTypeFromExtension(string $extension): ?string
+    {
+        $extension = mb_strtolower(trim($extension));
+
+        return match ($extension) {
+            'xlsx' => ExcelFormat::XLSX,
+            'xls' => ExcelFormat::XLS,
+            'csv' => ExcelFormat::CSV,
+            default => null,
+        };
     }
 }
