@@ -51,7 +51,25 @@ class WebinarImportController extends Controller
         }
 
         $file = $request->file('file');
-        $storedPath = $file->store('imports/courses', 'local');
+        $extension = (string)$file->getClientOriginalExtension();
+        $storedPath = $file->storeAs('imports/courses', uniqid('course-import-') . '.' . $extension, 'local');
+
+        if (empty($storedPath) || !Storage::disk('local')->exists($storedPath)) {
+            Log::error('Course import file could not be stored.', [
+                'original_name' => $file->getClientOriginalName(),
+                'extension' => $extension,
+                'disk' => 'local',
+            ]);
+
+            $toastData = [
+                'title' => trans('public.request_failed'),
+                'msg' => 'Import file could not be saved to storage. Please check storage permissions.',
+                'status' => 'error',
+            ];
+
+            return back()->with(['toast' => $toastData]);
+        }
+
         $absolutePath = storage_path('app/' . $storedPath);
         $totalRows = $this->detectTotalRows($absolutePath);
 
@@ -67,7 +85,7 @@ class WebinarImportController extends Controller
         ]);
 
         try {
-            $this->dispatchImport($courseImport, (string)$file->getClientOriginalExtension());
+            $this->dispatchImport($courseImport, $extension);
         } catch (\Throwable $e) {
             $this->markImportAsFailed($courseImport, $e, 'queue_import_failed_at_store');
 
@@ -274,7 +292,16 @@ class WebinarImportController extends Controller
             throw new \InvalidArgumentException("Unsupported import file type: {$extension}");
         }
 
-        Excel::queueImport(new WebinarsImport($courseImport->id), $courseImport->file_path, 'local', $readerType);
+        if (empty($courseImport->file_path) || !Storage::disk('local')->exists($courseImport->file_path)) {
+            throw new \RuntimeException('Import file is missing from local storage.');
+        }
+
+        $absolutePath = Storage::disk('local')->path($courseImport->file_path);
+        if (!is_readable($absolutePath)) {
+            throw new \RuntimeException("Import file is not readable: {$absolutePath}");
+        }
+
+        Excel::queueImport(new WebinarsImport($courseImport->id), $absolutePath, null, $readerType);
     }
 
     private function markImportAsFailed(CourseImport $courseImport, \Throwable $e, string $tag): void
