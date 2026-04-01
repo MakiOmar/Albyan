@@ -15,7 +15,13 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">{{ trans('admin/main.details') }}</h4>
-                    <a href="{{ getAdminPanelUrl() }}/webinars?type=course" class="btn btn-primary">{{ trans('admin/main.back') }}</a>
+                    <div>
+                        <form action="{{ getAdminPanelUrl() }}/webinars/imports/{{ $courseImport->id }}/rerun" method="post" class="d-inline">
+                            {{ csrf_field() }}
+                            <button type="submit" class="btn btn-warning">Rerun</button>
+                        </form>
+                        <a href="{{ getAdminPanelUrl() }}/webinars?type=course" class="btn btn-primary">{{ trans('admin/main.back') }}</a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row">

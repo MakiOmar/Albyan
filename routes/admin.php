@@ -321,9 +321,12 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::post('/store', 'WebinarController@store');
             Route::get('/imports', 'WebinarImportController@index');
             Route::post('/imports', 'WebinarImportController@store');
+            Route::post('/imports/bulk-delete', 'WebinarImportController@bulkDelete');
             Route::get('/imports/template/download', 'WebinarImportController@template');
             Route::get('/imports/{id}/status', 'WebinarImportController@status');
             Route::get('/imports/{id}', 'WebinarImportController@show');
+            Route::post('/imports/{id}/rerun', 'WebinarImportController@rerun');
+            Route::post('/imports/{id}/delete', 'WebinarImportController@delete');
             Route::get('/{id}/edit', 'WebinarController@edit');
             Route::post('/{id}/update', 'WebinarController@update');
             Route::get('/{id}/delete', 'WebinarController@destroy');

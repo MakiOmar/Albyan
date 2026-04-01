@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Imports\WebinarsImport;
 use App\Models\CourseImport;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Excel as ExcelFormat;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -65,27 +67,13 @@ class WebinarImportController extends Controller
         ]);
 
         try {
-            $readerType = $this->getReaderTypeFromExtension((string)$file->getClientOriginalExtension());
-
-            if (empty($readerType)) {
-                throw new \InvalidArgumentException('Unsupported import file type.');
-            }
-
-            Excel::queueImport(new WebinarsImport($courseImport->id), $courseImport->file_path, 'local', $readerType);
+            $this->dispatchImport($courseImport, (string)$file->getClientOriginalExtension());
         } catch (\Throwable $e) {
-            $courseImport->update([
-                'status' => CourseImport::$failed,
-                'finished_at' => time(),
-                'updated_at' => time(),
-                'error_log' => json_encode([[
-                    'row' => null,
-                    'error' => $e->getMessage(),
-                ]]),
-            ]);
+            $this->markImportAsFailed($courseImport, $e, 'queue_import_failed_at_store');
 
             $toastData = [
                 'title' => trans('public.request_failed'),
-                'msg' => 'Failed to queue the import process.',
+                'msg' => 'Failed to queue the import process: ' . $e->getMessage(),
                 'status' => 'error',
             ];
 
@@ -115,6 +103,102 @@ class WebinarImportController extends Controller
         ];
 
         return view('admin.webinars.imports.show', $data);
+    }
+
+    public function rerun($id)
+    {
+        $this->authorize('admin_webinars_create');
+
+        $courseImport = CourseImport::query()->findOrFail($id);
+
+        if (!Storage::disk('local')->exists($courseImport->file_path)) {
+            $toastData = [
+                'title' => trans('public.request_failed'),
+                'msg' => 'Import file no longer exists. Please upload the file again.',
+                'status' => 'error',
+            ];
+
+            return back()->with(['toast' => $toastData]);
+        }
+
+        $courseImport->update([
+            'status' => CourseImport::$processing,
+            'processed_rows' => 0,
+            'created_count' => 0,
+            'updated_count' => 0,
+            'failed_count' => 0,
+            'error_log' => null,
+            'started_at' => time(),
+            'finished_at' => null,
+            'updated_at' => time(),
+        ]);
+
+        try {
+            $this->dispatchImport($courseImport, pathinfo($courseImport->file_name, PATHINFO_EXTENSION));
+        } catch (\Throwable $e) {
+            $this->markImportAsFailed($courseImport, $e, 'queue_import_failed_at_rerun');
+
+            $toastData = [
+                'title' => trans('public.request_failed'),
+                'msg' => 'Failed to rerun import: ' . $e->getMessage(),
+                'status' => 'error',
+            ];
+
+            return back()->with(['toast' => $toastData]);
+        }
+
+        $toastData = [
+            'title' => trans('public.request_success'),
+            'msg' => 'Import has been requeued successfully.',
+            'status' => 'success',
+        ];
+
+        return redirect(getAdminPanelUrl() . '/webinars/imports/' . $courseImport->id)->with(['toast' => $toastData]);
+    }
+
+    public function delete($id)
+    {
+        $this->authorize('admin_webinars_create');
+
+        $courseImport = CourseImport::query()->findOrFail($id);
+        $this->deleteImportRecordAndFile($courseImport);
+
+        $toastData = [
+            'title' => trans('public.request_success'),
+            'msg' => 'Import record deleted successfully.',
+            'status' => 'success',
+        ];
+
+        return back()->with(['toast' => $toastData]);
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $this->authorize('admin_webinars_create');
+
+        $ids = $request->input('ids', []);
+        if (!is_array($ids) || empty($ids)) {
+            $toastData = [
+                'title' => trans('public.request_failed'),
+                'msg' => 'No import records selected.',
+                'status' => 'error',
+            ];
+
+            return back()->with(['toast' => $toastData]);
+        }
+
+        $imports = CourseImport::query()->whereIn('id', $ids)->get();
+        foreach ($imports as $courseImport) {
+            $this->deleteImportRecordAndFile($courseImport);
+        }
+
+        $toastData = [
+            'title' => trans('public.request_success'),
+            'msg' => 'Selected import records deleted successfully.',
+            'status' => 'success',
+        ];
+
+        return back()->with(['toast' => $toastData]);
     }
 
     public function status($id)
@@ -180,5 +264,50 @@ class WebinarImportController extends Controller
             'csv' => ExcelFormat::CSV,
             default => null,
         };
+    }
+
+    private function dispatchImport(CourseImport $courseImport, string $extension): void
+    {
+        $readerType = $this->getReaderTypeFromExtension($extension);
+
+        if (empty($readerType)) {
+            throw new \InvalidArgumentException("Unsupported import file type: {$extension}");
+        }
+
+        Excel::queueImport(new WebinarsImport($courseImport->id), $courseImport->file_path, 'local', $readerType);
+    }
+
+    private function markImportAsFailed(CourseImport $courseImport, \Throwable $e, string $tag): void
+    {
+        $errorPayload = [[
+            'row' => null,
+            'error' => $e->getMessage(),
+            'tag' => $tag,
+        ]];
+
+        Log::error('Course import queue failed.', [
+            'tag' => $tag,
+            'import_id' => $courseImport->id,
+            'file_name' => $courseImport->file_name,
+            'file_path' => $courseImport->file_path,
+            'exception' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+
+        $courseImport->update([
+            'status' => CourseImport::$failed,
+            'finished_at' => time(),
+            'updated_at' => time(),
+            'error_log' => json_encode($errorPayload),
+        ]);
+    }
+
+    private function deleteImportRecordAndFile(CourseImport $courseImport): void
+    {
+        if (Storage::disk('local')->exists($courseImport->file_path)) {
+            Storage::disk('local')->delete($courseImport->file_path);
+        }
+
+        $courseImport->delete();
     }
 }

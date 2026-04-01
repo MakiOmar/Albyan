@@ -41,10 +41,18 @@
                     <h4 class="mb-0">{{ trans('admin/main.list') }}</h4>
                 </div>
                 <div class="card-body">
+                    <form action="{{ getAdminPanelUrl() }}/webinars/imports/bulk-delete" method="post" onsubmit="return confirm('Are you sure you want to delete selected import records?');">
+                        {{ csrf_field() }}
+                        <div class="mb-15 text-right">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete Selected</button>
+                        </div>
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                             <tr>
+                                <th width="40">
+                                    <input type="checkbox" id="select-all-imports">
+                                </th>
                                 <th>{{ trans('admin/main.id') }}</th>
                                 <th>{{ trans('admin/main.file') }}</th>
                                 <th>{{ trans('admin/main.user') }}</th>
@@ -58,6 +66,9 @@
                             <tbody>
                             @forelse($imports as $import)
                                 <tr>
+                                    <td>
+                                        <input type="checkbox" class="import-item-checkbox" name="ids[]" value="{{ $import->id }}">
+                                    </td>
                                     <td>{{ $import->id }}</td>
                                     <td>{{ $import->file_name }}</td>
                                     <td>{{ !empty($import->user) ? $import->user->full_name : '-' }}</td>
@@ -67,16 +78,25 @@
                                     <td>{{ $import->failed_count }}</td>
                                     <td>
                                         <a href="{{ getAdminPanelUrl() }}/webinars/imports/{{ $import->id }}" class="btn btn-sm btn-primary">{{ trans('admin/main.show') }}</a>
+                                        <form action="{{ getAdminPanelUrl() }}/webinars/imports/{{ $import->id }}/rerun" method="post" class="d-inline">
+                                            {{ csrf_field() }}
+                                            <button type="submit" class="btn btn-sm btn-warning">Rerun</button>
+                                        </form>
+                                        <form action="{{ getAdminPanelUrl() }}/webinars/imports/{{ $import->id }}/delete" method="post" class="d-inline" onsubmit="return confirm('Delete this import record?');">
+                                            {{ csrf_field() }}
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center">No data found.</td>
+                                    <td colspan="9" class="text-center">No data found.</td>
                                 </tr>
                             @endforelse
                             </tbody>
                         </table>
                     </div>
+                    </form>
                 </div>
 
                 <div class="card-footer text-center">
@@ -86,3 +106,19 @@
         </div>
     </section>
 @endsection
+
+@push('scripts_bottom')
+    <script>
+        (function () {
+            const selectAll = document.getElementById('select-all-imports');
+            if (!selectAll) return;
+
+            selectAll.addEventListener('change', function () {
+                const items = document.querySelectorAll('.import-item-checkbox');
+                items.forEach(function (item) {
+                    item.checked = selectAll.checked;
+                });
+            });
+        })();
+    </script>
+@endpush
