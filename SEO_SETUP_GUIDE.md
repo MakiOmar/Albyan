@@ -42,7 +42,7 @@ rocket-lms/
 ### Update robots.txt
 Edit `public/robots.txt` and replace all instances of:
 ```
-https://albyaninstitute.com
+https://albyan.institute
 ```
 with your actual domain:
 ```

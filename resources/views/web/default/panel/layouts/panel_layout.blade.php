@@ -20,7 +20,7 @@
     <link rel="preconnect" href="https://connect.facebook.net">
 
     <!-- Font Preload -->
-    <link rel="preload" href="https://albyaninstitute.com/store/1/fonts/cairo-regular-webfont.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://albyan.institute/store/1/fonts/cairo-regular-webfont.woff2" as="font" type="font/woff2" crossorigin>
 
     <!-- General CSS File -->
     <link href="/assets/default/css/font.css" rel="stylesheet">

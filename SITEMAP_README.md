@@ -261,7 +261,7 @@ The sitemap follows the [Sitemap Protocol 0.9](https://www.sitemaps.org/protocol
 The sitemap uses `config('app.url')` for generating absolute URLs. Ensure this is set correctly in your `.env` file:
 
 ```env
-APP_URL=https://albyaninstitute.com
+APP_URL=https://albyan.institute
 ```
 
 ### Cache Driver
