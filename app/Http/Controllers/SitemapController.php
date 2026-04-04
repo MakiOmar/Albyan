@@ -9,47 +9,127 @@ use App\Models\Category;
 use App\Models\BlogCategory;
 use App\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Response;
 
 class SitemapController extends Controller
 {
+    /** Google sitemap protocol: max URLs per urlset file */
+    private const MAX_URLS_PER_SITEMAP = 50000;
+
+    /** Max child sitemap entries in one sitemap index file */
+    private const MAX_SITEMAPS_PER_INDEX = 50000;
+
+    /**
+     * Legacy monolithic sitemap (all URLs in one urlset). Kept for backward compatibility.
+     */
     public function index()
     {
         try {
-            // Cache the sitemap for 24 hours to improve performance
             $xml = Cache::remember('sitemap.xml', 86400, function () {
                 $urls = [];
 
-                // Add static pages
                 $urls = array_merge($urls, $this->getStaticPages());
-
-                // Add published courses/webinars
                 $urls = array_merge($urls, $this->getPublishedCourses());
-
-                // Add published blog posts
                 $urls = array_merge($urls, $this->getPublishedBlogPosts());
-
-                // Add published upcoming courses
                 $urls = array_merge($urls, $this->getPublishedUpcomingCourses());
-
-                // Add categories
                 $urls = array_merge($urls, $this->getCategories());
-
-                // Add blog categories
                 $urls = array_merge($urls, $this->getBlogCategories());
-
-                // Add instructors/teachers
                 $urls = array_merge($urls, $this->getInstructors());
 
-                return $this->generateXml($urls);
+                return $this->generateUrlsetXml($urls);
             });
 
             return response($xml, 200)
                 ->header('Content-Type', 'application/xml; charset=utf-8');
         } catch (\Exception $e) {
             \Log::error('Sitemap generation error: ' . $e->getMessage());
+            return response($this->generateErrorXml($e->getMessage()), 500)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        }
+    }
+
+    /**
+     * Master sitemap index — lists all child sitemaps (recommended for crawlers).
+     */
+    public function sitemapIndexMain()
+    {
+        try {
+            $xml = Cache::remember('sitemap_index.xml', 86400, function () {
+                $entries = $this->buildMasterSitemapIndexEntries();
+                $chunks = array_chunk($entries, self::MAX_SITEMAPS_PER_INDEX);
+                // Single index file expected for normal sites; spec allows splitting if ever needed
+                return $this->generateSitemapIndexXml($chunks[0] ?? []);
+            });
+
+            return response($xml, 200)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        } catch (\Exception $e) {
+            \Log::error('Sitemap index generation error: ' . $e->getMessage());
+            return response($this->generateErrorXml($e->getMessage()), 500)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        }
+    }
+
+    public function pages()
+    {
+        try {
+            $xml = Cache::remember('sitemap-pages.xml', 86400, function () {
+                return $this->generateUrlsetXml($this->getStaticPages());
+            });
+
+            return response($xml, 200)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        } catch (\Exception $e) {
+            \Log::error('Sitemap pages generation error: ' . $e->getMessage());
+            return response($this->generateErrorXml($e->getMessage()), 500)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        }
+    }
+
+    public function categoriesSitemap()
+    {
+        try {
+            $xml = Cache::remember('sitemap-categories.xml', 86400, function () {
+                return $this->generateUrlsetXml($this->getCategories());
+            });
+
+            return response($xml, 200)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        } catch (\Exception $e) {
+            \Log::error('Sitemap categories generation error: ' . $e->getMessage());
+            return response($this->generateErrorXml($e->getMessage()), 500)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        }
+    }
+
+    public function blogCategoriesSitemap()
+    {
+        try {
+            $xml = Cache::remember('sitemap-blog-categories.xml', 86400, function () {
+                return $this->generateUrlsetXml($this->getBlogCategories());
+            });
+
+            return response($xml, 200)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        } catch (\Exception $e) {
+            \Log::error('Sitemap blog categories generation error: ' . $e->getMessage());
+            return response($this->generateErrorXml($e->getMessage()), 500)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        }
+    }
+
+    public function instructorsSitemap()
+    {
+        try {
+            $xml = Cache::remember('sitemap-instructors.xml', 86400, function () {
+                return $this->generateUrlsetXml($this->getInstructors());
+            });
+
+            return response($xml, 200)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        } catch (\Exception $e) {
+            \Log::error('Sitemap instructors generation error: ' . $e->getMessage());
             return response($this->generateErrorXml($e->getMessage()), 500)
                 ->header('Content-Type', 'application/xml; charset=utf-8');
         }
@@ -71,9 +151,9 @@ class SitemapController extends Controller
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
         $locales = $this->getSupportedLocaleCodes();
-        
+
         foreach ($staticPages as $url => $settings) {
-            $path = trim($url, '/'); // '/' => '' (home)
+            $path = trim($url, '/');
 
             foreach ($locales as $localeCode) {
                 $loc = $baseUrl . '/' . $localeCode;
@@ -93,69 +173,143 @@ class SitemapController extends Controller
         return $urls;
     }
 
+    private function webinarSitemapQuery()
+    {
+        return Webinar::where('status', Webinar::$active)
+            ->where('type', '!=', 'text_lesson')
+            ->orderBy('updated_at', 'desc');
+    }
+
     private function getPublishedCourses()
     {
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
-        
-        // Get all published courses and webinars with chunking for better memory management
-        Webinar::where('status', Webinar::$active)
-            ->where('type', '!=', 'text_lesson')
-            ->orderBy('updated_at', 'desc')
-            ->chunk(100, function ($courses) use (&$urls, $baseUrl) {
-                foreach ($courses as $course) {
-                    $urls[] = [
-                        'loc' => $baseUrl . '/course/' . $course->slug,
-                        'lastmod' => $course->updated_at ? Carbon::parse($course->updated_at)->toAtomString() : now()->toAtomString(),
-                        'priority' => 0.8,
-                        'changefreq' => 'weekly',
-                    ];
-                }
-            });
+
+        $this->webinarSitemapQuery()->chunk(100, function ($courses) use (&$urls, $baseUrl) {
+            foreach ($courses as $course) {
+                $urls[] = [
+                    'loc' => $baseUrl . '/course/' . $course->slug,
+                    'lastmod' => $course->updated_at ? Carbon::parse($course->updated_at)->toAtomString() : now()->toAtomString(),
+                    'priority' => 0.8,
+                    'changefreq' => 'weekly',
+                ];
+            }
+        });
 
         return $urls;
+    }
+
+    private function getPublishedCoursesSlice(int $offset, int $limit): array
+    {
+        $urls = [];
+        $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
+
+        $courses = $this->webinarSitemapQuery()
+            ->skip($offset)
+            ->take($limit)
+            ->get();
+
+        foreach ($courses as $course) {
+            $urls[] = [
+                'loc' => $baseUrl . '/course/' . $course->slug,
+                'lastmod' => $course->updated_at ? Carbon::parse($course->updated_at)->toAtomString() : now()->toAtomString(),
+                'priority' => 0.8,
+                'changefreq' => 'weekly',
+            ];
+        }
+
+        return $urls;
+    }
+
+    private function blogSitemapQuery()
+    {
+        return Blog::where('status', 'publish')->orderBy('updated_at', 'desc');
     }
 
     private function getPublishedBlogPosts()
     {
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
-        
-        // Get all published blog posts with chunking for better memory management
-        Blog::where('status', 'publish')
-            ->orderBy('updated_at', 'desc')
-            ->chunk(100, function ($blogPosts) use (&$urls, $baseUrl) {
-                foreach ($blogPosts as $post) {
-                    $urls[] = [
-                        'loc' => $baseUrl . '/blog/' . $post->slug,
-                        'lastmod' => $post->updated_at ? Carbon::parse($post->updated_at)->toAtomString() : now()->toAtomString(),
-                        'priority' => 0.7,
-                        'changefreq' => 'monthly',
-                    ];
-                }
-            });
+
+        $this->blogSitemapQuery()->chunk(100, function ($blogPosts) use (&$urls, $baseUrl) {
+            foreach ($blogPosts as $post) {
+                $urls[] = [
+                    'loc' => $baseUrl . '/blog/' . $post->slug,
+                    'lastmod' => $post->updated_at ? Carbon::parse($post->updated_at)->toAtomString() : now()->toAtomString(),
+                    'priority' => 0.7,
+                    'changefreq' => 'monthly',
+                ];
+            }
+        });
 
         return $urls;
+    }
+
+    private function getPublishedBlogPostsSlice(int $offset, int $limit): array
+    {
+        $urls = [];
+        $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
+
+        $posts = $this->blogSitemapQuery()
+            ->skip($offset)
+            ->take($limit)
+            ->get();
+
+        foreach ($posts as $post) {
+            $urls[] = [
+                'loc' => $baseUrl . '/blog/' . $post->slug,
+                'lastmod' => $post->updated_at ? Carbon::parse($post->updated_at)->toAtomString() : now()->toAtomString(),
+                'priority' => 0.7,
+                'changefreq' => 'monthly',
+            ];
+        }
+
+        return $urls;
+    }
+
+    private function upcomingSitemapQuery()
+    {
+        return UpcomingCourse::where('status', UpcomingCourse::$active)
+            ->orderBy('created_at', 'desc');
     }
 
     private function getPublishedUpcomingCourses()
     {
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
-        
-        // Get all published upcoming courses with chunking for better memory management
-        UpcomingCourse::where('status', UpcomingCourse::$active)
-            ->orderBy('created_at', 'desc')
-            ->chunk(100, function ($upcomingCourses) use (&$urls, $baseUrl) {
-                foreach ($upcomingCourses as $course) {
-                    $urls[] = [
-                        'loc' => $baseUrl . '/upcoming-course/' . $course->slug,
-                        'lastmod' => $course->created_at ? Carbon::parse($course->created_at)->toAtomString() : now()->toAtomString(),
-                        'priority' => 0.6,
-                        'changefreq' => 'weekly',
-                    ];
-                }
-            });
+
+        $this->upcomingSitemapQuery()->chunk(100, function ($upcomingCourses) use (&$urls, $baseUrl) {
+            foreach ($upcomingCourses as $course) {
+                $urls[] = [
+                    'loc' => $baseUrl . '/upcoming-course/' . $course->slug,
+                    'lastmod' => $course->created_at ? Carbon::parse($course->created_at)->toAtomString() : now()->toAtomString(),
+                    'priority' => 0.6,
+                    'changefreq' => 'weekly',
+                ];
+            }
+        });
+
+        return $urls;
+    }
+
+    private function getPublishedUpcomingCoursesSlice(int $offset, int $limit): array
+    {
+        $urls = [];
+        $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
+
+        $items = $this->upcomingSitemapQuery()
+            ->skip($offset)
+            ->take($limit)
+            ->get();
+
+        foreach ($items as $course) {
+            $urls[] = [
+                'loc' => $baseUrl . '/upcoming-course/' . $course->slug,
+                'lastmod' => $course->created_at ? Carbon::parse($course->created_at)->toAtomString() : now()->toAtomString(),
+                'priority' => 0.6,
+                'changefreq' => 'weekly',
+            ];
+        }
 
         return $urls;
     }
@@ -164,8 +318,7 @@ class SitemapController extends Controller
     {
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
-        
-        // Get all categories
+
         $categories = Category::all();
 
         foreach ($categories as $category) {
@@ -184,8 +337,7 @@ class SitemapController extends Controller
     {
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
-        
-        // Get all blog categories
+
         $blogCategories = BlogCategory::all();
 
         foreach ($blogCategories as $category) {
@@ -205,11 +357,10 @@ class SitemapController extends Controller
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
         $locales = $this->getSupportedLocaleCodes();
-        
-        // Get all instructors/teachers who have published courses
+
         $instructors = User::whereHas('webinars', function ($query) {
-                $query->where('status', Webinar::$active);
-            })
+            $query->where('status', Webinar::$active);
+        })
             ->where('role_name', 'instructor')
             ->get();
 
@@ -227,15 +378,71 @@ class SitemapController extends Controller
         return $urls;
     }
 
+    private function baseUrl(): string
+    {
+        return rtrim(config('app.url', request()->getSchemeAndHttpHost()), '/');
+    }
+
     /**
-     * Generate sitemap for specific content type
+     * Child sitemap locations for the master index (no duplicate URL sets).
      */
+    private function buildMasterSitemapIndexEntries(): array
+    {
+        $base = $this->baseUrl();
+        $now = now()->toAtomString();
+        $entries = [];
+
+        $entries[] = ['loc' => $base . '/sitemap-pages.xml', 'lastmod' => $now];
+
+        $courseCount = $this->webinarSitemapQuery()->count();
+        if ($courseCount <= self::MAX_URLS_PER_SITEMAP) {
+            $entries[] = ['loc' => $base . '/sitemap-courses.xml', 'lastmod' => $now];
+        } else {
+            $pages = (int) ceil($courseCount / self::MAX_URLS_PER_SITEMAP);
+            for ($p = 1; $p <= $pages; $p++) {
+                $entries[] = ['loc' => $base . '/sitemap-courses-page-' . $p . '.xml', 'lastmod' => $now];
+            }
+        }
+
+        $blogCount = $this->blogSitemapQuery()->count();
+        if ($blogCount <= self::MAX_URLS_PER_SITEMAP) {
+            $entries[] = ['loc' => $base . '/sitemap-blog.xml', 'lastmod' => $now];
+        } else {
+            $pages = (int) ceil($blogCount / self::MAX_URLS_PER_SITEMAP);
+            for ($p = 1; $p <= $pages; $p++) {
+                $entries[] = ['loc' => $base . '/sitemap-blog-page-' . $p . '.xml', 'lastmod' => $now];
+            }
+        }
+
+        $upcomingCount = $this->upcomingSitemapQuery()->count();
+        if ($upcomingCount <= self::MAX_URLS_PER_SITEMAP) {
+            $entries[] = ['loc' => $base . '/sitemap-upcoming-courses.xml', 'lastmod' => $now];
+        } else {
+            $pages = (int) ceil($upcomingCount / self::MAX_URLS_PER_SITEMAP);
+            for ($p = 1; $p <= $pages; $p++) {
+                $entries[] = ['loc' => $base . '/sitemap-upcoming-courses-page-' . $p . '.xml', 'lastmod' => $now];
+            }
+        }
+
+        $entries[] = ['loc' => $base . '/sitemap-categories.xml', 'lastmod' => $now];
+        $entries[] = ['loc' => $base . '/sitemap-blog-categories.xml', 'lastmod' => $now];
+        $entries[] = ['loc' => $base . '/sitemap-instructors.xml', 'lastmod' => $now];
+
+        return $entries;
+    }
+
     public function courses()
     {
         try {
+            $total = $this->webinarSitemapQuery()->count();
+            if ($total > self::MAX_URLS_PER_SITEMAP) {
+                return redirect()->route('sitemap.courses.paginated', ['page' => 1], 301)
+                    ->header('Content-Type', 'application/xml; charset=utf-8');
+            }
+
             $xml = Cache::remember('sitemap-courses.xml', 86400, function () {
                 $urls = $this->getPublishedCourses();
-                return $this->generateXml($urls);
+                return $this->generateUrlsetXml($urls);
             });
 
             return response($xml, 200)
@@ -250,9 +457,15 @@ class SitemapController extends Controller
     public function blog()
     {
         try {
+            $total = $this->blogSitemapQuery()->count();
+            if ($total > self::MAX_URLS_PER_SITEMAP) {
+                return redirect()->route('sitemap.blog.paginated', ['page' => 1], 301)
+                    ->header('Content-Type', 'application/xml; charset=utf-8');
+            }
+
             $xml = Cache::remember('sitemap-blog.xml', 86400, function () {
                 $urls = $this->getPublishedBlogPosts();
-                return $this->generateXml($urls);
+                return $this->generateUrlsetXml($urls);
             });
 
             return response($xml, 200)
@@ -267,9 +480,15 @@ class SitemapController extends Controller
     public function upcomingCourses()
     {
         try {
+            $total = $this->upcomingSitemapQuery()->count();
+            if ($total > self::MAX_URLS_PER_SITEMAP) {
+                return redirect()->route('sitemap.upcoming.paginated', ['page' => 1], 301)
+                    ->header('Content-Type', 'application/xml; charset=utf-8');
+            }
+
             $xml = Cache::remember('sitemap-upcoming-courses.xml', 86400, function () {
                 $urls = $this->getPublishedUpcomingCourses();
-                return $this->generateXml($urls);
+                return $this->generateUrlsetXml($urls);
             });
 
             return response($xml, 200)
@@ -281,37 +500,23 @@ class SitemapController extends Controller
         }
     }
 
-    /**
-     * Generate paginated sitemap for courses (useful for very large datasets)
-     */
     public function coursesPaginated($page = 1)
     {
         try {
-            $perPage = 1000;
-            $offset = ($page - 1) * $perPage;
-            $cacheKey = "sitemap-courses-page-{$page}.xml";
-            
-            $xml = Cache::remember($cacheKey, 86400, function () use ($perPage, $offset) {
-                $urls = [];
-                $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
-                
-                $courses = Webinar::where('status', Webinar::$active)
-                    ->where('type', '!=', 'text_lesson')
-                    ->orderBy('updated_at', 'desc')
-                    ->skip($offset)
-                    ->take($perPage)
-                    ->get();
+            $page = max(1, (int) $page);
+            $total = $this->webinarSitemapQuery()->count();
+            $totalPages = max(1, (int) ceil($total / self::MAX_URLS_PER_SITEMAP));
 
-                foreach ($courses as $course) {
-                    $urls[] = [
-                        'loc' => $baseUrl . '/course/' . $course->slug,
-                        'lastmod' => $course->updated_at ? Carbon::parse($course->updated_at)->toAtomString() : now()->toAtomString(),
-                        'priority' => 0.8,
-                        'changefreq' => 'weekly',
-                    ];
-                }
+            if ($page > $totalPages || ($total === 0 && $page > 1)) {
+                abort(404);
+            }
 
-                return $this->generateXml($urls);
+            $cacheKey = 'sitemap-courses-page-' . $page . '.xml';
+
+            $xml = Cache::remember($cacheKey, 86400, function () use ($page) {
+                $offset = ($page - 1) * self::MAX_URLS_PER_SITEMAP;
+                $urls = $this->getPublishedCoursesSlice($offset, self::MAX_URLS_PER_SITEMAP);
+                return $this->generateUrlsetXml($urls);
             });
 
             return response($xml, 200)
@@ -323,38 +528,84 @@ class SitemapController extends Controller
         }
     }
 
+    public function blogPaginated($page = 1)
+    {
+        try {
+            $page = max(1, (int) $page);
+            $total = $this->blogSitemapQuery()->count();
+            $totalPages = max(1, (int) ceil($total / self::MAX_URLS_PER_SITEMAP));
+
+            if ($page > $totalPages || ($total === 0 && $page > 1)) {
+                abort(404);
+            }
+
+            $cacheKey = 'sitemap-blog-page-' . $page . '.xml';
+
+            $xml = Cache::remember($cacheKey, 86400, function () use ($page) {
+                $offset = ($page - 1) * self::MAX_URLS_PER_SITEMAP;
+                $urls = $this->getPublishedBlogPostsSlice($offset, self::MAX_URLS_PER_SITEMAP);
+                return $this->generateUrlsetXml($urls);
+            });
+
+            return response($xml, 200)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        } catch (\Exception $e) {
+            \Log::error('Paginated blog sitemap generation error: ' . $e->getMessage());
+            return response($this->generateErrorXml($e->getMessage()), 500)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        }
+    }
+
+    public function upcomingCoursesPaginated($page = 1)
+    {
+        try {
+            $page = max(1, (int) $page);
+            $total = $this->upcomingSitemapQuery()->count();
+            $totalPages = max(1, (int) ceil($total / self::MAX_URLS_PER_SITEMAP));
+
+            if ($page > $totalPages || ($total === 0 && $page > 1)) {
+                abort(404);
+            }
+
+            $cacheKey = 'sitemap-upcoming-courses-page-' . $page . '.xml';
+
+            $xml = Cache::remember($cacheKey, 86400, function () use ($page) {
+                $offset = ($page - 1) * self::MAX_URLS_PER_SITEMAP;
+                $urls = $this->getPublishedUpcomingCoursesSlice($offset, self::MAX_URLS_PER_SITEMAP);
+                return $this->generateUrlsetXml($urls);
+            });
+
+            return response($xml, 200)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        } catch (\Exception $e) {
+            \Log::error('Paginated upcoming courses sitemap generation error: ' . $e->getMessage());
+            return response($this->generateErrorXml($e->getMessage()), 500)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        }
+    }
+
     /**
-     * Generate sitemap index for paginated course sitemaps
+     * Courses-only sitemap index (child files only — valid sitemapindex XML).
      */
     public function coursesIndex()
     {
         try {
             $xml = Cache::remember('sitemap-courses-index.xml', 86400, function () {
-                $urls = [];
-                $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
-                
-                $totalCourses = Webinar::where('status', Webinar::$active)
-                    ->where('type', '!=', 'text_lesson')
-                    ->count();
-                
-                $perPage = 1000;
-                $totalPages = ceil($totalCourses / $perPage);
-                
-                // Add main courses sitemap
-                $urls[] = [
-                    'loc' => $baseUrl . '/sitemap-courses.xml',
-                    'lastmod' => now()->toAtomString(),
-                ];
-                
-                // Add paginated sitemaps if needed
-                for ($page = 1; $page <= $totalPages; $page++) {
-                    $urls[] = [
-                        'loc' => $baseUrl . "/sitemap-courses-page-{$page}.xml",
-                        'lastmod' => now()->toAtomString(),
-                    ];
+                $base = $this->baseUrl();
+                $now = now()->toAtomString();
+                $entries = [];
+
+                $total = $this->webinarSitemapQuery()->count();
+                if ($total <= self::MAX_URLS_PER_SITEMAP) {
+                    $entries[] = ['loc' => $base . '/sitemap-courses.xml', 'lastmod' => $now];
+                } else {
+                    $pages = (int) ceil($total / self::MAX_URLS_PER_SITEMAP);
+                    for ($p = 1; $p <= $pages; $p++) {
+                        $entries[] = ['loc' => $base . '/sitemap-courses-page-' . $p . '.xml', 'lastmod' => $now];
+                    }
                 }
 
-                return $this->generateXml($urls);
+                return $this->generateSitemapIndexXml($entries);
             });
 
             return response($xml, 200)
@@ -370,7 +621,6 @@ class SitemapController extends Controller
     {
         $supportedLocalesMap = getUserLanguagesLists();
 
-        // hreflang/canonical use language codes (e.g. `en`, `ar`), not country/flag codes.
         $codes = array_values(array_unique(array_map(function ($code) {
             return mb_strtolower($code);
         }, array_keys($supportedLocalesMap))));
@@ -383,10 +633,26 @@ class SitemapController extends Controller
         return !empty($default) ? [$default] : ['en'];
     }
 
-    /**
-     * Generate XML from URLs array
-     */
-    private function generateXml(array $urls)
+    private function generateSitemapIndexXml(array $sitemaps): string
+    {
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $xml .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+
+        foreach ($sitemaps as $item) {
+            $xml .= '  <sitemap>' . "\n";
+            $xml .= '    <loc>' . htmlspecialchars($item['loc'], ENT_XML1, 'UTF-8') . '</loc>' . "\n";
+            if (!empty($item['lastmod'])) {
+                $xml .= '    <lastmod>' . htmlspecialchars($item['lastmod'], ENT_XML1, 'UTF-8') . '</lastmod>' . "\n";
+            }
+            $xml .= '  </sitemap>' . "\n";
+        }
+
+        $xml .= '</sitemapindex>';
+
+        return $xml;
+    }
+
+    private function generateUrlsetXml(array $urls): string
     {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
@@ -394,19 +660,19 @@ class SitemapController extends Controller
         foreach ($urls as $urlData) {
             $xml .= '  <url>' . "\n";
             $xml .= '    <loc>' . htmlspecialchars($urlData['loc'], ENT_XML1, 'UTF-8') . '</loc>' . "\n";
-            
+
             if (isset($urlData['lastmod'])) {
                 $xml .= '    <lastmod>' . htmlspecialchars($urlData['lastmod'], ENT_XML1, 'UTF-8') . '</lastmod>' . "\n";
             }
-            
+
             if (isset($urlData['priority'])) {
-                $xml .= '    <priority>' . htmlspecialchars($urlData['priority'], ENT_XML1, 'UTF-8') . '</priority>' . "\n";
+                $xml .= '    <priority>' . htmlspecialchars((string) $urlData['priority'], ENT_XML1, 'UTF-8') . '</priority>' . "\n";
             }
-            
+
             if (isset($urlData['changefreq'])) {
                 $xml .= '    <changefreq>' . htmlspecialchars($urlData['changefreq'], ENT_XML1, 'UTF-8') . '</changefreq>' . "\n";
             }
-            
+
             $xml .= '  </url>' . "\n";
         }
 
@@ -415,9 +681,6 @@ class SitemapController extends Controller
         return $xml;
     }
 
-    /**
-     * Generate error XML
-     */
     private function generateErrorXml($message)
     {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
@@ -426,4 +689,4 @@ class SitemapController extends Controller
         $xml .= '</error>';
         return $xml;
     }
-} 
+}

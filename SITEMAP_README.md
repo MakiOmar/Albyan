@@ -8,50 +8,41 @@ The sitemap system generates XML sitemaps dynamically from your database content
 
 ## Available Routes
 
-### Main Sitemap
-- **URL**: `/sitemap.xml`
-- **Description**: Complete sitemap including all content types
-- **Includes**:
-  - Static pages (home, courses, blog, instructors, etc.)
-  - Published courses/webinars
-  - Published blog posts
-  - Upcoming courses
-  - Categories
-  - Blog categories
-  - Instructors with published courses
+### Recommended: Sitemap index (master file)
 
-### Content-Specific Sitemaps
+- **URL**: `/sitemap_index.xml`
+- **Description**: Valid `<sitemapindex>` listing every child sitemap (static pages, courses, blog, upcoming, categories, blog categories, instructors). This is the file to submit in Search Console and `robots.txt`.
+- **Limits**: Each child urlset has at most **50,000 URLs**; each index file has at most **50,000** `<sitemap>` entries ([sitemaps.org protocol](https://www.sitemaps.org/protocol.html)).
 
-#### Courses Sitemap
-- **URL**: `/sitemap-courses.xml`
-- **Description**: Contains only published courses/webinars
-- **Use Case**: Submit to search engines if you want to focus on course indexing
+### Child sitemaps (urlset)
 
-#### Blog Sitemap
-- **URL**: `/sitemap-blog.xml`
-- **Description**: Contains only published blog posts
-- **Use Case**: Submit to search engines for blog content indexing
+| Path | Content |
+|------|---------|
+| `/sitemap-pages.xml` | Static pages (per locale) |
+| `/sitemap-courses.xml` | All published courses (only if count ≤ 50,000) |
+| `/sitemap-blog.xml` | All published blog posts (only if count ≤ 50,000) |
+| `/sitemap-upcoming-courses.xml` | All upcoming courses (only if count ≤ 50,000) |
+| `/sitemap-categories.xml` | Course categories |
+| `/sitemap-blog-categories.xml` | Blog categories |
+| `/sitemap-instructors.xml` | Instructor profile URLs (per locale) |
 
-#### Upcoming Courses Sitemap
-- **URL**: `/sitemap-upcoming-courses.xml`
-- **Description**: Contains only published upcoming courses
-- **Use Case**: Submit to search engines for upcoming course indexing
+When a type exceeds **50,000** URLs, the master index lists **paginated** urlsets only (no duplicate full file in the index):
 
-### Paginated Sitemaps (for large datasets)
+- `/sitemap-courses-page-{n}.xml`
+- `/sitemap-blog-page-{n}.xml`
+- `/sitemap-upcoming-courses-page-{n}.xml`
 
-#### Courses Sitemap Index
+Direct requests to `/sitemap-courses.xml`, `/sitemap-blog.xml`, or `/sitemap-upcoming-courses.xml` **301 redirect** to page 1 when that type is paginated.
+
+### Courses-only sitemap index
+
 - **URL**: `/sitemap-courses-index.xml`
-- **Description**: Master index listing all paginated course sitemaps
-- **Use Case**: Use when you have 1000+ courses and need pagination
+- **Description**: `<sitemapindex>` for course urlsets only (single `sitemap-courses.xml` or all `sitemap-courses-page-{n}.xml`).
 
-#### Paginated Courses Sitemaps
-- **URL**: `/sitemap-courses-page-{page}.xml`
-- **Examples**: 
-  - `/sitemap-courses-page-1.xml` (courses 1-1000)
-  - `/sitemap-courses-page-2.xml` (courses 1001-2000)
-  - `/sitemap-courses-page-3.xml` (courses 2001-3000)
-- **Description**: Each page contains up to 1000 courses
-- **Use Case**: Automatically generated when you have large numbers of courses
+### Legacy monolithic sitemap
+
+- **URL**: `/sitemap.xml`
+- **Description**: One `<urlset>` containing every URL (all types). Kept for backward compatibility; prefer `/sitemap_index.xml` for crawlers.
 
 ## How It Works
 
@@ -65,13 +56,13 @@ The sitemap system generates XML sitemaps dynamically from your database content
 ### Caching
 
 - **Cache Duration**: 24 hours
-- **Cache Keys**:
-  - `sitemap.xml` - Main sitemap
-  - `sitemap-courses.xml` - Courses sitemap
-  - `sitemap-blog.xml` - Blog sitemap
-  - `sitemap-upcoming-courses.xml` - Upcoming courses sitemap
-  - `sitemap-courses-index.xml` - Courses index
-  - `sitemap-courses-page-{page}.xml` - Paginated course sitemaps
+- **Cache Keys** (partial list):
+  - `sitemap_index.xml` — Master index
+  - `sitemap.xml` — Legacy all-in-one urlset
+  - `sitemap-pages.xml`, `sitemap-categories.xml`, `sitemap-blog-categories.xml`, `sitemap-instructors.xml`
+  - `sitemap-courses.xml`, `sitemap-blog.xml`, `sitemap-upcoming-courses.xml`
+  - `sitemap-courses-index.xml`
+  - `sitemap-courses-page-{n}.xml`, `sitemap-blog-page-{n}.xml`, `sitemap-upcoming-courses-page-{n}.xml`
 
 ### Content Filtering
 
@@ -87,9 +78,7 @@ The sitemap system generates XML sitemaps dynamically from your database content
 Simply visit the sitemap URL in your browser or use it in search engine submission:
 
 ```
-https://yourdomain.com/sitemap.xml
-https://yourdomain.com/sitemap-courses.xml
-https://yourdomain.com/sitemap-blog.xml
+https://yourdomain.com/sitemap_index.xml
 ```
 
 ### Submitting to Search Engines
@@ -98,7 +87,7 @@ https://yourdomain.com/sitemap-blog.xml
 1. Go to [Google Search Console](https://search.google.com/search-console)
 2. Select your property
 3. Navigate to **Sitemaps** in the left menu
-4. Enter `sitemap.xml` and click **Submit**
+4. Enter `sitemap_index.xml` and click **Submit**
 
 #### Bing Webmaster Tools
 1. Go to [Bing Webmaster Tools](https://www.bing.com/webmasters)
@@ -139,8 +128,7 @@ php artisan sitemap:generate upcoming-courses
 - **Namespace**: `App\Http\Controllers`
 
 ### Routes Location
-- **File**: `routes/web.php`
-- **Lines**: 477-484
+- **File**: `routes/web.php` (search for `sitemap`)
 
 ### Dependencies
 - No external packages required (custom XML generator)
@@ -151,12 +139,26 @@ php artisan sitemap:generate upcoming-courses
 
 The sitemap follows the [Sitemap Protocol 0.9](https://www.sitemaps.org/protocol.html):
 
+**Sitemap index** (`sitemap_index.xml`):
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://yourdomain.com/sitemap-pages.xml</loc>
+    <lastmod>2026-04-04T12:00:00+00:00</lastmod>
+  </sitemap>
+</sitemapindex>
+```
+
+**Urlset** (child files such as `sitemap-courses.xml`):
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://yourdomain.com/course/example-course</loc>
-    <lastmod>2024-01-15T10:30:00+00:00</lastmod>
+    <lastmod>2026-04-04T10:30:00+00:00</lastmod>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
   </url>
@@ -190,8 +192,8 @@ The sitemap follows the [Sitemap Protocol 0.9](https://www.sitemaps.org/protocol
 - Manual cache clearing available via Artisan command
 
 ### Pagination
-- For sites with 1000+ courses, paginated sitemaps are automatically available
-- Each paginated sitemap contains maximum 1000 URLs (Google's recommendation)
+- When any content type exceeds **50,000** URLs, paginated urlsets are used automatically (protocol limit)
+- Each paginated file contains at most **50,000** URLs
 
 ## Troubleshooting
 
@@ -247,8 +249,8 @@ The sitemap follows the [Sitemap Protocol 0.9](https://www.sitemaps.org/protocol
 
 ### Best Practices
 
-1. **Submit Main Sitemap**: Submit `/sitemap.xml` to search engines
-2. **Use Paginated Sitemaps**: For large sites, submit the index sitemap
+1. **Submit the sitemap index**: Submit `/sitemap_index.xml` to search engines
+2. **Large catalogs**: The index already references paginated child sitemaps when needed
 3. **Regular Updates**: Clear cache after major content updates
 4. **Monitor Search Console**: Check for sitemap errors in Google Search Console
 
@@ -284,4 +286,5 @@ For issues or questions:
 - Removed dependency on Spatie Laravel Sitemap package
 - Added error handling and proper XML generation
 - Implemented caching for performance
+- **v2.0**: Master `sitemap_index.xml` with per-type child urlsets; 50,000 URLs per file; fixed courses-only index to use real `<sitemapindex>` (not urlset)
 

@@ -523,14 +523,21 @@ Route::get('tabby/success', [App\Http\Controllers\TabbyController::class, 'succe
 Route::get('tabby/cancel', [App\Http\Controllers\TabbyController::class, 'cancel'])->name('tabby.cancel');
 Route::get('tabby/failure', [App\Http\Controllers\TabbyController::class, 'failure'])->name('tabby.failure');
 
+Route::get('sitemap_index.xml', [App\Http\Controllers\SitemapController::class, 'sitemapIndexMain'])->name('sitemap.index');
 Route::get('sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap.xml');
+Route::get('sitemap-pages.xml', [App\Http\Controllers\SitemapController::class, 'pages'])->name('sitemap.pages');
+Route::get('sitemap-categories.xml', [App\Http\Controllers\SitemapController::class, 'categoriesSitemap'])->name('sitemap.categories');
+Route::get('sitemap-blog-categories.xml', [App\Http\Controllers\SitemapController::class, 'blogCategoriesSitemap'])->name('sitemap.blog-categories');
+Route::get('sitemap-instructors.xml', [App\Http\Controllers\SitemapController::class, 'instructorsSitemap'])->name('sitemap.instructors');
 Route::get('sitemap-courses.xml', [App\Http\Controllers\SitemapController::class, 'courses'])->name('sitemap.courses');
 Route::get('sitemap-blog.xml', [App\Http\Controllers\SitemapController::class, 'blog'])->name('sitemap.blog');
 Route::get('sitemap-upcoming-courses.xml', [App\Http\Controllers\SitemapController::class, 'upcomingCourses'])->name('sitemap.upcoming-courses');
 
-// Paginated sitemap routes for large datasets
+// Paginated sitemap routes (max 50,000 URLs per file per sitemaps.org)
 Route::get('sitemap-courses-index.xml', [App\Http\Controllers\SitemapController::class, 'coursesIndex'])->name('sitemap.courses.index');
-Route::get('sitemap-courses-page-{page}.xml', [App\Http\Controllers\SitemapController::class, 'coursesPaginated'])->name('sitemap.courses.paginated');
+Route::get('sitemap-courses-page-{page}.xml', [App\Http\Controllers\SitemapController::class, 'coursesPaginated'])->where('page', '[0-9]+')->name('sitemap.courses.paginated');
+Route::get('sitemap-blog-page-{page}.xml', [App\Http\Controllers\SitemapController::class, 'blogPaginated'])->where('page', '[0-9]+')->name('sitemap.blog.paginated');
+Route::get('sitemap-upcoming-courses-page-{page}.xml', [App\Http\Controllers\SitemapController::class, 'upcomingCoursesPaginated'])->where('page', '[0-9]+')->name('sitemap.upcoming.paginated');
 
 // RSS Feed routes
 Route::get('rss/courses', [App\Http\Controllers\RssController::class, 'courses'])->name('rss.courses');

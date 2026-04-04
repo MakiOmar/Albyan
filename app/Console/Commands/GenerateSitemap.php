@@ -2,12 +2,16 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Blog;
+use App\Models\Webinar;
+use App\Models\UpcomingCourse;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
-use App\Http\Controllers\SitemapController;
 
 class GenerateSitemap extends Command
 {
+    private const MAX_URLS_PER_SITEMAP = 50000;
+
     /**
      * The name and signature of the console command.
      *
@@ -57,39 +61,79 @@ class GenerateSitemap extends Command
 
     private function generateAllSitemaps()
     {
-        $this->info('Generating main sitemap...');
+        $this->info('Clearing sitemap caches...');
+        Cache::forget('sitemap_index.xml');
         Cache::forget('sitemap.xml');
-        
-        $this->info('Generating courses sitemap...');
+        Cache::forget('sitemap-pages.xml');
+        Cache::forget('sitemap-categories.xml');
+        Cache::forget('sitemap-blog-categories.xml');
+        Cache::forget('sitemap-instructors.xml');
         Cache::forget('sitemap-courses.xml');
-        
-        $this->info('Generating blog sitemap...');
         Cache::forget('sitemap-blog.xml');
-        
-        $this->info('Generating upcoming courses sitemap...');
         Cache::forget('sitemap-upcoming-courses.xml');
+        Cache::forget('sitemap-courses-index.xml');
+
+        $this->forgetPaginatedCourseCaches();
+        $this->forgetPaginatedBlogCaches();
+        $this->forgetPaginatedUpcomingCaches();
 
         $this->info('All sitemap caches cleared. Sitemaps will be regenerated on next access.');
+    }
+
+    private function forgetPaginatedCourseCaches(): void
+    {
+        $count = Webinar::where('status', Webinar::$active)
+            ->where('type', '!=', 'text_lesson')
+            ->count();
+        $pages = max(1, (int) ceil($count / self::MAX_URLS_PER_SITEMAP));
+        for ($p = 1; $p <= $pages; $p++) {
+            Cache::forget('sitemap-courses-page-' . $p . '.xml');
+        }
+    }
+
+    private function forgetPaginatedBlogCaches(): void
+    {
+        $count = Blog::where('status', 'publish')->count();
+        $pages = max(1, (int) ceil($count / self::MAX_URLS_PER_SITEMAP));
+        for ($p = 1; $p <= $pages; $p++) {
+            Cache::forget('sitemap-blog-page-' . $p . '.xml');
+        }
+    }
+
+    private function forgetPaginatedUpcomingCaches(): void
+    {
+        $count = UpcomingCourse::where('status', UpcomingCourse::$active)->count();
+        $pages = max(1, (int) ceil($count / self::MAX_URLS_PER_SITEMAP));
+        for ($p = 1; $p <= $pages; $p++) {
+            Cache::forget('sitemap-upcoming-courses-page-' . $p . '.xml');
+        }
     }
 
     private function generateCoursesSitemap()
     {
         $this->info('Generating courses sitemap...');
+        Cache::forget('sitemap_index.xml');
         Cache::forget('sitemap-courses.xml');
+        Cache::forget('sitemap-courses-index.xml');
+        $this->forgetPaginatedCourseCaches();
         $this->info('Courses sitemap cache cleared.');
     }
 
     private function generateBlogSitemap()
     {
         $this->info('Generating blog sitemap...');
+        Cache::forget('sitemap_index.xml');
         Cache::forget('sitemap-blog.xml');
+        $this->forgetPaginatedBlogCaches();
         $this->info('Blog sitemap cache cleared.');
     }
 
     private function generateUpcomingCoursesSitemap()
     {
         $this->info('Generating upcoming courses sitemap...');
+        Cache::forget('sitemap_index.xml');
         Cache::forget('sitemap-upcoming-courses.xml');
+        $this->forgetPaginatedUpcomingCaches();
         $this->info('Upcoming courses sitemap cache cleared.');
     }
-} 
+}
