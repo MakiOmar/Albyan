@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Testimonial;
 use App\Http\Controllers\Web\WebinarCertificateController;
+use App\Http\Controllers\SitemapController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,25 @@ use App\Http\Controllers\Web\WebinarCertificateController;
 | contains the "web" middleware group. Now create something great!.
 |
 */
+
+/*
+| Sitemaps are registered first so they always resolve (root URLs, not under /{locale}/).
+| If you use route caching, run: php artisan route:clear && php artisan route:cache after deploy.
+*/
+Route::redirect('/sitemap-index.xml', '/sitemap_index.xml', 301);
+Route::get('/sitemap_index.xml', [SitemapController::class, 'sitemapIndexMain'])->name('sitemap.index');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap.xml');
+Route::get('/sitemap-pages.xml', [SitemapController::class, 'pages'])->name('sitemap.pages');
+Route::get('/sitemap-categories.xml', [SitemapController::class, 'categoriesSitemap'])->name('sitemap.categories');
+Route::get('/sitemap-blog-categories.xml', [SitemapController::class, 'blogCategoriesSitemap'])->name('sitemap.blog-categories');
+Route::get('/sitemap-instructors.xml', [SitemapController::class, 'instructorsSitemap'])->name('sitemap.instructors');
+Route::get('/sitemap-courses.xml', [SitemapController::class, 'courses'])->name('sitemap.courses');
+Route::get('/sitemap-blog.xml', [SitemapController::class, 'blog'])->name('sitemap.blog');
+Route::get('/sitemap-upcoming-courses.xml', [SitemapController::class, 'upcomingCourses'])->name('sitemap.upcoming-courses');
+Route::get('/sitemap-courses-index.xml', [SitemapController::class, 'coursesIndex'])->name('sitemap.courses.index');
+Route::get('/sitemap-courses-page-{page}.xml', [SitemapController::class, 'coursesPaginated'])->where('page', '[0-9]+')->name('sitemap.courses.paginated');
+Route::get('/sitemap-blog-page-{page}.xml', [SitemapController::class, 'blogPaginated'])->where('page', '[0-9]+')->name('sitemap.blog.paginated');
+Route::get('/sitemap-upcoming-courses-page-{page}.xml', [SitemapController::class, 'upcomingCoursesPaginated'])->where('page', '[0-9]+')->name('sitemap.upcoming.paginated');
 
 Route::get('/zoom/{group}', [CourseGroupController::class, 'zoomSession'])->name('course-group.session');
 
@@ -517,27 +537,33 @@ Route::group([
     Route::get('/about', function () {
         return view('web.default.pages.about');
     });
+
+    // Crawlers sometimes request sitemaps under /{locale}/ — redirect to canonical root URLs
+    Route::redirect('sitemap-index.xml', '/sitemap_index.xml', 301);
+    Route::redirect('sitemap_index.xml', '/sitemap_index.xml', 301);
+    Route::redirect('sitemap.xml', '/sitemap.xml', 301);
+    Route::redirect('sitemap-pages.xml', '/sitemap-pages.xml', 301);
+    Route::redirect('sitemap-categories.xml', '/sitemap-categories.xml', 301);
+    Route::redirect('sitemap-blog-categories.xml', '/sitemap-blog-categories.xml', 301);
+    Route::redirect('sitemap-instructors.xml', '/sitemap-instructors.xml', 301);
+    Route::redirect('sitemap-courses.xml', '/sitemap-courses.xml', 301);
+    Route::redirect('sitemap-blog.xml', '/sitemap-blog.xml', 301);
+    Route::redirect('sitemap-upcoming-courses.xml', '/sitemap-upcoming-courses.xml', 301);
+    Route::redirect('sitemap-courses-index.xml', '/sitemap-courses-index.xml', 301);
+    Route::get('sitemap-courses-page-{page}.xml', function (string $locale, string $page) {
+        return redirect('/sitemap-courses-page-' . $page . '.xml', 301);
+    })->where('page', '[0-9]+');
+    Route::get('sitemap-blog-page-{page}.xml', function (string $locale, string $page) {
+        return redirect('/sitemap-blog-page-' . $page . '.xml', 301);
+    })->where('page', '[0-9]+');
+    Route::get('sitemap-upcoming-courses-page-{page}.xml', function (string $locale, string $page) {
+        return redirect('/sitemap-upcoming-courses-page-' . $page . '.xml', 301);
+    })->where('page', '[0-9]+');
 });
 
 Route::get('tabby/success', [App\Http\Controllers\TabbyController::class, 'success'])->name('tabby.success');
 Route::get('tabby/cancel', [App\Http\Controllers\TabbyController::class, 'cancel'])->name('tabby.cancel');
 Route::get('tabby/failure', [App\Http\Controllers\TabbyController::class, 'failure'])->name('tabby.failure');
-
-Route::get('sitemap_index.xml', [App\Http\Controllers\SitemapController::class, 'sitemapIndexMain'])->name('sitemap.index');
-Route::get('sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap.xml');
-Route::get('sitemap-pages.xml', [App\Http\Controllers\SitemapController::class, 'pages'])->name('sitemap.pages');
-Route::get('sitemap-categories.xml', [App\Http\Controllers\SitemapController::class, 'categoriesSitemap'])->name('sitemap.categories');
-Route::get('sitemap-blog-categories.xml', [App\Http\Controllers\SitemapController::class, 'blogCategoriesSitemap'])->name('sitemap.blog-categories');
-Route::get('sitemap-instructors.xml', [App\Http\Controllers\SitemapController::class, 'instructorsSitemap'])->name('sitemap.instructors');
-Route::get('sitemap-courses.xml', [App\Http\Controllers\SitemapController::class, 'courses'])->name('sitemap.courses');
-Route::get('sitemap-blog.xml', [App\Http\Controllers\SitemapController::class, 'blog'])->name('sitemap.blog');
-Route::get('sitemap-upcoming-courses.xml', [App\Http\Controllers\SitemapController::class, 'upcomingCourses'])->name('sitemap.upcoming-courses');
-
-// Paginated sitemap routes (max 50,000 URLs per file per sitemaps.org)
-Route::get('sitemap-courses-index.xml', [App\Http\Controllers\SitemapController::class, 'coursesIndex'])->name('sitemap.courses.index');
-Route::get('sitemap-courses-page-{page}.xml', [App\Http\Controllers\SitemapController::class, 'coursesPaginated'])->where('page', '[0-9]+')->name('sitemap.courses.paginated');
-Route::get('sitemap-blog-page-{page}.xml', [App\Http\Controllers\SitemapController::class, 'blogPaginated'])->where('page', '[0-9]+')->name('sitemap.blog.paginated');
-Route::get('sitemap-upcoming-courses-page-{page}.xml', [App\Http\Controllers\SitemapController::class, 'upcomingCoursesPaginated'])->where('page', '[0-9]+')->name('sitemap.upcoming.paginated');
 
 // RSS Feed routes
 Route::get('rss/courses', [App\Http\Controllers\RssController::class, 'courses'])->name('rss.courses');

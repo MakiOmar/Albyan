@@ -197,6 +197,21 @@ The sitemap follows the [Sitemap Protocol 0.9](https://www.sitemaps.org/protocol
 
 ## Troubleshooting
 
+### Sitemap URLs Return 404 After Deploy
+
+**Stale route cache** (most common): If you use `php artisan route:cache`, rebuild after changing `routes/web.php`:
+
+```bash
+php artisan route:clear
+php artisan route:cache
+```
+
+Or omit route caching in production if you prefer Laravel to load routes from files each request.
+
+**Wrong URL**: Sitemaps are served at the **site root**, e.g. `https://yourdomain.com/sitemap_index.xml`, not under a language prefix. If something requests `https://yourdomain.com/en/sitemap_index.xml`, that path now **301 redirects** to the root sitemap URL.
+
+**Web server**: Nginx/Apache must forward unknown paths to `public/index.php` (e.g. `try_files $uri $uri/ /index.php?$query_string`). A static file named `sitemap_index.xml` in `public/` would be served instead of Laravel — remove it if present.
+
 ### Sitemap Returns PHP Code Instead of XML
 
 **Problem**: Browser shows `<?php` or PHP code instead of XML
