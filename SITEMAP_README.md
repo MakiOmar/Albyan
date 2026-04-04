@@ -53,6 +53,15 @@ Direct requests to `/sitemap-courses.xml`, `/sitemap-blog.xml`, or `/sitemap-upc
 3. **Chunking**: Large datasets are processed in chunks of 100 to prevent memory issues
 4. **Caching**: Generated sitemaps are cached for 24 hours (86400 seconds) for performance
 
+### Browser display (Yoast-style table)
+
+Sitemap XML is valid for Google/Bing. For a **readable table in Chrome/Firefox/Edge** (similar to Yoast), the XML references static stylesheets in `public/`:
+
+- `public/sitemap-index.xsl` — for `sitemap_index.xml` and `sitemap-courses-index.xml`
+- `public/sitemap-urlset.xsl` — for all `<urlset>` sitemaps
+
+The `href` uses `APP_URL`, so keep `APP_URL` aligned with how users open the site. After changing XSL or sitemap XML structure, clear sitemap caches (`php artisan sitemap:generate`).
+
 ### Caching
 
 - **Cache Duration**: 24 hours

@@ -633,9 +633,20 @@ class SitemapController extends Controller
         return !empty($default) ? [$default] : ['en'];
     }
 
+    /**
+     * Browser-friendly HTML table (Yoast-style) via XSLT; crawlers ignore the stylesheet.
+     */
+    private function xslProcessingInstruction(string $xslBasename): string
+    {
+        $href = $this->baseUrl() . '/' . $xslBasename;
+
+        return '<?xml-stylesheet type="text/xsl" href="' . htmlspecialchars($href, ENT_XML1, 'UTF-8') . '"?>' . "\n";
+    }
+
     private function generateSitemapIndexXml(array $sitemaps): string
     {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $xml .= $this->xslProcessingInstruction('sitemap-index.xsl');
         $xml .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
 
         foreach ($sitemaps as $item) {
@@ -655,6 +666,7 @@ class SitemapController extends Controller
     private function generateUrlsetXml(array $urls): string
     {
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $xml .= $this->xslProcessingInstruction('sitemap-urlset.xsl');
         $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
 
         foreach ($urls as $urlData) {
