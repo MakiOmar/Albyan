@@ -15536,13 +15536,17 @@ p {
   background-size: cover;
   background-position: center;
   padding: 250px 0 350px 0;
+  /* CLS: border-box — min-height matches vertical padding so hero does not collapse before paint */
+  min-height: 600px;
 }
 .slider-container.slider-hero-section2 {
   padding: 100px 0 150px 0;
+  min-height: 250px;
 }
 @media (max-width: 991px) {
   .slider-container, .slider-container.slider-hero-section2 {
     padding: 60px 0 100px 0;
+    min-height: 300px;
   }
 }
 .slider-container #homeHeroVideoBackground {

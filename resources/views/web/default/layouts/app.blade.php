@@ -113,7 +113,20 @@
             overflow: hidden;
             background-color: rgba(0,0,0,0.3);
         }
-        
+        /* CLS: bottom heading strip — full width + min-height so web font load / line wrap does not shift following content */
+        .slider-container .slider-heading {
+            width: 100%;
+            left: 0;
+            right: 0;
+            box-sizing: border-box;
+            min-height: 4.25rem;
+        }
+        @media screen and (max-width: 480px) {
+            .slider-container .slider-heading {
+                min-height: 3.5rem;
+            }
+        }
+
         .blue-bg{
             background-color: var(--main-color)!important;
         }

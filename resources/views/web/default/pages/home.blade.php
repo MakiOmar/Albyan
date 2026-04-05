@@ -4,13 +4,27 @@
 @endphp
 @push('styles_top')
     <style>
-        .slider-heading{
-            display: flex;justify-content:center;align-items:center;padding:20px;position: absolute;z-index: 999;background-color: #ffffffa6;bottom: 0;
+        /* CLS: full-width strip + min-height (layout also sets .slider-container .slider-heading) */
+        .slider-heading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: absolute;
+            z-index: 999;
+            background-color: #ffffffa6;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 4.25rem;
         }
-        @media screen and ( max-width:480px ){
-            .slider-heading{
+        @media screen and (max-width: 480px) {
+            .slider-heading {
                 font-size: 16px;
-                padding: 10px
+                padding: 10px;
+                min-height: 3.5rem;
             }
         }
         /* Category courses home section: bottom spacing */
