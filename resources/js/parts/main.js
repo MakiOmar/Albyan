@@ -315,10 +315,14 @@
     })
 
 
-    /* feather icons */
-    // **
-    // **
-    feather.replace();
+    /* Feather: defer to next paint so we do not read layout in the same turn as prior DOM writes (forced reflow). */
+    requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+            if (typeof feather !== 'undefined' && typeof feather.replace === 'function') {
+                feather.replace();
+            }
+        });
+    });
 
 })(jQuery);
 

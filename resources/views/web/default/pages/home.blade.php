@@ -1225,41 +1225,48 @@
             ];
             var started = false;
             function afterHomeLibs() {
-                document.querySelectorAll('.swiper-slide').forEach(function (slide) {
-                    slide.addEventListener('click', function () {
-                        var showMoreBtn = this.querySelector('.show-more-btn');
-                        if (showMoreBtn) {
-                            showMoreBtn.click();
-                        }
-                    });
-                });
-                $(document).ready(function () {
-                    window.setTimeout(function () {
-                        $('.owl-dots .owl-dot').each(function (index) {
-                            $(this).attr('aria-label', '{{ trans("public.go_to_slide") }} ' + (index + 1));
+                /* Stagger after carousel init (home.min.js uses double rAF + idle parallax) to cut layout thrashing. */
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        document.querySelectorAll('.swiper-slide').forEach(function (slide) {
+                            slide.addEventListener('click', function () {
+                                var showMoreBtn = this.querySelector('.show-more-btn');
+                                if (showMoreBtn) {
+                                    showMoreBtn.click();
+                                }
+                            });
                         });
-                    }, 1200);
-                });
-                $(function () {
-                    var $accordion = $('#homeFaqAccordion');
-                    if (!$accordion.length || typeof feather === 'undefined') {
-                        return;
-                    }
-                    function setChevron($btn, isOpen) {
-                        var $chevron = $btn.find('.js-faq-chevron');
-                        if (!$chevron.length) {
-                            return;
-                        }
-                        $chevron.attr('data-feather', isOpen ? 'chevron-up' : 'chevron-down');
-                        feather.replace({ class: 'js-faq-chevron' });
-                    }
-                    $accordion.find('.collapse').on('show.bs.collapse', function () {
-                        var $card = $(this).closest('.card');
-                        $accordion.find('.js-faq-accordion-btn').each(function () {
-                            setChevron($(this), $(this).closest('.card').is($card));
+                        $(document).ready(function () {
+                            window.setTimeout(function () {
+                                $('.owl-dots .owl-dot').each(function (index) {
+                                    $(this).attr('aria-label', '{{ trans("public.go_to_slide") }} ' + (index + 1));
+                                });
+                            }, 1200);
                         });
-                    }).on('hide.bs.collapse', function () {
-                        setChevron($(this).closest('.card').find('.js-faq-accordion-btn'), false);
+                        $(function () {
+                            var $accordion = $('#homeFaqAccordion');
+                            if (!$accordion.length || typeof feather === 'undefined') {
+                                return;
+                            }
+                            function setChevron($btn, isOpen) {
+                                var $chevron = $btn.find('.js-faq-chevron');
+                                if (!$chevron.length) {
+                                    return;
+                                }
+                                $chevron.attr('data-feather', isOpen ? 'chevron-up' : 'chevron-down');
+                                requestAnimationFrame(function () {
+                                    feather.replace({ class: 'js-faq-chevron' });
+                                });
+                            }
+                            $accordion.find('.collapse').on('show.bs.collapse', function () {
+                                var $card = $(this).closest('.card');
+                                $accordion.find('.js-faq-accordion-btn').each(function () {
+                                    setChevron($(this), $(this).closest('.card').is($card));
+                                });
+                            }).on('hide.bs.collapse', function () {
+                                setChevron($(this).closest('.card').find('.js-faq-accordion-btn'), false);
+                            });
+                        });
                     });
                 });
             }

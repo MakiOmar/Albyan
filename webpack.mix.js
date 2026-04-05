@@ -34,7 +34,7 @@ mix
 // scripts
 .js('resources/js/parts/main.js', 'public/assets/default/js/parts/main.min.js')
 // .js('resources/js/parts/cookie-security.js', 'public/assets/default/js/parts/cookie-security.min.js')
-// .js('resources/js/parts/home.js', 'public/assets/default/js/parts/home.min.js')
+.js('resources/js/parts/home.js', 'public/assets/default/js/parts/home.min.js')
 // .js('resources/js/parts/webinar_show.js', 'public/assets/default/js/parts/webinar_show.min.js')
 // .js('resources/js/parts/upcoming_course_show.js', 'public/assets/default/js/parts/upcoming_course_show.min.js')
 // .js('resources/js/parts/video_player_helpers.js', 'public/assets/default/js/parts/video_player_helpers.min.js')
