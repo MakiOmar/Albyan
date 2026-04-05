@@ -265,7 +265,7 @@ class AccountingController extends Controller
         echo '<form action="/payments/verify/Razorpay" method="get">
             <input type="hidden" name="order_id" value="' . $order->id . '">
 
-            <script src="/assets/default/js/app.js"></script>
+            <script src="/assets/default/js/app.min.js"></script>
             <script src="https://checkout.razorpay.com/v1/checkout.js"
                     data-key="' . getRazorpayApiKey()['api_key'] . '"
                     data-amount="' . (int)($order->total_amount * 100) . '"

@@ -1,4 +1,5 @@
 {
+    "/assets/default/js/app.min.js": "/assets/default/js/app.min.js",
     "/assets/default/js/parts/main.min.js": "/assets/default/js/parts/main.min.js",
     "/assets/default/js/parts/cart.min.js": "/assets/default/js/parts/cart.min.js"
 }

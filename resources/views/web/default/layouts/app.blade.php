@@ -562,7 +562,7 @@
     @endif
 </div>
 <!-- Template JS File -->
-<script src="/assets/default/js/app.js"></script>
+<script src="/assets/default/js/app.min.js"></script>
 <script src="/assets/default/vendors/feather-icons/dist/feather.min.js"></script>
 <script src="/assets/default/vendors/moment.min.js"></script>
 <script src="/assets/default/vendors/sweetalert2/dist/sweetalert2.min.js"></script>
