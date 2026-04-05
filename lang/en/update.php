@@ -1142,6 +1142,8 @@ return [
 // Misc
 'is_video_background' => 'Enable Video Background',
 'is_video_background_hint' => 'If you want to use a video background, you need to upload an MP4 file for the background and enable this toggle.',
+'hero_video_poster' => 'Hero video poster (thumbnail)',
+'hero_video_poster_hint' => 'Optional image (JPG/PNG/WebP) shown until the visitor interacts with the page; then the video plays automatically. If empty, the first frame of the video is used as the preview.',
 
 'class_has_started' => 'Class has started',
 'show_other_register_method' => 'Display alternative registration input field',

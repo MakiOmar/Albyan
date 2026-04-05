@@ -57,6 +57,19 @@
 
                 </div>
 
+                <div class="form-group">
+                    <label class="input-label">{{ trans('update.hero_video_poster') }}</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <button type="button" class="input-group-text admin-file-manager" data-input="hero_video_poster" data-preview="holder">
+                                <i class="fa fa-chevron-up"></i>
+                            </button>
+                        </div>
+                        <input type="text" name="value[hero_video_poster]" id="hero_video_poster" value="{{ (!empty($itemValue) and !empty($itemValue['hero_video_poster'])) ? $itemValue['hero_video_poster'] : old('hero_video_poster') }}" class="form-control" placeholder="https://..."/>
+                    </div>
+                    <div class="text-muted text-small mt-1">{{ trans('update.hero_video_poster_hint') }}</div>
+                </div>
+
                 <button type="submit" class="btn btn-success">{{ trans('admin/main.save_change') }}</button>
             </form>
         </div>

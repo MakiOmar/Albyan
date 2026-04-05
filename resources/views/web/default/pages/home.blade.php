@@ -48,9 +48,45 @@
             <h1 class="slider-heading">حفلة تخرج طلاب البيان 2023/2024</h1>
             @if($heroSection == "1")
                 @if(!empty($heroSectionData['is_video_background']))
-                    <video playsinline autoplay muted loop id="homeHeroVideoBackground" class="img-cover">
+                    @php
+                        $heroVideoPoster = trim((string) ($heroSectionData['hero_video_poster'] ?? ''));
+                        $heroVideoPreload = $heroVideoPoster !== '' ? 'none' : 'metadata';
+                    @endphp
+                    {{-- Poster/thumbnail first; video starts on first user interaction (browser autoplay policy) --}}
+                    <video
+                        id="homeHeroVideoBackground"
+                        class="img-cover"
+                        playsinline
+                        muted
+                        loop
+                        preload="{{ $heroVideoPreload }}"
+                        @if($heroVideoPoster !== '') poster="{{ $heroVideoPoster }}" @endif
+                    >
                         <source src="{{ $heroSectionData['hero_background'] }}" type="video/mp4">
                     </video>
+                    @push('scripts_bottom')
+                        <script>
+                            (function () {
+                                var video = document.getElementById('homeHeroVideoBackground');
+                                if (!video) return;
+                                var unlocked = false;
+                                function startHeroVideoOnInteraction() {
+                                    if (unlocked) return;
+                                    unlocked = true;
+                                    ['pointerdown', 'touchstart', 'keydown', 'wheel'].forEach(function (ev) {
+                                        document.removeEventListener(ev, startHeroVideoOnInteraction, true);
+                                    });
+                                    var playPromise = video.play();
+                                    if (playPromise && typeof playPromise.catch === 'function') {
+                                        playPromise.catch(function () {});
+                                    }
+                                }
+                                ['pointerdown', 'touchstart', 'keydown', 'wheel'].forEach(function (ev) {
+                                    document.addEventListener(ev, startHeroVideoOnInteraction, { capture: true, passive: true });
+                                });
+                            })();
+                        </script>
+                    @endpush
                 @endif
 
                 <div class="mask"></div>
