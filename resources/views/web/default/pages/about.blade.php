@@ -1,6 +1,7 @@
 @extends(getTemplate().'.layouts.app')
 
 @push('styles_top')
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <style>
     /* Styling for the Albyan Gallery */
     .albyan-gallery {

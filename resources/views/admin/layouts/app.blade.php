@@ -10,13 +10,7 @@
     <meta name="theme" content="default">
     <title>{{ $pageTitle ?? '' }} </title>
 
-    <!-- Font Preconnect Hints -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="preconnect" href="https://stackpath.bootstrapcdn.com">
-    <link rel="preconnect" href="https://maxcdn.bootstrapcdn.com">
-    <link rel="preconnect" href="https://connect.facebook.net">
+    {{-- Admin uses local vendor CSS; no third-party preconnect here. --}}
 
     <!-- Font Preload -->
     <link rel="preload" href="https://albyan.institute/store/1/fonts/cairo-regular-webfont.woff2" as="font" type="font/woff2" crossorigin>

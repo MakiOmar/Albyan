@@ -5,11 +5,12 @@
     $gtmIdleTimeout = max(0, (int) config('services.gtm.idle_timeout_ms', 2500));
 @endphp
 @if($gtmEnabled)
-    {{-- Warm connections early; does not block render --}}
+    {{-- dns-prefetch: cheap hint for when gtm.js eventually loads (including idle strategy). --}}
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.google-analytics.com">
-    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
     @if($gtmStrategy === 'eager')
+        {{-- preconnect only when gtm.js runs during initial load (idle-delayed loads trigger "unused preconnect" in Lighthouse). --}}
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
         {{-- Standard async GTM: earliest tag execution (stronger analytics, heavier main thread during load) --}}
         <script>
             (function (w, d, s, l, i) {

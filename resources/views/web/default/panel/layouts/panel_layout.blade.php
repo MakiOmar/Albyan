@@ -11,13 +11,7 @@
     <meta name="theme" content="{{ str_replace('web.', '', getTemplate()) }}">
     <title>{{ $pageTitle ?? '' }}{{ !empty($generalSettings['site_name']) ? (' | '.$generalSettings['site_name']) : '' }}</title>
 
-    <!-- Font Preconnect Hints -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="preconnect" href="https://stackpath.bootstrapcdn.com">
-    <link rel="preconnect" href="https://maxcdn.bootstrapcdn.com">
-    <link rel="preconnect" href="https://connect.facebook.net">
+    {{-- Preconnect only where a matching request exists (my_groups / my_files push cdnjs when needed). --}}
 
     <!-- Font Preload -->
     <link rel="preload" href="https://albyan.institute/store/1/fonts/cairo-regular-webfont.woff2" as="font" type="font/woff2" crossorigin>
