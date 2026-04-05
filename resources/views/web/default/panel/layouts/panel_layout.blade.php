@@ -25,7 +25,7 @@
     <!-- General CSS File -->
     <link href="/assets/default/css/font.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="/assets/default/css/app.min.css?v={{ time() }}">
+    <link rel="stylesheet" href="/assets/default/css/app.min.css">
     <link rel="stylesheet" href="/assets/default/css/panel.min.css">
 
     @if($isRtl)
@@ -169,7 +169,7 @@
 @stack('scripts_bottom')
 
 <script src="/assets/default/js/lazy-css-loader.js"></script>
-<script src="/assets/default/js/image-lazy-loader.js?v={{ time() }}"></script>
+<script src="/assets/default/js/image-lazy-loader.js"></script>
 <script src="/assets/default/js//parts/main.min.js"></script>
 <script src="/assets/default/js/panel/public.min.js"></script>
 <script src="/assets/default/js/parts/content_delete.min.js"></script>

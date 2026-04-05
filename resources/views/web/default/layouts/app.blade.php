@@ -25,7 +25,7 @@
     <link rel="preload" href="https://albyan.institute/store/1/fonts/cairo-regular-webfont.woff2" as="font" type="font/woff2" crossorigin>
 
     <!-- General CSS File -->
-    <link rel="stylesheet" href="/assets/default/css/app.min.css?v={{ time() }}">
+    <link rel="stylesheet" href="/assets/default/css/app.min.css">
 
     @if($isRtl)
         <link rel="stylesheet" href="/assets/default/css/rtl-app.min.css">
@@ -600,7 +600,7 @@
 @stack('scripts_bottom')
 
 <script src="/assets/default/js/lazy-css-loader.js"></script>
-<script src="/assets/default/js/image-lazy-loader.js?v={{ time() }}"></script>
+<script src="/assets/default/js/image-lazy-loader.js"></script>
 <script src="/assets/default/js/parts/main.min.js"></script>
 
 <script>
