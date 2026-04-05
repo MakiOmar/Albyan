@@ -8,7 +8,16 @@
     display: inline-block;
     width: 16px;
     height: 11px;
-    background: url(flags.png) no-repeat
+    background-repeat: no-repeat;
+    /* PNG fallback for browsers without WebP (sprite positions unchanged) */
+    background-image: url(flags.png);
+}
+
+/* WebP sprite: same dimensions & background-position grid as flags.png (~60% smaller). */
+@supports (background-image: url("data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==")) {
+    .flagstrap-icon {
+        background-image: url(flags.webp);
+    }
 }
 
 .flagstrap-placeholder,
