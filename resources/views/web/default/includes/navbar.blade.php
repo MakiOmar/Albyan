@@ -26,7 +26,8 @@
 
             <a class="navbar-brand navbar-order d-flex d-lg-none align-items-center justify-content-center mr-0 {{ (empty($navBtnUrl) and empty($navBtnText)) ? 'ml-auto' : '' }}" href="/">
                 @if(!empty($generalSettings['logo']))
-                    <img src="{{ $generalSettings['logo'] }}" class="img-cover" alt="site logo">
+                    {{-- Match .navbar-brand slot (170x50) for CLS; CSS still controls display --}}
+                    <img src="{{ $generalSettings['logo'] }}" class="img-cover" width="170" height="50" alt="site logo">
                 @endif
             </a>
 
@@ -108,7 +109,8 @@
                                 <li class="nav-item m-1 px-3 d-none d-lg-flex align-items-center">
                                     <a class="navbar-brand d-flex justify-content-center m-0" href="/">
                                         @if(!empty($generalSettings['logo']))
-                                            <img src="{{ $generalSettings['logo'] }}" class="img-cover" style="height: 40px;width:auto" alt="site logo">
+                                            {{-- Same aspect ratio as brand logo, height 40px in CSS --}}
+                                            <img src="{{ $generalSettings['logo'] }}" class="img-cover" width="136" height="40" style="height: 40px;width:auto" alt="site logo">
                                         @endif
                                     </a>
                                 </li>

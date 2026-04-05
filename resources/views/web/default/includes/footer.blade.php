@@ -62,7 +62,8 @@
                 <div class="footer-logo" style="width: auto!important">
                     <a href="/">
                         @if(!empty($generalSettings['footer_logo']))
-                            <img src="{{ $generalSettings['footer_logo'] }}" style="width: auto!important;max-width: 200px!important" alt="footer logo">
+                            {{-- width/height reserve aspect ratio for CLS (max display width 200px via CSS) --}}
+                            <img src="{{ $generalSettings['footer_logo'] }}" width="200" height="59" style="width: auto!important;max-width: 200px!important;height:auto" alt="footer logo">
                         @endif
                     </a>
                 </div>

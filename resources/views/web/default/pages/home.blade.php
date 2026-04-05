@@ -617,7 +617,7 @@
                                     <div class="swiper-slide">
                                        
                                         <div class="testimonials-card light-gray-bg position-relative py-15 py-lg-30 px-10 px-lg-20 rounded-sm text-center">
-                                            <img class="google-icon" src="/store/1/icons/google.png" alt="{{ trans('public.google_icon') }}">
+                                            <img class="google-icon" src="/store/1/icons/google.png" width="24" height="24" alt="{{ trans('public.google_icon') }}">
                                             <div class="d-flex flex-column align-items-center">
                                                 <div class="testimonials-user-avatar">
                                                     <img src="{{ $testimonial->user_avatar }}" alt="{{ $testimonial->user_name }}" class="img-cover rounded-circle">
@@ -672,7 +672,7 @@
                         
                             <div class="d-flex justify-content-center align-items-center">
                                 <div class="ms-2 d-flex">
-                                    <img class="google-icon" src="/store/1/icons/google.png" alt="{{ trans('public.google_icon') }}">
+                                    <img class="google-icon" src="/store/1/icons/google.png" width="24" height="24" alt="{{ trans('public.google_icon') }}">
                                     @include('web.default.includes.webinar.rate',['rate' => $rating_reviews['rating'], 'dontShowRate' => false])
                                 </div>
                             </div>
