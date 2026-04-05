@@ -44,8 +44,7 @@
             @endpush
         @endif
 
-        {{-- Hero image background: URL in data-deferred-bg; applied on first user interaction (see scripts_bottom). --}}
-        <section class="{{ ($heroSection == "2") ? 'slider-hero-section2 ' : '' }}slider-container{{ (empty($heroSectionData['is_video_background']) && !empty($heroSectionData['hero_background'])) ? ' js-deferred-section-bg' : '' }}" @if(empty($heroSectionData['is_video_background']) && !empty($heroSectionData['hero_background'])) data-deferred-bg="{{ $heroSectionData['hero_background'] }}" @endif>
+        <section class="{{ ($heroSection == "2") ? 'slider-hero-section2 ' : '' }}slider-container" @if(empty($heroSectionData['is_video_background'])) style="background-image: url('{{ $heroSectionData['hero_background'] }}')" @endif>
             <h1 class="slider-heading">حفلة تخرج طلاب البيان 2023/2024</h1>
             @if($heroSection == "1")
                 @if(!empty($heroSectionData['is_video_background']))
@@ -1131,7 +1130,7 @@
 @push('scripts_bottom')
     <script>
         (function () {
-            /* Home: section background-images load only after first user interaction (pointer, touch, key, or wheel). */
+            /* Home (non-hero sections): background-images load after first user interaction (pointer, touch, key, or wheel). */
             function applyDeferredSectionBackgrounds() {
                 document.querySelectorAll('.js-deferred-section-bg[data-deferred-bg]').forEach(function (el) {
                     var url = el.getAttribute('data-deferred-bg');
