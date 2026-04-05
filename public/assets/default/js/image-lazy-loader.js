@@ -112,7 +112,7 @@ class ImageLazyLoader {
 
     /** Owl loop clones can copy real src; re-normalize so IO controls load. */
     usesTightLazyRoot(img) {
-        return !!(img.closest && img.closest('.customers-testimonials, .instructors-swiper-container'));
+        return !!(img.closest && img.closest('.customers-testimonials, .instructors-swiper-container, .testimonials-container'));
     }
 
     normalizeCarouselCloneImage(img) {

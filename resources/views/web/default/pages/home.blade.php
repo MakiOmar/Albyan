@@ -642,10 +642,21 @@
                                     <div class="swiper-slide">
                                        
                                         <div class="testimonials-card light-gray-bg position-relative py-15 py-lg-30 px-10 px-lg-20 rounded-sm text-center">
-                                            <img class="google-icon" src="/store/1/icons/google.png" width="24" height="24" alt="{{ trans('public.google_icon') }}">
+                                            {{-- data-src + placeholder: no network fetch during parse; image-lazy-loader (defer) observes when near viewport --}}
+                                            <img class="google-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/store/1/icons/google.png" width="24" height="24" alt="{{ trans('public.google_icon') }}" loading="lazy" decoding="async" fetchpriority="low">
                                             <div class="d-flex flex-column align-items-center">
                                                 <div class="testimonials-user-avatar">
-                                                    <img src="{{ $testimonial->user_avatar }}" alt="{{ $testimonial->user_name }}" class="img-cover rounded-circle">
+                                                    <img
+                                                        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                                                        data-src="{{ $testimonial->user_avatar }}"
+                                                        alt="{{ $testimonial->user_name }}"
+                                                        class="img-cover rounded-circle"
+                                                        width="80"
+                                                        height="80"
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                        fetchpriority="low"
+                                                    >
                                                 </div>
                                                 <h3 class="font-16 font-weight-bold text-secondary mt-30">{{ $testimonial->user_name }}</h3>
                                                 <span class="d-block font-14 text-gray">{{ $testimonial->user_bio }}</span>
