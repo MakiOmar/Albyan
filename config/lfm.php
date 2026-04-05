@@ -208,6 +208,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | WebP conversion (Laravel File Manager uploads)
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, JPEG and PNG files uploaded through LFM are converted to
+    | WebP on the server (GIF is left unchanged to preserve animation).
+    | Requires PHP GD (or compatible) with WebP support (imagewebp).
+    |
+     */
+    'webp' => [
+        'enabled' => env('LFM_WEBP_ENABLED', true),
+        'quality' => (int) env('LFM_WEBP_QUALITY', 82),
+        'convert_extensions' => ['jpg', 'jpeg', 'png'],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | php.ini override
     |--------------------------------------------------------------------------
     |
