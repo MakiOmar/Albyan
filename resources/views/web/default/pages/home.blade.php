@@ -32,52 +32,6 @@
             color: rgba(255, 255, 255, 0.9);
             text-decoration: underline;
         }
-        /* Hero video: click-to-play overlay (thumbnail from hero_background when image URL; else first video frame) */
-        .home-hero-video-play-overlay {
-            position: absolute;
-            inset: 0;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: opacity 0.35s ease, visibility 0.35s ease;
-        }
-        .home-hero-video-play-overlay.is-hidden {
-            pointer-events: none;
-            opacity: 0;
-            visibility: hidden;
-        }
-        .home-hero-video-poster {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            z-index: 0;
-        }
-        .home-hero-video-play-btn {
-            position: relative;
-            z-index: 1;
-            width: 88px;
-            height: 88px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.92);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--secondary, #1f3b64);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .home-hero-video-play-overlay:hover .home-hero-video-play-btn {
-            transform: scale(1.06);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-        }
-        .home-hero-video-play-btn svg {
-            margin-left: 4px;
-        }
     </style>
 @endpush
 
@@ -94,70 +48,9 @@
             <h1 class="slider-heading">حفلة تخرج طلاب البيان 2023/2024</h1>
             @if($heroSection == "1")
                 @if(!empty($heroSectionData['is_video_background']))
-                    @php
-                        $heroBgUrl = $heroSectionData['hero_background'];
-                        $heroVideoFile = trim((string) ($heroSectionData['hero_background_video'] ?? ''));
-                        $heroVideoUrl = $heroVideoFile !== '' ? $heroVideoFile : $heroBgUrl;
-                        $heroThumbPath = parse_url($heroBgUrl, PHP_URL_PATH) ?: $heroBgUrl;
-                        $heroThumbIsImage = (bool) preg_match('/\.(jpe?g|png|gif|webp)(\?|#|$)/i', $heroThumbPath);
-                        $heroVideoPoster = $heroThumbIsImage ? $heroBgUrl : '';
-                    @endphp
-                    {{-- Thumbnail uses hero_background (image URL, or first frame when hero_background is the MP4) --}}
-                    <video
-                        playsinline
-                        muted
-                        loop
-                        id="homeHeroVideoBackground"
-                        class="img-cover"
-                        preload="metadata"
-                        @if(!empty($heroVideoPoster)) poster="{{ $heroVideoPoster }}" @endif
-                    >
-                        <source src="{{ $heroVideoUrl }}" type="video/mp4">
+                    <video playsinline autoplay muted loop id="homeHeroVideoBackground" class="img-cover">
+                        <source src="{{ $heroSectionData['hero_background'] }}" type="video/mp4">
                     </video>
-                    <div
-                        id="homeHeroVideoPlayOverlay"
-                        class="home-hero-video-play-overlay"
-                        role="button"
-                        tabindex="0"
-                        aria-label="{{ trans('update.play_hero_video') }}"
-                    >
-                        @if($heroThumbIsImage)
-                            {{-- Poster image from hero_background setting --}}
-                            <img src="{{ $heroBgUrl }}" alt="" class="home-hero-video-poster" width="1920" height="1080" loading="eager">
-                        @endif
-                        <span class="home-hero-video-play-btn" aria-hidden="true">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor" focusable="false">
-                                <path d="M8 5v14l11-7z"/>
-                            </svg>
-                        </span>
-                    </div>
-                    @push('scripts_bottom')
-                        <script>
-                            (function () {
-                                var video = document.getElementById('homeHeroVideoBackground');
-                                var overlay = document.getElementById('homeHeroVideoPlayOverlay');
-                                if (!video || !overlay) return;
-                                function playHeroVideo() {
-                                    overlay.classList.add('is-hidden');
-                                    overlay.setAttribute('aria-hidden', 'true');
-                                    var p = video.play();
-                                    if (p && typeof p.catch === 'function') {
-                                        p.catch(function () {
-                                            overlay.classList.remove('is-hidden');
-                                            overlay.removeAttribute('aria-hidden');
-                                        });
-                                    }
-                                }
-                                overlay.addEventListener('click', playHeroVideo);
-                                overlay.addEventListener('keydown', function (e) {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                        e.preventDefault();
-                                        playHeroVideo();
-                                    }
-                                });
-                            })();
-                        </script>
-                    @endpush
                 @endif
 
                 <div class="mask"></div>
