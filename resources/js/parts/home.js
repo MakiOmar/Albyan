@@ -166,7 +166,13 @@
         });
     });
 
-    $('.instructors-swiper-container').owlCarousel({
+    var $instructorsOwl = $('.instructors-swiper-container');
+    $instructorsOwl.on('initialized.owl.carousel', function () {
+        if (window.imageLazyLoader && typeof window.imageLazyLoader.refresh === 'function') {
+            window.imageLazyLoader.refresh();
+        }
+    });
+    $instructorsOwl.owlCarousel({
         loop: true,
         center: true,
         items: 3,

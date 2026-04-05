@@ -1023,8 +1023,19 @@
                                 <div class="item">
                                     <div class="shadow-effect light-gray-bg">
                                         <div class="instructors-card d-flex flex-column align-items-center justify-content-center">
+                                            {{-- data-src + tiny placeholder: avoids network fetch during HTML parse (defer lazy-loader runs too late for raw src). --}}
                                             <div class="instructors-card-avatar">
-                                                <img src="{{ $instructor->getAvatar(108) }}" alt="{{ $instructor->full_name }}" class="rounded-circle img-cover">
+                                                <img
+                                                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                                                    data-src="{{ $instructor->getAvatar(108) }}"
+                                                    alt="{{ $instructor->full_name }}"
+                                                    class="rounded-circle img-cover"
+                                                    width="108"
+                                                    height="108"
+                                                    loading="lazy"
+                                                    decoding="async"
+                                                    fetchpriority="low"
+                                                >
                                             </div>
                                             <div class="instructors-card-info mt-10 text-center">
                                                 <a href="{{ $instructor->getProfileUrl() }}" target="_blank">

@@ -11,7 +11,9 @@
 class ImageLazyLoader {
     constructor() {
         this.observer = null;
+        this.observerTight = null;
         this.loadedImages = new Set();
+        this.placeholderSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         this.init();
     }
 
@@ -54,11 +56,14 @@ class ImageLazyLoader {
                     if (node.nodeType === 1) { // Element node
                         if (node.tagName === 'IMG') {
                             this.fixSingleImage(node);
+                            this.normalizeCarouselCloneImage(node);
                         }
-                        // Check for images within added nodes
                         const images = node.querySelectorAll && node.querySelectorAll('img');
                         if (images) {
-                            images.forEach(img => this.fixSingleImage(img));
+                            images.forEach((img) => {
+                                this.fixSingleImage(img);
+                                this.normalizeCarouselCloneImage(img);
+                            });
                         }
                     }
                 });
@@ -72,24 +77,76 @@ class ImageLazyLoader {
     }
 
     setupIntersectionObserver() {
-        const options = {
+        const looseOpts = {
             root: null,
             rootMargin: '50px',
             threshold: 0.1
         };
+        const tightOpts = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.01
+        };
 
-        this.observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+        const handle = (entries, obs) => {
+            entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     const img = entry.target;
+                    obs.unobserve(img);
+                    if (this.observer) {
+                        this.observer.unobserve(img);
+                    }
+                    if (this.observerTight) {
+                        this.observerTight.unobserve(img);
+                    }
                     this.loadImage(img);
-                    this.observer.unobserve(img);
                 }
             });
-        }, options);
+        };
 
-        // Observe all lazy images
+        this.observer = new IntersectionObserver((entries) => handle(entries, this.observer), looseOpts);
+        this.observerTight = new IntersectionObserver((entries) => handle(entries, this.observerTight), tightOpts);
+
         this.observeImages();
+    }
+
+    /** Owl loop clones can copy real src; re-normalize so IO controls load. */
+    usesTightLazyRoot(img) {
+        return !!(img.closest && img.closest('.customers-testimonials, .instructors-swiper-container'));
+    }
+
+    normalizeCarouselCloneImage(img) {
+        if (!img || img.tagName !== 'IMG' || !this.usesTightLazyRoot(img)) {
+            return;
+        }
+        if (img.dataset && img.dataset.noLazy === 'true') {
+            return;
+        }
+        const src = img.getAttribute('src') || '';
+        if (!src || src === this.placeholderSrc || src.includes('data:image/gif')) {
+            if (img.dataset.src && !this.loadedImages.has(img.dataset.src)) {
+                if (this.observerTight && this.usesTightLazyRoot(img)) {
+                    this.observerTight.observe(img);
+                } else if (this.observer) {
+                    this.observer.observe(img);
+                }
+            }
+            return;
+        }
+        if (img.dataset.src && img.dataset.src === src) {
+            img.src = this.placeholderSrc;
+            return;
+        }
+        if (!img.dataset.src) {
+            img.dataset.src = src;
+        }
+        img.src = this.placeholderSrc;
+        img.classList.add('lazy-loading');
+        if (this.observerTight && img.dataset.src && !this.loadedImages.has(img.dataset.src)) {
+            this.observerTight.observe(img);
+        } else if (this.observer && img.dataset.src && !this.loadedImages.has(img.dataset.src)) {
+            this.observer.observe(img);
+        }
     }
 
     observeImages() {
@@ -145,7 +202,11 @@ class ImageLazyLoader {
             
             // Only observe if we have a data-src and haven't loaded it yet
             if (img.dataset.src && !this.loadedImages.has(img.dataset.src)) {
-                this.observer.observe(img);
+                if (this.observerTight && this.usesTightLazyRoot(img)) {
+                    this.observerTight.observe(img);
+                } else if (this.observer) {
+                    this.observer.observe(img);
+                }
             }
         });
     }
@@ -165,6 +226,9 @@ class ImageLazyLoader {
         }
 
         if (this.loadedImages.has(img.dataset.src)) {
+            img.src = img.dataset.src;
+            img.classList.remove('lazy-loading');
+            img.classList.add('lazy-loaded');
             return;
         }
 
@@ -335,7 +399,7 @@ class ImageLazyLoader {
 
     // Public method to refresh lazy loading for dynamically added images
     refresh() {
-        if (this.observer) {
+        if (this.observer || this.observerTight) {
             this.observeImages();
         } else {
             this.fallbackLazyLoad();
@@ -379,23 +443,21 @@ class ImageLazyLoader {
     }
 }
 
-// Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    window.imageLazyLoader = new ImageLazyLoader();
-    
-    // Add global method to retry failed images
-    window.retryFailedImages = () => {
-        if (window.imageLazyLoader) {
-            window.imageLazyLoader.retryFailedImages();
-        }
-    };
-});
+window.retryFailedImages = () => {
+    if (window.imageLazyLoader) {
+        window.imageLazyLoader.retryFailedImages();
+    }
+};
 
-// Also initialize if DOM is already loaded
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        window.imageLazyLoader = new ImageLazyLoader();
-    });
-} else {
+function initImageLazyLoaderOnce() {
+    if (window.imageLazyLoader) {
+        return;
+    }
     window.imageLazyLoader = new ImageLazyLoader();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initImageLazyLoaderOnce);
+} else {
+    initImageLazyLoaderOnce();
 }
