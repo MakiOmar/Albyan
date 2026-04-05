@@ -7,7 +7,8 @@
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
         "prod": "npm run production",
-        "production": "mix --production"
+        "production": "mix --production",
+        "sync-vendors": "node scripts/sync-public-vendors.js"
     },
     "devDependencies": {
         "axios": "^1.1.2",
@@ -28,6 +29,7 @@
         "agora-rtc-sdk": "^3.6.11",
         "agora-rtm-sdk": "^1.4.3-203",
         "feather-icons": "^4.28.0",
+        "simplebar": "^6.3.3",
         "sweetalert2": "^9.17.1"
     }
 }
