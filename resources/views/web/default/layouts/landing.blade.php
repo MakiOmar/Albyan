@@ -38,8 +38,10 @@
             width: 100%;
         }
     </style>
+    @include('web.default.includes.gtm_head')
 </head>
 <body class="{{ $isRtl ? 'rtl' : '' }}">
+    @include('web.default.includes.gtm_noscript')
 <div class="landing-page-wrap">
     <div class="landing-page-content">
         @yield('content')

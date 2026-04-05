@@ -525,18 +525,16 @@
             }
         }
     </style>
+
+    @include('web.default.includes.gtm_head')
     
 </head>
 
 <body class="@if($isRtl) rtl @endif">
     <!-- This site is converting visitors into subscribers and customers with https://respond.io -->
     <!--<script id="respondio__widget" src="https://cdn.respond.io/webchat/widget/widget.js?cId=63dbb8bd5ba43dbcf09b1bfc5df85fd"></script>--><!-- https://respond.io -->
-    
-    
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NB3BZ2JT"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+
+    @include('web.default.includes.gtm_noscript')
 <div id="app" class="{{ (!empty($floatingBar) and $floatingBar->position == 'top' and $floatingBar->fixed) ? 'has-fixed-top-floating-bar' : '' }}">
     @if(!empty($floatingBar) and $floatingBar->position == 'top')
         @include('web.default.includes.floating_bar')

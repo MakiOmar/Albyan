@@ -72,4 +72,23 @@ return [
         'base_url'  => env('WORDPRESS_SYNC_BASE_URL'),
         'api_token' => env('WORDPRESS_SYNC_API_TOKEN'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Google Tag Manager
+    |--------------------------------------------------------------------------
+    |
+    | container_id: e.g. GTM-XXXXXXX
+    | load_strategy:
+    |   - idle (default): inject gtm.js after window load + requestIdleCallback — better PageSpeed,
+    |     tags fire within idle_timeout_ms. dataLayer exists immediately for early pushes.
+    |   - eager: official async snippet in <head> — best for capturing fastest bounces / earliest hits.
+    |
+    */
+    'gtm' => [
+        'enabled' => filter_var(env('GTM_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+        'container_id' => env('GTM_CONTAINER_ID', 'GTM-NB3BZ2JT'),
+        'load_strategy' => env('GTM_LOAD_STRATEGY', 'idle'),
+        'idle_timeout_ms' => (int) env('GTM_IDLE_TIMEOUT_MS', 2500),
+    ],
 ];
