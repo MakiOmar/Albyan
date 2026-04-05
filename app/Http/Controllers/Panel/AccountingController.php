@@ -132,7 +132,7 @@ class AccountingController extends Controller
         ];
 
         if (!empty($request->file('attachment'))) {
-            $rules['attachment'] = 'image|mimes:jpeg,png,jpg|max:10240';
+            $rules['attachment'] = 'image|mimes:jpeg,png,jpg,webp|max:10240';
         }
 
         $this->validate($request, $rules);
@@ -313,7 +313,7 @@ class AccountingController extends Controller
             ];
 
             if (!empty($request->file('attachment'))) {
-                $rules['attachment'] = 'image|mimes:jpeg,png,jpg|max:10240';
+                $rules['attachment'] = 'image|mimes:jpeg,png,jpg,webp|max:10240';
             }
 
             $this->validate($request, $rules);

@@ -63,6 +63,7 @@ return [
                 'image/pjpeg',
                 'image/png',
                 'image/gif',
+                'image/webp',
                 'image/svg+xml', // 'svg'
                 'application/pdf', // 'pdf'
                 'application/msword', // 'doc'
@@ -95,6 +96,7 @@ return [
                 'image/pjpeg',
                 'image/png',
                 'image/gif',
+                'image/webp',
                 'image/svg+xml', // 'svg'
                 'application/pdf', // 'pdf'
                 'application/msword', // 'doc'
@@ -175,6 +177,7 @@ return [
         'image/jpeg',
         'image/pjpeg',
         'image/png',
+        'image/webp',
     ],
 
     'thumb_img_width' => 200, // px
@@ -198,6 +201,7 @@ return [
         'jpg' => 'JPEG Image',
         'jpeg' => 'JPEG Image',
         'png' => 'PNG Image',
+        'webp' => 'WebP Image',
         'ppt' => 'Microsoft PowerPoint',
         'pptx' => 'Microsoft PowerPoint',
     ],
