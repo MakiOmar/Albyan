@@ -47,9 +47,7 @@
             text-decoration: underline;
         }
     </style>
-    {{-- Carousel CSS in head: parallel with app CSS, avoids a long JS→CSS chain; lazy-css-loader dedupes --}}
-    <link rel="stylesheet" href="/assets/default/vendors/swiper/swiper-bundle.min.css">
-    <link rel="stylesheet" href="/assets/default/vendors/owl-carousel2/owl.carousel.min.css">
+    {{-- Swiper / Owl CSS: non–render-blocking; injected on first user interaction or when home carousel libs start (lazy-css-loader) --}}
 @endpush
 
 @section('content')
@@ -1254,7 +1252,16 @@
                     return;
                 }
                 started = true;
-                loadScriptChain(0);
+                /* Async vendor CSS (not render-blocking), then script chain — order Swiper/Owl before home.min.js */
+                var loader = window.lazyCSSLoader;
+                var runChain = function () {
+                    loadScriptChain(0);
+                };
+                if (loader && typeof loader.loadMultipleCSS === 'function') {
+                    loader.loadMultipleCSS(['swiper', 'owl-carousel']).then(runChain).catch(runChain);
+                } else {
+                    runChain();
+                }
             }
             var probe = document.querySelector('.swiper-container, .owl-carousel');
             if (!probe) {

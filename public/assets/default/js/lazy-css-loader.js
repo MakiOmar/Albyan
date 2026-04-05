@@ -7,6 +7,7 @@ class LazyCSSLoader {
     constructor() {
         this.loadedCSS = new Set();
         this.pendingCSS = new Map();
+        this._vendorCssCallbacks = {};
         this.theme = this.detectTheme();
         this.isRtl = this.detectRtl();
         this.init();
@@ -81,14 +82,11 @@ class LazyCSSLoader {
         // Toast - Load on any form submission or action that might show toasts
         this.setupToastListeners();
         
-        // Swiper - Load when swiper containers are in viewport
-        this.setupSwiperListeners();
+        // Swiper + Owl Carousel CSS: first user interaction only (not render-blocking)
+        this.setupCarouselVendorCSSOnInteraction();
         
         // SimpleBar - Load when scrollable containers are detected
         this.setupSimpleBarListeners();
-        
-        // Owl Carousel - Load when carousel containers are in viewport
-        this.setupOwlCarouselListeners();
     }
 
     setupSweetAlert2Listeners() {
@@ -115,22 +113,91 @@ class LazyCSSLoader {
         }
     }
 
-    setupSwiperListeners() {
-        // Load Swiper CSS only when a swiper nears the viewport (avoids blocking critical path on first paint)
-        const swiperContainers = document.querySelectorAll('.swiper, [data-swiper], .swiper-container');
-        if (!swiperContainers.length) {
+    /**
+     * Load Swiper / Owl vendor CSS after first user gesture (scroll, wheel, touch, pointer, key, click).
+     * Page scripts should defer Swiper/Owl init via onVendorCssReady() until this runs.
+     */
+    setupCarouselVendorCSSOnInteraction() {
+        const needSwiper = document.querySelector('.swiper, [data-swiper], .swiper-container');
+        const needOwl = document.querySelector('.owl-carousel, [data-owl-carousel]');
+        if (!needSwiper && !needOwl) {
             return;
         }
-        const observer = new IntersectionObserver((entries) => {
-            for (const entry of entries) {
-                if (entry.isIntersecting) {
-                    this.loadCSSWithFallback('swiper');
-                    observer.disconnect();
-                    return;
-                }
+
+        let fired = false;
+        const events = ['scroll', 'wheel', 'touchstart', 'pointerdown', 'keydown', 'click'];
+        const opts = { passive: true };
+
+        const cleanup = () => {
+            events.forEach((ev) => {
+                window.removeEventListener(ev, onInteract, opts);
+                document.removeEventListener(ev, onInteract, opts);
+            });
+        };
+
+        const onInteract = () => {
+            if (fired) {
+                return;
             }
-        }, { rootMargin: '320px 0px', threshold: 0.01 });
-        swiperContainers.forEach((container) => observer.observe(container));
+            fired = true;
+            cleanup();
+            const promises = [];
+            if (needSwiper) {
+                promises.push(this.loadCSSWithFallback('swiper'));
+            }
+            if (needOwl) {
+                promises.push(this.loadCSSWithFallback('owl-carousel'));
+            }
+            Promise.all(promises).catch(() => {});
+        };
+
+        events.forEach((ev) => {
+            window.addEventListener(ev, onInteract, opts);
+            document.addEventListener(ev, onInteract, opts);
+        });
+    }
+
+    /** True if swiper or owl-carousel stylesheet is already present or loaded. */
+    isVendorCssReady(vendorKey) {
+        const href = this.getCSSPath(vendorKey, true);
+        return this.loadedCSS.has(href) || this.isStylesheetPresent(href);
+    }
+
+    /**
+     * Run callback after vendor carousel CSS is available (already loaded or after interaction load).
+     * Use from page scripts so Swiper/Owl init runs with styles applied.
+     */
+    onVendorCssReady(vendorKey, callback) {
+        if (typeof callback !== 'function') {
+            return;
+        }
+        if (this.isVendorCssReady(vendorKey)) {
+            try {
+                callback();
+            } catch (e) {
+                console.error(e);
+            }
+            return;
+        }
+        if (!this._vendorCssCallbacks[vendorKey]) {
+            this._vendorCssCallbacks[vendorKey] = [];
+        }
+        this._vendorCssCallbacks[vendorKey].push(callback);
+    }
+
+    _flushVendorCallbacks(vendorKey) {
+        const q = this._vendorCssCallbacks[vendorKey];
+        if (!q || !q.length) {
+            return;
+        }
+        const cbs = q.splice(0, q.length);
+        cbs.forEach((cb) => {
+            try {
+                cb();
+            } catch (e) {
+                console.error(e);
+            }
+        });
     }
 
     setupSimpleBarListeners() {
@@ -148,23 +215,6 @@ class LazyCSSLoader {
             }
         }, { rootMargin: '160px 0px', threshold: 0.01 });
         scrollableContainers.forEach((c) => observer.observe(c));
-    }
-
-    setupOwlCarouselListeners() {
-        const carouselContainers = document.querySelectorAll('.owl-carousel, [data-owl-carousel], .carousel');
-        if (!carouselContainers.length) {
-            return;
-        }
-        const observer = new IntersectionObserver((entries) => {
-            for (const entry of entries) {
-                if (entry.isIntersecting) {
-                    this.loadCSSWithFallback('owl-carousel');
-                    observer.disconnect();
-                    return;
-                }
-            }
-        }, { rootMargin: '320px 0px', threshold: 0.01 });
-        carouselContainers.forEach((container) => observer.observe(container));
     }
 
     mightTriggerAlert(element) {
@@ -194,31 +244,26 @@ class LazyCSSLoader {
     }
 
     loadCSS(href, fallbackHref = null) {
-        // Don't load if already loaded or loading
-        if (this.loadedCSS.has(href) || this.pendingCSS.has(href)) {
+        if (this.loadedCSS.has(href)) {
             return Promise.resolve();
+        }
+        if (this.pendingCSS.has(href)) {
+            return this.pendingCSS.get(href);
         }
         if (this.isStylesheetPresent(href)) {
             this.loadedCSS.add(href);
             return Promise.resolve();
         }
 
-        // Mark as pending
-        this.pendingCSS.set(href, true);
-
-        return new Promise((resolve, reject) => {
+        const promise = new Promise((resolve, reject) => {
             const link = document.createElement('link');
             link.rel = 'stylesheet';
             link.href = href;
             link.onload = () => {
                 this.loadedCSS.add(href);
-                this.pendingCSS.delete(href);
                 resolve();
             };
             link.onerror = () => {
-                this.pendingCSS.delete(href);
-                
-                // Try fallback if provided
                 if (fallbackHref && !this.loadedCSS.has(fallbackHref)) {
                     console.warn(`Failed to load CSS: ${href}, trying fallback: ${fallbackHref}`);
                     this.loadCSS(fallbackHref).then(resolve).catch(reject);
@@ -229,6 +274,15 @@ class LazyCSSLoader {
 
             document.head.appendChild(link);
         });
+
+        this.pendingCSS.set(href, promise);
+        promise.finally(() => {
+            if (this.pendingCSS.get(href) === promise) {
+                this.pendingCSS.delete(href);
+            }
+        });
+
+        return promise;
     }
 
     loadCSSWithFallback(cssFile) {
@@ -236,7 +290,13 @@ class LazyCSSLoader {
         const themePath = this.getCSSPath(cssFile, true);
         const fallbackPath = this.getCSSPath(cssFile, true).replace(`/assets/${this.theme}/`, '/assets/default/');
         
-        return this.loadCSS(themePath, fallbackPath);
+        return this.loadCSS(themePath, fallbackPath)
+            .then(() => {
+                this._flushVendorCallbacks(cssFile);
+            })
+            .catch(() => {
+                this._flushVendorCallbacks(cssFile);
+            });
     }
 
     // Public method to manually load CSS
@@ -274,16 +334,5 @@ class LazyCSSLoader {
     // as they contain critical styles needed for initial page render
 }
 
-// Initialize the lazy CSS loader when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    window.lazyCSSLoader = new LazyCSSLoader();
-});
-
-// Also initialize immediately if DOM is already ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        window.lazyCSSLoader = new LazyCSSLoader();
-    });
-} else {
-    window.lazyCSSLoader = new LazyCSSLoader();
-}
+// Single init: script runs at end of body after parse; DOM is ready enough for querySelector probes
+window.lazyCSSLoader = new LazyCSSLoader();

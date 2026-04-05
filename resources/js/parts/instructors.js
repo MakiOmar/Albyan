@@ -1,51 +1,59 @@
 (function ($) {
     "use strict";
 
-    new Swiper('#bestRateInstructorsSwiper', {
-        slidesPerView: 1,
-        spaceBetween: 16,
-        loop: false,
-        autoplay: {
-            delay: 5000,
-            disableOnInteraction: false,
-        },
-        pagination: {
-            el: '.best-rate-swiper-pagination',
-            clickable: true,
-        },
-        breakpoints: {
-            991: {
-                slidesPerView: 3,
+    function initInstructorsSwipers() {
+        new Swiper('#bestRateInstructorsSwiper', {
+            slidesPerView: 1,
+            spaceBetween: 16,
+            loop: false,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
             },
+            pagination: {
+                el: '.best-rate-swiper-pagination',
+                clickable: true,
+            },
+            breakpoints: {
+                991: {
+                    slidesPerView: 3,
+                },
 
-            660: {
-                slidesPerView: 2,
-            },
-        }
-    });
+                660: {
+                    slidesPerView: 2,
+                },
+            }
+        });
 
-    new Swiper('#topSaleInstructorsSwiper', {
-        slidesPerView: 1,
-        spaceBetween: 16,
-        loop: false,
-        autoplay: {
-            delay: 5000,
-            disableOnInteraction: false,
-        },
-        pagination: {
-            el: '.best-sale-swiper-pagination',
-            clickable: true,
-        },
-        breakpoints: {
-            991: {
-                slidesPerView: 3,
+        new Swiper('#topSaleInstructorsSwiper', {
+            slidesPerView: 1,
+            spaceBetween: 16,
+            loop: false,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
             },
+            pagination: {
+                el: '.best-sale-swiper-pagination',
+                clickable: true,
+            },
+            breakpoints: {
+                991: {
+                    slidesPerView: 3,
+                },
 
-            660: {
-                slidesPerView: 2,
-            },
-        }
-    });
+                660: {
+                    slidesPerView: 2,
+                },
+            }
+        });
+    }
+
+    if (window.lazyCSSLoader && typeof window.lazyCSSLoader.onVendorCssReady === 'function') {
+        window.lazyCSSLoader.onVendorCssReady('swiper', initInstructorsSwipers);
+    } else {
+        initInstructorsSwipers();
+    }
 
     var loadMoreInstructors = {
         page: 1,

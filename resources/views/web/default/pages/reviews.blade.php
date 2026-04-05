@@ -145,42 +145,51 @@
     <script src="/assets/default/vendors/swiper/swiper-bundle.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            var swiper = new Swiper(".albyan-gallery .mySwiper", {
-                slidesPerView: 1,
-                spaceBetween: 10,
-                pagination: {
-                    el: ".albyan-gallery .swiper-pagination",
-                    clickable: true,
-                },
-                navigation: {
-                    nextEl: ".albyan-gallery .swiper-button-next",
-                    prevEl: ".albyan-gallery .swiper-button-prev",
-                },
-                breakpoints: {
-                    640: { slidesPerView: 1, spaceBetween: 10 },  // Mobile: 1 slide
-                    768: { slidesPerView: 2, spaceBetween: 20 },  // Tablet: 2 slides
-                    1024: { slidesPerView: 4, spaceBetween: 30 }  // Desktop: 4 slides
-                }
-            });
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            var swiper = new Swiper(".testimonials-swiper", {
-                slidesPerView: 1,
-                spaceBetween: 10,
-                pagination: {
-                    el: ".testimonials-swiper-pagination",
-                    clickable: true,
-                },
-                navigation: {
-                    nextEl: ".testimonials-swiper .swiper-button-next",
-                    prevEl: ".testimonials-swiper .swiper-button-prev",
-                },
-                breakpoints: {
-                    640: { slidesPerView: 1, spaceBetween: 10 },  // Mobile: 1 slide
-                    768: { slidesPerView: 2, spaceBetween: 20 },  // Tablet: 2 slides
-                    1024: { slidesPerView: 3, spaceBetween: 30 }  // Desktop: 4 slides
-                }
-            });
+            function initReviewsGallerySwiper() {
+                new Swiper(".albyan-gallery .mySwiper", {
+                    slidesPerView: 1,
+                    spaceBetween: 10,
+                    pagination: {
+                        el: ".albyan-gallery .swiper-pagination",
+                        clickable: true,
+                    },
+                    navigation: {
+                        nextEl: ".albyan-gallery .swiper-button-next",
+                        prevEl: ".albyan-gallery .swiper-button-prev",
+                    },
+                    breakpoints: {
+                        640: { slidesPerView: 1, spaceBetween: 10 },
+                        768: { slidesPerView: 2, spaceBetween: 20 },
+                        1024: { slidesPerView: 4, spaceBetween: 30 }
+                    }
+                });
+            }
+            function initReviewsTestimonialsSwiper() {
+                new Swiper(".testimonials-swiper", {
+                    slidesPerView: 1,
+                    spaceBetween: 10,
+                    pagination: {
+                        el: ".testimonials-swiper-pagination",
+                        clickable: true,
+                    },
+                    navigation: {
+                        nextEl: ".testimonials-swiper .swiper-button-next",
+                        prevEl: ".testimonials-swiper .swiper-button-prev",
+                    },
+                    breakpoints: {
+                        640: { slidesPerView: 1, spaceBetween: 10 },
+                        768: { slidesPerView: 2, spaceBetween: 20 },
+                        1024: { slidesPerView: 3, spaceBetween: 30 }
+                    }
+                });
+            }
+            if (window.lazyCSSLoader && typeof window.lazyCSSLoader.onVendorCssReady === 'function') {
+                window.lazyCSSLoader.onVendorCssReady('swiper', initReviewsGallerySwiper);
+                window.lazyCSSLoader.onVendorCssReady('swiper', initReviewsTestimonialsSwiper);
+            } else {
+                initReviewsGallerySwiper();
+                initReviewsTestimonialsSwiper();
+            }
         });
     </script>
 @endpush

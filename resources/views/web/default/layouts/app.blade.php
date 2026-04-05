@@ -608,7 +608,7 @@
 @include('web.default.includes.purchase_notifications')
 
 @stack('styles_bottom')
-{{-- Lazy CSS before page-specific scripts so vendor CSS can load before carousel JS when needed --}}
+{{-- Lazy CSS before page scripts: Swiper/Owl CSS load on interaction; onVendorCssReady queues init until then --}}
 <script src="/assets/default/js/lazy-css-loader.js"></script>
 @stack('scripts_bottom')
 
