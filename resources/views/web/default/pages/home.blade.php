@@ -47,6 +47,15 @@
             text-decoration: underline;
         }
     </style>
+    {{-- LCP: poster discoverable in initial HTML + high fetch priority (video#homeHeroVideoBackground) --}}
+    @if(!empty($heroSectionData) && !empty($heroSectionData['is_video_background']))
+        @php
+            $__homeHeroPoster = trim((string) ($heroSectionData['hero_video_poster'] ?? ''));
+        @endphp
+        @if($__homeHeroPoster !== '')
+            <link rel="preload" as="image" href="{{ $__homeHeroPoster }}" fetchpriority="high">
+        @endif
+    @endif
     {{-- Swiper / Owl CSS: non–render-blocking; injected on first user interaction or when home carousel libs start (lazy-css-loader) --}}
 @endpush
 
@@ -75,6 +84,7 @@
                         muted
                         loop
                         preload="{{ $heroVideoPreload }}"
+                        fetchpriority="high"
                         @if($heroVideoPoster !== '') poster="{{ $heroVideoPoster }}" @endif
                     >
                         <source src="{{ $heroSectionData['hero_background'] }}" type="video/mp4">
