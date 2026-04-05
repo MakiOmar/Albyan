@@ -1142,6 +1142,9 @@ return [
 // Misc
 'is_video_background' => 'تمكين خلفية الفيديو',
 'is_video_background_hint' => 'إذا كنت تريد استخدام خلفية فيديو، تحتاج لرفع ملف MP4 للخلفية وتمكين هذا الخيار.',
+'hero_background_video' => 'ملف فيديو البطل (MP4)',
+'hero_background_video_hint' => 'اختياري. ضع صورة المعاينة في حقل خلفية البطل والصق رابط ملف MP4 هنا. اتركه فارغًا إذا كان حقل الخلفية هو ملف MP4 نفسه (ستُعرض أول إطار حتى التشغيل).',
+'play_hero_video' => 'تشغيل فيديو الخلفية',
 
 'class_has_started' => 'بدأت الحصة',
 'show_other_register_method' => 'عرض حقل تسجيل بديل',

@@ -1142,6 +1142,9 @@ return [
 // Misc
 'is_video_background' => 'Enable Video Background',
 'is_video_background_hint' => 'If you want to use a video background, you need to upload an MP4 file for the background and enable this toggle.',
+'hero_background_video' => 'Archivo de vídeo del héroe (MP4)',
+'hero_background_video_hint' => 'Opcional. Use la imagen de póster en «Fondo del héroe» y pegue aquí la URL del MP4. Déjelo vacío si el fondo ya es el archivo MP4 (la miniatura será el primer fotograma hasta reproducir).',
+'play_hero_video' => 'Reproducir vídeo de fondo',
 
 'class_has_started' => 'Class has started',
 'show_other_register_method' => 'Display alternative registration input field',
