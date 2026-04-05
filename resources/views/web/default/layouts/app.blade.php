@@ -610,11 +610,12 @@
 @include('web.default.includes.purchase_notifications')
 
 @stack('styles_bottom')
+{{-- Lazy CSS before page-specific scripts so vendor CSS can load before carousel JS when needed --}}
+<script src="/assets/default/js/lazy-css-loader.js"></script>
 @stack('scripts_bottom')
 
-<script src="/assets/default/js/lazy-css-loader.js"></script>
-<script src="/assets/default/js/image-lazy-loader.js"></script>
-<script src="/assets/default/js/parts/main.min.js"></script>
+<script src="/assets/default/js/image-lazy-loader.js" defer></script>
+<script src="/assets/default/js/parts/main.min.js" defer></script>
 
 <script>
     @if(session()->has('registration_package_limited'))

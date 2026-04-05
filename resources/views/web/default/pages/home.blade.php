@@ -47,6 +47,9 @@
             text-decoration: underline;
         }
     </style>
+    {{-- Carousel CSS in head: parallel with app CSS, avoids a long JS→CSS chain; lazy-css-loader dedupes --}}
+    <link rel="stylesheet" href="/assets/default/vendors/swiper/swiper-bundle.min.css">
+    <link rel="stylesheet" href="/assets/default/vendors/owl-carousel2/owl.carousel.min.css">
 @endpush
 
 @section('content')
@@ -1171,23 +1174,10 @@
             });
         })();
     </script>
-    <script src="/assets/default/vendors/swiper/swiper-bundle.min.js"></script>
-    <script src="/assets/default/vendors/owl-carousel2/owl.carousel.min.js"></script>
-    <script src="/assets/default/vendors/parallax/parallax.min.js"></script>
-    <script src="/assets/default/js/parts/home.min.js"></script>
     <script>
-        // Fix owl carousel dot buttons accessibility
-        $(document).ready(function() {
-            // Add aria-labels to owl carousel dot buttons after initialization
-            setTimeout(function() {
-                $('.owl-dots .owl-dot').each(function(index) {
-                    $(this).attr('aria-label', '{{ trans("public.go_to_slide") }} ' + (index + 1));
-                });
-            }, 1000);
-        });
-        
+        /* Used by testimonial "show more" buttons in markup */
         function toggleText(button) {
-            let hiddenText = button.previousElementSibling;
+            var hiddenText = button.previousElementSibling;
             if (hiddenText.classList.contains('d-none')) {
                 hiddenText.classList.remove('d-none');
                 button.textContent = "... إغلاق";
@@ -1196,36 +1186,100 @@
                 button.textContent = "... عرض المزيد";
             }
         }
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll(".swiper-slide").forEach(slide => {
-                slide.addEventListener("click", function () {
-                    let showMoreBtn = this.querySelector(".show-more-btn");
-                    if (showMoreBtn) {
-                        showMoreBtn.click();
+        (function () {
+            var carouselUrls = [
+                '/assets/default/vendors/swiper/swiper-bundle.min.js',
+                '/assets/default/vendors/owl-carousel2/owl.carousel.min.js',
+                '/assets/default/vendors/parallax/parallax.min.js',
+                '/assets/default/js/parts/home.min.js'
+            ];
+            var started = false;
+            function afterHomeLibs() {
+                document.querySelectorAll('.swiper-slide').forEach(function (slide) {
+                    slide.addEventListener('click', function () {
+                        var showMoreBtn = this.querySelector('.show-more-btn');
+                        if (showMoreBtn) {
+                            showMoreBtn.click();
+                        }
+                    });
+                });
+                $(document).ready(function () {
+                    window.setTimeout(function () {
+                        $('.owl-dots .owl-dot').each(function (index) {
+                            $(this).attr('aria-label', '{{ trans("public.go_to_slide") }} ' + (index + 1));
+                        });
+                    }, 1200);
+                });
+                $(function () {
+                    var $accordion = $('#homeFaqAccordion');
+                    if (!$accordion.length || typeof feather === 'undefined') {
+                        return;
                     }
+                    function setChevron($btn, isOpen) {
+                        var $chevron = $btn.find('.js-faq-chevron');
+                        if (!$chevron.length) {
+                            return;
+                        }
+                        $chevron.attr('data-feather', isOpen ? 'chevron-up' : 'chevron-down');
+                        feather.replace({ class: 'js-faq-chevron' });
+                    }
+                    $accordion.find('.collapse').on('show.bs.collapse', function () {
+                        var $card = $(this).closest('.card');
+                        $accordion.find('.js-faq-accordion-btn').each(function () {
+                            setChevron($(this), $(this).closest('.card').is($card));
+                        });
+                    }).on('hide.bs.collapse', function () {
+                        setChevron($(this).closest('.card').find('.js-faq-accordion-btn'), false);
+                    });
                 });
-            });
-        });
-
-        // FAQ accordion: toggle Feather chevron (down = closed, up = open)
-        $(function () {
-            var $accordion = $('#homeFaqAccordion');
-            if (!$accordion.length || typeof feather === 'undefined') return;
-            function setChevron($btn, isOpen) {
-                var $chevron = $btn.find('.js-faq-chevron');
-                if (!$chevron.length) return;
-                $chevron.attr('data-feather', isOpen ? 'chevron-up' : 'chevron-down');
-                feather.replace({ class: 'js-faq-chevron' });
             }
-            $accordion.find('.collapse').on('show.bs.collapse', function () {
-                var $card = $(this).closest('.card');
-                $accordion.find('.js-faq-accordion-btn').each(function () {
-                    setChevron($(this), $(this).closest('.card').is($card));
-                });
-            }).on('hide.bs.collapse', function () {
-                setChevron($(this).closest('.card').find('.js-faq-accordion-btn'), false);
-            });
-        });
-
+            function loadScriptChain(index) {
+                if (index >= carouselUrls.length) {
+                    afterHomeLibs();
+                    return;
+                }
+                var sc = document.createElement('script');
+                sc.src = carouselUrls[index];
+                sc.async = false;
+                sc.onload = function () {
+                    loadScriptChain(index + 1);
+                };
+                sc.onerror = function () {
+                    loadScriptChain(index + 1);
+                };
+                document.body.appendChild(sc);
+            }
+            function startCarouselLibs() {
+                if (started) {
+                    return;
+                }
+                started = true;
+                loadScriptChain(0);
+            }
+            var probe = document.querySelector('.swiper-container, .owl-carousel');
+            if (!probe) {
+                return;
+            }
+            if ('IntersectionObserver' in window) {
+                var io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (e) {
+                        if (e.isIntersecting) {
+                            io.disconnect();
+                            startCarouselLibs();
+                        }
+                    });
+                }, { rootMargin: '280px 0px', threshold: 0.01 });
+                io.observe(probe);
+            } else {
+                startCarouselLibs();
+            }
+            if (window.requestIdleCallback) {
+                window.requestIdleCallback(function () {
+                    startCarouselLibs();
+                }, { timeout: 3500 });
+            } else {
+                window.setTimeout(startCarouselLibs, 3200);
+            }
+        })();
     </script>
 @endpush

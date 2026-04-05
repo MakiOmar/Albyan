@@ -38,8 +38,21 @@ class LazyCSSLoader {
     detectRtl() {
         // Check if RTL is enabled
         const html = document.documentElement;
-        return html.dir === 'rtl' || html.lang === 'ar' || html.lang === 'fa' || 
-               body.classList.contains('rtl') || html.classList.contains('rtl');
+        const body = document.body;
+        return html.dir === 'rtl' || html.lang === 'ar' || html.lang === 'fa' ||
+               (body && body.classList.contains('rtl')) || html.classList.contains('rtl');
+    }
+
+    /** Skip fetch if a matching stylesheet link is already in the document (e.g. page pushed critical CSS). */
+    isStylesheetPresent(href) {
+        const file = href.split('/').pop().split('?')[0];
+        if (!file) {
+            return false;
+        }
+        return [...document.querySelectorAll('link[rel="stylesheet"]')].some((link) => {
+            const h = (link.getAttribute('href') || '').split('/').pop().split('?')[0];
+            return h === file;
+        });
     }
 
     getCSSPath(cssFile, useMinified = true) {
@@ -103,55 +116,55 @@ class LazyCSSLoader {
     }
 
     setupSwiperListeners() {
-        // Load Swiper CSS when swiper containers come into view
+        // Load Swiper CSS only when a swiper nears the viewport (avoids blocking critical path on first paint)
         const swiperContainers = document.querySelectorAll('.swiper, [data-swiper], .swiper-container');
-        if (swiperContainers.length > 0) {
-            this.loadCSSWithFallback('swiper');
+        if (!swiperContainers.length) {
+            return;
         }
-
-        // Also load on any element with swiper-related classes
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+            for (const entry of entries) {
                 if (entry.isIntersecting) {
                     this.loadCSSWithFallback('swiper');
-                    observer.unobserve(entry.target);
+                    observer.disconnect();
+                    return;
                 }
-            });
-        });
-
-        swiperContainers.forEach(container => {
-            observer.observe(container);
-        });
+            }
+        }, { rootMargin: '320px 0px', threshold: 0.01 });
+        swiperContainers.forEach((container) => observer.observe(container));
     }
 
     setupSimpleBarListeners() {
-        // Load SimpleBar CSS when scrollable containers are detected
         const scrollableContainers = document.querySelectorAll('[data-simplebar], .simplebar, .scrollable, .custom-scrollbar');
-        if (scrollableContainers.length > 0) {
-            this.loadCSSWithFallback('simplebar');
+        if (!scrollableContainers.length) {
+            return;
         }
+        const observer = new IntersectionObserver((entries) => {
+            for (const entry of entries) {
+                if (entry.isIntersecting) {
+                    this.loadCSSWithFallback('simplebar');
+                    observer.disconnect();
+                    return;
+                }
+            }
+        }, { rootMargin: '160px 0px', threshold: 0.01 });
+        scrollableContainers.forEach((c) => observer.observe(c));
     }
 
     setupOwlCarouselListeners() {
-        // Load Owl Carousel CSS when carousel containers come into view
         const carouselContainers = document.querySelectorAll('.owl-carousel, [data-owl-carousel], .carousel');
-        if (carouselContainers.length > 0) {
-            this.loadCSSWithFallback('owl-carousel');
+        if (!carouselContainers.length) {
+            return;
         }
-
-        // Also load on any element with carousel-related classes
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+            for (const entry of entries) {
                 if (entry.isIntersecting) {
                     this.loadCSSWithFallback('owl-carousel');
-                    observer.unobserve(entry.target);
+                    observer.disconnect();
+                    return;
                 }
-            });
-        });
-
-        carouselContainers.forEach(container => {
-            observer.observe(container);
-        });
+            }
+        }, { rootMargin: '320px 0px', threshold: 0.01 });
+        carouselContainers.forEach((container) => observer.observe(container));
     }
 
     mightTriggerAlert(element) {
@@ -183,6 +196,10 @@ class LazyCSSLoader {
     loadCSS(href, fallbackHref = null) {
         // Don't load if already loaded or loading
         if (this.loadedCSS.has(href) || this.pendingCSS.has(href)) {
+            return Promise.resolve();
+        }
+        if (this.isStylesheetPresent(href)) {
+            this.loadedCSS.add(href);
             return Promise.resolve();
         }
 

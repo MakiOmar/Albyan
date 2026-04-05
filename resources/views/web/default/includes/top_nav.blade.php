@@ -126,7 +126,46 @@
 </div>
 
 @push('scripts_bottom')
-    <link href="/assets/default/vendors/flagstrap/css/flags.css" rel="stylesheet">
-    <script src="/assets/default/vendors/flagstrap/js/jquery.flagstrap.min.js"></script>
-    <script src="/assets/default/js/parts/top_nav_flags.min.js"></script>
+    {{-- Flagstrap: load on first interaction with language control or after idle — shortens critical path --}}
+    <script>
+        (function () {
+            var mount = document.getElementById('localItems');
+            var wrap = document.querySelector('.language-select');
+            if (!mount || !wrap) {
+                return;
+            }
+            var done = false;
+            function loadFlagStrap() {
+                if (done) {
+                    return;
+                }
+                done = true;
+                var link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = '/assets/default/vendors/flagstrap/css/flags.css';
+                document.head.appendChild(link);
+                var s1 = document.createElement('script');
+                s1.src = '/assets/default/vendors/flagstrap/js/jquery.flagstrap.min.js';
+                s1.onload = function () {
+                    var s2 = document.createElement('script');
+                    s2.src = '/assets/default/js/parts/top_nav_flags.min.js';
+                    document.body.appendChild(s2);
+                };
+                s1.onerror = function () {
+                    done = false;
+                };
+                document.body.appendChild(s1);
+            }
+            ['pointerdown', 'mouseenter', 'focusin', 'touchstart'].forEach(function (ev) {
+                wrap.addEventListener(ev, loadFlagStrap, { capture: true, passive: true, once: true });
+            });
+            if (window.requestIdleCallback) {
+                window.requestIdleCallback(function () {
+                    loadFlagStrap();
+                }, { timeout: 4000 });
+            } else {
+                window.setTimeout(loadFlagStrap, 4000);
+            }
+        })();
+    </script>
 @endpush
