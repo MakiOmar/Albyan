@@ -893,7 +893,7 @@
         <!-- Mobile Search Form -->
         <div id="mobile-search-form" class="mobile-search-form d-none">
             {{-- Do not submit mobile search when query is empty --}}
-            <form action="/search" method="get" {!! search_form_non_empty_submit_attribute() !!} class="mobile-search-content">
+            <form action="/search" method="get" class="mobile-search-content">
                 <input class="form-control" type="text" name="search" placeholder="{{ trans('navbar.search_anything') }}" aria-label="Search">
                 <button type="submit" class="btn btn-primary">
                     <i data-feather="search" width="16" height="16"></i>

@@ -50,7 +50,7 @@
                 </div>
             </div>
             <div class="col-12 col-lg-5 mt-15 mt-lg-0">
-                <form action="{{ request()->url() }}" method="get" {!! search_form_non_empty_submit_attribute() !!}>
+                <form action="{{ request()->url() }}" method="get">
                     <div class="d-flex align-items-center">
                         <input type="text" name="search" class="form-control flex-grow-1" value="{{ request()->get('search') }}" placeholder="{{ trans('update.search_in_this_forum') }}">
                         <button type="submit" class="btn btn-primary btn-sm ml-10 course-forum-search-btn">

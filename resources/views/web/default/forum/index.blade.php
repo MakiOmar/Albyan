@@ -12,7 +12,7 @@
                     <p class="font-14 text-gray mt-15">{{ trans('update.forum_top_section_hint') }}</p>
 
                     <div class="search-input bg-white p-10 flex-grow-1 mt-25">
-                        <form action="/forums/search" method="get" {!! search_form_non_empty_submit_attribute() !!}>
+                        <form action="/forums/search" method="get">
                             <div class="form-group d-flex align-items-center m-0">
                                 <input type="text" name="search" class="form-control border-0" placeholder="{{ trans('update.search_discussions') }}"/>
                                 <button type="submit" class="btn btn-primary rounded-pill">{{ trans('public.search') }}</button>

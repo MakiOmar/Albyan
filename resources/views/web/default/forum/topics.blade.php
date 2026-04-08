@@ -32,7 +32,7 @@
                 <div class="col-12 col-md-7  mt-15 mt-lg-0">
                     <div class="row">
                         <div class="col-12 col-lg-7">
-                            <form action="" method="get" {!! search_form_non_empty_submit_attribute() !!}>
+                            <form action="" method="get">
                                 <div class="d-flex align-items-center">
                                     <input type="text" name="search" value="{{ request()->get('search') }}" class="form-control flex-grow-1 input-search-topic" placeholder="{{ trans('update.search_in_this_forum') }}">
                                     <button type="submit" class="btn btn-sm btn-primary btn-search-topic ml-10">

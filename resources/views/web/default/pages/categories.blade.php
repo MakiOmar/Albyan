@@ -17,7 +17,7 @@
                         <span class="course-count-badge py-5 px-10 text-white rounded">{{ $webinarsCount }} {{ trans('product.courses') }}</span>
 
                         <div class="search-input bg-white p-10 flex-grow-1">
-                            <form action="/search" method="get" {!! search_form_non_empty_submit_attribute() !!}>
+                            <form action="/search" method="get">
                                 <div class="form-group d-flex align-items-center m-0">
                                     <input type="text" name="search" class="form-control border-0" placeholder="{{ trans('home.slider_search_placeholder') }}"/>
                                     <button type="submit" class="btn btn-primary rounded-pill">{{ trans('home.find') }}</button>
