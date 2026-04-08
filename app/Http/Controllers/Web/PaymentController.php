@@ -291,6 +291,7 @@ class PaymentController extends Controller
         if (!empty($order)) {
             $data = [
                 'pageTitle' => trans('public.cart_page_title'),
+                'pageRobot' => getPageRobotNoIndex(),
                 'order' => $order,
             ];
 

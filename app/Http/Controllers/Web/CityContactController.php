@@ -28,7 +28,11 @@ class CityContactController extends Controller
             'error_message' => 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.'
         ];
 
-        return view('web.default.city_contact.form', compact('city', 'formConfig'));
+        return view('web.default.city_contact.form', [
+            'city' => $city,
+            'formConfig' => $formConfig,
+            'pageRobot' => getPageRobotNoIndex(),
+        ]);
     }
 
     /**

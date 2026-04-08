@@ -39,7 +39,11 @@ class ResetPasswordController extends Controller
             ->first();
 
         if (!empty($updatePassword)) {
-            return view(getTemplate() . '.auth.reset_password', ['token' => $token]);
+            return view(getTemplate() . '.auth.reset_password', [
+                'token' => $token,
+                'pageTitle' => trans('auth.reset_password'),
+                'pageRobot' => getPageRobotNoIndex(),
+            ]);
         }
 
         abort(404);

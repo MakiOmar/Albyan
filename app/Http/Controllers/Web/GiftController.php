@@ -54,6 +54,7 @@ class GiftController extends Controller
 
             $data = [
                 'pageTitle' => $pageTitle,
+                'pageRobot' => getPageRobotNoIndex(),
                 'titleHint' => $titleHint,
                 'itemType' => $itemType,
                 'item' => $item

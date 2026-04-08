@@ -53,6 +53,7 @@ class BecomeInstructorController extends Controller
 
             $data = [
                 'pageTitle' => trans('site.become_instructor'),
+                'pageRobot' => getPageRobotNoIndex(),
                 'user' => $user,
                 'lastRequest' => $lastRequest,
                 'categories' => $categories,
@@ -225,6 +226,7 @@ class BecomeInstructorController extends Controller
 
             $data = [
                 'pageTitle' => trans('update.registration_packages'),
+                'pageRobot' => getPageRobotNoIndex(),
                 'packages' => $packages,
                 'defaultPackage' => $defaultPackage,
                 'becomeInstructor' => $becomeInstructor ?? null,

@@ -2044,6 +2044,26 @@ function getThemeFontsSettings()
 }
 
 /**
+ * Pages that should not be indexed when the SEO setting has no explicit "robot" value.
+ * If the admin sets robot to index or noindex in SEO settings, that value always wins.
+ *
+ * @return string[]
+ */
+function seoPagesDefaultNoindex(): array
+{
+    return [
+        'login',
+        'register',
+        'search',
+        'contact',
+        'certificate_validation',
+        'tags',
+        'instructor_finder_wizard',
+        'instructor_finder',
+    ];
+}
+
+/**
  * @param $page => home, search, classes, categories, login, register, contact, blog, certificate_validation, 'instructors', 'organizations'
  *
  * @return string
@@ -2051,8 +2071,17 @@ function getThemeFontsSettings()
 function getPageRobot($page)
 {
     $seoSettings = getSeoMetas($page);
+    if (!is_array($seoSettings)) {
+        $seoSettings = [];
+    }
 
-    return (empty($seoSettings['robot']) or $seoSettings['robot'] != 'noindex') ? 'index, follow, all' : 'NOODP, nofollow, noindex';
+    if (array_key_exists('robot', $seoSettings)) {
+        return ($seoSettings['robot'] === 'noindex') ? getPageRobotNoIndex() : 'index, follow, all';
+    }
+
+    return in_array($page, seoPagesDefaultNoindex(), true)
+        ? getPageRobotNoIndex()
+        : 'index, follow, all';
 }
 
 function getPageRobotNoIndex()

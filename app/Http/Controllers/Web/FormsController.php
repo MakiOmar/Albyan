@@ -46,6 +46,7 @@ class FormsController extends Controller
         $user = auth()->user();
         $data = [
             'pageTitle' => $form->title,
+            'pageRobot' => getPageRobotNoIndex(),
             'form' => $form,
         ];
 
@@ -160,6 +161,7 @@ class FormsController extends Controller
 
             $data = [
                 'pageTitle' => $form->title,
+                'pageRobot' => getPageRobotNoIndex(),
                 'form' => $form
             ];
 

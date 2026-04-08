@@ -29,7 +29,10 @@ class ForgotPasswordController extends Controller
 
     public function showLinkRequestForm()
     {
-        return view(getTemplate() . '.auth.forgot_password');
+        return view(getTemplate() . '.auth.forgot_password', [
+            'pageTitle' => trans('auth.forget_password'),
+            'pageRobot' => getPageRobotNoIndex(),
+        ]);
     }
 
     public function forgot(Request $request)

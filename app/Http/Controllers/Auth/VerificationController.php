@@ -32,6 +32,7 @@ class VerificationController extends Controller
                         'pageTitle' => trans('auth.email_confirmation'),
                         'username' => !empty($verification->mobile) ? 'mobile' : 'email',
                         'usernameValue' => !empty($verification->mobile) ? $verification->mobile : $verification->email,
+                        'pageRobot' => getPageRobotNoIndex(),
                     ];
 
                     return view('web.default.auth.verification', $data);

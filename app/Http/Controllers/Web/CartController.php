@@ -73,6 +73,7 @@ class CartController extends Controller
 
                 $data = [
                     'pageTitle' => trans('public.cart_page_title'),
+                    'pageRobot' => getPageRobotNoIndex(),
                     'user' => $user,
                     'carts' => $carts,
                     'subTotal' => $calculate["sub_total"],
@@ -99,6 +100,7 @@ class CartController extends Controller
             if (!empty($cartDiscount)) {
                 $data = [
                     'pageTitle' => trans('update.cart_is_empty'),
+                    'pageRobot' => getPageRobotNoIndex(),
                     'cartDiscount' => $cartDiscount,
                 ];
 
@@ -505,6 +507,7 @@ class CartController extends Controller
 
                 $data = [
                     'pageTitle' => trans('public.checkout_page_title'),
+                    'pageRobot' => getPageRobotNoIndex(),
                     'paymentChannels' => $paymentChannels,
                     'carts' => $carts,
                     'subTotal' => $calculate["sub_total"],
