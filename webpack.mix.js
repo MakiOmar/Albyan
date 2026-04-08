@@ -66,7 +66,7 @@ mix
 // .js('resources/js/parts/gifts.js', 'public/assets/default/js/parts/gifts.min.js')
 // .js('resources/js/parts/forms.js', 'public/assets/default/js/parts/forms.min.js')
 // .js('resources/js/parts/register.js', 'public/assets/default/js/parts/register.min.js')
-// .js('resources/js/parts/forgot_password.js', 'public/assets/default/js/parts/forgot_password.min.js')
+.js('resources/js/parts/forgot_password.js', 'public/assets/default/js/parts/forgot_password.min.js')
 // .js('resources/js/parts/content_delete.js', 'public/assets/default/js/parts/content_delete.min.js')
 
 

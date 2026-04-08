@@ -1,17 +1,49 @@
 (function () {
     "use strict"
 
-    $('body').on('change','input[name="type"]',function () {
-        const val = $(this).val();
-        const $email = $('.js-email-fields');
-        const $mobile = $('.js-mobile-fields');
-
-        if (val === "email") {
-            $email.removeClass('d-none');
-            $mobile.addClass('d-none')
-        } else {
-            $email.addClass('d-none');
-            $mobile.removeClass('d-none')
+    /**
+     * Email/mobile toggle (login, register, forgot-password): set required only on the visible branch.
+     */
+    function syncAuthTypeRequired() {
+        var $radios = $('input[name="type"][type="radio"]');
+        if (!$radios.length) {
+            return;
         }
-    })
-})(jQuery)
+
+        var val = $('input[name="type"][type="radio"]:checked').val();
+        if (typeof val === 'undefined') {
+            val = $('input[name="type"][type="hidden"]').first().val();
+        }
+        if (typeof val === 'undefined') {
+            return;
+        }
+
+        var emailMode = (val === 'email');
+
+        $('.js-auth-toggle-email').prop('required', emailMode);
+        $('.js-auth-toggle-mobile').prop('required', !emailMode);
+        $('.js-auth-toggle-country').prop('required', !emailMode);
+    }
+
+    $('body').on('change', 'input[name="type"]', function () {
+        var val = $(this).val();
+        var $email = $('.js-email-fields');
+        var $mobile = $('.js-mobile-fields');
+
+        if ($email.length && $mobile.length) {
+            if (val === "email") {
+                $email.removeClass('d-none');
+                $mobile.addClass('d-none');
+            } else {
+                $email.addClass('d-none');
+                $mobile.removeClass('d-none');
+            }
+        }
+
+        syncAuthTypeRequired();
+    });
+
+    $(document).ready(function () {
+        syncAuthTypeRequired();
+    });
+})(jQuery);

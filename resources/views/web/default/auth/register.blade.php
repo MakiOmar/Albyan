@@ -65,7 +65,7 @@
 
                         <div class="form-group">
                             <label class="input-label" for="full_name">{{ trans('auth.full_name') }}:</label>
-                            <input name="full_name" type="text" value="{{ old('full_name') }}" class="form-control @error('full_name') is-invalid @enderror">
+                            <input name="full_name" type="text" value="{{ old('full_name') }}" class="form-control @error('full_name') is-invalid @enderror" required minlength="3">
                             @error('full_name')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -77,7 +77,7 @@
                             <label class="input-label" for="password">{{ trans('auth.password') }}:</label>
                             <input name="password" type="password"
                                    class="form-control @error('password') is-invalid @enderror" id="password"
-                                   aria-describedby="passwordHelp">
+                                   aria-describedby="passwordHelp" autocomplete="new-password" required minlength="6">
                             @error('password')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -89,7 +89,7 @@
                             <label class="input-label" for="confirm_password">{{ trans('auth.retype_password') }}:</label>
                             <input name="password_confirmation" type="password"
                                    class="form-control @error('password_confirmation') is-invalid @enderror" id="confirm_password"
-                                   aria-describedby="confirmPasswordHelp">
+                                   aria-describedby="confirmPasswordHelp" autocomplete="new-password" required minlength="6">
                             @error('password_confirmation')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -116,7 +116,7 @@
 
                             <div class="form-group">
                                 <label class="input-label">{{ trans('update.timezone') }}</label>
-                                <select name="timezone" class="form-control select2" data-allow-clear="false">
+                                <select name="timezone" class="form-control select2" data-allow-clear="false" required>
                                     <option value="" {{ empty($user->timezone) ? 'selected' : '' }} disabled>{{ trans('public.select') }}</option>
                                     @foreach(getListOfTimezones() as $timezone)
                                         <option value="{{ $timezone }}" @if($selectedTimezone == $timezone) selected @endif>{{ $timezone }}</option>
@@ -154,7 +154,7 @@
                         @include('web.default.includes.turnstile_widget')
 
                         <div class="custom-control custom-checkbox">
-                            <input type="checkbox" name="term" value="1" {{ (!empty(old('term')) and old('term') == '1') ? 'checked' : '' }} class="custom-control-input @error('term') is-invalid @enderror" id="term">
+                            <input type="checkbox" name="term" value="1" {{ (!empty(old('term')) and old('term') == '1') ? 'checked' : '' }} class="custom-control-input @error('term') is-invalid @enderror" id="term" required>
                             <label class="custom-control-label font-14" for="term">{{ trans('auth.i_agree_with') }}
                                 <a href="pages/terms" target="_blank" class="text-secondary font-weight-bold font-14">{{ trans('auth.terms_and_rules') }}</a>
                             </label>

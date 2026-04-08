@@ -18,8 +18,8 @@
 
     <div class="js-email-fields form-group {{ (($registerMethod == 'email' and empty(old('type'))) or old('type') == "email") ? '' : 'd-none' }}">
         <label class="input-label" for="email">{{ trans('public.email') }}:</label>
-        <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" id="email"
-               value="{{ old('email') }}" aria-describedby="emailHelp">
+        <input name="email" type="email" class="form-control js-auth-toggle-email @error('email') is-invalid @enderror" id="email"
+               value="{{ old('email') }}" aria-describedby="emailHelp" autocomplete="username">
         @error('email')
         <div class="invalid-feedback">
             {{ $message }}
@@ -29,7 +29,7 @@
 
 
     <div class="js-mobile-fields {{ (($registerMethod == 'mobile' and empty(old('type'))) or old('type') == "mobile") ? '' : 'd-none' }}">
-        @include('web.default.auth.register_includes.mobile_field')
+        @include('web.default.auth.register_includes.mobile_field', ['authToggleBranch' => true])
     </div>
 
 @else
@@ -45,7 +45,7 @@
         <div class=" form-group">
             <label class="input-label" for="email">{{ trans('public.email') }}:</label>
             <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" id="email"
-                   value="{{ old('email') }}" aria-describedby="emailHelp">
+                   value="{{ old('email') }}" aria-describedby="emailHelp" autocomplete="username" required>
             @error('email')
             <div class="invalid-feedback">
                 {{ $message }}

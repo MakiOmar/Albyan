@@ -33,7 +33,7 @@
 
                         <div class="form-group">
                             <label class="input-label" for="password">{{ trans('auth.password') }}:</label>
-                            <input name="password" type="password" class="form-control @error('password')  is-invalid @enderror" id="password" aria-describedby="passwordHelp">
+                            <input name="password" type="password" class="form-control @error('password')  is-invalid @enderror" id="password" aria-describedby="passwordHelp" autocomplete="current-password" required minlength="6">
 
                             @error('password')
                             <div class="invalid-feedback">

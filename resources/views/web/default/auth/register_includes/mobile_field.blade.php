@@ -2,7 +2,8 @@
     <div class="col-5">
         <div class="form-group">
             <label class="input-label" for="mobile">{{ trans('auth.country') }}:</label>
-            <select name="country_code" class="form-control select2">
+            <select name="country_code" class="form-control select2 @if(!empty($authToggleBranch)) js-auth-toggle-country @endif"
+                    @if(empty($optional) && empty($authToggleBranch)) required @endif>
                 @foreach(getCountriesMobileCode() as $country => $code)
                     <option value="{{ $code }}" @if($code == old('country_code')) selected @endif>{{ $country }}</option>
                 @endforeach
@@ -19,8 +20,9 @@
     <div class="col-7">
         <div class="form-group">
             <label class="input-label" for="mobile">{{ trans('auth.mobile') }} {{ !empty($optional) ? "(". trans('public.optional') .")" : '' }}:</label>
-            <input name="mobile" type="text" class="form-control @error('mobile') is-invalid @enderror"
-                   value="{{ old('mobile') }}" id="mobile" aria-describedby="mobileHelp">
+            <input name="mobile" type="text" class="form-control @error('mobile') is-invalid @enderror @if(!empty($authToggleBranch)) js-auth-toggle-mobile @endif"
+                   value="{{ old('mobile') }}" id="mobile" aria-describedby="mobileHelp"
+                   @if(empty($optional) && empty($authToggleBranch)) required @endif>
 
             @error('mobile')
             <div class="invalid-feedback">
