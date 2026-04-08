@@ -17,12 +17,12 @@
                         <span class="d-block mt-5 text-white">{{ trans('footer.subscribe_content') }}</span>
                     </div>
                     <div class="subscribe-input bg-white p-10 flex-grow-1 mt-30 mt-md-0">
-                        <form action="/newsletters" method="post">
+                        <form action="/newsletters" method="post" {!! newsletter_form_non_empty_submit_attribute() !!}>
                             {{ csrf_field() }}
 
                             <div class="form-group d-flex flex-wrap align-items-center m-0">
                                 <div class="w-100 flex-grow-1">
-                                    <input type="email" name="newsletter_email" autocomplete="email" class="form-control border-0 @error('newsletter_email') is-invalid @enderror" placeholder="{{ trans('footer.enter_email_here') }}"/>
+                                    <input type="email" name="newsletter_email" autocomplete="email" class="form-control border-0 @error('newsletter_email') is-invalid @enderror" placeholder="{{ trans('footer.enter_email_here') }}" required/>
                                     @error('newsletter_email')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

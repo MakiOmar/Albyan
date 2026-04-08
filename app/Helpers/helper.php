@@ -3054,3 +3054,23 @@ if (!function_exists('turnstile_site_key')) {
         return ($key !== null && $key !== '') ? $key : null;
     }
 }
+
+if (!function_exists('navbar_search_form_non_empty_submit_attribute')) {
+    /**
+     * Navbar / mobile header search only: block GET submit when search is empty or whitespace-only.
+     */
+    function navbar_search_form_non_empty_submit_attribute(): string
+    {
+        return 'onsubmit="var i=this.querySelector(\'input[name=search]\');return !!(i&&String(i.value||\'\').trim().length);"';
+    }
+}
+
+if (!function_exists('newsletter_form_non_empty_submit_attribute')) {
+    /**
+     * Footer newsletter form: block submit when email is empty or whitespace-only (client-side guard).
+     */
+    function newsletter_form_non_empty_submit_attribute(): string
+    {
+        return 'onsubmit="var i=this.querySelector(\'input[name=newsletter_email]\');return !!(i&&String(i.value||\'\').trim().length);"';
+    }
+}
