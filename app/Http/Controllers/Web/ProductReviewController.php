@@ -12,13 +12,13 @@ class ProductReviewController extends Controller
 {
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $this->validate($request, array_merge([
             'product_id' => 'required',
             'product_quality' => 'required',
             'purchase_worth' => 'required',
             'delivery_quality' => 'required',
             'seller_quality' => 'required',
-        ]);
+        ], turnstile_validation_rules()));
 
         $data = $request->all();
         $user = auth()->user();

@@ -13,13 +13,13 @@ class WebinarReviewController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $this->validate($request, array_merge([
             'webinar_id' => 'required',
             'content_quality' => 'required',
             'instructor_skills' => 'required',
             'purchase_worth' => 'required',
             'support_quality' => 'required',
-        ]);
+        ], turnstile_validation_rules()));
 
         $data = $request->all();
         $user = auth()->user();

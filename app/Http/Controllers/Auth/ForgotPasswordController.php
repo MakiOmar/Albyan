@@ -47,14 +47,12 @@ class ForgotPasswordController extends Controller
             ];
         }
 
-        if (!empty(getGeneralSecuritySettings('captcha_for_forgot_pass'))) {
-            $rules['captcha'] = 'required|captcha';
-        }
+        $rules = array_merge($rules, turnstile_validation_rules());
 
         $this->validate($request, $rules, [], [
             'mobile' => trans('auth.mobile'),
             'email' => trans('auth.email'),
-            'captcha' => trans('site.captcha'),
+            'cf-turnstile-response' => trans('validation.attributes.cf-turnstile-response'),
         ]);
 
         if ($type == 'mobile') {

@@ -17,7 +17,7 @@
                             <h1 class="text-white font-30 white-space-pre-wrap">{{ trans('site.result_find',['count' => $resultCount , 'search' => request()->get('search')]) }}</h1>
 
                             <div class="search-input bg-white p-10 flex-grow-1">
-                                <form action="/search" method="get">
+                                <form action="/search" method="get" {!! search_form_non_empty_submit_attribute() !!}>
                                     <div class="form-group d-flex align-items-center m-0">
                                         <input type="text" name="search" class="form-control border-0" value="{{ request()->get('search','') }}" placeholder="{{ trans('home.slider_search_placeholder') }}"/>
                                         <button type="submit" class="btn btn-primary rounded-pill">{{ trans('home.find') }}</button>
@@ -119,7 +119,7 @@
                             <p class="mt-5 text-center white-space-pre-wrap">{{ trans('site.no_result_search_hint',['search' => request()->get('search')]) }}</p>
 
                             <div class="search-input bg-white p-10 mt-20 flex-grow-1 shadow-sm rounded-pill w-100">
-                                <form action="/search" method="get">
+                                <form action="/search" method="get" {!! search_form_non_empty_submit_attribute() !!}>
                                     <div class="form-group d-flex align-items-center m-0">
                                         <input type="text" name="search" class="form-control border-0" value="{{ request()->get('search','') }}" placeholder="{{ trans('home.slider_search_placeholder') }}"/>
                                         <button type="submit" class="btn btn-primary rounded-pill">{{ trans('home.find') }}</button>

@@ -332,10 +332,10 @@ class UpcomingCoursesController extends Controller
     {
         $data = $request->all();
 
-        $validator = Validator::make($data, [
+        $validator = Validator::make($data, array_merge([
             'reason' => 'required|string',
             'message' => 'required|string',
-        ]);
+        ], turnstile_validation_rules()));
 
         if ($validator->fails()) {
             return response()->json([

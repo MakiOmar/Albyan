@@ -43,26 +43,14 @@
 
 
                         <div class="form-group">
-                            <label class="input-label" for="code">{{ trans('public.certificate_id') }}:</label>
-                            <input type="tel" name="certificate_id" class="form-control" id="certificate_id" aria-describedby="certificate_idHelp">
+                            {{-- Certificate identifier required (numeric timestamp id used by search) --}}
+                            <label class="input-label" for="certificate_id">{{ trans('public.certificate_id') }}:</label>
+                            <input type="text" name="certificate_id" inputmode="numeric" pattern="[0-9]*" required class="form-control" id="certificate_id" aria-describedby="certificate_idHelp" autocomplete="off">
                             <div class="invalid-feedback"></div>
                         </div>
 
                         <div class="form-group">
-                            <label class="input-label">{{ trans('site.captcha') }}</label>
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <input type="text" name="captcha" class="form-control">
-                                    <div class="invalid-feedback"></div>
-                                </div>
-                                <div class="col d-flex align-items-center">
-                                    <img id="captchaImageComment" class="captcha-image" src="">
-
-                                    <button type="button" id="refreshCaptcha" class="btn-transparent ml-15">
-                                        <i data-feather="refresh-ccw" width="24" height="24" class=""></i>
-                                    </button>
-                                </div>
-                            </div>
+                            @include('web.default.includes.turnstile_widget')
                         </div>
 
                         <input type="submit" class="btn btn-primary btn-block mt-20" value="{{ trans('cart.validate') }}">
@@ -104,33 +92,19 @@
     </div>
 
 @endsection
-{{--
-@push('scripts_bottom')
-    <script>
-        var certificateNotFound = '{{ trans('site.certificate_not_found') }}';
-        var close = '{{ trans('public.close') }}';
-    </script>
-
-    <script src="/assets/default/js/parts/certificate_validation.min.js"></script>
-@endpush
---}}
 
 @push('scripts_bottom')
     <script>
         var certificateNotFound = '{{ trans('site.certificate_not_found') }}';
         var close = '{{ trans('public.close') }}';
+
+        function resetCertificateTurnstile() {
+            if (typeof turnstile !== 'undefined' && typeof turnstile.reset === 'function') {
+                turnstile.reset();
+            }
+        }
 
         $(document).ready(function () {
-            function loadCaptcha() {
-                $('#captchaImageComment').attr('src', '/captcha?'+Math.random());
-            }
-
-            loadCaptcha();
-
-            $('#refreshCaptcha').on('click', function () {
-                loadCaptcha();
-            });
-
             $('#certificateSearchForm').on('submit', function (e) {
                 e.preventDefault();
 
@@ -138,48 +112,42 @@
                 let url = form.attr('action');
                 let data = form.serialize();
 
-                // تنظيف الأخطاء السابقة
                 form.find('.invalid-feedback').text('');
                 form.find('.is-invalid').removeClass('is-invalid');
 
                 $.post(url, data, function (response) {
-                    if (response.code === 422) {
-                        // أخطاء التحقق
-                        $.each(response.errors, function (field, messages) {
+                    if (response.certificates && response.certificates.length) {
+                        let cert = response.certificates[0];
+                        $('.modal-student').text(cert.student_name ?? '');
+                        $('.modal-date').text(cert.created_at ?? '');
+                        $('.modal-webinar').text(cert.webinar_title ?? '');
+                        $('#certificateModal').removeClass('d-none');
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: certificateNotFound,
+                            confirmButtonText: close,
+                        });
+                    }
+                    resetCertificateTurnstile();
+                }).fail(function (xhr) {
+                    if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                        $.each(xhr.responseJSON.errors, function (field, messages) {
                             let input = form.find('[name="' + field + '"]');
                             input.addClass('is-invalid');
                             input.next('.invalid-feedback').text(messages[0]);
                         });
-                        loadCaptcha();
                     } else {
-                        // عرض بيانات الشهادة
-                        let cert = response.certificates[0];
-                        if (cert) {
-                            $('.modal-student').text(cert.student_name ?? '');
-                            $('.modal-date').text(cert.created_at ?? '');
-                            $('.modal-webinar').text(cert.webinar_title ?? '');
-
-                            $('#certificateModal').removeClass('d-none');
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: certificateNotFound,
-                                confirmButtonText: close,
-                            });
-                        }
-                        loadCaptcha();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ ربما رقم الشهادة أو رمز الأمان غير صحيح',
+                            confirmButtonText: close,
+                        });
                     }
-                }).fail(function () {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'حدث خطأ ربما رقم الشهادة أو رمز الأمان غير صحيح',
-                        confirmButtonText: close,
-                    });
-                    loadCaptcha();
+                    resetCertificateTurnstile();
                 });
             });
 
-            // إغلاق المودال
             $('.close-swl').on('click', function () {
                 $('#certificateModal').addClass('d-none');
             });

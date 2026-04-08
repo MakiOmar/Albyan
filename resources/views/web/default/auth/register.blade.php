@@ -151,9 +151,7 @@
                             @endif
                         </div>
 
-                        @if(!empty(getGeneralSecuritySettings('captcha_for_register')))
-                            @include('web.default.includes.captcha_input')
-                        @endif
+                        @include('web.default.includes.turnstile_widget')
 
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" name="term" value="1" {{ (!empty(old('term')) and old('term') == '1') ? 'checked' : '' }} class="custom-control-input @error('term') is-invalid @enderror" id="term">

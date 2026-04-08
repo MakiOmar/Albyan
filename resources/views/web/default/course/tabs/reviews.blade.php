@@ -104,6 +104,8 @@
             </div>
         </div>
 
+        @include('web.default.includes.turnstile_widget')
+
         <button type="submit" class="btn btn-sm btn-primary mt-20">{{ trans('product.post_review') }}</button>
     </form>
 

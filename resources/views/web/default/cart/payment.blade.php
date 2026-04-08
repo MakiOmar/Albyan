@@ -103,6 +103,7 @@
                 </div>
             @endif
 
+            @include('web.default.includes.turnstile_widget')
 
             <div class="d-flex align-items-center justify-content-between mt-45">
                 <span class="font-16 font-weight-500 text-gray">{{ trans('financial.total_amount') }} {{ handlePrice($total) }}</span>

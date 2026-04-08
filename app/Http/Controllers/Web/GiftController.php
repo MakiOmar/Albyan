@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Rules\AtLeastTwoWords;
 use App\Models\Bundle;
 use App\Models\Cart;
 use App\Models\Gift;
@@ -66,11 +67,11 @@ class GiftController extends Controller
 
     public function store(Request $request, $itemType, $itemSlug)
     {
-        $this->validate($request, [
-            'name' => 'required|string|min:3|max:255',
+        $this->validate($request, array_merge([
+            'name' => ['required', 'string', 'min:3', 'max:255', new AtLeastTwoWords],
             'email' => 'required|email|max:255',
             'date' => 'nullable',
-        ]);
+        ], turnstile_validation_rules()));
         $data = $request->all();
 
         $item = $this->getItem($itemType, $itemSlug);

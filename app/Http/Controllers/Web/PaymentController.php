@@ -27,9 +27,9 @@ class PaymentController extends Controller
 
     public function paymentRequest(Request $request)
     {
-        $this->validate($request, [
-            'gateway' => 'required'
-        ]);
+        $this->validate($request, array_merge([
+            'gateway' => 'required',
+        ], turnstile_validation_rules()));
 
         $user = auth()->user();
         $gateway = $request->input('gateway');

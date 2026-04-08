@@ -80,14 +80,14 @@ class BecomeInstructorController extends Controller
 
             $data = $request->all();
 
-            $rules = [
+            $rules = array_merge([
                 'role' => 'required',
                 'occupations' => 'required',
                 'certificate' => 'nullable|string',
                 'bank_id' => 'required',
                 'identity_scan' => 'required',
                 'description' => 'nullable|string',
-            ];
+            ], turnstile_validation_rules());
 
             $validate = Validator::make($data, $rules);
 

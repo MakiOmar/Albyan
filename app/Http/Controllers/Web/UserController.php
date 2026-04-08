@@ -16,6 +16,7 @@ use App\Models\RewardAccounting;
 use App\Models\Sale;
 use App\Models\UserOccupation;
 use App\Models\Webinar;
+use App\Rules\AtLeastTwoWords;
 use App\User;
 use App\Models\Role;
 use App\Models\Follow;
@@ -513,9 +514,9 @@ class UserController extends Controller
     public function makeNewsletter(Request $request)
     {
         $data = $request->all();
-        $validator = Validator::make($data, [
-            'newsletter_email' => 'required|email|max:255|unique:newsletters,email'
-        ]);
+        $validator = Validator::make($data, array_merge([
+            'newsletter_email' => 'required|email|max:255|unique:newsletters,email',
+        ], turnstile_validation_rules()));
 
         if ($validator->fails()) {
             $toastData = [
@@ -592,12 +593,11 @@ class UserController extends Controller
             if (!empty($user) and !empty($user->email)) {
                 $data = $request->all();
 
-                $validator = Validator::make($data, [
-                    'title' => 'required|string',
-                    'email' => 'required|email',
-                    'description' => 'required|string',
-                    'captcha' => 'required|captcha',
-                ]);
+                $validator = Validator::make($data, array_merge([
+                    'title' => ['required', 'string', 'max:255', new AtLeastTwoWords],
+                    'email' => 'required|email|max:255',
+                    'description' => 'required|string|min:100|max:10000',
+                ], turnstile_validation_rules()));
 
                 if ($validator->fails()) {
                     return response()->json([

@@ -47,6 +47,11 @@
         @yield('content')
     </div>
 </div>
+@if(!empty(turnstile_site_key()))
+    {{-- Cloudflare Turnstile --}}
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script>window.turnstileSiteKey = @json(turnstile_site_key());</script>
+@endif
 <script src="/assets/default/js/app.min.js"></script>
 <script src="/assets/default/vendors/feather-icons/dist/feather.min.js"></script>
 <script src="/assets/default/vendors/sweetalert2/dist/sweetalert2.min.js"></script>

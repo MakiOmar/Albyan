@@ -140,6 +140,8 @@
                             @endif
                         </div>
 
+                        @include('web.default.includes.turnstile_widget')
+
                         <button type="submit" class="btn btn-primary btn-block mt-20">{{ (!empty(getRegistrationPackagesGeneralSettings('show_packages_during_registration')) and getRegistrationPackagesGeneralSettings('show_packages_during_registration')) ? trans('webinars.next') : trans('site.send_request') }}</button>
                     </form>
 

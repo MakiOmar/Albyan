@@ -213,6 +213,8 @@
                                 <span class="font-14 text-gray font-weight-bold"><span id="totalAmount">{{ handlePrice($total) }}</span></span>
                             </div>
 
+                            @include('web.default.includes.turnstile_widget')
+
                             <button type="submit" id="to-checkout" class="btn btn-sm btn-primary mt-15">{{ trans('cart.checkout') }}</button>
                         </div>
                     </section>

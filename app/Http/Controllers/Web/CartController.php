@@ -455,13 +455,13 @@ class CartController extends Controller
             $checkAddressValidation = false;
         }
 
-        $this->validate($request, [
+        $this->validate($request, array_merge([
             'country_id' => Rule::requiredIf($checkAddressValidation),
             'province_id' => Rule::requiredIf($checkAddressValidation),
             'city_id' => Rule::requiredIf($checkAddressValidation),
             'district_id' => Rule::requiredIf($checkAddressValidation),
             'address' => Rule::requiredIf($checkAddressValidation),
-        ]);
+        ], turnstile_validation_rules()));
 
         $discountId = $request->input('discount_id');
 

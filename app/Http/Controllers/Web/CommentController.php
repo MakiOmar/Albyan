@@ -14,10 +14,10 @@ class CommentController extends Controller
 {
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $this->validate($request, array_merge([
             'item_id' => 'required',
             'comment' => 'required|string',
-        ]);
+        ], turnstile_validation_rules()));
 
         $user = auth()->user();
         $item_name = $request->get('item_name');

@@ -266,6 +266,8 @@ $(function ($) {
         refreshCaptcha();
     });
 
+    var sendMessageTurnstileWidgetId = null;
+
     $('body').on('click', '.js-send-message', function (e) {
         e.preventDefault();
 
@@ -276,8 +278,17 @@ $(function ($) {
             customClass: {
                 content: 'p-0 text-left',
             },
-            onOpen: () => {
-                refreshCaptcha();
+            onOpen: function () {
+                var host = document.querySelector('.swal2-container .js-send-message-turnstile-host');
+                if (host && window.turnstileSiteKey && typeof turnstile !== 'undefined') {
+                    sendMessageTurnstileWidgetId = turnstile.render(host, {sitekey: window.turnstileSiteKey});
+                }
+            },
+            onClose: function () {
+                if (sendMessageTurnstileWidgetId !== null && typeof turnstile !== 'undefined' && turnstile.remove) {
+                    turnstile.remove(sendMessageTurnstileWidgetId);
+                    sendMessageTurnstileWidgetId = null;
+                }
             },
             width: '42rem',
         });
@@ -316,14 +327,19 @@ $(function ($) {
             $this.removeClass('loadingbar primary').prop('disabled', false);
             var errors = err.responseJSON;
 
-            refreshCaptcha();
+            if (typeof turnstile !== 'undefined' && typeof turnstile.reset === 'function') {
+                turnstile.reset();
+            }
 
             if (errors && errors.errors) {
                 Object.keys(errors.errors).forEach((key) => {
                     const error = errors.errors[key];
                     let element = $form.find('[name="' + key + '"]');
+                    if (!element.length && key === 'cf-turnstile-response') {
+                        element = $form.find('.js-send-message-turnstile-host-wrap');
+                    }
                     element.addClass('is-invalid');
-                    element.parent().find('.invalid-feedback').text(error[0]);
+                    element.closest('.form-group').find('.invalid-feedback').first().text(error[0]);
                 });
             }
         })

@@ -319,6 +319,7 @@
         <h3 class="section-title after-line font-20 text-dark-blue">{{ trans('product.report_the_course') }}</h3>
 
         <form action="/upcoming_courses/{{ $upcomingCourse->id }}/report" method="post" class="mt-25">
+            {{ csrf_field() }}
 
             <div class="form-group">
                 <label class="text-dark-blue font-14">{{ trans('product.reason') }}</label>
@@ -338,6 +339,11 @@
                 <div class="invalid-feedback"></div>
             </div>
             <p class="text-gray font-16">{{ trans('product.report_modal_hint') }}</p>
+
+            <div class="form-group js-course-report-turnstile-wrap">
+                <div class="js-course-report-turnstile-host"></div>
+                <div class="invalid-feedback"></div>
+            </div>
 
             <div class="mt-30 d-flex align-items-center justify-content-end">
                 <button type="button" class="js-course-report-submit btn btn-sm btn-primary">{{ trans('panel.report') }}</button>

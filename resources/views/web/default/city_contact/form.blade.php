@@ -187,6 +187,10 @@
                 <div class="error-message" id="email_error"></div>
             </div>
 
+            <div class="form-group">
+                @include('web.default.includes.turnstile_widget')
+            </div>
+
             <button type="submit" class="submit-btn" id="submit-btn">
                 إرسال الرسالة
             </button>
@@ -245,6 +249,9 @@ $(document).ready(function() {
             complete: function() {
                 $('#submit-btn').prop('disabled', false);
                 $('#loading').hide();
+                if (typeof turnstile !== 'undefined' && typeof turnstile.reset === 'function') {
+                    turnstile.reset();
+                }
             }
         });
     });

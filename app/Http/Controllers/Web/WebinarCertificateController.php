@@ -14,10 +14,9 @@ class WebinarCertificateController extends Controller
     {
         $data = $request->all();
 
-        $validator = Validator::make($data, [
+        $validator = Validator::make($data, array_merge([
             'certificate_id' => 'required|numeric',
-            'captcha' => 'required|captcha',
-        ]);
+        ], turnstile_validation_rules()));
         if ($validator->fails()) {
             return response()->json([
                 'code' => 422,

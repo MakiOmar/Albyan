@@ -132,6 +132,10 @@ return [
     ],
 
     'captcha' => 'غير صحيحة captcha...',
+
+    'turnstile' => 'فشل التحقق الأمني. يرجى المحاولة مرة أخرى.',
+
+    'at_least_two_words' => 'يجب أن يحقل :attribute على كلمتين على الأقل.',
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes
@@ -143,6 +147,8 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'cf-turnstile-response' => 'التحقق الأمني',
+    ],
 
 ];

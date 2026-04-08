@@ -2999,3 +2999,39 @@ if (!function_exists('debugCourseCardStyle')) {
         ];
     }
 }
+
+if (!function_exists('turnstile_validation_rules')) {
+    /**
+     * When TURNSTILE_SECRET_KEY is set, require a valid Cloudflare Turnstile token.
+     */
+    function turnstile_validation_rules(): array
+    {
+        $secret = config('services.turnstile.secret_key');
+        if ($secret === null || $secret === '') {
+            return [];
+        }
+
+        return [
+            'cf-turnstile-response' => ['required', new \App\Rules\Turnstile],
+        ];
+    }
+}
+
+if (!function_exists('turnstile_site_key')) {
+    function turnstile_site_key(): ?string
+    {
+        $key = config('services.turnstile.site_key');
+
+        return ($key !== null && $key !== '') ? $key : null;
+    }
+}
+
+if (!function_exists('search_form_non_empty_submit_attribute')) {
+    /**
+     * Inline form attribute: block GET submit when the search input is empty or whitespace-only.
+     */
+    function search_form_non_empty_submit_attribute(): string
+    {
+        return 'onsubmit="var i=this.querySelector(\'input[name=search]\');return i&&i.value&&String(i.value).trim().length>0;"';
+    }
+}

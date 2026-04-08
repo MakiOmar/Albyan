@@ -54,6 +54,8 @@
                             <textarea name="description" rows="5" class="form-control"></textarea>
                         </div>
 
+                        @include('web.default.includes.turnstile_widget')
+
                         <button type="submit" class="btn btn-primary btn-block mt-20">{{ trans('update.proceed_to_checkout') }}</button>
                     </form>
                 </div>

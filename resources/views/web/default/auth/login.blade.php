@@ -42,9 +42,7 @@
                             @enderror
                         </div>
 
-                        @if(!empty(getGeneralSecuritySettings('captcha_for_login')))
-                            @include('web.default.includes.captcha_input')
-                        @endif
+                        @include('web.default.includes.turnstile_widget')
 
                         <button type="submit" class="btn btn-primary btn-block mt-20">{{ trans('auth.login') }}</button>
                     </form>

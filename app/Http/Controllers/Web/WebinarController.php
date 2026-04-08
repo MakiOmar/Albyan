@@ -856,9 +856,12 @@ class WebinarController extends Controller
 
             $validator = Validator::make(
                 $data,
-                array(
-                    'reason'  => 'required|string',
-                    'message' => 'required|string',
+                array_merge(
+                    array(
+                        'reason'  => 'required|string',
+                        'message' => 'required|string',
+                    ),
+                    turnstile_validation_rules()
                 )
             );
 

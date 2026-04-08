@@ -104,7 +104,8 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label class="input-label font-weight-500">{{ trans('site.your_name') }}</label>
-                                    <input type="text" name="name" value="{{ old('name') }}" class="form-control @error('name')  is-invalid @enderror"/>
+                                    {{-- Name: at least two words (validated server-side) --}}
+                                    <input type="text" name="name" value="{{ old('name') }}" autocomplete="name" class="form-control @error('name')  is-invalid @enderror"/>
                                     @error('name')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -115,7 +116,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label class="input-label font-weight-500">{{ trans('public.email') }}</label>
-                                    <input type="text" name="email" value="{{ old('email') }}" class="form-control @error('email')  is-invalid @enderror"/>
+                                    <input type="email" name="email" value="{{ old('email') }}" autocomplete="email" class="form-control @error('email')  is-invalid @enderror"/>
                                     @error('email')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -129,7 +130,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label class="input-label font-weight-500">{{ trans('site.phone_number') }}</label>
-                                    <input type="text" name="phone" value="{{ old('phone') }}" class="form-control @error('phone')  is-invalid @enderror"/>
+                                    <input type="tel" name="phone" value="{{ old('phone') }}" autocomplete="tel" class="form-control @error('phone')  is-invalid @enderror"/>
                                     @error('phone')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -154,7 +155,8 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label class="input-label font-weight-500">{{ trans('site.message') }}</label>
-                                    <textarea name="message" id="" rows="10" class="form-control @error('message')  is-invalid @enderror">{{ old('message') }}</textarea>
+                                    {{-- Message: minimum 100 characters (server-side) --}}
+                                    <textarea name="message" id="contact-message" rows="10" minlength="100" class="form-control @error('message')  is-invalid @enderror">{{ old('message') }}</textarea>
                                     @error('message')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -166,7 +168,7 @@
         
                         <div class="row">
                             <div class="col-12">
-                                @include('web.default.includes.captcha_input')
+                                @include('web.default.includes.turnstile_widget')
                             </div>
                         </div>
         
@@ -176,7 +178,7 @@
             </div>
             <div class="col-12 col-md-6 p-3">
                 <section class="mt-30 mt-md-50">
-                    <h2 class="font-16 font-weight-bold text-secondary mb-2">اتصل بنا</h3>
+                    <h2 class="font-16 font-weight-bold text-secondary mb-2">اتصل بنا</h2>
                     <ul class="list-unstyled mb-2">
                         <li>📞 <a href="tel:+971569001020">971569001020+</a></li>
                         <li>📞 <a href="tel:+97143931889">971043931889+</a></li>

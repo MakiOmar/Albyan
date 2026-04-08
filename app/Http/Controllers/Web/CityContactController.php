@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Rules\AtLeastTwoWords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -42,11 +43,11 @@ class CityContactController extends Controller
         }
 
         // Validate the form data
-        $validator = Validator::make($request->all(), [
-            'full_name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
+        $validator = Validator::make($request->all(), array_merge([
+            'full_name' => ['required', 'string', 'max:255', new AtLeastTwoWords],
+            'phone' => 'required|string|min:6|max:30',
             'email' => 'required|email|max:255',
-        ], [
+        ], turnstile_validation_rules()), [
             'full_name.required' => 'الاسم الكامل مطلوب',
             'phone.required' => 'رقم الهاتف مطلوب',
             'email.required' => 'البريد الإلكتروني مطلوب',

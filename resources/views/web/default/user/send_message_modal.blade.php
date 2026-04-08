@@ -6,38 +6,27 @@
 
         <div class="form-group">
             <label class="input-label">{{ trans('public.title') }}</label>
-            <input type="text" name="title" class="form-control"/>
+            <input type="text" name="title" class="form-control" autocomplete="off"/>
             <div class="invalid-feedback"></div>
         </div>
 
         <div class="form-group">
             <label class="input-label">{{ trans('public.email') }}</label>
-            <input type="text" name="email" class="form-control"/>
+            <input type="email" name="email" class="form-control" autocomplete="email"/>
             <div class="invalid-feedback"></div>
         </div>
 
         <div class="form-group">
             <label class="input-label">{{ trans('public.description') }}</label>
-            <textarea name="description" class="form-control" rows="6"></textarea>
+            {{-- Minimum 100 characters enforced server-side --}}
+            <textarea name="description" class="form-control" rows="6" minlength="100"></textarea>
             <div class="invalid-feedback"></div>
         </div>
 
-        <div class="form-group">
-            <label class="input-label font-weight-500">{{ trans('site.captcha') }}</label>
-            <div class="row align-items-center">
-                <div class="col">
-                    <input type="text" name="captcha" class="form-control">
-
-                    <div class="invalid-feedback"></div>
-                </div>
-                <div class="col d-flex align-items-center">
-                    <img id="captchaImageComment" class="captcha-image" src="">
-
-                    <button type="button" class="js-refresh-captcha btn-transparent ml-15">
-                        <i data-feather="refresh-ccw" width="24" height="24" class=""></i>
-                    </button>
-                </div>
-            </div>
+        {{-- Turnstile is rendered into this host when the modal opens (see profile.js) --}}
+        <div class="form-group js-send-message-turnstile-host-wrap">
+            <div class="js-send-message-turnstile-host"></div>
+            <div class="invalid-feedback"></div>
         </div>
 
         <div class="mt-30 d-flex align-items-center justify-content-end">

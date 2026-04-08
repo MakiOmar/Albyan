@@ -22,10 +22,7 @@
 
                         @include('web.default.auth.includes.register_methods')
 
-                        @if(!empty(getGeneralSecuritySettings('captcha_for_forgot_pass')))
-                            @include('web.default.includes.captcha_input')
-                        @endif
-
+                        @include('web.default.includes.turnstile_widget')
 
                         <button type="submit" class="btn btn-primary btn-block mt-20">{{ trans('auth.reset_password') }}</button>
                     </form>

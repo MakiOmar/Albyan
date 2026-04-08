@@ -46,6 +46,8 @@
     /**
      * webinar report modal
      * */
+    var courseReportTurnstileWidgetId = null;
+
     $('body').on('click', '#webinarReportBtn', function (e) {
         e.preventDefault();
 
@@ -59,6 +61,18 @@
                 content: 'p-0 text-left',
             },
             width: '48rem',
+            onOpen: function () {
+                var host = document.querySelector('.swal2-container .js-course-report-turnstile-host');
+                if (host && window.turnstileSiteKey && typeof turnstile !== 'undefined') {
+                    courseReportTurnstileWidgetId = turnstile.render(host, {sitekey: window.turnstileSiteKey});
+                }
+            },
+            onClose: function () {
+                if (courseReportTurnstileWidgetId !== null && typeof turnstile !== 'undefined' && turnstile.remove) {
+                    turnstile.remove(courseReportTurnstileWidgetId);
+                    courseReportTurnstileWidgetId = null;
+                }
+            },
         });
     });
 
@@ -96,12 +110,18 @@
         }).fail(err => {
             $this.removeClass('loadingbar primary').prop('disabled', false);
             var errors = err.responseJSON;
+            if (typeof turnstile !== 'undefined' && typeof turnstile.reset === 'function') {
+                turnstile.reset();
+            }
             if (errors && errors.errors) {
                 Object.keys(errors.errors).forEach((key) => {
                     const error = errors.errors[key];
                     let element = $form.find('[name="' + key + '"]');
+                    if (!element.length && key === 'cf-turnstile-response') {
+                        element = $form.find('.js-course-report-turnstile-wrap');
+                    }
                     element.addClass('is-invalid');
-                    element.parent().find('.invalid-feedback').text(error[0]);
+                    element.closest('.form-group').find('.invalid-feedback').first().text(error[0]);
                 });
             }
         });

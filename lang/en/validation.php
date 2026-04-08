@@ -134,6 +134,10 @@ return [
     ],
 
     'captcha' => 'Incorrect captcha...',
+
+    'turnstile' => 'Security verification failed. Please try again.',
+
+    'at_least_two_words' => 'The :attribute must contain at least two words.',
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes
@@ -145,6 +149,8 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'cf-turnstile-response' => 'security check',
+    ],
 
 ];

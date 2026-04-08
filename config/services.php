@@ -91,4 +91,14 @@ return [
         'load_strategy' => env('GTM_LOAD_STRATEGY', 'idle'),
         'idle_timeout_ms' => (int) env('GTM_IDLE_TIMEOUT_MS', 2500),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cloudflare Turnstile
+    |--------------------------------------------------------------------------
+    */
+    'turnstile' => [
+        'site_key' => env('TURNSTILE_SITE_KEY'),
+        'secret_key' => env('TURNSTILE_SECRET_KEY'),
+    ],
 ];

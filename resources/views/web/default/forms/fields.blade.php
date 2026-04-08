@@ -30,6 +30,8 @@
 
         @include('web.default.forms.handle_field',['fields' => $form->fields])
 
+        @include('web.default.includes.turnstile_widget')
+
         <div class="d-flex align-items-center justify-content-end mt-30">
             <button type="button" class="js-clear-form btn btn-danger mr-10">{{ trans('update.clear_form') }}</button>
 

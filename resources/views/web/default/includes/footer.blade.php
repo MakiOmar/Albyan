@@ -20,14 +20,17 @@
                         <form action="/newsletters" method="post">
                             {{ csrf_field() }}
 
-                            <div class="form-group d-flex align-items-center m-0">
-                                <div class="w-100">
-                                    <input type="text" name="newsletter_email" class="form-control border-0 @error('newsletter_email') is-invalid @enderror" placeholder="{{ trans('footer.enter_email_here') }}"/>
+                            <div class="form-group d-flex flex-wrap align-items-center m-0">
+                                <div class="w-100 flex-grow-1">
+                                    <input type="email" name="newsletter_email" autocomplete="email" class="form-control border-0 @error('newsletter_email') is-invalid @enderror" placeholder="{{ trans('footer.enter_email_here') }}"/>
                                     @error('newsletter_email')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <button type="submit" class="btn btn-primary rounded-pill">{{ trans('footer.join') }}</button>
+                                <div class="w-100 mt-10">
+                                    @include('web.default.includes.turnstile_widget')
+                                </div>
+                                <button type="submit" class="btn btn-primary rounded-pill mt-10 mt-md-0">{{ trans('footer.join') }}</button>
                             </div>
                         </form>
                     </div>

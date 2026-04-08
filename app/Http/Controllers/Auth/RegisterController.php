@@ -10,6 +10,7 @@ use App\Models\Reward;
 use App\Models\RewardAccounting;
 use App\Models\Role;
 use App\Models\UserMeta;
+use App\Rules\AtLeastTwoWords;
 use App\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -101,15 +102,13 @@ class RegisterController extends Controller
             'mobile' => (($registerMethod == 'mobile') ? 'required' : 'nullable') . '|numeric|unique:users',
             'email' => (($registerMethod == 'email') ? 'required' : 'nullable') . '|email|max:255|unique:users',
             'term' => 'required',
-            'full_name' => 'required|string|min:3',
+            'full_name' => ['required', 'string', 'min:3', new AtLeastTwoWords],
             'password' => 'required|string|min:6|confirmed',
             'password_confirmation' => 'required|same:password',
             'referral_code' => 'nullable|exists:affiliates_codes,code'
         ];
 
-        if (!empty(getGeneralSecuritySettings('captcha_for_register'))) {
-            $rules['captcha'] = 'required|captcha';
-        }
+        $rules = array_merge($rules, turnstile_validation_rules());
 
         return Validator::make($data, $rules, [], [
             'mobile' => trans('auth.mobile'),
@@ -119,6 +118,7 @@ class RegisterController extends Controller
             'password' => trans('auth.password'),
             'password_confirmation' => trans('auth.password_repeat'),
             'referral_code' => trans('financial.referral_code'),
+            'cf-turnstile-response' => trans('validation.attributes.cf-turnstile-response'),
         ]);
     }
 

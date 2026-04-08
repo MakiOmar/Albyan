@@ -97,6 +97,11 @@ class FormsController extends Controller
             abort(403);
         }
 
+        $turnstileRules = turnstile_validation_rules();
+        if (! empty($turnstileRules)) {
+            $request->validate($turnstileRules);
+        }
+
         $errors = $this->checkRequiredFields($request, $form);
         if (!empty($errors) && count($errors) > 0) {
             return back()->withErrors($errors)->withInput($request->all());
@@ -239,6 +244,11 @@ class FormsController extends Controller
             $checkAccess = $this->checkAccess($form, $user);
 
             if ($checkAccess) {
+                $turnstileRules = turnstile_validation_rules();
+                if (! empty($turnstileRules)) {
+                    $request->validate($turnstileRules);
+                }
+
                 $errors = $this->checkRequiredFields($request, $form);
 
                 if (!empty($errors) and count($errors)) {

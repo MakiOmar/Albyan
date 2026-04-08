@@ -12,6 +12,7 @@
                 <textarea name="comment" class="form-control @error('comment') is-invalid @enderror" rows="10"></textarea>
                 <div class="invalid-feedback">@error('comment') {{ $message }} @enderror</div>
             </div>
+            @include('web.default.includes.turnstile_widget')
             <button type="submit" class="btn btn-sm btn-primary">{{ trans('product.post_comment') }}</button>
         </form>
     </div>
