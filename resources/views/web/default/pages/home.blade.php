@@ -1,4 +1,4 @@
-@extends(getTemplate().'.layouts.app')
+﻿@extends(getTemplate().'.layouts.app')
 @php
 
 @endphp
@@ -167,7 +167,7 @@
     @include('web.default.pages.includes.home_statistics')
     --}}
     <blockquote class="blockquote text-center p-4 border-start border-4" style="min-height: 200px; width: 100%;">
-        <h2 style="margin-bottom: 1rem;">عن المعهد</h2>
+        <h1 style="margin-bottom: 1rem;">عن المعهد</h1>
         <p class="mb-0" style="font-size: 16px; max-width: 768px; margin: auto; line-height: 1.6; min-height: 120px; height: auto; overflow: hidden;">
             معهد البيان للخدمات التعليمية يقدم تجربة تعليمية متميزة مع نخبة من المحاضرين والخبراء في مختلف المجالات. 
             يقدم المعهد مئات الدبلومات التدريبية الاحترافية المصممة لتلبية احتياجات سوق العمل، مع خيارات مرنة في الحضور من مقر المعهد أو الدراسة أون لاين. 
@@ -183,7 +183,7 @@
                 <div class="container position-relative">
 
                 <div class="px-20 px-md-0">
-                    <h1 class="section-title">{{ trans('home.featured_classes') }}</h1>
+                    <h2 class="section-title">{{ trans('home.featured_classes') }}</h2>
                     {{--
                     <p class="section-hint">{{ trans('home.featured_classes_hint') }}</p>
                     --}}
@@ -283,7 +283,7 @@
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between ">
                     <div>
-                        <h1 class="section-title">{{ trans('update.latest_bundles') }}</h1>
+                        <h2 class="section-title">{{ trans('update.latest_bundles') }}</h2>
                         <p class="section-hint">{{ trans('update.latest_bundles_hint') }}</p>
                     </div>
 
@@ -314,7 +314,7 @@
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between ">
                     <div>
-                        <h1 class="section-title">{{ trans('update.upcoming_courses') }}</h1>
+                        <h2 class="section-title">{{ trans('update.upcoming_courses') }}</h2>
                         <p class="section-hint">{{ trans('update.upcoming_courses_home_section_hint') }}</p>
                     </div>
 
@@ -349,7 +349,7 @@
             <section class="home-sections home-sections-swiper container category-courses-home-section">
                 <div class="d-flex justify-content-between ">
                     <div>
-                        <h1 class="section-title">{{ $catCategory->title }}</h1>
+                        <h2 class="section-title">{{ $catCategory->title }}</h2>
                     </div>
                     <a href="{{ $catCategory->getUrl() }}" class="btn btn-border-white">{{ trans('home.view_all') }}</a>
                 </div>
@@ -373,7 +373,7 @@
         {{-- Site FAQs section: accordions --}}
         @if($homeSection->name == \App\Models\HomeSection::$faq_section && !empty($siteFaqs) && !$siteFaqs->isEmpty())
             <section class="home-sections container mb-5 home-faq-section">
-                <h1 class="section-title">{{ trans('home.faq_section_title') }}</h1>
+                <h2 class="section-title">{{ trans('home.faq_section_title') }}</h2>
                 <div class="accordion mt-4" id="homeFaqAccordion">
                     @foreach($siteFaqs as $index => $siteFaq)
                         <div class="card border rounded-sm mb-2">
@@ -398,7 +398,7 @@
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between ">
                     <div>
-                        <h1 class="section-title">{{ trans('home.best_rates') }}</h1>
+                        <h2 class="section-title">{{ trans('home.best_rates') }}</h2>
 
                         <p class="section-hint">{{ trans('home.latest_webinars_hint') }}</p>
                     </div>
@@ -444,7 +444,7 @@
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h1 class="section-title">{{ trans('home.best_rates') }}</h1>
+                        <h2 class="section-title">{{ trans('home.best_rates') }}</h2>
                         <p class="section-hint">{{ trans('home.best_rates_hint') }}</p>
                     </div>
 
@@ -493,7 +493,7 @@
             <section class="home-sections container">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h1 class="section-title">{{ trans('home.best_sellers') }}</h1>
+                        <h2 class="section-title">{{ trans('home.best_sellers') }}</h2>
                         <p class="section-hint">{{ trans('home.best_sellers_hint') }}</p>
                     </div>
 
@@ -524,7 +524,7 @@
             <section class="home-sections container">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h1 class="section-title">{{ trans('home.discount_classes') }}</h1>
+                        <h2 class="section-title">{{ trans('home.discount_classes') }}</h2>
                         <p class="section-hint">{{ trans('home.discount_classes_hint') }}</p>
                     </div>
 
@@ -553,7 +553,7 @@
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h1 class="section-title">{{ trans('home.free_classes') }}</h1>
+                        <h2 class="section-title">{{ trans('home.free_classes') }}</h2>
                         <p class="section-hint">{{ trans('home.free_classes_hint') }}</p>
                     </div>
 
@@ -584,7 +584,7 @@
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h1 class="section-title">{{ trans('update.store_products') }}</h1>
+                        <h2 class="section-title">{{ trans('update.store_products') }}</h2>
                         <p class="section-hint">{{ trans('update.store_products_hint') }}</p>
                     </div>
 
@@ -620,7 +620,7 @@
 
                 <section class="container home-sections home-sections-swiper">
                     <div>
-                        <h1 class="section-title">{{ trans('home.testimonials') }}</h1>
+                        <h2 class="section-title">{{ trans('home.testimonials') }}</h2>
                         {{--
                         <p class="section-hint">{{ trans('home.testimonials_hint') }}</p>
                         --}}
@@ -735,7 +735,7 @@
 
                 <section class="container home-sections home-sections-swiper">
                     <div class="text-center">
-                        <h1 class="section-title">{{ trans('home.subscribe_now') }}</h1>
+                        <h2 class="section-title">{{ trans('home.subscribe_now') }}</h2>
                         <p class="section-hint">{{ trans('home.subscribe_now_hint') }}</p>
                     </div>
 
@@ -1030,7 +1030,7 @@
                 <div class="container">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h1 class="section-title">{{ trans('home.instructors') }}</h1>
+                            <h2 class="section-title">{{ trans('home.instructors') }}</h2>
                             <p class="section-hint">{{ trans('home.instructors_hint') }}</p>
                         </div>
 
@@ -1113,7 +1113,7 @@
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h1 class="section-title">{{ trans('home.organizations') }}</h1>
+                        <h2 class="section-title">{{ trans('home.organizations') }}</h2>
                         <p class="section-hint">{{ trans('home.organizations_hint') }}</p>
                     </div>
 
@@ -1152,7 +1152,7 @@
             <section class="home-sections container">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h1 class="section-title">{{ trans('home.blog') }}</h1>
+                        <h2 class="section-title">{{ trans('home.blog') }}</h2>
                         <p class="section-hint">{{ trans('home.blog_hint') }}</p>
                     </div>
 
