@@ -24,6 +24,6 @@ return [
     'contact_us_title' => 'اتصل بنا',
     'map_iframe_title' => 'خريطة موقع معهد البيان — دبي، الإمارات',
     'footer_logo_alt' => 'شعار التذييل',
-    'obfuscated_mailto_aria' => 'إرسال بريد إلكتروني',
+    'obfuscated_mailto_link_text' => 'راسلنا عبر البريد الإلكتروني',
 
 ];

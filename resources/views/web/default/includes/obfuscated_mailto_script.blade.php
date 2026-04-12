@@ -1,4 +1,4 @@
-{{-- Initializes .js-obfuscated-mailto links: decodes data-email-b64 and opens mailto on click (no plaintext address in source). --}}
+{{-- Attaches click handler: opens mailto from data-email-b64 (link label stays human-readable text only). --}}
 @once
     <script>
         (function () {
@@ -17,12 +17,6 @@
                     }
                     if (!email) {
                         return;
-                    }
-                    var label = anchor.querySelector('.js-obfuscated-mailto-label');
-                    if (label) {
-                        label.textContent = email;
-                    } else if (!anchor.textContent.trim()) {
-                        anchor.appendChild(document.createTextNode(email));
                     }
                     anchor.addEventListener('click', function (event) {
                         event.preventDefault();

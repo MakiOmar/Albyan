@@ -24,6 +24,6 @@ return [
     'contact_us_title' => 'Contact us',
     'map_iframe_title' => 'Albyan Institute location map — Dubai, UAE',
     'footer_logo_alt' => 'Footer logo',
-    'obfuscated_mailto_aria' => 'Send email',
+    'obfuscated_mailto_link_text' => 'Send us an email',
 
 ];
