@@ -56,7 +56,9 @@
             <link rel="preload" as="image" href="{{ $__homeHeroPoster }}" fetchpriority="high">
         @endif
     @endif
-    {{-- Swiper / Owl CSS: non–render-blocking; injected on first user interaction or when home carousel libs start (lazy-css-loader) --}}
+    {{-- Swiper + Owl: load in head on home so sliders layout horizontally before JS runs (lazy loader skips duplicate fetch). --}}
+    <link rel="stylesheet" href="/assets/default/vendors/swiper/swiper-bundle.min.css">
+    <link rel="stylesheet" href="/assets/default/vendors/owl-carousel2/owl.carousel.min.css">
 @endpush
 
 @section('content')

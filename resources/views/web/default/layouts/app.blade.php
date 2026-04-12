@@ -268,6 +268,11 @@
             .swiper-wrapper{
             min-height: 300px;
             }
+            /* If swiper-bundle.css is late/missing, keep horizontal sliders in a row (Swiper adds widths on init) */
+            .home-sections-swiper .swiper-container:not(.swiper-container-vertical) > .swiper-wrapper {
+                display: flex;
+                flex-direction: row;
+            }
             /* Swiper dots: centered row for LTR; spacing via gap (avoids one-sided margins) */
             .home-sections-swiper .swiper-pagination,
             .home-sections .swiper-pagination,

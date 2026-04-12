@@ -324,9 +324,9 @@ class LazyCSSLoader {
         return this.loadCSSWithFallback(cssFile);
     }
 
-    // Batch load multiple CSS files
+    // Batch load multiple CSS files (do not fail the whole batch if one vendor file 404s)
     loadMultipleCSS(cssFiles) {
-        return Promise.all(cssFiles.map(cssFile => this.loadCSSWithFallback(cssFile)));
+        return Promise.allSettled(cssFiles.map(cssFile => this.loadCSSWithFallback(cssFile)));
     }
 
     // Note: Main application CSS files (app.min.css, rtl-app.min.css, panel.min.css) 

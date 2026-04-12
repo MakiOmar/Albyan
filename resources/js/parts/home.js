@@ -137,6 +137,11 @@
                 },
                 breakpoints: slider.breakpoints
             });
+            requestAnimationFrame(function () {
+                try {
+                    swip.update();
+                } catch (e) { /* ignore */ }
+            });
 
             const $el = $("." + slider.container);
 
@@ -171,6 +176,11 @@
                     clickable: true,
                 },
                 breakpoints: defaultBreakpoints,
+            });
+            requestAnimationFrame(function () {
+                try {
+                    swip.update();
+                } catch (e) { /* ignore */ }
             });
             $(container).mouseenter(() => {
                 swip.autoplay.stop();
