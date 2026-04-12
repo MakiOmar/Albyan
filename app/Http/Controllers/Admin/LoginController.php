@@ -101,8 +101,18 @@ class LoginController extends Controller
             $rules['captcha'] = 'required|captcha';
         }
 
-        // validate the form data
-        $this->validate($request, $rules);
+        $rules = array_merge($rules, turnstile_validation_rules());
+
+        $attributeNames = [
+            'email' => trans('auth.email'),
+            'password' => trans('auth.password'),
+            'cf-turnstile-response' => trans('validation.attributes.cf-turnstile-response'),
+        ];
+        if (isset($rules['captcha'])) {
+            $attributeNames['captcha'] = trans('site.captcha');
+        }
+
+        $this->validate($request, $rules, [], $attributeNames);
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
             $user = auth()->user();

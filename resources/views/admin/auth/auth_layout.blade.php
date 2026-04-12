@@ -20,6 +20,11 @@
         <link rel="stylesheet" href="/assets/admin/css/rtl.css">
     @endif
     <link rel="stylesheet" href="/assets/admin/css/custom.css">
+    {{-- Cloudflare Turnstile for admin auth pages when TURNSTILE_SITE_KEY is set --}}
+    @if(!empty(turnstile_site_key()))
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+        <script>window.turnstileSiteKey = @json(turnstile_site_key());</script>
+    @endif
 </head>
 <body class="@if($isRtl) rtl @endif">
 

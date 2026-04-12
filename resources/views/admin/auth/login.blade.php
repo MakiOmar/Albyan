@@ -43,6 +43,9 @@
                 @include('admin.includes.captcha_input')
             @endif
 
+            {{-- Cloudflare Turnstile (same widget as site forms; validates when TURNSTILE_SECRET_KEY is set) --}}
+            @include('web.default.includes.turnstile_widget')
+
             <div class="form-group">
                 <div class="custom-control custom-checkbox">
                     <input type="checkbox" name="remember" class="custom-control-input" tabindex="3"
