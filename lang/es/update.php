@@ -1824,6 +1824,17 @@ return [
 "view_gift" => "View Gift",
 
 "platform_phone_and_email_position" => "Platform phone and email position",
+
+"institute_about_section" => "Institute about block (home, about & contact)",
+"institute_about_section_hint" => "Title and body appear on the homepage institute section, the about page, and the contact page.",
+"institute_about_title" => "Section title",
+"institute_about_title_placeholder" => "e.g. About the institute",
+"institute_about_text" => "Section text",
+"institute_about_text_placeholder" => "Introductory paragraph for your institute.",
+"institute_about_home_footer" => "Homepage footer line (optional)",
+"institute_about_home_footer_placeholder" => "Short line under the text on the homepage only",
+"institute_about_home_footer_hint" => "Shown only on the homepage under the paragraph. Clear the field and save to hide this line.",
+
 "select_position" => "Select Position",
 "header" => "Header",
 "footer" => "Footer",

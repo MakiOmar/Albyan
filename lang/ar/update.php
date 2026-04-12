@@ -1823,6 +1823,17 @@ return [
 "view_gift" => "عرض الهدية",
 
 "platform_phone_and_email_position" => "موضع هاتف البريد الإلكتروني للمنصة",
+
+"institute_about_section" => "قسم نبذة عن المعهد (الرئيسية، من نحن، اتصل بنا)",
+"institute_about_section_hint" => "يظهر العنوان والنص في مقطع المعهد بالصفحة الرئيسية وصفحة من نحن وصفحة اتصل بنا.",
+"institute_about_title" => "عنوان القسم",
+"institute_about_title_placeholder" => "مثال: عن المعهد",
+"institute_about_text" => "نص القسم",
+"institute_about_text_placeholder" => "فقرة تعريفية عن المعهد.",
+"institute_about_home_footer" => "سطر تذييل الصفحة الرئيسية (اختياري)",
+"institute_about_home_footer_placeholder" => "سطر قصير أسفل النص في الصفحة الرئيسية فقط",
+"institute_about_home_footer_hint" => "يظهر في الصفحة الرئيسية فقط أسفل الفقرة. امسح الحقل واحفظ لإخفاء السطر.",
+
 "select_position" => "اختر الموضع",
 "header" => "الرأس",
 "footer" => "التذييل",

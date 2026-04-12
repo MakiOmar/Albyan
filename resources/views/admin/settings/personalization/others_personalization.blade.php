@@ -3,6 +3,18 @@
         $itemValue = json_decode($itemValue, true);
     }
 
+    /* Defaults for institute block (match web partial) — only used when key not yet stored. */
+    $defaultInstituteAboutTitle = 'عن المعهد';
+    $defaultInstituteAboutText = 'معهد البيان للخدمات التعليمية يقدم تجربة تعليمية متميزة مع نخبة من المحاضرين والخبراء في مختلف المجالات. '
+        . 'يقدم المعهد مئات الدبلومات التدريبية الاحترافية المصممة لتلبية احتياجات سوق العمل، مع خيارات مرنة في الحضور من مقر المعهد أو الدراسة أون لاين. '
+        . 'يمنح المعهد شهادات معتمدة محلياً ودولياً تعزز من مكانتك المهنية وينظم حفل تخرج سنوي ضخم لتكريم أعداد كبيرة من خريجي المعهد بمختلف التخصصات بحضور شخصيات هامة. '
+        . 'انضم إلى معهد البيان للارتقاء بمسارك المهني.';
+    $defaultInstituteAboutFooter = 'معهد البيان للخدمات التعليمية';
+    $iv = is_array($itemValue) ? $itemValue : [];
+    $instituteAboutTitleField = array_key_exists('institute_about_title', $iv) ? $iv['institute_about_title'] : $defaultInstituteAboutTitle;
+    $instituteAboutTextField = array_key_exists('institute_about_text', $iv) ? $iv['institute_about_text'] : $defaultInstituteAboutText;
+    $instituteAboutFooterField = array_key_exists('institute_about_footer', $iv) ? $iv['institute_about_footer'] : $defaultInstituteAboutFooter;
+
 @endphp
 
 @push('styles_top')
@@ -62,6 +74,26 @@
                         <option value="header" {{ (!empty($itemValue) and !empty($itemValue['platform_phone_and_email_position']) and $itemValue['platform_phone_and_email_position'] == 'header') ? 'selected' : '' }}>{{ trans('update.header') }}</option>
                         <option value="footer" {{ (!empty($itemValue) and !empty($itemValue['platform_phone_and_email_position']) and $itemValue['platform_phone_and_email_position'] == 'footer') ? 'selected' : '' }}>{{ trans('update.footer') }}</option>
                     </select>
+                </div>
+
+                {{-- Institute intro: home, about, and contact pages --}}
+                <h5 class="text-dark font-20 mt-5">{{ trans('update.institute_about_section') }}</h5>
+                <p class="text-gray font-14">{{ trans('update.institute_about_section_hint') }}</p>
+
+                <div class="form-group">
+                    <label class="input-label">{{ trans('update.institute_about_title') }}</label>
+                    <input type="text" name="value[institute_about_title]" value="{{ $instituteAboutTitleField }}" class="form-control" placeholder="{{ trans('update.institute_about_title_placeholder') }}"/>
+                </div>
+
+                <div class="form-group">
+                    <label class="input-label">{{ trans('update.institute_about_text') }}</label>
+                    <textarea name="value[institute_about_text]" rows="6" class="form-control" placeholder="{{ trans('update.institute_about_text_placeholder') }}">{{ $instituteAboutTextField }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="input-label">{{ trans('update.institute_about_home_footer') }}</label>
+                    <input type="text" name="value[institute_about_footer]" value="{{ $instituteAboutFooterField }}" class="form-control" placeholder="{{ trans('update.institute_about_home_footer_placeholder') }}"/>
+                    <div class="text-muted font-12 mt-1">{{ trans('update.institute_about_home_footer_hint') }}</div>
                 </div>
 
             </div>
