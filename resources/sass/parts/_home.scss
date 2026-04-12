@@ -158,6 +158,17 @@
 .swiper-pagination {
     bottom: -50px;
     transform: translate(0, 50%) !important;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    column-gap: 14px;
+    row-gap: 6px;
+    width: 100%;
+    left: 0;
+    right: 0;
+    margin-inline: auto;
+    text-align: center;
 
     @media (max-width: $screen-sm-max) {
         bottom: unset;
@@ -171,30 +182,19 @@
         position: relative;
         width: 20px;
         height: 20px;
-        margin-right: 20px;
+        margin: 0;
         padding: 4px;
         background: #ffffff !important;
         border: solid 1px #d4d4d4;
         opacity: 1 !important;
 
-        .rtl & {
-            margin-right: 0;
-            margin-left: 20px;
-        }
-
         @media (max-width: $screen-xs-max) {
             width: 15px;
             height: 15px;
-            margin-right: 10px;
         }
 
         &:last-child {
-            margin-right: 0;
-
-            .rtl & {
-                margin-right: auto;
-                margin-left: 0;
-            }
+            margin: 0;
         }
 
         &.swiper-pagination-bullet-active {

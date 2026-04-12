@@ -268,6 +268,42 @@
             .swiper-wrapper{
             min-height: 300px;
             }
+            /* Swiper dots: centered row for LTR; spacing via gap (avoids one-sided margins) */
+            .home-sections-swiper .swiper-pagination,
+            .home-sections .swiper-pagination,
+            section.home-sections-swiper .swiper-pagination {
+                display: flex !important;
+                flex-wrap: wrap;
+                justify-content: center !important;
+                align-items: center;
+                column-gap: 14px;
+                row-gap: 6px;
+                width: 100% !important;
+                left: 0 !important;
+                right: 0 !important;
+                margin-inline: auto !important;
+                text-align: center !important;
+            }
+            .home-sections-swiper .swiper-pagination .swiper-pagination-bullet,
+            .home-sections .swiper-pagination .swiper-pagination-bullet,
+            section.home-sections-swiper .swiper-pagination .swiper-pagination-bullet {
+                margin: 0 !important;
+            }
+            .albyan-gallery .swiper-pagination {
+                display: flex !important;
+                flex-wrap: wrap;
+                justify-content: center !important;
+                align-items: center;
+                column-gap: 14px;
+                width: 100% !important;
+                left: 0 !important;
+                right: 0 !important;
+                margin-inline: auto !important;
+                text-align: center !important;
+            }
+            .albyan-gallery .swiper-pagination .swiper-pagination-bullet {
+                margin: 0 !important;
+            }
             .home-sections {
                 margin-top: 50px;
             }

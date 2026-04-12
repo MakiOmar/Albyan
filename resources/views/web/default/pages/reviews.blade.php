@@ -148,6 +148,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             function initReviewsGallerySwiper() {
                 new Swiper(".albyan-gallery .mySwiper", {
+                    rtl: document.documentElement.getAttribute("dir") === "rtl",
                     slidesPerView: 1,
                     spaceBetween: 10,
                     pagination: {
@@ -167,6 +168,7 @@
             }
             function initReviewsTestimonialsSwiper() {
                 new Swiper(".testimonials-swiper", {
+                    rtl: document.documentElement.getAttribute("dir") === "rtl",
                     slidesPerView: 1,
                     spaceBetween: 10,
                     pagination: {

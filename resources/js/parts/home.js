@@ -1,6 +1,11 @@
 (function ($) {
     "use strict";
 
+    /** Match `<html dir="ltr|rtl">` so carousels track locale, not cached RTL-only defaults */
+    function pageDirIsRtl() {
+        return typeof document !== "undefined" && document.documentElement.getAttribute("dir") === "rtl";
+    }
+
     const defaultBreakpoints = {
         991: {
             slidesPerView: 3,
@@ -117,6 +122,7 @@
             }
 
             const swip = new Swiper('.' + slider.container, {
+                rtl: pageDirIsRtl(),
                 slidesPerView: 1,
                 spaceBetween: 16,
                 loop: false,
@@ -151,6 +157,7 @@
             const paginationEl = section ? section.querySelector('.category-courses-swiper-pagination') : null;
             if (!paginationEl) return;
             const swip = new Swiper(container, {
+                rtl: pageDirIsRtl(),
                 slidesPerView: 1,
                 spaceBetween: 16,
                 loop: false,
@@ -183,6 +190,7 @@
             }
         });
         $instructorsOwl.owlCarousel({
+            rtl: pageDirIsRtl(),
             loop: true,
             center: true,
             items: 3,
