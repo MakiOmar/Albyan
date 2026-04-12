@@ -134,7 +134,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m0-2H3a2 2 0 00-2 2v8a2 2 0 002 2h18a2 2 0 002-2V8a2 2 0 00-2-2z" />
                     </svg>&nbsp;
-                    <a href="mailto:info@albyaninstitute.net" class="text-white">info@albyaninstitute.net</a>
+                    @include('web.default.includes.obfuscated_mailto_link', ['email' => 'info@albyaninstitute.net', 'class' => 'text-white'])
                 </li>
                 </ul>
 
@@ -185,12 +185,15 @@
 
                         <div class="d-flex align-items-center text-white font-14">
                             <i data-feather="mail" width="20" height="20" class="mr-10"></i>
-                            {{ $generalSettings['site_email'] }}
+                            @include('web.default.includes.obfuscated_mailto_link', ['email' => $generalSettings['site_email'], 'class' => 'text-white'])
                         </div>
                     @endif
                 </div>
             </div>
         </div>
     @endif
+
+    {{-- Decode obfuscated footer/contact mailto links (see obfuscated_mailto_link partial). --}}
+    @include('web.default.includes.obfuscated_mailto_script')
 
 </footer>

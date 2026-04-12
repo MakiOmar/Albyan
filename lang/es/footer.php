@@ -24,5 +24,6 @@ return [
     'contact_us_title' => 'Contáctenos',
     'map_iframe_title' => 'Mapa de ubicación del Instituto Albyan — Dubái, EAU',
     'footer_logo_alt' => 'Logotipo del pie de página',
+    'obfuscated_mailto_aria' => 'Enviar correo electrónico',
 
 ];

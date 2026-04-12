@@ -182,7 +182,8 @@
                     <ul class="list-unstyled mb-2">
                         <li>📞 <a href="tel:+971569001020">971569001020+</a></li>
                         <li>📞 <a href="tel:+97143931889">971043931889+</a></li>
-                        <li>📧 <a href="mailto:info@albayaninstitute.net">info@albayaninstitute.net</a></li>
+                        {{-- Email address built client-side to reduce spam harvesting in page source. --}}
+                        <li>📧 @include('web.default.includes.obfuscated_mailto_link', ['email' => 'info@albayaninstitute.net'])</li>
                     </ul>
                     <div class="map-container text-center pb-1">
                         {{-- Map title for screen readers / locale --}}
