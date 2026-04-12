@@ -8,10 +8,7 @@
     <meta name="theme" content="default">
     <title>{{ $pageTitle ?? '' }} </title>
 
-    {{-- Admin uses local vendor CSS; no third-party preconnect here. --}}
-
-    <!-- Font Preload -->
-    <link rel="preload" href="https://albyan.institute/store/1/fonts/cairo-regular-webfont.woff2" as="font" type="font/woff2" crossorigin>
+    {{-- Admin uses local vendor CSS; no theme @font-face here — do not preload remote fonts (unused preload warnings). --}}
 
     <!-- General CSS File -->
     <link rel="stylesheet" href="/assets/admin/vendor/bootstrap/bootstrap.min.css"/>

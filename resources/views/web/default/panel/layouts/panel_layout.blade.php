@@ -10,8 +10,13 @@
 
     {{-- Preconnect only where a matching request exists (my_groups / my_files push cdnjs when needed). --}}
 
-    <!-- Font Preload -->
-    <link rel="preload" href="https://albyan.institute/store/1/fonts/cairo-regular-webfont.woff2" as="font" type="font/woff2" crossorigin>
+    {{-- Font preload: same URL as @font-face in getThemeFontsSettings() (avoids unused preload warnings). --}}
+    @php
+        $__themePrimaryFont = getThemePrimaryRegularFontUrl();
+    @endphp
+    @if(!empty($__themePrimaryFont))
+        <link rel="preload" href="{{ $__themePrimaryFont }}" as="font" type="font/woff2" crossorigin>
+    @endif
 
     <!-- General CSS File -->
     <link href="/assets/default/css/font.css" rel="stylesheet">

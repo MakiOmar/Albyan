@@ -2070,6 +2070,43 @@ function getThemeFontsSettings()
 }
 
 /**
+ * Primary theme regular font URL for the active layout direction (same selection rules as getThemeFontsSettings()).
+ * Use for link rel=preload as=font so the href matches the first @font-face regular URL.
+ */
+if (!function_exists('getThemePrimaryRegularFontUrl')) {
+    function getThemePrimaryRegularFontUrl(): ?string
+    {
+        $settings = App\Models\Setting::getThemeFontsSettings();
+
+        if (empty($settings) || !is_array($settings)) {
+            return null;
+        }
+
+        $generalSettings = App\Models\Setting::getGeneralSettings();
+        $isRtl = web_layout_is_rtl($generalSettings);
+        $preferredType = $isRtl ? 'rtl' : 'main';
+
+        if (!empty($settings[$preferredType]['regular'])) {
+            return $settings[$preferredType]['regular'];
+        }
+
+        foreach ($settings as $type => $setting) {
+            if ($isRtl && $type === 'main') {
+                continue;
+            }
+            if (!$isRtl && $type === 'rtl') {
+                continue;
+            }
+            if (!empty($setting['regular'])) {
+                return $setting['regular'];
+            }
+        }
+
+        return null;
+    }
+}
+
+/**
  * Pages that should not be indexed when the SEO setting has no explicit "robot" value.
  * If the admin sets robot to index or noindex in SEO settings, that value always wins.
  *
