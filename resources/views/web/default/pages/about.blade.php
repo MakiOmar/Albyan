@@ -44,7 +44,8 @@
 <div class="row">
     @include('web.default.pages.includes.gallery')
     @include('web.default.pages.includes.about_text')
-    <h1 class="text-center w-100 mt-2 mb-2">تحصل على أربع شهادات من معهد البيان وبطاقة عضوية</h1>
+    {{-- Promo line: translated for language switcher --}}
+    <h1 class="text-center w-100 mt-2 mb-2">{{ trans('site.about_certificates_promo_title') }}</h1>
     <!-- Swiper Carousel -->
     <div class="albyan-gallery" style="height: 320px">
          <svg width="74" style="position: absolute;bottom: -10px; left: 0;z-index:20" height="74" viewBox="0 0 74 74" fill="none" xmlns="http://www.w3.org/2000/svg">

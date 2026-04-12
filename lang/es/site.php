@@ -106,4 +106,13 @@ return [
     'message_success_sent' => 'Mensaje enviado con éxito',
     'server_error_try_again' => '¡Error del servidor! Vuelve a intentarlo más tarde ',
     'store_error_try_again' => '¡Operación fallida! Vuelve a intentarlo más tarde ',
+
+    'graduation_celebration_title' => 'Ceremonia de graduación de estudiantes Albyan 2023/2024',
+    'albyan_institute_full_name' => 'Instituto Albyan para Servicios Educativos',
+    'google_rating_based_on_reviews' => '{0} Sin reseñas aún|{1} Según 1 reseña|[2,*] Según :count reseñas',
+    'rate_us_on_google' => 'Valóranos en Google',
+    'show_more_ellipsis' => '... Ver más',
+    'show_less_ellipsis' => '... Cerrar',
+    'gallery_slide_alt' => 'Imagen de la galería :num',
+    'about_certificates_promo_title' => 'Obtenga cuatro certificados del Instituto Albyan y una tarjeta de membresía',
 ];

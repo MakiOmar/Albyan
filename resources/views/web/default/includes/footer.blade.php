@@ -66,13 +66,15 @@
                     <a href="/">
                         @if(!empty($generalSettings['footer_logo']))
                             {{-- width/height reserve aspect ratio for CLS (max display width 200px via CSS) --}}
-                            <img src="{{ $generalSettings['footer_logo'] }}" width="200" height="59" style="width: auto!important;max-width: 200px!important;height:auto" alt="footer logo">
+                            {{-- Localized alt for accessibility and locale-aware pages --}}
+                            <img src="{{ $generalSettings['footer_logo'] }}" width="200" height="59" style="width: auto!important;max-width: 200px!important;height:auto" alt="{{ trans('footer.footer_logo_alt') }}">
                         @endif
                     </a>
                 </div>
 
                 <div class="footer-social mt-2 mb-4">
-                    <h1>تابعنا على</h1>
+                    {{-- Section title: follows active Laravel locale (language switcher) --}}
+                    <h1>{{ trans('footer.follow_us_on') }}</h1>
                     @include('web.default.includes.title_border')
                     @if(!empty($socials) and count($socials))
                     <div class="mt-2">
@@ -85,26 +87,27 @@
                     @endif
                 </div>
 
-                <h1>روابط هامة</h1>
+                <h1>{{ trans('footer.important_links') }}</h1>
                 @include('web.default.includes.title_border')
                 
                 <ul class="list-unstyled  mt-4">
-                    <li class="pb-2"><a href="/contact">اتصل بنا</a></li>
-                    <li class="pb-2"><a href="/certificate_validation">التحقق من صحة الشهادة</a></li>
-                    <li class="pb-2"><a href="/pages/privacy-policy">الشروط والقواعد</a></li>
-                    <li class="pb-2"><a href="/about">معلومات عنا</a></li>
+                    <li class="pb-2"><a href="/contact">{{ trans('footer.footer_nav_contact') }}</a></li>
+                    <li class="pb-2"><a href="/certificate_validation">{{ trans('footer.footer_nav_certificate_validation') }}</a></li>
+                    <li class="pb-2"><a href="/pages/privacy-policy">{{ trans('footer.footer_nav_terms') }}</a></li>
+                    <li class="pb-2"><a href="/about">{{ trans('footer.footer_nav_about') }}</a></li>
                 </ul>
             </div>
 
             <div class="col-md-4 info-section">
-              <h1>معلومات عنا</h1>
+              <h1>{{ trans('footer.about_us_title') }}</h1>
               @include('web.default.includes.title_border')
-                <p class=" mt-4">معهد البيان للخدمات التعليمية يقدم تجربة تعليمية متميزة مع نخبة من المحاضرين والخبراء في مختلف المجالات. يقدم المعهد مئات الدبلومات التدريبية الاحترافية المصممة لتلبية احتياجات سوق العمل، مع خيارات مرنة في الحضور من مقر المعهد أو الدراسة أون لاين. يمنح المعهد شهادات معتمدة محلياً ودولياً تعزز من مكانتك المهنية وينظم حفل تخرج سنوي ضخم لتكريم اعداد كبيرة من خريجي المعهدبمختلف التخصصات بحضور شخصيات هامة. انضم إلى معهد البيان للارتقاء بمسارك المهني. </p>
+                {{-- Institute intro: strings live in lang/{locale}/footer.php for language switcher --}}
+                <p class=" mt-4">{{ trans('footer.about_us_intro') }}</p>
             </div>
 
                         
             <div class="col-md-5 info-section">
-                <h1>اتصل بنا</h1>
+                <h1>{{ trans('footer.contact_us_title') }}</h1>
                 @include('web.default.includes.title_border')
                 <ul class="list-unstyled mt-4">
                 <li class="pb-2 d-flex align-items-center">
@@ -136,7 +139,7 @@
                 </ul>
 
                 <div class="map-container text-center pb-1">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d14432.980440036239!2d55.3405061!3d25.2623388!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f5d12c2143dbf%3A0x59ed5335a90de4ba!2z2YXYudmH2K8g2KfZhNio2YrYp9mGINmE2YTYrtiv2YXYp9iqINin2YTYqti52YTZitmF2YrYqSAtIEFMQllBTiBJTlNUSVRVVEUgRURVQ0FUSU9OIFNVUFBPUlQgU0VSVklDRVM!5e0!3m2!1sen!2seg!4v1739955859681!5m2!1sen!2seg" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Albyan Institute Location Map - Dubai, UAE"></iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d14432.980440036239!2d55.3405061!3d25.2623388!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f5d12c2143dbf%3A0x59ed5335a90de4ba!2z2YXYudmH2K8g2KfZhNio2YrYp9mGINmE2YTYrtiv2YXYp9iqINin2YTYqti52YTZitmF2YrYqSAtIEFMQllBTiBJTlNUSVRVVEUgRURVQ0FUSU9OIFNVUFBPUlQgU0VSVklDRVM!5e0!3m2!1sen!2seg!4v1739955859681!5m2!1sen!2seg" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="{{ trans('footer.map_iframe_title') }}"></iframe>
                 </div>
             </div>
             

@@ -97,4 +97,13 @@ return [
     'message_success_sent' => 'تم ارسال الرسالة بنجاح',
     'server_error_try_again' => 'خطأ تقني حاول مجددا',
     'store_error_try_again' => 'فشلت العملية حاول مجددا',
+
+    'graduation_celebration_title' => 'حفلة تخرج طلاب البيان 2023/2024',
+    'albyan_institute_full_name' => 'معهد البيان للخدمات التعليمية',
+    'google_rating_based_on_reviews' => 'بناءً على :count مراجعة',
+    'rate_us_on_google' => 'قيمنا على جوجل',
+    'show_more_ellipsis' => '... عرض المزيد',
+    'show_less_ellipsis' => '... إغلاق',
+    'gallery_slide_alt' => 'صورة المعرض رقم :num',
+    'about_certificates_promo_title' => 'تحصل على أربع شهادات من معهد البيان وبطاقة عضوية',
 ];

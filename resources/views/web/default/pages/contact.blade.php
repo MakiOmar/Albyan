@@ -178,14 +178,15 @@
             </div>
             <div class="col-12 col-md-6 p-3">
                 <section class="mt-30 mt-md-50">
-                    <h2 class="font-16 font-weight-bold text-secondary mb-2">اتصل بنا</h2>
+                    <h2 class="font-16 font-weight-bold text-secondary mb-2">{{ trans('site.contact_us') }}</h2>
                     <ul class="list-unstyled mb-2">
                         <li>📞 <a href="tel:+971569001020">971569001020+</a></li>
                         <li>📞 <a href="tel:+97143931889">971043931889+</a></li>
                         <li>📧 <a href="mailto:info@albayaninstitute.net">info@albayaninstitute.net</a></li>
                     </ul>
                     <div class="map-container text-center pb-1">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d14432.980440036239!2d55.3405061!3d25.2623388!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f5d12c2143dbf%3A0x59ed5335a90de4ba!2z2YXYudmH2K8g2KfZhNio2YrYp9mGINmE2YTYrtiv2YXYp9iqINin2YTYqti52YTZitmF2YrYqSAtIEFMQllBTiBJTlNUSVRVVEUgRURVQ0FUSU9OIFNVUFBPUlQgU0VSVklDRVM!5e0!3m2!1sen!2seg!4v1739955859681!5m2!1sen!2seg" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Albyan Institute Location Map - Dubai, UAE"></iframe>
+                        {{-- Map title for screen readers / locale --}}
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d14432.980440036239!2d55.3405061!3d25.2623388!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f5d12c2143dbf%3A0x59ed5335a90de4ba!2z2YXYudmH2K8g2KfZhNio2YrYp9mGINmE2YTYrtiv2YXYp9iqINin2YTYqti52YTZitmF2YrYqSAtIEFMQllBTiBJTlNUSVRVVEUgRURVQ0FUSU9OIFNVUFBPUlQgU0VSVklDRVM!5e0!3m2!1sen!2seg!4v1739955859681!5m2!1sen!2seg" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="{{ trans('footer.map_iframe_title') }}"></iframe>
                     </div>
                 </section>
             </div>

@@ -80,7 +80,7 @@
                                                 {!! nl2br(e($visibleText)) !!}
                                                 @if(!empty($hiddenText))
                                                     <span class="hidden-text d-none">{!! nl2br(e($hiddenText)) !!}</span>
-                                                    <button class="show-more-btn text-blue" onclick="toggleText(this)">... عرض المزيد</button>
+                                                    <button type="button" class="show-more-btn text-blue" onclick="toggleText(this)">{{ trans('site.show_more_ellipsis') }}</button>
                                                 @endif
                                             </p>
 
@@ -110,7 +110,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card text-center p-4 shadow-lg">
-                            <h1 class="fw-bold">معهد البيان للخدمات التعليمية</h1>
+                            <h1 class="fw-bold">{{ trans('site.albyan_institute_full_name') }}</h1>
                         
                             <div class="d-flex justify-content-center align-items-center">
                                 <div class="ms-2 d-flex">
@@ -119,12 +119,12 @@
                                 </div>
                             </div>
                         
-                            <p class="text-muted mb-2">بناءً على {{ $rating_reviews['reviews'] }} مراجعة</p>
+                            <p class="text-muted mb-2">{{ trans_choice('site.google_rating_based_on_reviews', $rating_reviews['reviews'], ['count' => $rating_reviews['reviews']]) }}</p>
                             @php
                             $plac_id = env('GOOGLE_PLACE_ID');
                             @endphp
                             <a href="https://g.page/r/CbrkDak1U-1ZEAE/review" target="_blank" style="width: 170px;margin: auto;" class="btn btn-primary">
-                                <i class="fab fa-google"></i> قيمنا على جوجل
+                                <i class="fab fa-google"></i> {{ trans('site.rate_us_on_google') }}
                             </a>
                         </div>
                         
@@ -145,6 +145,19 @@
     <script src="/assets/default/js/parts/contact.min.js"></script>
     <script src="/assets/default/vendors/swiper/swiper-bundle.min.js"></script>
     <script>
+        /* Testimonials expand/collapse — same strings as home, follows server locale */
+        (function (reviewToggleLabels) {
+            window.toggleText = function (button) {
+                var hiddenText = button.previousElementSibling;
+                if (hiddenText.classList.contains('d-none')) {
+                    hiddenText.classList.remove('d-none');
+                    button.textContent = reviewToggleLabels.less;
+                } else {
+                    hiddenText.classList.add('d-none');
+                    button.textContent = reviewToggleLabels.more;
+                }
+            };
+        })(@json(['more' => trans('site.show_more_ellipsis'), 'less' => trans('site.show_less_ellipsis')]));
         document.addEventListener("DOMContentLoaded", function () {
             function initReviewsGallerySwiper() {
                 new Swiper(".albyan-gallery .mySwiper", {
