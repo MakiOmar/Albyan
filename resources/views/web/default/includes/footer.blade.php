@@ -128,14 +128,17 @@
                     <a href="tel:+97143931889" class="text-white">97143931889+</a>
                 </li>
 
+                @if(!empty($generalSettings['site_email']))
                 <li class="pb-2 d-flex align-items-center">
                     <!-- Email Icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" style="height: 16px; width: 16px; margin-right: 0.5rem;" fill="none" viewBox="0 0 24 24" stroke="white">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m0-2H3a2 2 0 00-2 2v8a2 2 0 002 2h18a2 2 0 002-2V8a2 2 0 00-2-2z" />
                     </svg>&nbsp;
-                    @include('web.default.includes.obfuscated_mailto_link', ['email' => 'info@albyaninstitute.net', 'class' => 'text-white'])
+                    {{-- Same source as top nav / copyright bar: General settings → site email (obfuscated in DOM). --}}
+                    @include('web.default.includes.obfuscated_mailto_link', ['email' => $generalSettings['site_email'], 'class' => 'text-white'])
                 </li>
+                @endif
                 </ul>
 
                 <div class="map-container text-center pb-1">
