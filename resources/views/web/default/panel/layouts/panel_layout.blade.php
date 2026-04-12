@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
-
 @php
-    $rtlLanguages = !empty($generalSettings['rtl_languages']) ? $generalSettings['rtl_languages'] : [];
-
-    $isRtl = ((in_array(mb_strtoupper(app()->getLocale()), $rtlLanguages)) or (!empty($generalSettings['rtl_layout']) and $generalSettings['rtl_layout'] == 1));
+    $isRtl = web_layout_is_rtl($generalSettings ?? null);
 @endphp
+<!DOCTYPE html>
+<html lang="{{ app()->getLocale() }}" dir="{{ $isRtl ? 'rtl' : 'ltr' }}">
 <head>
     @include(getTemplate().'.includes.metas')
     <meta name="theme" content="{{ str_replace('web.', '', getTemplate()) }}">

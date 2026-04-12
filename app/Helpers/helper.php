@@ -1524,6 +1524,33 @@ function getGeneralSettings($key = null)
 }
 
 /**
+ * Whether the active UI locale should use RTL (body.rtl, rtl-app stylesheet, etc.).
+ * When rtl_languages lists at least one locale, only those locales are RTL; the legacy
+ * rtl_layout flag then applies only if rtl_languages is empty (single-language RTL sites).
+ */
+function web_layout_is_rtl(?array $generalSettings = null): bool
+{
+    $generalSettings = $generalSettings ?? App\Models\Setting::getGeneralSettings();
+
+    $rtlRaw = $generalSettings['rtl_languages'] ?? [];
+    $rtlLanguages = array_map('mb_strtoupper', array_filter((array) $rtlRaw, static function ($code) {
+        return $code !== null && $code !== '';
+    }));
+
+    $localeUpper = mb_strtoupper(app()->getLocale());
+
+    if (in_array($localeUpper, $rtlLanguages, true)) {
+        return true;
+    }
+
+    if (empty($rtlLanguages) && !empty($generalSettings['rtl_layout']) && (int) $generalSettings['rtl_layout'] === 1) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
  * @param null $key
  * $key => "agora_resolution" | "agora_max_bitrate" | "agora_min_bitrate" | "agora_frame_rate" | "agora_live_streaming" | "agora_chat" | "agora_cloud_rec" | "agora_in_free_courses"
  * "new_interactive_file" | "timezone_in_register" | "timezone_in_create_webinar"
@@ -1966,10 +1993,9 @@ function getThemeFontsSettings()
 
     if (!empty($settings) and count($settings)) {
         
-        // Check if page is RTL
+        // Check if page is RTL (locale-aware when rtl_languages is configured)
         $generalSettings = App\Models\Setting::getGeneralSettings();
-        $rtlLanguages = !empty($generalSettings['rtl_languages']) ? $generalSettings['rtl_languages'] : [];
-        $isRtl = ((in_array(mb_strtoupper(app()->getLocale()), $rtlLanguages)) or (!empty($generalSettings['rtl_layout']) and $generalSettings['rtl_layout'] == 1));
+        $isRtl = web_layout_is_rtl($generalSettings);
         
         // Track loaded fonts to prevent duplicates
         $loadedFonts = [];

@@ -1,6 +1,5 @@
 @php
-    $rtlLanguages = !empty($generalSettings['rtl_languages']) ? $generalSettings['rtl_languages'] : [];
-    $isRtl = ((in_array(mb_strtoupper(app()->getLocale()), $rtlLanguages)) or (!empty($generalSettings['rtl_layout']) and $generalSettings['rtl_layout'] == 1));
+    $isRtl = web_layout_is_rtl($generalSettings ?? null);
 
     $certificateLtrFont = getCertificateMainSettings('ltr_font');
     $certificateRtlFont = getCertificateMainSettings('rtl_font');
