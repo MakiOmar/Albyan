@@ -103,9 +103,9 @@
                         <div class="row">
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label class="input-label font-weight-500">{{ trans('site.your_name') }}</label>
+                                    <label class="input-label font-weight-500" for="contact-name">{{ trans('site.your_name') }}</label>
                                     {{-- Name: at least two words (validated server-side) --}}
-                                    <input type="text" name="name" value="{{ old('name') }}" autocomplete="name" class="form-control @error('name')  is-invalid @enderror"/>
+                                    <input type="text" name="name" id="contact-name" value="{{ old('name') }}" autocomplete="name" maxlength="255" class="form-control @error('name')  is-invalid @enderror" required/>
                                     @error('name')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -115,8 +115,8 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label class="input-label font-weight-500">{{ trans('public.email') }}</label>
-                                    <input type="email" name="email" value="{{ old('email') }}" autocomplete="email" class="form-control @error('email')  is-invalid @enderror"/>
+                                    <label class="input-label font-weight-500" for="contact-email">{{ trans('public.email') }}</label>
+                                    <input type="email" name="email" id="contact-email" value="{{ old('email') }}" autocomplete="email" maxlength="255" class="form-control @error('email')  is-invalid @enderror" required/>
                                     @error('email')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -129,8 +129,8 @@
                         <div class="row">
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label class="input-label font-weight-500">{{ trans('site.phone_number') }}</label>
-                                    <input type="tel" name="phone" value="{{ old('phone') }}" autocomplete="tel" class="form-control @error('phone')  is-invalid @enderror"/>
+                                    <label class="input-label font-weight-500" for="contact-phone">{{ trans('site.phone_number') }}</label>
+                                    <input type="tel" name="phone" id="contact-phone" value="{{ old('phone') }}" autocomplete="tel" minlength="6" maxlength="40" class="form-control @error('phone')  is-invalid @enderror" required/>
                                     @error('phone')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -140,8 +140,8 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label class="input-label font-weight-500">{{ trans('site.subject') }}</label>
-                                    <input type="text" name="subject" value="{{ old('subject') }}" class="form-control @error('subject')  is-invalid @enderror"/>
+                                    <label class="input-label font-weight-500" for="contact-subject">{{ trans('site.subject') }}</label>
+                                    <input type="text" name="subject" id="contact-subject" value="{{ old('subject') }}" minlength="2" maxlength="255" class="form-control @error('subject')  is-invalid @enderror" required/>
                                     @error('subject')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -154,9 +154,9 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label class="input-label font-weight-500">{{ trans('site.message') }}</label>
+                                    <label class="input-label font-weight-500" for="contact-message">{{ trans('site.message') }}</label>
                                     {{-- Message: minimum 100 characters (server-side) --}}
-                                    <textarea name="message" id="contact-message" rows="10" minlength="100" class="form-control @error('message')  is-invalid @enderror">{{ old('message') }}</textarea>
+                                    <textarea name="message" id="contact-message" rows="10" minlength="100" maxlength="10000" class="form-control @error('message')  is-invalid @enderror" required>{{ old('message') }}</textarea>
                                     @error('message')
                                     <div class="invalid-feedback">
                                         {{ $message }}
