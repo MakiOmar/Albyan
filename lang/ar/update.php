@@ -1825,7 +1825,7 @@ return [
 "platform_phone_and_email_position" => "موضع هاتف البريد الإلكتروني للمنصة",
 
 "institute_about_section" => "قسم نبذة عن المعهد (الرئيسية، من نحن، اتصل بنا)",
-"institute_about_section_hint" => "يظهر العنوان والنص في مقطع المعهد بالصفحة الرئيسية وصفحة من نحن وصفحة اتصل بنا.",
+"institute_about_section_hint" => "يظهر العنوان والنص في مقطع المعهد بالصفحة الرئيسية وصفحة من نحن وصفحة اتصل بنا. يبقى المقطع مخفياً في الموقع حتى يُملأ العنوان أو النص (أو كلاهما) ويُحفظ.",
 "institute_about_title" => "عنوان القسم",
 "institute_about_title_placeholder" => "مثال: عن المعهد",
 "institute_about_text" => "نص القسم",

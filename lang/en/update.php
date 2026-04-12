@@ -1825,7 +1825,7 @@ return [
 
 "platform_phone_and_email_position" => "Platform phone and email position",
 "institute_about_section" => "Institute about block (home, about & contact)",
-"institute_about_section_hint" => "Title and body appear on the homepage institute section, the about page, and the contact page.",
+"institute_about_section_hint" => "Title and body appear on the homepage institute section, the about page, and the contact page. The block is hidden on the site until at least one of title or text is filled and saved.",
 "institute_about_title" => "Section title",
 "institute_about_title_placeholder" => "e.g. About the institute",
 "institute_about_text" => "Section text",

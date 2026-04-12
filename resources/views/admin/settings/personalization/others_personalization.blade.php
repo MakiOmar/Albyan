@@ -3,17 +3,10 @@
         $itemValue = json_decode($itemValue, true);
     }
 
-    /* Defaults for institute block (match web partial) — only used when key not yet stored. */
-    $defaultInstituteAboutTitle = 'عن المعهد';
-    $defaultInstituteAboutText = 'معهد البيان للخدمات التعليمية يقدم تجربة تعليمية متميزة مع نخبة من المحاضرين والخبراء في مختلف المجالات. '
-        . 'يقدم المعهد مئات الدبلومات التدريبية الاحترافية المصممة لتلبية احتياجات سوق العمل، مع خيارات مرنة في الحضور من مقر المعهد أو الدراسة أون لاين. '
-        . 'يمنح المعهد شهادات معتمدة محلياً ودولياً تعزز من مكانتك المهنية وينظم حفل تخرج سنوي ضخم لتكريم أعداد كبيرة من خريجي المعهد بمختلف التخصصات بحضور شخصيات هامة. '
-        . 'انضم إلى معهد البيان للارتقاء بمسارك المهني.';
-    $defaultInstituteAboutFooter = 'معهد البيان للخدمات التعليمية';
     $iv = is_array($itemValue) ? $itemValue : [];
-    $instituteAboutTitleField = array_key_exists('institute_about_title', $iv) ? $iv['institute_about_title'] : $defaultInstituteAboutTitle;
-    $instituteAboutTextField = array_key_exists('institute_about_text', $iv) ? $iv['institute_about_text'] : $defaultInstituteAboutText;
-    $instituteAboutFooterField = array_key_exists('institute_about_footer', $iv) ? $iv['institute_about_footer'] : $defaultInstituteAboutFooter;
+    $instituteAboutTitleField = array_key_exists('institute_about_title', $iv) ? $iv['institute_about_title'] : '';
+    $instituteAboutTextField = array_key_exists('institute_about_text', $iv) ? $iv['institute_about_text'] : '';
+    $instituteAboutFooterField = array_key_exists('institute_about_footer', $iv) ? $iv['institute_about_footer'] : '';
 
 @endphp
 
