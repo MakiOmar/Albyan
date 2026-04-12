@@ -16,7 +16,7 @@
                         <strong>{{ trans('footer.join_us_today') }}</strong>
                         <span class="d-block mt-5 text-white">{{ trans('footer.subscribe_content') }}</span>
                     </div>
-                    <div class="subscribe-input bg-white p-10 flex-grow-1 mt-30 mt-md-0">
+                    <div class="subscribe-input p-10 flex-grow-1 mt-30 mt-md-0">
                         <form action="/newsletters" method="post" {!! newsletter_form_non_empty_submit_attribute() !!}>
                             {{ csrf_field() }}
 
@@ -30,7 +30,7 @@
                                 <div class="w-100 mt-10">
                                     @include('web.default.includes.turnstile_widget')
                                 </div>
-                                <button type="submit" class="btn btn-primary rounded-pill mt-10 mt-md-0">{{ trans('footer.join') }}</button>
+                                <button type="submit" class="btn btn-primary rounded-pill mt-10 mt-md-0" style="background-color: #053e6b; color: #ffffff;">{{ trans('footer.join') }}</button>
                             </div>
                         </form>
                     </div>
