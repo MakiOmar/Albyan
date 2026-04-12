@@ -16,9 +16,23 @@
                         <span class="course-count-badge py-5 px-10 text-white rounded">{{ $coursesCount }} {{ trans('product.courses') }}</span>
 
                         <div class="search-input bg-white p-10 flex-grow-1">
+                            {{-- required + pattern: block empty / whitespace-only submit (native validation before /search) --}}
                             <form action="/search" method="get">
                                 <div class="form-group d-flex align-items-center m-0">
-                                    <input type="text" name="search" class="form-control border-0" placeholder="{{ trans('home.slider_search_placeholder') }}"/>
+                                    <label for="classes-hero-search" class="sr-only">{{ trans('home.slider_search_placeholder') }}</label>
+                                    <input
+                                        type="text"
+                                        name="search"
+                                        id="classes-hero-search"
+                                        class="form-control border-0"
+                                        placeholder="{{ trans('home.slider_search_placeholder') }}"
+                                        autocomplete="search"
+                                        required
+                                        minlength="1"
+                                        maxlength="255"
+                                        pattern=".*\S.*"
+                                        title="{{ trans('webinars.search_course') }}"
+                                    />
                                     <button type="submit" class="btn btn-primary rounded-pill">{{ trans('home.find') }}</button>
                                 </div>
                             </form>
