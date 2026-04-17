@@ -46,9 +46,10 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapApiRoutes();
 
-        $this->mapWebRoutes();
-
+        // Admin before web so /{prefix}/... is never swallowed by web fallbacks or catch-alls.
         $this->mapAdminRoutes();
+
+        $this->mapWebRoutes();
 
         $this->mapPanelRoutes();
 

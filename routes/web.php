@@ -146,10 +146,6 @@ Route::group([
     Route::get('/cities', 'CityContactController@index')->name('city.contact.index');
     Route::get('/city/{slug}', 'CityContactController@show')->name('city.contact.show');
 
-    Route::fallback(function () {
-        return view("errors.404", ['pageTitle' => trans('public.error_404_page_title')]);
-    });
-
     // set Locale
     Route::post('/locale', 'LocaleController@setLocale')->name('appLocaleRoute');
 
@@ -494,6 +490,11 @@ Route::group([
         return view('web.default.pages.about');
     });
     Route::post('/certificates/search', [WebinarCertificateController::class, 'search'])->name('certificates.search');
+
+    // Must be last in this group so real routes (and admin routes registered separately) match first.
+    Route::fallback(function () {
+        return view("errors.404", ['pageTitle' => trans('public.error_404_page_title')]);
+    });
 
 });
 
