@@ -101,6 +101,11 @@
                             @can('admin_blog_categories')
                                 <a href="{{ getAdminPanelUrl() }}/blog/categories" class="btn btn-primary ml-2">{{ trans('admin/main.create_category') }}</a>
                             @endcan
+
+                            {{-- Export JSON (title, description, content, image) for WordPress importer plugin --}}
+                            @can('admin_blog_lists')
+                                <a href="{{ getAdminPanelUrl('/blog/export') }}?{{ http_build_query(request()->query()) }}" class="btn btn-outline-primary ml-2">{{ trans('admin/main.export_blog_wordpress') }}</a>
+                            @endcan
                         </div>
 
                         <div class="card-body">

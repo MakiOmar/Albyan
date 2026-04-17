@@ -78,6 +78,60 @@ class BlogController extends Controller
         return $query;
     }
 
+    /**
+     * Export blog posts as JSON for external systems (e.g. WordPress importer).
+     * Includes title, description, content, absolute image URL, slug, locale, and source id per translation.
+     */
+    public function export(Request $request)
+    {
+        $this->authorize('admin_blog_lists');
+
+        removeContentLocale();
+
+        $query = Blog::query();
+        $blogs = $this->filters($query, $request)
+            ->with('translations')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $posts = [];
+        foreach ($blogs as $blog) {
+            $rawImage = trim((string) ($blog->getAttributes()['image'] ?? ''));
+            $imageUrl = $rawImage !== '' ? url($rawImage) : null;
+
+            foreach ($blog->translations as $translation) {
+                $posts[] = [
+                    'source_id' => $blog->id,
+                    'slug' => $blog->slug,
+                    'locale' => $translation->locale,
+                    'status' => $blog->status,
+                    'title' => $translation->title,
+                    'description' => $translation->description,
+                    'content' => $translation->content,
+                    'image' => $imageUrl,
+                ];
+            }
+        }
+
+        $payload = [
+            'format' => 'rocket_lms_blog_export',
+            'version' => 1,
+            'exported_at' => now()->toIso8601String(),
+            'posts' => $posts,
+        ];
+
+        $filename = 'rocket-lms-blog-export-' . date('Y-m-d-His') . '.json';
+
+        return response()->json(
+            $payload,
+            200,
+            [
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ],
+            JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT
+        );
+    }
+
     public function create()
     {
         $this->authorize('admin_blog_create');

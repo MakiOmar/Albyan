@@ -212,6 +212,7 @@ return [
 'author' => 'Author',
 'all_authors' => 'All Authors',
 'create_blog' => 'New Blog Post',
+'export_blog_wordpress' => 'Export for WordPress (JSON)',
 'new_post' => 'New Post',
 'new_article' => 'New Article',
 'my_articles' => 'My Articles',

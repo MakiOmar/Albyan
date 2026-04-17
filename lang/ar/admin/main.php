@@ -175,6 +175,7 @@ return [
     'author' => 'الناشر',
     'all_authors' => 'كل الناشرين',
     'create_blog' => 'منشور مدونة جديد',
+    'export_blog_wordpress' => 'تصدير لـ WordPress (JSON)',
     'new_post' => 'منشور جديد',
     'new_article' => 'مقالة جديدة',
     'my_articles' => 'مقالاتي',

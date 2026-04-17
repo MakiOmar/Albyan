@@ -536,6 +536,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
 
         Route::group(['prefix' => 'blog'], function () {
             Route::get('/', 'BlogController@index');
+            Route::get('/export', 'BlogController@export');
             Route::get('/create', 'BlogController@create');
             Route::post('/store', 'BlogController@store');
             Route::post('/search', 'BlogController@search');
