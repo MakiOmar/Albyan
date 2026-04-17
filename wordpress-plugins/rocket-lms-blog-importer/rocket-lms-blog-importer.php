@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Rocket LMS Blog Importer
- * Description: Import blog posts from a Rocket LMS JSON export (title, description, content, featured image).
- * Version: 1.0.0
+ * Description: Import blog posts from a Rocket LMS JSON export (title, description, featured image) for a single-language site.
+ * Version: 1.1.0
  * Author: Rocket LMS
  * Requires at least: 5.8
  * Requires PHP: 7.4
@@ -21,8 +21,6 @@ if (!defined('ABSPATH')) {
 final class Rocket_LMS_Blog_Importer
 {
     private const META_SOURCE_ID = '_rocket_lms_source_id';
-
-    private const META_LOCALE = '_rocket_lms_locale';
 
     public function __construct()
     {
@@ -141,17 +139,17 @@ final class Rocket_LMS_Blog_Importer
             }
 
             $sourceId = isset($row['source_id']) ? (int) $row['source_id'] : 0;
-            $locale = isset($row['locale']) ? sanitize_key((string) $row['locale']) : 'default';
             $slug = isset($row['slug']) ? sanitize_title((string) $row['slug']) : '';
             $description = isset($row['description']) ? (string) $row['description'] : '';
+            // Legacy v1 exports may include body in "content"; v2 uses description only.
             $content = isset($row['content']) ? (string) $row['content'] : '';
             $imageUrl = isset($row['image']) ? esc_url_raw((string) $row['image']) : '';
             $status = (isset($row['status']) && $row['status'] === 'publish') ? 'publish' : 'draft';
 
             $postContent = $content !== '' ? $content : $description;
-            $excerpt = wp_strip_all_tags($description);
+            $excerpt = wp_trim_words(wp_strip_all_tags($description), 55, '…');
 
-            $existingId = $this->find_existing_post_id($sourceId, $locale);
+            $existingId = $this->find_existing_post_id($sourceId);
 
             if ($existingId && $duplicateMode === 'skip') {
                 $skipped++;
@@ -187,7 +185,6 @@ final class Rocket_LMS_Blog_Importer
             if ($sourceId > 0) {
                 update_post_meta($postId, self::META_SOURCE_ID, $sourceId);
             }
-            update_post_meta($postId, self::META_LOCALE, $locale);
 
             if ($imageUrl !== '') {
                 $this->attach_featured_image($postId, $imageUrl, $title);
@@ -215,7 +212,7 @@ final class Rocket_LMS_Blog_Importer
         return $out;
     }
 
-    private function find_existing_post_id(int $sourceId, string $locale): int
+    private function find_existing_post_id(int $sourceId): int
     {
         if ($sourceId <= 0) {
             return 0;
@@ -226,17 +223,8 @@ final class Rocket_LMS_Blog_Importer
             'post_status' => 'any',
             'posts_per_page' => 1,
             'fields' => 'ids',
-            'meta_query' => [
-                'relation' => 'AND',
-                [
-                    'key' => self::META_SOURCE_ID,
-                    'value' => $sourceId,
-                ],
-                [
-                    'key' => self::META_LOCALE,
-                    'value' => $locale,
-                ],
-            ],
+            'meta_key' => self::META_SOURCE_ID,
+            'meta_value' => $sourceId,
         ]);
 
         if ($q->have_posts()) {

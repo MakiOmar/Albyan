@@ -79,8 +79,8 @@ class BlogController extends Controller
     }
 
     /**
-     * Export blog posts as JSON for external systems (e.g. WordPress importer).
-     * Includes title, description, content, absolute image URL, slug, locale, and source id per translation.
+     * Export blog posts as JSON for a single-language WordPress site.
+     * One row per post: default site locale only; title, description, image URL (plus source_id, slug, status for import).
      */
     public function export(Request $request)
     {
@@ -94,28 +94,32 @@ class BlogController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        $defaultLocale = mb_strtolower(getDefaultLocale());
         $posts = [];
         foreach ($blogs as $blog) {
+            $translation = $blog->translations->first(function ($t) use ($defaultLocale) {
+                return mb_strtolower((string) $t->locale) === $defaultLocale;
+            }) ?? $blog->translations->first();
+            if (empty($translation)) {
+                continue;
+            }
+
             $rawImage = trim((string) ($blog->getAttributes()['image'] ?? ''));
             $imageUrl = $rawImage !== '' ? url($rawImage) : null;
 
-            foreach ($blog->translations as $translation) {
-                $posts[] = [
-                    'source_id' => $blog->id,
-                    'slug' => $blog->slug,
-                    'locale' => $translation->locale,
-                    'status' => $blog->status,
-                    'title' => $translation->title,
-                    'description' => $translation->description,
-                    'content' => $translation->content,
-                    'image' => $imageUrl,
-                ];
-            }
+            $posts[] = [
+                'source_id' => $blog->id,
+                'slug' => $blog->slug,
+                'status' => $blog->status,
+                'title' => $translation->title,
+                'description' => $translation->description,
+                'image' => $imageUrl,
+            ];
         }
 
         $payload = [
             'format' => 'rocket_lms_blog_export',
-            'version' => 1,
+            'version' => 2,
             'exported_at' => now()->toIso8601String(),
             'posts' => $posts,
         ];
