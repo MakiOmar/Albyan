@@ -1837,7 +1837,7 @@ return [
 "select_position" => "اختر الموضع",
 "header" => "الرأس",
 "footer" => "التذييل",
-"platform_copyright_hint" => "جميع الحقوق محفوظة لمنصة نظام إدارة التعلم",
+"platform_copyright_hint" => "جميع الحقوق محفوظة لمجموعة البيان للخدمات التعليمية",
 "admin_template" => "قالب المسؤول",
 "front_template" => "القالب الأمامي",
 
