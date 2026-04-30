@@ -2133,6 +2133,11 @@ function seoPagesDefaultNoindex(): array
  * */
 function getPageRobot($page)
 {
+    $globalSeoSettings = getSeoMetas();
+    if (is_array($globalSeoSettings) && !empty($globalSeoSettings['global_noindex'])) {
+        return getPageRobotNoIndex();
+    }
+
     $seoSettings = getSeoMetas($page);
     if (!is_array($seoSettings)) {
         $seoSettings = [];
