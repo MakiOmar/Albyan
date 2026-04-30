@@ -63,6 +63,17 @@
                                                     <p class="mb-0">- {{ trans('update.extra_meta_tags_hint4') }}</p>
                                                 </div>
 
+                                                <div class="form-group custom-switches-stacked">
+                                                    <label class="custom-switch pl-0 d-flex align-items-center">
+                                                        <label class="custom-switch-description mb-0 mr-2">Global indexing</label>
+                                                        <input type="hidden" name="value[global_noindex]" value="0">
+                                                        <input type="checkbox" name="value[global_noindex]" id="globalNoindexRobot" value="1" {{ (!empty($itemValue) and !empty($itemValue['global_noindex'])) ? 'checked="checked"' : '' }} class="custom-switch-input"/>
+                                                        <span class="custom-switch-indicator"></span>
+                                                        <label class="custom-switch-description mb-0 cursor-pointer" for="globalNoindexRobot">Prevent indexing for all pages</label>
+                                                    </label>
+                                                    <small class="text-muted d-block mt-1">When enabled, all pages output <code>noindex,nofollow</code> regardless of per-page SEO settings.</small>
+                                                </div>
+
                                                 <button type="submit" class="btn btn-primary">{{ trans('admin/main.submit') }}</button>
                                             </form>
                                         </div>
