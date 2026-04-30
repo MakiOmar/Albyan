@@ -1,0 +1,14 @@
+---
+description: Commit scope, review quality, and release safety checks
+alwaysApply: true
+---
+
+# Commit and Release Hygiene
+
+- Keep commits focused to one concern; avoid mixing unrelated refactors.
+- Review for security, performance, and backward compatibility before completion.
+- Remove dead code, debug snippets, and temporary scaffolding before commit.
+- Confirm new strings are translation-ready and text domain usage is consistent.
+- Document behavior changes affecting templates, hooks, or public APIs.
+- Avoid shipping breaking changes without explicit approval and migration notes.
+- Verify dependency additions are necessary, maintained, and minimal.

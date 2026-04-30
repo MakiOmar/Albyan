@@ -1,0 +1,19 @@
+---
+description: Avoid CSS !important unless explicitly requested by the user
+globs: **/*.{css,scss,sass,less}
+alwaysApply: false
+---
+
+# CSS `!important` Usage Rule
+
+- Do not use CSS `!important` by default.
+- Prefer proper selector specificity, source order, or scoped component styles.
+- Use `!important` only when the user explicitly asks for it in the current task.
+- If `!important` is used by explicit request, keep usage minimal and document why in a brief inline comment.
+
+## Preferred Fixes Before `!important`
+
+- Increase specificity in a controlled way (avoid selector bloat).
+- Move/adjust rule order in the cascade.
+- Refactor conflicting selectors to reduce unintended overrides.
+- For utility-like overrides, prefer dedicated modifier classes over forcing cascade breaks.

@@ -1,0 +1,15 @@
+---
+description: Mandatory quality gates and static analysis expectations
+alwaysApply: true
+---
+
+# Quality Gates and Tooling
+
+- Run and fix WordPress Coding Standards checks before finalizing (`phpcs` with WPCS).
+- Treat security-relevant warnings as blockers, not informational suggestions.
+- Run PHP syntax checks and JS/CSS linting on changed files.
+- Prefer automated formatting/lint fixes where available, then review manually.
+- Keep CI checks green before release; do not ignore failures without documented rationale.
+- Add regression tests for fixed bugs and critical flows when test harness exists.
+- For performance-sensitive changes, include before/after evidence (query count, TTFB, or asset size).
+- Ensure build artifacts are reproducible and do not include local-only files.

@@ -1,0 +1,48 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "zskeleton/blog-category-terms",
+	"version": "1.0.0",
+	"title": "Blog: Categories",
+	"category": "zskeleton-blog",
+	"icon": "category",
+	"description": "Top-level post categories (term archives). Respects Content settings unless you override layout or count below.",
+	"keywords": [ "blog", "categories", "taxonomy", "zskeleton", "ZSkeleton" ],
+	"textdomain": "zskeleton",
+	"editorScript": "zskeleton-blog-hub-blocks-editor",
+	"attributes": {
+		"layout": {
+			"type": "string",
+			"default": ""
+		},
+		"maxTerms": {
+			"type": "integer",
+			"default": 0
+		},
+		"showSectionHeading": {
+			"type": "boolean",
+			"default": true
+		},
+		"sectionHeading": {
+			"type": "string",
+			"default": ""
+		},
+		"useThemeVisibility": {
+			"type": "boolean",
+			"default": true
+		},
+		"categoryIds": {
+			"type": "array",
+			"default": [],
+			"items": {
+				"type": "number"
+			}
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"visibility": false
+	},
+	"render": "file:./render.php"
+}

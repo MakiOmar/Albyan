@@ -1,0 +1,5132 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ZSkeleton 1.0.16\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/theme/zskeleton\n"
+"Last-Translator: \n"
+"Language-Team: English (United States)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-04-02T05:50:07+00:00\n"
+"PO-Revision-Date: 2026-04-22 18:38:12+0000\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: zskeleton\n"
+
+#. Theme Name of the theme
+#: style.css
+msgid "ZSkeleton"
+msgstr "ZSkeleton"
+
+#. Theme URI of the theme
+#: style.css
+msgid "https://github.com/MakiOmar/ZSkeleton"
+msgstr "https://github.com/MakiOmar/ZSkeleton"
+
+#. Description of the theme
+#: style.css
+msgid "A reusable WordPress base theme with membership management, FAQ management, and common website components for rapid project setup."
+msgstr "A reusable WordPress base theme with membership management, FAQ management, and common website components for rapid project setup."
+
+#. Author of the theme
+#: style.css
+msgid "MakiOmar"
+msgstr "MakiOmar"
+
+#. Author URI of the theme
+#: style.css
+msgid "https://github.com/MakiOmar"
+msgstr "https://github.com/MakiOmar"
+
+#: archive-faqs.php:16 includes/post-types/class-faqs.php:67 page-faqs.php:17
+msgid "Frequently Asked Questions"
+msgstr "Frequently Asked Questions"
+
+#: archive-faqs.php:18 page-faqs.php:18
+msgid "Find answers to common questions about ZSkeleton membership, services, and resources."
+msgstr "Find answers to common questions about ZSkeleton membership, services, and resources."
+
+#: page-faqs.php:70
+msgid "Still have questions?"
+msgstr "Still have questions?"
+
+#: page-faqs.php:71
+msgid "Can't find what you're looking for? Our team is here to help."
+msgstr "Can't find what you're looking for? Our team is here to help."
+
+#: archive-faqs.php:25
+msgid "Search FAQs..."
+msgstr "Search FAQs..."
+
+#: archive-faqs.php:35 includes/post-types/class-faqs.php:103
+msgid "All Categories"
+msgstr "All Categories"
+
+#: archive-faqs.php:55
+msgid "Most Asked Questions"
+msgstr "Most Asked Questions"
+
+#: archive-faqs.php:78
+msgid "All Questions"
+msgstr "All Questions"
+
+#: archive-faqs.php:105 page-faqs.php:62
+msgid "No FAQs found"
+msgstr "No FAQs found"
+
+#: comments.php:23
+msgid "One comment"
+msgstr "One comment"
+
+#. translators: %s: comment count
+#: comments.php:27
+#, php-format
+msgid "%s comment"
+msgid_plural "%s comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: comments.php:50
+msgid "Comments are closed."
+msgstr "Comments are closed."
+
+#: footer.php:24
+msgid "Stay Updated with ZSkeleton Research"
+msgstr "Stay Updated with ZSkeleton Research"
+
+#: footer.php:25
+msgid "Join our community. Get exclusive insights, updates, and practical resources delivered to your inbox."
+msgstr "Join our community. Get exclusive insights, updates, and practical resources delivered to your inbox."
+
+#: footer.php:29
+msgid "Enter your professional email"
+msgstr "Enter your professional email"
+
+#: footer.php:31
+msgid "Join Community"
+msgstr "Join Community"
+
+#: footer.php:35
+msgid "By subscribing, you agree to receive updates and can unsubscribe at any time."
+msgstr "By subscribing, you agree to receive updates and can unsubscribe at any time."
+
+#: footer.php:92 template-parts/header-split-top-search.php:63
+msgid "Facebook"
+msgstr "Facebook"
+
+#: footer.php:99 template-parts/header-split-top-search.php:68
+msgid "Twitter/X"
+msgstr "Twitter/X"
+
+#: footer.php:106 template-parts/header-split-top-search.php:73
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+#: footer.php:113 template-parts/header-split-top-search.php:78
+msgid "YouTube"
+msgstr "YouTube"
+
+#: footer.php:120 template-parts/header-split-top-search.php:53
+msgid "Instagram"
+msgstr "Instagram"
+
+#: footer.php:127 template-parts/header-split-top-search.php:83
+msgid "GitHub"
+msgstr "GitHub"
+
+#: footer.php:144
+msgid "Quick Links"
+msgstr "Quick Links"
+
+#: footer.php:146
+msgid "About Us"
+msgstr "About Us"
+
+#. Template Name of the theme
+#: footer.php:148 header.php:193 header.php:716
+#: includes/class-walker-nav-menu-split-logo.php:97
+#: includes/common-pages.php:63 sidebar.php:81
+#: template-parts/header-split-top-search.php:276
+msgid "Memberships"
+msgstr "Memberships"
+
+#: footer.php:150 footer.php:166 footer.php:234 header.php:195 header.php:719
+#: includes/class-walker-nav-menu-split-logo.php:100
+#: includes/post-types/class-faqs.php:38 sidebar.php:79
+#: template-parts/header-split-top-search.php:278
+msgid "FAQs"
+msgstr "FAQs"
+
+#: footer.php:151 page-faqs.php:73 sidebar.php:150
+msgid "Contact Us"
+msgstr "Contact Us"
+
+#: footer.php:163
+msgid "Resources"
+msgstr "Resources"
+
+#: footer.php:165 header.php:196 header.php:718
+#: includes/class-walker-nav-menu-split-logo.php:99
+#: includes/common-pages.php:67 page-blog.php:53
+#: template-parts/header-split-top-search.php:279
+msgid "Blog"
+msgstr "Blog"
+
+#: footer.php:167 footer.php:232
+msgid "Privacy Policy"
+msgstr "Privacy Policy"
+
+#: footer.php:168 footer.php:233
+msgid "Terms & Conditions"
+msgstr "Terms & Conditions"
+
+#: footer.php:180
+msgid "Contact Information"
+msgstr "Contact Information"
+
+#: footer.php:183
+msgid "General Inquiries:"
+msgstr "General Inquiries:"
+
+#: footer.php:189
+msgid "Support:"
+msgstr "Support:"
+
+#: footer.php:193
+msgid "Partnerships:"
+msgstr "Partnerships:"
+
+#: footer.php:198
+msgid "Membership Support:"
+msgstr "Membership Support:"
+
+#: footer.php:203
+msgid "Press:"
+msgstr "Press:"
+
+#: footer.php:221
+msgid "All rights reserved."
+msgstr "All rights reserved."
+
+#: footer.php:247
+msgid "Back to top"
+msgstr "Back to top"
+
+#: footer.php:260
+msgid "Chat on WhatsApp"
+msgstr "Chat on WhatsApp"
+
+#: footer.php:263 template-parts/header-split-top-search.php:58
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+#: footer.php:271
+msgid "Mobile navigation"
+msgstr "Mobile navigation"
+
+#: footer.php:272 footer.php:277 functions.php:657 header.php:713
+#: includes/class-walker-nav-menu-split-logo.php:94
+msgid "Home"
+msgstr "Home"
+
+#: footer.php:281 footer.php:286
+msgid "Profile"
+msgstr "Profile"
+
+#: footer.php:296 footer.php:303 footer.php:316 footer.php:323
+msgid "Join"
+msgstr "Join"
+
+#: footer.php:306 footer.php:312 header.php:74
+#: template-parts/header-split-top-search.php:104
+msgid "Logout"
+msgstr "Logout"
+
+#: footer.php:356
+msgid "Subscribing..."
+msgstr "Subscribing..."
+
+#: footer.php:385 functions.php:1360 includes/admin/class-faq-admin.php:93
+#: includes/admin/class-theme-settings.php:2057
+msgid "An error occurred. Please try again."
+msgstr "An error occurred. Please try again."
+
+#: functions.php:447
+msgid "Welcome to ZSkeleton - Set Your Password"
+msgstr "Welcome to ZSkeleton - Set Your Password"
+
+#: functions.php:895
+msgid "Primary Navigation"
+msgstr "Primary Navigation"
+
+#: functions.php:897
+msgid "Secondary Sub-Navigation"
+msgstr "Secondary Sub-Navigation"
+
+#: functions.php:893
+msgid "Footer Navigation"
+msgstr "Footer Navigation"
+
+#: functions.php:904
+msgid "Member Navigation"
+msgstr "Member Navigation"
+
+#: functions.php:1359 includes/admin/class-theme-settings.php:2058
+msgid "Loading..."
+msgstr "Loading..."
+
+#: functions.php:1361
+msgid "Membership required to access this content."
+msgstr "Membership required to access this content."
+
+#: functions.php:2276
+msgid "Primary Sidebar"
+msgstr "Primary Sidebar"
+
+#: functions.php:2278
+msgid "Main sidebar widget area"
+msgstr "Main sidebar widget area"
+
+#: functions.php:2286
+msgid "Footer Widget Area 1"
+msgstr "Footer Widget Area 1"
+
+#: functions.php:2288
+msgid "First footer widget area"
+msgstr "First footer widget area"
+
+#: functions.php:2296
+msgid "Footer Widget Area 2"
+msgstr "Footer Widget Area 2"
+
+#: functions.php:2298
+msgid "Second footer widget area"
+msgstr "Second footer widget area"
+
+#: functions.php:2306
+msgid "Footer Widget Area 3"
+msgstr "Footer Widget Area 3"
+
+#: functions.php:2308
+msgid "Third footer widget area"
+msgstr "Third footer widget area"
+
+#: functions.php:2316
+msgid "Footer Widget Area 4"
+msgstr "Footer Widget Area 4"
+
+#: functions.php:2318
+msgid "Fourth footer widget area"
+msgstr "Fourth footer widget area"
+
+#: functions.php:2428 includes/admin/class-theme-settings.php:421
+msgid "Site Tagline"
+msgstr "Site Tagline"
+
+#: functions.php:2435
+msgid "ZSkeleton Colors"
+msgstr "ZSkeleton Colors"
+
+#: includes/admin/class-theme-settings.php:450
+msgid "Primary Color"
+msgstr "Primary Color"
+
+#: functions.php:2590 includes/admin/class-theme-settings.php:2131
+msgid "Homepage Settings"
+msgstr "Homepage Settings"
+
+#: functions.php:2600
+msgid "Hero Title"
+msgstr "Hero Title"
+
+#: functions.php:2611
+msgid "Hero Subtitle"
+msgstr "Hero Subtitle"
+
+#: functions.php:2624
+msgid "Close Search"
+msgstr "Close Search"
+
+#: functions.php:2628
+msgid "Search..."
+msgstr "Search..."
+
+#: functions.php:2630
+msgctxt "submit button"
+msgid "Search"
+msgstr "Search"
+
+#: functions.php:2678
+msgid "Security check failed. Please refresh the page and try again."
+msgstr "Security check failed. Please refresh the page and try again."
+
+#: functions.php:2687 includes/contact-form-kit.php:137
+#: includes/extensions/form-kit/class-form-field-types.php:265
+msgid "Please enter a valid email address."
+msgstr "Please enter a valid email address."
+
+#: functions.php:2696
+msgid "This email is already subscribed."
+msgstr "This email is already subscribed."
+
+#: functions.php:2723
+msgid "Thank you for subscribing to our newsletter!"
+msgstr "Thank you for subscribing to our newsletter!"
+
+#: functions.php:2725
+msgid "You have been added to our mailing list."
+msgstr "You have been added to our mailing list."
+
+#: functions.php:2730
+msgid "Failed to subscribe. Please try again later."
+msgstr "Failed to subscribe. Please try again later."
+
+#: functions.php:2742 includes/admin/class-faq-admin.php:385
+#: includes/admin/class-faq-admin.php:441
+#: includes/admin/class-theme-settings.php:3148
+#: includes/admin/class-theme-settings.php:3169
+#: includes/admin/class-theme-settings.php:3191
+#: includes/admin/class-theme-settings.php:3224
+#: includes/admin/class-theme-settings.php:3486
+msgid "Security check failed."
+msgstr "Security check failed."
+
+#: functions.php:2748
+msgid "User not logged in."
+msgstr "User not logged in."
+
+#: functions.php:2757 functions.php:2761
+msgid "Last access updated."
+msgstr "Last access updated."
+
+#: functions.php:2772 page-blog.php:114
+msgid "&laquo; Previous"
+msgstr "&laquo; Previous"
+
+#: functions.php:2773 page-blog.php:115
+msgid "Next &raquo;"
+msgstr "Next &raquo;"
+
+#: functions.php:2774 page-blog.php:104
+msgid "Posts navigation"
+msgstr "Posts navigation"
+
+#: functions.php:2801
+#, php-format
+msgid "%1$s at %2$s"
+msgstr "%1$s at %2$s"
+
+#: functions.php:2803
+msgid "Edit"
+msgstr "Edit"
+
+#: functions.php:2816
+msgid "Reply"
+msgstr "Reply"
+
+#: functions.php:2923 functions.php:2932
+msgid "Invalid reset key."
+msgstr "Invalid reset key."
+
+#: functions.php:3062
+msgid "Someone has requested a password reset for the following ZSkeleton account:"
+msgstr "Someone has requested a password reset for the following ZSkeleton account:"
+
+#: functions.php:3063
+#, php-format
+msgid "ZSkeleton Site: %s"
+msgstr "ZSkeleton Site: %s"
+
+#: functions.php:3064 functions.php:3099 functions.php:3117
+#, php-format
+msgid "Username: %s"
+msgstr "Username: %s"
+
+#: functions.php:3065
+msgid "If this was a mistake, ignore this email and nothing will happen."
+msgstr "If this was a mistake, ignore this email and nothing will happen."
+
+#: functions.php:3066
+msgid "To reset your password, visit the following address:"
+msgstr "To reset your password, visit the following address:"
+
+#: functions.php:3072
+#, php-format
+msgid "This password reset request originated from the IP address %s."
+msgstr "This password reset request originated from the IP address %s."
+
+#: functions.php:3084
+msgid "[ZSkeleton] Password Reset"
+msgstr "[ZSkeleton] Password Reset"
+
+#: functions.php:3097
+msgid "Welcome to ZSkeleton!"
+msgstr "Welcome to ZSkeleton!"
+
+#: functions.php:3098
+msgid "Your ZSkeleton account has been created successfully."
+msgstr "Your ZSkeleton account has been created successfully."
+
+#: functions.php:3100
+msgid "To set your password, visit the following address:"
+msgstr "To set your password, visit the following address:"
+
+#: functions.php:3103
+msgid "Thank you for joining ZSkeleton!"
+msgstr "Thank you for joining ZSkeleton!"
+
+#: functions.php:3106
+msgid "[ZSkeleton] Welcome - Login Details"
+msgstr "[ZSkeleton] Welcome - Login Details"
+
+#: functions.php:3116
+#, php-format
+msgid "New user registration on your ZSkeleton site %s:"
+msgstr "New user registration on your ZSkeleton site %s:"
+
+#: functions.php:3118
+#, php-format
+msgid "Email: %s"
+msgstr "Email: %s"
+
+#: functions.php:3119
+msgid "This user has successfully registered for ZSkeleton membership."
+msgstr "This user has successfully registered for ZSkeleton membership."
+
+#: functions.php:3122
+msgid "[ZSkeleton] New User Registration"
+msgstr "[ZSkeleton] New User Registration"
+
+#: functions.php:3402 includes/post-types/class-services.php:242
+msgid "Thumbnail"
+msgstr "Thumbnail"
+
+#: functions.php:3421
+msgid "No image"
+msgstr "No image"
+
+#: header.php:27
+msgid "Skip to content"
+msgstr "Skip to content"
+
+#: header.php:67 header.php:180 page.php:81 sidebar.php:62 single.php:119
+#: template-parts/header-split-top-search.php:93
+#: template-parts/header-split-top-search.php:265
+msgid "Member Login"
+msgstr "Member Login"
+
+#. translators: %s: display name
+#: header.php:71 template-parts/header-split-top-search.php:99
+#, php-format
+msgid "Welcome, %s"
+msgstr "Welcome, %s"
+
+#. translators: %s: site name
+#: header.php:94 header.php:109
+#: includes/class-walker-nav-menu-split-logo.php:57
+#: template-parts/header-split-top-search.php:148
+#: template-parts/header-split-top-search.php:179
+#, php-format
+msgid "Go to %s homepage"
+msgstr "Go to %s homepage"
+
+#: header.php:117
+msgid "A flexible WordPress base theme for membership-driven websites."
+msgstr "A flexible WordPress base theme for membership-driven websites."
+
+#: header.php:126 template-parts/header-split-top-search.php:116
+msgid "Primary Menu"
+msgstr "Primary Menu"
+
+#: header.php:145 template-parts/header-split-top-search.php:239
+msgid "Close Menu"
+msgstr "Close Menu"
+
+#: header.php:151 header.php:152 template-parts/header-split-top-search.php:241
+msgid "Main Menu"
+msgstr "Main Menu"
+
+#: header.php:154 header.php:155 template-parts/header-split-top-search.php:242
+msgid "Members Area"
+msgstr "Members Area"
+
+#: footer.php:326 footer.php:331 header.php:197 header.php:720
+#: includes/class-walker-nav-menu-split-logo.php:101 sidebar.php:83
+#: template-parts/header-split-top-search.php:280
+msgid "Contact"
+msgstr "Contact"
+
+#: header.php:204
+msgid "Search Toggle"
+msgstr "Search Toggle"
+
+#. translators: %s: membership tier name (e.g. Gold)
+#: header.php:215 template-parts/header-split-top-search.php:226
+#, php-format
+msgid "Member: %s"
+msgstr "Member: %s"
+
+#: header.php:219 header.php:224 template-parts/header-split-top-search.php:229
+#: template-parts/header-split-top-search.php:232
+msgid "Join Membership"
+msgstr "Join Membership"
+
+#: header.php:245
+msgid "Secondary navigation"
+msgstr "Secondary navigation"
+
+#: header.php:246
+msgid "Previous"
+msgstr "Previous"
+
+#: header.php:262 includes/extensions/form-kit/class-form-renderer.php:97
+msgid "Next"
+msgstr "Next"
+
+#: header.php:714 includes/class-walker-nav-menu-split-logo.php:95
+#: sidebar.php:78
+msgid "About"
+msgstr "About"
+
+#: includes/admin/class-content-restrictions.php:39
+#: includes/admin/class-content-restrictions.php:40
+#: includes/admin/class-content-restrictions.php:323
+msgid "Content Restrictions"
+msgstr "Content Restrictions"
+
+#: includes/admin/class-content-restrictions.php:105
+msgid "ZSkeleton Content Restrictions"
+msgstr "ZSkeleton Content Restrictions"
+
+#: includes/admin/class-content-restrictions.php:157
+msgid "Restrict to Members Only"
+msgstr "Restrict to Members Only"
+
+#: includes/admin/class-content-restrictions.php:162
+msgid "Access Level"
+msgstr "Access Level"
+
+#: includes/admin/class-content-restrictions.php:164
+msgid "All Members"
+msgstr "All Members"
+
+#: includes/admin/class-content-restrictions.php:165
+msgid "Individual Members+"
+msgstr "Individual Members+"
+
+#: includes/admin/class-content-restrictions.php:166
+msgid "Organizational Only"
+msgstr "Organizational Only"
+
+#: includes/admin/class-content-restrictions.php:173
+msgid "Show as Sample Content"
+msgstr "Show as Sample Content"
+
+#: includes/admin/class-content-restrictions.php:179
+msgid "Custom Restriction Message"
+msgstr "Custom Restriction Message"
+
+#: includes/admin/class-content-restrictions.php:236
+msgid "Access"
+msgstr "Access"
+
+#: includes/admin/class-content-restrictions.php:337
+msgid "Global Restriction Settings"
+msgstr "Global Restriction Settings"
+
+#: includes/admin/class-content-restrictions.php:341
+msgid "Restricted Post Types"
+msgstr "Restricted Post Types"
+
+#: includes/admin/class-content-restrictions.php:358
+msgid "Post types that require membership by default"
+msgstr "Post types that require membership by default"
+
+#: includes/admin/class-content-restrictions.php:363
+msgid "Restriction Mode"
+msgstr "Restriction Mode"
+
+#: includes/admin/class-content-restrictions.php:368
+msgid "Partial - Show preview with membership notice"
+msgstr "Partial - Show preview with membership notice"
+
+#: includes/admin/class-content-restrictions.php:372
+msgid "Full - Hide restricted content completely"
+msgstr "Full - Hide restricted content completely"
+
+#: includes/admin/class-content-restrictions.php:378
+#: includes/admin/class-theme-settings.php:1102
+msgid "Free Articles Limit"
+msgstr "Free Articles Limit"
+
+#: includes/admin/class-content-restrictions.php:383
+msgid "Number of blog articles accessible to non-members"
+msgstr "Number of blog articles accessible to non-members"
+
+#: includes/admin/class-content-restrictions.php:388
+msgid "Excerpt Length"
+msgstr "Excerpt Length"
+
+#: includes/admin/class-content-restrictions.php:393
+msgid "words"
+msgstr "words"
+
+#: includes/admin/class-content-restrictions.php:394
+msgid "Length of excerpts shown to non-members"
+msgstr "Length of excerpts shown to non-members"
+
+#: includes/admin/class-content-restrictions.php:399
+msgid "Default Restriction Message"
+msgstr "Default Restriction Message"
+
+#: includes/admin/class-content-restrictions.php:59
+#: includes/admin/class-content-restrictions.php:404
+msgid "This content is available exclusively to ZSkeleton members. Join our membership to access comprehensive resources and professional content."
+msgstr "This content is available exclusively to ZSkeleton members. Join our membership to access comprehensive resources and professional content."
+
+#: includes/admin/class-content-restrictions.php:419
+msgid "Default message shown to non-members for restricted content"
+msgstr "Default message shown to non-members for restricted content"
+
+#: includes/admin/class-content-restrictions.php:431
+msgid "Free Articles Management"
+msgstr "Free Articles Management"
+
+#: includes/admin/class-content-restrictions.php:437
+#: includes/admin/class-faq-admin.php:223
+msgid "Bulk Actions"
+msgstr "Bulk Actions"
+
+#: includes/admin/class-content-restrictions.php:443
+msgid "Restrictions Overview"
+msgstr "Restrictions Overview"
+
+#: includes/admin/class-content-restrictions.php:517
+#, php-format
+msgid "Select up to %d articles to be freely accessible to non-members:"
+msgstr "Select up to %d articles to be freely accessible to non-members:"
+
+#: includes/admin/class-content-restrictions.php:533
+msgid "Update Free Articles"
+msgstr "Update Free Articles"
+
+#: includes/admin/class-content-restrictions.php:587
+msgid "Free articles updated successfully!"
+msgstr "Free articles updated successfully!"
+
+#: includes/admin/class-content-restrictions.php:589
+msgid "Error updating free articles."
+msgstr "Error updating free articles."
+
+#: includes/admin/class-content-restrictions.php:626
+msgid "Bulk Restriction Actions"
+msgstr "Bulk Restriction Actions"
+
+#: includes/admin/class-content-restrictions.php:629
+msgid "Restrict All Posts in Category"
+msgstr "Restrict All Posts in Category"
+
+#: includes/admin/class-content-restrictions.php:631
+msgid "Select Category"
+msgstr "Select Category"
+
+#: includes/admin/class-content-restrictions.php:644
+msgid "Restrict Category"
+msgstr "Restrict Category"
+
+#: includes/admin/class-content-restrictions.php:649
+msgid "Restrict Posts by Date Range"
+msgstr "Restrict Posts by Date Range"
+
+#: includes/admin/class-content-restrictions.php:650
+msgid "From Date"
+msgstr "From Date"
+
+#: includes/admin/class-content-restrictions.php:651
+msgid "To Date"
+msgstr "To Date"
+
+#: includes/admin/class-content-restrictions.php:653
+msgid "Restrict Date Range"
+msgstr "Restrict Date Range"
+
+#: includes/admin/class-content-restrictions.php:658
+#: includes/admin/class-content-restrictions.php:661
+msgid "Remove All Restrictions"
+msgstr "Remove All Restrictions"
+
+#: includes/admin/class-content-restrictions.php:659
+msgid "Warning: This will remove individual post restrictions (not post type restrictions)"
+msgstr "Warning: This will remove individual post restrictions (not post type restrictions)"
+
+#: includes/admin/class-content-restrictions.php:690
+msgid "Please select a category."
+msgstr "Please select a category."
+
+#: includes/admin/class-content-restrictions.php:694
+msgid "Restrict all posts in this category to members only?"
+msgstr "Restrict all posts in this category to members only?"
+
+#: includes/admin/class-content-restrictions.php:706
+msgid "Please select both from and to dates."
+msgstr "Please select both from and to dates."
+
+#: includes/admin/class-content-restrictions.php:710
+msgid "Restrict all posts in this date range to members only?"
+msgstr "Restrict all posts in this date range to members only?"
+
+#: includes/admin/class-content-restrictions.php:718
+msgid "Remove all individual post restrictions? This cannot be undone."
+msgstr "Remove all individual post restrictions? This cannot be undone."
+
+#: includes/admin/class-content-restrictions.php:746
+msgid "Error performing bulk action."
+msgstr "Error performing bulk action."
+
+#: includes/admin/class-content-restrictions.php:771
+msgid "Individually Restricted"
+msgstr "Individually Restricted"
+
+#: includes/admin/class-content-restrictions.php:776
+msgid "Restricted by Type"
+msgstr "Restricted by Type"
+
+#: includes/admin/class-content-restrictions.php:781
+msgid "Free Articles"
+msgstr "Free Articles"
+
+#: includes/admin/class-content-restrictions.php:786
+msgid "Total Restricted"
+msgstr "Total Restricted"
+
+#: includes/admin/class-content-restrictions.php:830
+#: includes/admin/class-content-restrictions.php:924
+#: includes/admin/class-faq-admin.php:390
+#: includes/admin/class-faq-admin.php:446
+#: includes/admin/class-theme-settings.php:3153
+#: includes/admin/class-theme-settings.php:3174
+#: includes/admin/class-theme-settings.php:3196
+#: includes/admin/class-theme-settings.php:3229
+#: includes/admin/class-theme-settings.php:3491
+msgid "Insufficient permissions."
+msgstr "Insufficient permissions."
+
+#: includes/admin/class-content-restrictions.php:849
+msgid "Invalid bulk action."
+msgstr "Invalid bulk action."
+
+#: includes/admin/class-content-restrictions.php:871
+#, php-format
+msgid "Restricted %d posts in the selected category."
+msgstr "Restricted %d posts in the selected category."
+
+#: includes/admin/class-content-restrictions.php:899
+#, php-format
+msgid "Restricted %d posts in the selected date range."
+msgstr "Restricted %d posts in the selected date range."
+
+#: includes/admin/class-content-restrictions.php:914
+#, php-format
+msgid "Removed restrictions from %d posts."
+msgstr "Removed restrictions from %d posts."
+
+#: includes/admin/class-content-restrictions.php:934
+msgid "Free articles updated successfully."
+msgstr "Free articles updated successfully."
+
+#: includes/admin/class-faq-admin.php:35 includes/admin/class-faq-admin.php:119
+#: includes/post-types/class-faqs.php:146
+msgid "FAQ Settings"
+msgstr "FAQ Settings"
+
+#: includes/admin/class-faq-admin.php:36
+msgid "Settings"
+msgstr "Settings"
+
+#: includes/admin/class-faq-admin.php:90
+msgid "Are you sure you want to delete the selected FAQs?"
+msgstr "Are you sure you want to delete the selected FAQs?"
+
+#: includes/admin/class-faq-admin.php:91
+msgid "This will create default FAQ categories and sample FAQs. Continue?"
+msgstr "This will create default FAQ categories and sample FAQs. Continue?"
+
+#: includes/admin/class-faq-admin.php:92
+#: includes/admin/class-theme-settings.php:2056
+msgid "Action completed successfully!"
+msgstr "Action completed successfully!"
+
+#: includes/admin/class-faq-admin.php:107
+msgid "Settings saved successfully!"
+msgstr "Settings saved successfully!"
+
+#: includes/admin/class-faq-admin.php:124
+msgid "Display Settings"
+msgstr "Display Settings"
+
+#: includes/admin/class-faq-admin.php:130
+msgid "FAQs Per Page"
+msgstr "FAQs Per Page"
+
+#: includes/admin/class-faq-admin.php:138
+msgid "Number of FAQs to display per page"
+msgstr "Number of FAQs to display per page"
+
+#: includes/admin/class-faq-admin.php:143
+msgid "Show Categories Filter"
+msgstr "Show Categories Filter"
+
+#: includes/admin/class-faq-admin.php:150
+msgid "Display category filter on FAQ page"
+msgstr "Display category filter on FAQ page"
+
+#: includes/admin/class-faq-admin.php:156
+msgid "Show Search Box"
+msgstr "Show Search Box"
+
+#: includes/admin/class-faq-admin.php:163
+msgid "Display search box on FAQ page"
+msgstr "Display search box on FAQ page"
+
+#: includes/admin/class-faq-admin.php:169
+msgid "Show Difficulty Levels"
+msgstr "Show Difficulty Levels"
+
+#: includes/admin/class-faq-admin.php:176
+msgid "Display difficulty indicators"
+msgstr "Display difficulty indicators"
+
+#: includes/admin/class-faq-admin.php:182
+msgid "Accordion Style"
+msgstr "Accordion Style"
+
+#: includes/admin/class-faq-admin.php:185
+msgid "Modern"
+msgstr "Modern"
+
+#: includes/admin/class-faq-admin.php:186
+msgid "Classic"
+msgstr "Classic"
+
+#: includes/admin/class-faq-admin.php:187
+msgid "Minimal"
+msgstr "Minimal"
+
+#: includes/admin/class-faq-admin.php:193
+msgid "Featured FAQs Limit"
+msgstr "Featured FAQs Limit"
+
+#: includes/admin/class-faq-admin.php:201
+msgid "Maximum number of featured FAQs to show"
+msgstr "Maximum number of featured FAQs to show"
+
+#: includes/admin/class-faq-admin.php:212
+#: includes/admin/class-sitemap-status.php:415
+msgid "Quick Actions"
+msgstr "Quick Actions"
+
+#: includes/admin/class-faq-admin.php:215
+#: includes/admin/class-faq-admin.php:218
+msgid "Import Default FAQs"
+msgstr "Import Default FAQs"
+
+#: includes/admin/class-faq-admin.php:216
+msgid "Create default FAQ categories and sample questions to get started quickly."
+msgstr "Create default FAQ categories and sample questions to get started quickly."
+
+#: includes/admin/class-faq-admin.php:224
+msgid "Perform actions on multiple FAQs at once."
+msgstr "Perform actions on multiple FAQs at once."
+
+#: includes/admin/class-faq-admin.php:227
+msgid "Select Action"
+msgstr "Select Action"
+
+#: includes/admin/class-faq-admin.php:228
+msgid "Mark as Featured"
+msgstr "Mark as Featured"
+
+#: includes/admin/class-faq-admin.php:229
+msgid "Remove Featured"
+msgstr "Remove Featured"
+
+#: includes/admin/class-faq-admin.php:230
+msgid "Publish"
+msgstr "Publish"
+
+#: includes/admin/class-faq-admin.php:231
+msgid "Move to Draft"
+msgstr "Move to Draft"
+
+#: includes/admin/class-faq-admin.php:234
+msgid "Apply"
+msgstr "Apply"
+
+#: includes/admin/class-faq-admin.php:240
+msgid "FAQ Statistics"
+msgstr "FAQ Statistics"
+
+#: includes/admin/class-faq-admin.php:361
+#: includes/admin/class-sitemap-status.php:173
+#: includes/admin/class-sitemap-status.php:231
+msgid "Published"
+msgstr "Published"
+
+#: includes/admin/class-faq-admin.php:365
+msgid "Drafts"
+msgstr "Drafts"
+
+#: includes/admin/class-faq-admin.php:369
+#: includes/post-types/class-faqs.php:253
+#: template-parts/blog/section-featured.php:36
+msgid "Featured"
+msgstr "Featured"
+
+#: includes/admin/class-faq-admin.php:373
+#: includes/admin/class-sitemap-status.php:329
+#: includes/post-types/class-faqs.php:102
+msgid "Categories"
+msgstr "Categories"
+
+#: includes/admin/class-faq-admin.php:397
+msgid "No FAQs selected."
+msgstr "No FAQs selected."
+
+#: includes/admin/class-faq-admin.php:432
+#, php-format
+msgid "Action applied to %d FAQs."
+msgstr "Action applied to %d FAQs."
+
+#: includes/admin/class-faq-admin.php:453
+msgid "General Questions"
+msgstr "General Questions"
+
+#: includes/admin/class-faq-admin.php:454
+msgid "Membership"
+msgstr "Membership"
+
+#: includes/admin/class-faq-admin.php:455
+msgid "Technical Support"
+msgstr "Technical Support"
+
+#: includes/admin/class-faq-admin.php:456
+msgid "Resources & Guides"
+msgstr "Resources & Guides"
+
+#: includes/admin/class-faq-admin.php:457
+msgid "Policies & Guidelines"
+msgstr "Policies & Guidelines"
+
+#: includes/admin/class-faq-admin.php:504
+#, php-format
+msgid "Created %d default FAQs and categories."
+msgstr "Created %d default FAQs and categories."
+
+#: includes/admin/class-faq-admin.php:513
+msgid "What is ZSkeleton?"
+msgstr "What is ZSkeleton?"
+
+#: includes/admin/class-faq-admin.php:514
+msgid "ZSkeleton is a flexible WordPress base theme for building content-driven and membership-enabled websites."
+msgstr "ZSkeleton is a flexible WordPress base theme for building content-driven and membership-enabled websites."
+
+#: includes/admin/class-faq-admin.php:521
+msgid "Who can join ZSkeleton?"
+msgstr "Who can join ZSkeleton?"
+
+#: includes/admin/class-faq-admin.php:522
+msgid "ZSkeleton membership is open to individuals, teams, and organizations that need access to premium resources and member-only content."
+msgstr "ZSkeleton membership is open to individuals, teams, and organizations that need access to premium resources and member-only content."
+
+#: includes/admin/class-faq-admin.php:529
+msgid "Is membership really a one-time payment?"
+msgstr "Is membership really a one-time payment?"
+
+#: includes/admin/class-faq-admin.php:530
+msgid "Yes! ZSkeleton membership requires only a single payment that provides lifetime access to all resources and benefits."
+msgstr "Yes! ZSkeleton membership requires only a single payment that provides lifetime access to all resources and benefits."
+
+#: includes/admin/class-faq-admin.php:537
+msgid "What's included in membership?"
+msgstr "What's included in membership?"
+
+#: includes/admin/class-faq-admin.php:538
+msgid "Members get access to premium resources, practical tools, implementation guides, and exclusive content."
+msgstr "Members get access to premium resources, practical tools, implementation guides, and exclusive content."
+
+#: includes/admin/class-faq-admin.php:545
+msgid "How do I access member-only content?"
+msgstr "How do I access member-only content?"
+
+#: includes/admin/class-faq-admin.php:546
+msgid "Once your membership is approved, you'll have automatic access to all restricted content when logged in to your account."
+msgstr "Once your membership is approved, you'll have automatic access to all restricted content when logged in to your account."
+
+#: includes/admin/class-faq-admin.php:553
+msgid "Can I contribute to ZSkeleton research?"
+msgstr "Can I contribute to ZSkeleton research?"
+
+#: includes/admin/class-faq-admin.php:554
+msgid "Yes. Members can contribute articles, guides, and curated resources to help grow the shared knowledge base."
+msgstr "Yes. Members can contribute articles, guides, and curated resources to help grow the shared knowledge base."
+
+#: includes/admin/class-faq-admin.php:561
+msgid "What are the ZSkeleton content guidelines?"
+msgstr "What are the ZSkeleton content guidelines?"
+
+#: includes/admin/class-faq-admin.php:562
+msgid "Our guidelines provide a clear framework for quality, consistency, accessibility, and responsible publishing."
+msgstr "Our guidelines provide a clear framework for quality, consistency, accessibility, and responsible publishing."
+
+#: includes/admin/class-faq-admin.php:569
+msgid "How can my organization request partner listing?"
+msgstr "How can my organization request partner listing?"
+
+#: includes/admin/class-faq-admin.php:570
+msgid "Organizations can request partner listing by meeting the publication criteria and completing the review process."
+msgstr "Organizations can request partner listing by meeting the publication criteria and completing the review process."
+
+#: includes/contact-form-kit.php:152
+#: includes/extensions/form-kit/class-form-kit-demo.php:86
+#: includes/kits/seo-expert/class-seo-expert-meta.php:215
+msgid "Name"
+msgstr "Name"
+
+#: includes/class-zskeleton-contact-customizer.php:94
+#: includes/contact-form-kit.php:40 includes/contact-form-kit.php:153
+#: includes/contact-page-layout.php:431
+#: includes/extensions/form-kit/class-form-kit-demo.php:93
+msgid "Email"
+msgstr "Email"
+
+#: includes/contact-form-kit.php:46 includes/contact-form-kit.php:154
+#: includes/extensions/form-kit/class-form-kit-demo.php:135
+msgid "Organization"
+msgstr "Organization"
+
+#: includes/admin/class-sitemap-status.php:175
+#: includes/admin/class-sitemap-status.php:233
+#: includes/admin/class-sitemap-status.php:350
+#: includes/admin/class-theme-settings.php:2005
+msgid "Status"
+msgstr "Status"
+
+#: includes/repeater/class-zskeleton-repeater.php:231
+msgid "Actions"
+msgstr "Actions"
+
+#: includes/extensions/form-kit/class-form-field-types.php:620
+msgid "Invalid JSON."
+msgstr "Invalid JSON."
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:216
+msgid "Description"
+msgstr "Description"
+
+#: includes/extensions/form-kit/class-form-kit-demo.php:147
+msgid "Preferences"
+msgstr "Preferences"
+
+#: includes/contact-form-kit.php:158
+msgid "Yes"
+msgstr "Yes"
+
+#: includes/contact-form-kit.php:158
+msgid "No"
+msgstr "No"
+
+#: includes/admin/class-sitemap-status.php:31
+#: includes/admin/class-sitemap-status.php:32
+#: includes/admin/class-sitemap-status.php:94
+msgid "Sitemap Status"
+msgstr "Sitemap Status"
+
+#: includes/admin/class-sitemap-status.php:97
+msgid "Monitor WordPress built-in sitemaps and check accessibility of all custom post type sitemaps."
+msgstr "Monitor WordPress built-in sitemaps and check accessibility of all custom post type sitemaps."
+
+#: includes/admin/class-sitemap-status.php:129
+msgid "WordPress Sitemaps Status"
+msgstr "WordPress Sitemaps Status"
+
+#: includes/admin/class-sitemap-status.php:133
+msgid "Sitemaps Available:"
+msgstr "Sitemaps Available:"
+
+#: includes/admin/class-sitemap-status.php:135
+msgid "Yes (WordPress 5.5+)"
+msgstr "Yes (WordPress 5.5+)"
+
+#: includes/admin/class-sitemap-status.php:135
+msgid "No (Upgrade WordPress)"
+msgstr "No (Upgrade WordPress)"
+
+#: includes/admin/class-sitemap-status.php:140
+msgid "Sitemaps Enabled:"
+msgstr "Sitemaps Enabled:"
+
+#: includes/admin/class-sitemap-status.php:142
+msgid "Enabled"
+msgstr "Enabled"
+
+#: includes/admin/class-sitemap-status.php:142
+msgid "Disabled"
+msgstr "Disabled"
+
+#: includes/admin/class-sitemap-status.php:148
+msgid "Main Sitemap Index:"
+msgstr "Main Sitemap Index:"
+
+#: includes/admin/class-sitemap-status.php:152
+msgid "View Sitemap"
+msgstr "View Sitemap"
+
+#: includes/admin/class-sitemap-status.php:167
+msgid "WordPress Core Post Types"
+msgstr "WordPress Core Post Types"
+
+#: includes/admin/class-sitemap-status.php:172
+#: includes/admin/class-sitemap-status.php:230
+msgid "Post Type"
+msgstr "Post Type"
+
+#: includes/admin/class-sitemap-status.php:174
+#: includes/admin/class-sitemap-status.php:232
+#: includes/admin/class-sitemap-status.php:349
+msgid "Sitemap URL"
+msgstr "Sitemap URL"
+
+#: includes/admin/class-sitemap-status.php:197
+#: includes/admin/class-sitemap-status.php:293
+#: includes/admin/class-sitemap-status.php:383
+msgid "View"
+msgstr "View"
+
+#: includes/admin/class-sitemap-status.php:203
+#: includes/admin/class-sitemap-status.php:299
+#: includes/admin/class-sitemap-status.php:389
+#: includes/extensions/form-kit/class-form-assets.php:123
+msgid "OK"
+msgstr "OK"
+
+#: includes/admin/class-sitemap-status.php:205
+#: includes/admin/class-sitemap-status.php:305
+#: includes/admin/class-sitemap-status.php:391
+#: includes/extensions/form-kit/class-form-assets.php:121
+msgid "Error"
+msgstr "Error"
+
+#: includes/admin/class-sitemap-status.php:225
+msgid "ZSkeleton Custom Post Types"
+msgstr "ZSkeleton Custom Post Types"
+
+#: includes/admin/class-sitemap-status.php:262
+msgid "No published posts - sitemap not generated"
+msgstr "No published posts - sitemap not generated"
+
+#: includes/admin/class-sitemap-status.php:274
+#, php-format
+msgid "%d pending"
+msgstr "%d pending"
+
+#: includes/admin/class-sitemap-status.php:277
+#, php-format
+msgid "%d draft"
+msgstr "%d draft"
+
+#: includes/admin/class-sitemap-status.php:284
+#, php-format
+msgid "(%d files)"
+msgstr "(%d files)"
+
+#: includes/admin/class-sitemap-status.php:290
+#, php-format
+msgid "(+%d more files if needed)"
+msgstr "(+%d more files if needed)"
+
+#: includes/admin/class-sitemap-status.php:302
+msgid "No published posts"
+msgstr "No published posts"
+
+#: includes/admin/class-sitemap-status.php:303
+msgid "WordPress only includes published posts in sitemaps. Publish posts to generate sitemap."
+msgstr "WordPress only includes published posts in sitemaps. Publish posts to generate sitemap."
+
+#: includes/admin/class-sitemap-status.php:330
+msgid "Tags"
+msgstr "Tags"
+
+#: includes/admin/class-sitemap-status.php:335
+msgid "FAQ Category"
+msgstr "FAQ Category"
+
+#: includes/admin/class-sitemap-status.php:342
+msgid "Taxonomies"
+msgstr "Taxonomies"
+
+#: includes/admin/class-sitemap-status.php:347
+msgid "Taxonomy"
+msgstr "Taxonomy"
+
+#: includes/admin/class-sitemap-status.php:348
+msgid "Terms"
+msgstr "Terms"
+
+#: includes/admin/class-sitemap-status.php:419
+msgid "Submit to Search Engines"
+msgstr "Submit to Search Engines"
+
+#: includes/admin/class-sitemap-status.php:420
+msgid "Submit your sitemap to Google Search Console and Bing Webmaster Tools."
+msgstr "Submit your sitemap to Google Search Console and Bing Webmaster Tools."
+
+#: includes/admin/class-sitemap-status.php:423
+msgid "Google Search Console"
+msgstr "Google Search Console"
+
+#: includes/admin/class-sitemap-status.php:426
+msgid "Bing Webmaster Tools"
+msgstr "Bing Webmaster Tools"
+
+#: includes/admin/class-sitemap-status.php:430
+msgid "Sitemap URL to submit:"
+msgstr "Sitemap URL to submit:"
+
+#: includes/admin/class-sitemap-status.php:436
+msgid "Documentation"
+msgstr "Documentation"
+
+#: includes/admin/class-sitemap-status.php:437
+msgid "View detailed documentation about WordPress sitemaps."
+msgstr "View detailed documentation about WordPress sitemaps."
+
+#: includes/admin/class-sitemap-status.php:440
+msgid "View Sitemap README"
+msgstr "View Sitemap README"
+
+#: includes/admin/class-sitemap-status.php:443
+msgid "WordPress Docs"
+msgstr "WordPress Docs"
+
+#: includes/admin/class-sitemap-status.php:449
+msgid "Check robots.txt"
+msgstr "Check robots.txt"
+
+#: includes/admin/class-sitemap-status.php:450
+msgid "Verify that your sitemap is referenced in robots.txt."
+msgstr "Verify that your sitemap is referenced in robots.txt."
+
+#: includes/admin/class-sitemap-status.php:452
+msgid "View robots.txt"
+msgstr "View robots.txt"
+
+#: includes/admin/class-sitemap-status.php:487
+#, php-format
+msgid "HTTP %d"
+msgstr "HTTP %d"
+
+#: includes/admin/class-theme-settings.php:227
+#: includes/admin/class-theme-settings.php:2070
+msgid "ZSkeleton Theme Settings"
+msgstr "ZSkeleton Theme Settings"
+
+#: includes/admin/class-theme-settings.php:228
+msgid "ZSkeleton Settings"
+msgstr "ZSkeleton Settings"
+
+#: includes/admin/class-theme-settings.php:340
+msgid "Site Logo"
+msgstr "Site Logo"
+
+#: includes/admin/class-theme-settings.php:347
+msgid "Upload your site logo. Recommended size: 200px × 50px"
+msgstr "Upload your site logo. Recommended size: 200px × 50px"
+
+#: includes/admin/class-theme-settings.php:357
+msgid "Mobile Logo"
+msgstr "Mobile Logo"
+
+#: includes/admin/class-theme-settings.php:364
+msgid "Upload a mobile-optimized logo. Recommended size: 150px × 40px. If not set, the main logo will be used."
+msgstr "Upload a mobile-optimized logo. Recommended size: 150px × 40px. If not set, the main logo will be used."
+
+#: includes/admin/class-theme-settings.php:406
+msgid "Site Name"
+msgstr "Site Name"
+
+#: includes/admin/class-theme-settings.php:413
+msgid "Full site name displayed in headers"
+msgstr "Full site name displayed in headers"
+
+#: includes/admin/class-theme-settings.php:428
+msgid "Tagline displayed under the site name"
+msgstr "Tagline displayed under the site name"
+
+#: includes/admin/class-theme-settings.php:472
+msgid "Secondary Color"
+msgstr "Secondary Color"
+
+#: includes/admin/class-theme-settings.php:603
+msgid "Google Font (Arabic Locales)"
+msgstr "Google Font (Arabic Locales)"
+
+#: includes/admin/class-theme-settings.php:611
+msgid "Typography for Arabic locales (ar, ar_SA, etc.)."
+msgstr "Typography for Arabic locales (ar, ar_SA, etc.)."
+
+#: includes/admin/class-theme-settings.php:625
+msgid "Google Font (Non-Arabic Locales)"
+msgstr "Google Font (Non-Arabic Locales)"
+
+#: includes/admin/class-theme-settings.php:633
+msgid "Typography for English and all other non-Arabic locales."
+msgstr "Typography for English and all other non-Arabic locales."
+
+#: includes/admin/class-theme-settings.php:715
+msgid "Contact Email"
+msgstr "Contact Email"
+
+#: includes/admin/class-theme-settings.php:722
+msgid "Main contact email address"
+msgstr "Main contact email address"
+
+#: includes/admin/class-theme-settings.php:818
+#: includes/class-zskeleton-contact-customizer.php:124
+msgid "Facebook URL"
+msgstr "Facebook URL"
+
+#: includes/admin/class-theme-settings.php:836
+msgid "Twitter/X URL"
+msgstr "Twitter/X URL"
+
+#: includes/admin/class-theme-settings.php:854
+#: includes/class-zskeleton-contact-customizer.php:126
+msgid "LinkedIn URL"
+msgstr "LinkedIn URL"
+
+#: includes/admin/class-theme-settings.php:872
+#: includes/class-zskeleton-contact-customizer.php:127
+msgid "YouTube URL"
+msgstr "YouTube URL"
+
+#: includes/admin/class-theme-settings.php:890
+#: includes/class-zskeleton-contact-customizer.php:128
+msgid "Instagram URL"
+msgstr "Instagram URL"
+
+#: includes/admin/class-theme-settings.php:908
+#: includes/class-zskeleton-contact-customizer.php:129
+msgid "GitHub URL"
+msgstr "GitHub URL"
+
+#: includes/admin/class-theme-settings.php:1001
+msgid "Hero Section Title"
+msgstr "Hero Section Title"
+
+#: includes/admin/class-theme-settings.php:1008
+msgid "Main title displayed in the homepage hero section"
+msgstr "Main title displayed in the homepage hero section"
+
+#: includes/admin/class-theme-settings.php:1016
+msgid "Hero Section Subtitle"
+msgstr "Hero Section Subtitle"
+
+#: includes/admin/class-theme-settings.php:1023
+msgid "Subtitle text in the hero section"
+msgstr "Subtitle text in the hero section"
+
+#: includes/admin/class-theme-settings.php:1031
+msgid "Show Featured Content"
+msgstr "Show Featured Content"
+
+#: includes/admin/class-theme-settings.php:1038
+msgid "Display featured reports and research on homepage"
+msgstr "Display featured reports and research on homepage"
+
+#: includes/admin/class-theme-settings.php:1046
+msgid "Featured Content Count"
+msgstr "Featured Content Count"
+
+#: includes/admin/class-theme-settings.php:1055
+msgid "Number of featured items to display"
+msgstr "Number of featured items to display"
+
+#: includes/admin/class-theme-settings.php:1063
+msgid "News Banner"
+msgstr "News Banner"
+
+#: includes/admin/class-theme-settings.php:1070
+msgid "HTML content for the news banner (leave empty to hide)"
+msgstr "HTML content for the news banner (leave empty to hide)"
+
+#: includes/admin/class-theme-settings.php:1187
+msgid "Archive Posts Per Page"
+msgstr "Archive Posts Per Page"
+
+#: includes/admin/class-theme-settings.php:1196
+msgid "Number of posts to show on archive pages"
+msgstr "Number of posts to show on archive pages"
+
+#: includes/admin/class-theme-settings.php:1540
+msgid "Show Excerpts"
+msgstr "Show Excerpts"
+
+#: includes/admin/class-theme-settings.php:1547
+msgid "Show excerpts instead of full content in archives"
+msgstr "Show excerpts instead of full content in archives"
+
+#: includes/admin/class-theme-settings.php:1649
+msgid "Newsletter Section Title"
+msgstr "Newsletter Section Title"
+
+#: includes/admin/class-theme-settings.php:1656
+msgid "Title for the newsletter signup section"
+msgstr "Title for the newsletter signup section"
+
+#: includes/admin/class-theme-settings.php:1664
+msgid "Newsletter Description"
+msgstr "Newsletter Description"
+
+#: includes/admin/class-theme-settings.php:1671
+msgid "Description text for newsletter signup"
+msgstr "Description text for newsletter signup"
+
+#: includes/admin/class-theme-settings.php:1679
+msgid "Newsletter Service"
+msgstr "Newsletter Service"
+
+#: includes/admin/class-theme-settings.php:1687
+msgid "WordPress (Store in database)"
+msgstr "WordPress (Store in database)"
+
+#: includes/admin/class-theme-settings.php:1688
+msgid "Mailchimp"
+msgstr "Mailchimp"
+
+#: includes/admin/class-theme-settings.php:1689
+msgid "Constant Contact"
+msgstr "Constant Contact"
+
+#: includes/admin/class-theme-settings.php:1690
+msgid "Custom Integration"
+msgstr "Custom Integration"
+
+#: includes/admin/class-theme-settings.php:1692
+msgid "Newsletter service provider"
+msgstr "Newsletter service provider"
+
+#: includes/admin/class-theme-settings.php:1700
+msgid "Newsletter API Key"
+msgstr "Newsletter API Key"
+
+#: includes/admin/class-theme-settings.php:1707
+msgid "API key for newsletter service (if applicable)"
+msgstr "API key for newsletter service (if applicable)"
+
+#: includes/admin/class-theme-settings.php:1714
+msgid "MailerLite Integration"
+msgstr "MailerLite Integration"
+
+#: includes/admin/class-theme-settings.php:1719
+msgid "Status of MailerLite plugin integration"
+msgstr "Status of MailerLite plugin integration"
+
+#: includes/admin/class-theme-settings.php:1727
+msgid "Enable MailerLite"
+msgstr "Enable MailerLite"
+
+#: includes/admin/class-theme-settings.php:1734
+msgid "Enable MailerLite integration for newsletter subscriptions"
+msgstr "Enable MailerLite integration for newsletter subscriptions"
+
+#: includes/admin/class-theme-settings.php:1742
+msgid "Individual Members Group ID"
+msgstr "Individual Members Group ID"
+
+#: includes/admin/class-theme-settings.php:1749
+msgid "MailerLite group ID for individual member registrations"
+msgstr "MailerLite group ID for individual member registrations"
+
+#: includes/admin/class-theme-settings.php:1750
+msgid "e.g., 123456789"
+msgstr "e.g., 123456789"
+
+#: includes/admin/class-theme-settings.php:1758
+msgid "Organizational Members Group ID"
+msgstr "Organizational Members Group ID"
+
+#: includes/admin/class-theme-settings.php:1765
+msgid "MailerLite group ID for organizational member registrations"
+msgstr "MailerLite group ID for organizational member registrations"
+
+#: includes/admin/class-theme-settings.php:1766
+msgid "e.g., 987654321"
+msgstr "e.g., 987654321"
+
+#: includes/admin/class-theme-settings.php:1774
+msgid "Corporate Members Group ID"
+msgstr "Corporate Members Group ID"
+
+#: includes/admin/class-theme-settings.php:1781
+msgid "MailerLite group ID for corporate member registrations"
+msgstr "MailerLite group ID for corporate member registrations"
+
+#: includes/admin/class-theme-settings.php:1782
+msgid "e.g., 111222333"
+msgstr "e.g., 111222333"
+
+#: includes/admin/class-theme-settings.php:1790
+msgid "General Newsletter Group ID"
+msgstr "General Newsletter Group ID"
+
+#: includes/admin/class-theme-settings.php:1797
+msgid "MailerLite group ID for general newsletter signups (contact form, glossary, etc.)"
+msgstr "MailerLite group ID for general newsletter signups (contact form, glossary, etc.)"
+
+#: includes/admin/class-theme-settings.php:1798
+msgid "e.g., 444555666"
+msgstr "e.g., 444555666"
+
+#: includes/admin/class-theme-settings.php:1806
+msgid "Tool Submitters Group ID"
+msgstr "Tool Submitters Group ID"
+
+#: includes/admin/class-theme-settings.php:1813
+msgid "MailerLite group ID for submission form signups"
+msgstr "MailerLite group ID for submission form signups"
+
+#: includes/admin/class-theme-settings.php:1814
+msgid "e.g., 777888999"
+msgstr "e.g., 777888999"
+
+#: includes/admin/class-theme-settings.php:1821
+msgid "Available Groups"
+msgstr "Available Groups"
+
+#: includes/admin/class-theme-settings.php:1826
+msgid "List of available MailerLite groups"
+msgstr "List of available MailerLite groups"
+
+#: includes/admin/class-theme-settings.php:1839
+msgid "Use Minified Assets"
+msgstr "Use Minified Assets"
+
+#: includes/admin/class-theme-settings.php:1846
+msgid "Enable minified CSS and JavaScript files for better performance. Disable for development/debugging."
+msgstr "Enable minified CSS and JavaScript files for better performance. Disable for development/debugging."
+
+#: includes/admin/class-theme-settings.php:1853
+msgid "Performance Information"
+msgstr "Performance Information"
+
+#: includes/admin/class-theme-settings.php:1858
+msgid "Current performance statistics and recommendations."
+msgstr "Current performance statistics and recommendations."
+
+#: includes/admin/class-theme-settings.php:1990
+msgid "GitHub Access Token"
+msgstr "GitHub Access Token"
+
+#: includes/admin/class-theme-settings.php:1997
+msgid "Personal access token used to authenticate private GitHub repository requests for theme updates. Keep this token secure."
+msgstr "Personal access token used to authenticate private GitHub repository requests for theme updates. Keep this token secure."
+
+#: includes/admin/class-theme-settings.php:1998
+msgid "ghp_xxxxxxxxxxxxxxxxxxxx"
+msgstr "ghp_xxxxxxxxxxxxxxxxxxxx"
+
+#: includes/admin/class-theme-settings.php:2054
+msgid "Are you sure you want to reset all settings to defaults? This action cannot be undone."
+msgstr "Are you sure you want to reset all settings to defaults? This action cannot be undone."
+
+#: includes/admin/class-theme-settings.php:2055
+msgid "Are you sure you want to perform this bulk action?"
+msgstr "Are you sure you want to perform this bulk action?"
+
+#: includes/admin/class-theme-settings.php:2059
+msgid "Settings saved!"
+msgstr "Settings saved!"
+
+#: includes/admin/class-theme-settings.php:2084
+msgid "Configure your ZSkeleton theme settings to customize your website appearance and functionality."
+msgstr "Configure your ZSkeleton theme settings to customize your website appearance and functionality."
+
+#: includes/admin/class-theme-settings.php:2093
+msgid "Homepage"
+msgstr "Homepage"
+
+#: includes/admin/class-theme-settings.php:2094
+msgid "Content"
+msgstr "Content"
+
+#: includes/admin/class-theme-settings.php:2095
+#: includes/contact-form-kit.php:158
+msgid "Newsletter"
+msgstr "Newsletter"
+
+#: includes/admin/class-theme-settings.php:2096
+msgid "Security"
+msgstr "Security"
+
+#: includes/admin/class-theme-settings.php:2097
+msgid "Performance"
+msgstr "Performance"
+
+#: includes/admin/class-theme-settings.php:2136
+msgid "Content Settings"
+msgstr "Content Settings"
+
+#: includes/admin/class-theme-settings.php:2141
+msgid "Newsletter Settings"
+msgstr "Newsletter Settings"
+
+#: includes/admin/class-theme-settings.php:2146
+msgid "Security Settings"
+msgstr "Security Settings"
+
+#: includes/admin/class-theme-settings.php:2151
+msgid "Performance Settings"
+msgstr "Performance Settings"
+
+#: includes/admin/class-theme-settings.php:2157
+msgid "Save Settings"
+msgstr "Save Settings"
+
+#: includes/admin/class-theme-settings.php:2165
+msgid "Clear Update Cache"
+msgstr "Clear Update Cache"
+
+#: includes/admin/class-theme-settings.php:2166
+msgid "Force refresh of theme update data (clears cached update/transient)."
+msgstr "Force refresh of theme update data (clears cached update/transient)."
+
+#: includes/admin/class-theme-settings.php:2173
+msgid "Need Help?"
+msgstr "Need Help?"
+
+#: includes/admin/class-theme-settings.php:2174
+msgid "For detailed documentation and support, visit:"
+msgstr "For detailed documentation and support, visit:"
+
+#: includes/admin/class-theme-settings.php:2176
+msgid "Theme Documentation"
+msgstr "Theme Documentation"
+
+#: includes/admin/class-theme-settings.php:2177
+msgid "Support Forum"
+msgstr "Support Forum"
+
+#: includes/admin/class-theme-settings.php:2178
+msgid "Contact Support"
+msgstr "Contact Support"
+
+#: includes/admin/class-theme-settings.php:2183
+msgid "Theme Statistics"
+msgstr "Theme Statistics"
+
+#: includes/admin/class-theme-settings.php:2187
+#, php-format
+msgid "Total Members: %d"
+msgstr "Total Members: %d"
+
+#: includes/admin/class-theme-settings.php:2188
+#, php-format
+msgid "Individual: %d"
+msgstr "Individual: %d"
+
+#: includes/admin/class-theme-settings.php:2189
+#, php-format
+msgid "Organizational: %d"
+msgstr "Organizational: %d"
+
+#: includes/admin/class-theme-settings.php:2284
+msgid "Customize your homepage layout and content."
+msgstr "Customize your homepage layout and content."
+
+#: includes/admin/class-theme-settings.php:2288
+msgid "Manage content display and access restrictions."
+msgstr "Manage content display and access restrictions."
+
+#: includes/admin/class-theme-settings.php:2302
+msgid "Configure newsletter signup and integration."
+msgstr "Configure newsletter signup and integration."
+
+#: includes/admin/class-theme-settings.php:2306
+msgid "Optimize your website performance with minified assets and caching options."
+msgstr "Optimize your website performance with minified assets and caching options."
+
+#: includes/admin/class-theme-settings.php:2675
+#, php-format
+msgid "Custom (saved): %s"
+msgstr "Custom (saved): %s"
+
+#: includes/admin/class-theme-settings.php:2720
+msgid "Preview"
+msgstr "Preview"
+
+#: includes/admin/class-theme-settings.php:2736
+msgid "Upload Image"
+msgstr "Upload Image"
+
+#: includes/admin/class-theme-settings.php:2743
+msgid "Remove Image"
+msgstr "Remove Image"
+
+#: includes/admin/class-theme-settings.php:2762
+msgid "Current Performance Status"
+msgstr "Current Performance Status"
+
+#: includes/admin/class-theme-settings.php:2766
+msgid "Minified assets are enabled"
+msgstr "Minified assets are enabled"
+
+#: includes/admin/class-theme-settings.php:2770
+msgid "Performance Benefits"
+msgstr "Performance Benefits"
+
+#: includes/admin/class-theme-settings.php:2772
+msgid "46.8% smaller total asset size"
+msgstr "46.8% smaller total asset size"
+
+#: includes/admin/class-theme-settings.php:2773
+msgid "Faster page load times"
+msgstr "Faster page load times"
+
+#: includes/admin/class-theme-settings.php:2774
+msgid "Better caching performance"
+msgstr "Better caching performance"
+
+#: includes/admin/class-theme-settings.php:2775
+msgid "Improved user experience"
+msgstr "Improved user experience"
+
+#: includes/admin/class-theme-settings.php:2780
+msgid "Minified assets are disabled"
+msgstr "Minified assets are disabled"
+
+#: includes/admin/class-theme-settings.php:2784
+msgid "Performance Impact"
+msgstr "Performance Impact"
+
+#: includes/admin/class-theme-settings.php:2785
+msgid "Original assets are being loaded, which may result in slower page load times. Enable minified assets for optimal performance."
+msgstr "Original assets are being loaded, which may result in slower page load times. Enable minified assets for optimal performance."
+
+#: includes/admin/class-theme-settings.php:2790
+msgid "Asset Statistics"
+msgstr "Asset Statistics"
+
+#: includes/admin/class-theme-settings.php:2793
+msgid "CSS Files:"
+msgstr "CSS Files:"
+
+#: includes/admin/class-theme-settings.php:2797
+msgid "JavaScript Files:"
+msgstr "JavaScript Files:"
+
+#: includes/admin/class-theme-settings.php:2802
+msgid "Total Size:"
+msgstr "Total Size:"
+
+#: includes/admin/class-theme-settings.php:2884
+#: includes/admin/class-theme-settings.php:2963
+msgid "Note:"
+msgstr "Note:"
+
+#: includes/admin/class-theme-settings.php:2910
+msgid "MailerLite Integration Status"
+msgstr "MailerLite Integration Status"
+
+#: includes/admin/class-theme-settings.php:2914
+msgid "MailerLite integration is ACTIVE"
+msgstr "MailerLite integration is ACTIVE"
+
+#: includes/admin/class-theme-settings.php:2918
+msgid "Integration Points"
+msgstr "Integration Points"
+
+#: includes/admin/class-theme-settings.php:2920
+msgid "Individual Member Registration"
+msgstr "Individual Member Registration"
+
+#: includes/admin/class-theme-settings.php:2921
+msgid "Organizational Member Registration"
+msgstr "Organizational Member Registration"
+
+#: includes/admin/class-theme-settings.php:2922
+msgid "Corporate Member Registration"
+msgstr "Corporate Member Registration"
+
+#: includes/admin/class-theme-settings.php:2923
+msgid "Contact Form Newsletter Signup"
+msgstr "Contact Form Newsletter Signup"
+
+#: includes/admin/class-theme-settings.php:2924
+msgid "Glossary Term Submission"
+msgstr "Glossary Term Submission"
+
+#: includes/admin/class-theme-settings.php:2925
+msgid "Submission Form"
+msgstr "Submission Form"
+
+#: includes/admin/class-theme-settings.php:2931
+msgid "MailerLite integration is DISABLED"
+msgstr "MailerLite integration is DISABLED"
+
+#: includes/admin/class-theme-settings.php:2935
+msgid "Enable the checkbox above to activate MailerLite integration for newsletter subscriptions."
+msgstr "Enable the checkbox above to activate MailerLite integration for newsletter subscriptions."
+
+#: includes/admin/class-theme-settings.php:2940
+msgid "MailerLite plugin not configured"
+msgstr "MailerLite plugin not configured"
+
+#: includes/admin/class-theme-settings.php:2944
+msgid "Required Steps"
+msgstr "Required Steps"
+
+#: includes/admin/class-theme-settings.php:2948
+msgid "Install and activate the MailerLite plugin"
+msgstr "Install and activate the MailerLite plugin"
+
+#: includes/admin/class-theme-settings.php:2949
+msgid "Go to WordPress Admin → Plugins → Add New"
+msgstr "Go to WordPress Admin → Plugins → Add New"
+
+#: includes/admin/class-theme-settings.php:2950
+msgid "Search for \"MailerLite - Signup forms\""
+msgstr "Search for \"MailerLite - Signup forms\""
+
+#: includes/admin/class-theme-settings.php:2951
+msgid "Install and activate the official MailerLite plugin"
+msgstr "Install and activate the official MailerLite plugin"
+
+#: includes/admin/class-theme-settings.php:2953
+msgid "Configure MailerLite API key"
+msgstr "Configure MailerLite API key"
+
+#: includes/admin/class-theme-settings.php:2954
+msgid "Go to WordPress Admin → MailerLite → Settings"
+msgstr "Go to WordPress Admin → MailerLite → Settings"
+
+#: includes/admin/class-theme-settings.php:2955
+msgid "Enter your MailerLite API key"
+msgstr "Enter your MailerLite API key"
+
+#: includes/admin/class-theme-settings.php:2963
+msgid "Newsletter subscriptions will work without MailerLite, storing email addresses in WordPress. Configure MailerLite for professional email marketing features."
+msgstr "Newsletter subscriptions will work without MailerLite, storing email addresses in WordPress. Configure MailerLite for professional email marketing features."
+
+#: includes/admin/class-theme-settings.php:2975
+msgid "MailerLite is not configured. Please configure the plugin first to see available groups."
+msgstr "MailerLite is not configured. Please configure the plugin first to see available groups."
+
+#: includes/admin/class-theme-settings.php:2982
+msgid "MailerLite helper functions not available. Please check your theme installation."
+msgstr "MailerLite helper functions not available. Please check your theme installation."
+
+#: includes/admin/class-theme-settings.php:2991
+msgid "No groups found or unable to retrieve groups. Check your MailerLite API key configuration."
+msgstr "No groups found or unable to retrieve groups. Check your MailerLite API key configuration."
+
+#: includes/admin/class-theme-settings.php:2997
+msgid "Your MailerLite Groups"
+msgstr "Your MailerLite Groups"
+
+#: includes/admin/class-theme-settings.php:2998
+msgid "Copy the Group ID and paste it in the appropriate field above."
+msgstr "Copy the Group ID and paste it in the appropriate field above."
+
+#: includes/admin/class-theme-settings.php:3003
+msgid "Group Name"
+msgstr "Group Name"
+
+#: includes/admin/class-theme-settings.php:3004
+msgid "Group ID"
+msgstr "Group ID"
+
+#: includes/admin/class-theme-settings.php:3005
+msgid "Subscribers"
+msgstr "Subscribers"
+
+#: includes/admin/class-theme-settings.php:3160
+#, php-format
+msgid "Bulk action \"%s\" applied to %d items."
+msgstr "Bulk action \"%s\" applied to %d items."
+
+#: includes/admin/class-theme-settings.php:3202
+msgid "Invalid settings data."
+msgstr "Invalid settings data."
+
+#: includes/admin/class-theme-settings.php:3215
+msgid "Settings imported successfully."
+msgstr "Settings imported successfully."
+
+#: includes/admin/class-theme-settings.php:3282
+msgid "Settings reset to defaults."
+msgstr "Settings reset to defaults."
+
+#: includes/admin/class-theme-settings.php:3308
+#: includes/admin/class-theme-settings.php:3338
+#: includes/admin/class-theme-settings.php:3438
+msgid "You do not have permission to perform this action."
+msgstr "You do not have permission to perform this action."
+
+#: includes/admin/class-theme-settings.php:3475
+msgid "Update cache cleared. Please run \"Check now\" again."
+msgstr "Update cache cleared. Please run \"Check now\" again."
+
+#: sidebar.php:25
+msgid "Membership Status"
+msgstr "Membership Status"
+
+#: includes/class-recaptcha.php:241 includes/class-recaptcha.php:268
+msgid "reCAPTCHA verification failed. Please try again."
+msgstr "reCAPTCHA verification failed. Please try again."
+
+#: includes/class-recaptcha.php:259
+msgid "reCAPTCHA verification service is temporarily unavailable."
+msgstr "reCAPTCHA verification service is temporarily unavailable."
+
+#: includes/class-recaptcha.php:275
+msgid "reCAPTCHA verification failed. Please refresh and try again."
+msgstr "reCAPTCHA verification failed. Please refresh and try again."
+
+#: includes/class-recaptcha.php:283
+msgid "Your request appears to be automated. Please try again or contact support if you believe this is an error."
+msgstr "Your request appears to be automated. Please try again or contact support if you believe this is an error."
+
+#: includes/contact-form-kit.php:33
+msgid "Full name"
+msgstr "Full name"
+
+#: includes/contact-form-kit.php:35
+#: includes/extensions/form-kit/class-form-kit-demo.php:88
+msgid "Your name"
+msgstr "Your name"
+
+#: includes/contact-form-kit.php:48
+msgid "Company or team (optional)"
+msgstr "Company or team (optional)"
+
+#: includes/class-zskeleton-contact-customizer.php:86
+#: includes/contact-form-kit.php:53 includes/contact-form-kit.php:155
+#: includes/contact-page-layout.php:441
+msgid "Phone"
+msgstr "Phone"
+
+#: includes/contact-form-kit.php:55
+msgid "Phone (optional)"
+msgstr "Phone (optional)"
+
+#: includes/contact-form-kit.php:60 includes/contact-form-kit.php:156
+msgid "Topic"
+msgstr "Topic"
+
+#: includes/contact-form-kit.php:63
+msgid "General inquiry"
+msgstr "General inquiry"
+
+#: includes/contact-form-kit.php:64
+msgid "Support"
+msgstr "Support"
+
+#: includes/contact-form-kit.php:65
+msgid "Sales & partnerships"
+msgstr "Sales & partnerships"
+
+#: includes/contact-form-kit.php:66
+msgid "Press & media"
+msgstr "Press & media"
+
+#: includes/contact-form-kit.php:67
+msgid "Feedback"
+msgstr "Feedback"
+
+#: includes/contact-form-kit.php:73
+msgid "Response priority"
+msgstr "Response priority"
+
+#: includes/contact-form-kit.php:76
+msgid "Standard (1–2 business days)"
+msgstr "Standard (1–2 business days)"
+
+#: includes/contact-form-kit.php:77
+msgid "Urgent (same day when possible)"
+msgstr "Urgent (same day when possible)"
+
+#: includes/contact-form-kit.php:83 includes/contact-form-kit.php:159
+msgid "Message"
+msgstr "Message"
+
+#: includes/contact-form-kit.php:90
+msgid "Email me tips and product updates"
+msgstr "Email me tips and product updates"
+
+#: includes/contact-form-kit.php:109
+msgid "Thank you for your message. We will get back to you shortly."
+msgstr "Thank you for your message. We will get back to you shortly."
+
+#: includes/contact-form-kit.php:133
+msgid "Please complete all required fields."
+msgstr "Please complete all required fields."
+
+#. translators: 1: topic, 2: sender name
+#: includes/contact-form-kit.php:145
+#, php-format
+msgid "[%1$s] Contact: %2$s — %3$s"
+msgstr "[%1$s] Contact: %2$s — %3$s"
+
+#: includes/contact-form-kit.php:151
+msgid "New contact form submission:"
+msgstr "New contact form submission:"
+
+#: includes/contact-form-kit.php:154 includes/contact-form-kit.php:155
+msgid "Not provided"
+msgstr "Not provided"
+
+#: includes/contact-form-kit.php:157
+msgid "Priority"
+msgstr "Priority"
+
+#: includes/contact-form-kit.php:160
+msgid "Submitted"
+msgstr "Submitted"
+
+#: includes/contact-form-kit.php:163
+msgid "IP"
+msgstr "IP"
+
+#: includes/contact-form-kit.php:174
+msgid "We could not send your message. Please try again later."
+msgstr "We could not send your message. Please try again later."
+
+#: includes/contact-form-kit.php:177
+msgid "We received your message"
+msgstr "We received your message"
+
+#. translators: %s: recipient name
+#: includes/contact-form-kit.php:180
+#, php-format
+msgid ""
+"Hi %s,\n"
+"\n"
+"Thank you for contacting us. We have received your message and will respond as soon as we can.\n"
+"\n"
+"— %s"
+msgstr ""
+"Hi %s,\n"
+"\n"
+"Thank you for contacting us. We have received your message and will respond as soon as we can.\n"
+"\n"
+"— %s"
+
+#: includes/contact-form-kit.php:185
+msgid "You marked this as urgent; our team will prioritize it when possible."
+msgstr "You marked this as urgent; our team will prioritize it when possible."
+
+#: includes/contact-form-kit.php:187
+msgid "This is an automated message."
+msgstr "This is an automated message."
+
+#: includes/contact-page-layout.php:23 includes/contact-page-layout.php:107
+#: includes/contact-page-layout.php:330
+msgid "We typically reply within one business day."
+msgstr "We typically reply within one business day."
+
+#: includes/contact-page-layout.php:78 includes/contact-page-layout.php:321
+msgid "Contact page"
+msgstr "Contact page"
+
+#: includes/contact-page-layout.php:114 includes/contact-page-layout.php:334
+msgid "Contact page subtitle (under title)"
+msgstr "Contact page subtitle (under title)"
+
+#: includes/contact-page-layout.php:138 includes/contact-page-layout.php:344
+msgid "Phone (displayed on contact page)"
+msgstr "Phone (displayed on contact page)"
+
+#: includes/class-zskeleton-contact-customizer.php:98
+#: includes/contact-page-layout.php:150 includes/contact-page-layout.php:354
+msgid "Address"
+msgstr "Address"
+
+#: includes/contact-page-layout.php:173 includes/contact-page-layout.php:364
+msgid "Business hours"
+msgstr "Business hours"
+
+#: includes/contact-page-layout.php:196 includes/contact-page-layout.php:374
+msgid "Map link (Google Maps / OpenStreetMap URL)"
+msgstr "Map link (Google Maps / OpenStreetMap URL)"
+
+#: includes/contact-page-layout.php:375
+msgid "Opens in a new tab from the contact page."
+msgstr "Opens in a new tab from the contact page."
+
+#: includes/contact-page-layout.php:451
+msgid "Studio / office"
+msgstr "Studio / office"
+
+#: includes/contact-page-layout.php:461
+msgid "Hours"
+msgstr "Hours"
+
+#: includes/contact-page-layout.php:471
+msgid "Map & directions"
+msgstr "Map & directions"
+
+#: includes/contact-page-layout.php:472
+msgid "Open in maps"
+msgstr "Open in maps"
+
+#: includes/contact-page-layout.php:479
+msgid "Send a message"
+msgstr "Send a message"
+
+#: includes/contact-page-layout.php:480
+msgid "Share a few details and we’ll route your request to the right person."
+msgstr "Share a few details and we’ll route your request to the right person."
+
+#: includes/contact-page-layout.php:489
+msgid "Contact form is unavailable."
+msgstr "Contact form is unavailable."
+
+#: includes/extensions/form-kit/class-form-ajax.php:60
+#: includes/extensions/form-kit/class-form-ajax.php:63
+#: includes/extensions/form-kit/class-form-ajax.php:66
+#: includes/extensions/form-kit/class-form-ajax.php:107
+#: includes/extensions/form-kit/class-form-ajax.php:110
+#: includes/extensions/form-kit/class-form-ajax.php:113
+msgid "Invalid request."
+msgstr "Invalid request."
+
+#: includes/extensions/form-kit/class-form-ajax.php:69
+#: includes/extensions/form-kit/class-form-ajax.php:116
+msgid "Permission denied."
+msgstr "Permission denied."
+
+#: includes/extensions/form-kit/class-form-ajax.php:72
+#: includes/extensions/form-kit/class-form-ajax.php:119
+msgid "Too many requests. Please wait."
+msgstr "Too many requests. Please wait."
+
+#: includes/extensions/form-kit/class-form-ajax.php:159
+msgid "Submitted successfully."
+msgstr "Submitted successfully."
+
+#: includes/extensions/form-kit/class-form-ajax.php:167
+#: includes/extensions/form-kit/class-form-handler.php:125
+msgid "Submission could not be completed."
+msgstr "Submission could not be completed."
+
+#: includes/extensions/form-kit/class-form-assets.php:118
+msgid "Something went wrong. Please try again."
+msgstr "Something went wrong. Please try again."
+
+#: includes/extensions/form-kit/class-form-assets.php:119
+msgid "Please correct the errors below."
+msgstr "Please correct the errors below."
+
+#: includes/extensions/form-kit/class-form-assets.php:120
+msgid "Please fill required fields."
+msgstr "Please fill required fields."
+
+#: includes/extensions/form-kit/class-form-assets.php:122
+msgid "Invalid"
+msgstr "Invalid"
+
+#: includes/extensions/form-kit/class-form-assets.php:124
+#: includes/extensions/form-kit/class-form-field-types.php:908
+msgid "Select media"
+msgstr "Select media"
+
+#: includes/extensions/form-kit/class-form-assets.php:125
+msgid "Use this file"
+msgstr "Use this file"
+
+#. translators: %d: step number
+#: includes/extensions/form-kit/class-form-definition.php:239
+#, php-format
+msgid "Step %d"
+msgstr "Step %d"
+
+#: includes/extensions/form-kit/class-form-field-types.php:227
+msgid "Input is too short."
+msgstr "Input is too short."
+
+#: includes/extensions/form-kit/class-form-field-types.php:230
+#: includes/extensions/form-kit/class-form-field-types.php:324
+msgid "Input is too long."
+msgstr "Input is too long."
+
+#: includes/extensions/form-kit/class-form-field-types.php:236
+msgid "Invalid format."
+msgstr "Invalid format."
+
+#: includes/extensions/form-kit/class-form-field-types.php:295
+msgid "Please enter a valid URL."
+msgstr "Please enter a valid URL."
+
+#: includes/extensions/form-kit/class-form-field-types.php:355
+#: includes/extensions/form-kit/class-form-field-types.php:434
+#: includes/extensions/form-kit/class-form-field-types.php:678
+#: includes/extensions/form-kit/class-form-field-types.php:992
+msgid "This field is required."
+msgstr "This field is required."
+
+#: includes/extensions/form-kit/class-form-field-types.php:361
+msgid "Please enter a valid number."
+msgstr "Please enter a valid number."
+
+#: includes/extensions/form-kit/class-form-field-types.php:365
+msgid "Value is too small."
+msgstr "Value is too small."
+
+#: includes/extensions/form-kit/class-form-field-types.php:368
+msgid "Value is too large."
+msgstr "Value is too large."
+
+#: includes/extensions/form-kit/class-form-field-types.php:400
+#: includes/extensions/form-kit/class-form-field-types.php:474
+msgid "Invalid selection."
+msgstr "Invalid selection."
+
+#: includes/extensions/form-kit/class-form-field-types.php:468
+msgid "Please select at least one option."
+msgstr "Please select at least one option."
+
+#: includes/extensions/form-kit/class-form-field-types.php:505
+msgid "Invalid color."
+msgstr "Invalid color."
+
+#: includes/extensions/form-kit/class-form-field-types.php:547
+msgid "Please select a file."
+msgstr "Please select a file."
+
+#: includes/extensions/form-kit/class-form-field-types.php:553
+msgid "You cannot use this file."
+msgstr "You cannot use this file."
+
+#: includes/extensions/form-kit/class-form-field-types.php:557
+msgid "Invalid attachment."
+msgstr "Invalid attachment."
+
+#: includes/extensions/form-kit/class-form-field-types.php:577
+msgid "Please select an image."
+msgstr "Please select an image."
+
+#: includes/extensions/form-kit/class-form-field-types.php:721
+msgid "Add at least one row."
+msgstr "Add at least one row."
+
+#: includes/extensions/form-kit/class-form-field-types.php:806
+msgid "Select…"
+msgstr "Select…"
+
+#: includes/extensions/form-kit/class-form-field-types.php:909
+#: includes/post-types/class-sliders.php:439
+#: includes/post-types/class-sliders.php:448
+msgid "Clear"
+msgstr "Clear"
+
+#: includes/extensions/form-kit/class-form-field-types.php:949
+msgid "Group field: use JSON or custom render via filter."
+msgstr "Group field: use JSON or custom render via filter."
+
+#: includes/extensions/form-kit/class-form-field-types.php:962
+msgid "Repeater JSON (advanced)."
+msgstr "Repeater JSON (advanced)."
+
+#: includes/extensions/form-kit/class-form-handler.php:36
+msgid "Invalid form."
+msgstr "Invalid form."
+
+#: includes/extensions/form-kit/class-form-handler.php:40
+msgid "Too many fields submitted."
+msgstr "Too many fields submitted."
+
+#: includes/extensions/form-kit/class-form-handler.php:51
+msgid "Submission could not be processed."
+msgstr "Submission could not be processed."
+
+#: includes/extensions/form-kit/class-form-kit-demo.php:30
+#: includes/extensions/form-kit/class-form-kit-demo.php:31
+msgid "Form Kit Demo"
+msgstr "Form Kit Demo"
+
+#: includes/extensions/form-kit/class-form-kit-demo.php:63
+msgid "Demo form saved. Sanitized payload:"
+msgstr "Demo form saved. Sanitized payload:"
+
+#: includes/extensions/form-kit/class-form-kit-demo.php:99
+msgid "Plan"
+msgstr "Plan"
+
+#: includes/extensions/form-kit/class-form-kit-demo.php:102
+msgid "Starter"
+msgstr "Starter"
+
+#: includes/extensions/form-kit/class-form-kit-demo.php:103
+msgid "Pro"
+msgstr "Pro"
+
+#: includes/extensions/form-kit/class-form-kit-demo.php:109
+msgid "Notes"
+msgstr "Notes"
+
+#: includes/extensions/form-kit/class-form-kit-demo.php:115
+msgid "Enable notifications"
+msgstr "Enable notifications"
+
+#: includes/extensions/form-kit/class-form-kit-demo.php:130
+msgid "Identity"
+msgstr "Identity"
+
+#: includes/extensions/form-kit/class-form-kit-demo.php:141
+msgid "Website"
+msgstr "Website"
+
+#: includes/extensions/form-kit/class-form-kit-demo.php:152
+msgid "Volume"
+msgstr "Volume"
+
+#: includes/extensions/form-kit/class-form-kit-demo.php:162
+msgid "Accent"
+msgstr "Accent"
+
+#: includes/extensions/form-kit/class-form-kit-demo.php:202
+msgid "ZSkeleton Form Kit Demo"
+msgstr "ZSkeleton Form Kit Demo"
+
+#: includes/extensions/form-kit/class-form-kit-demo.php:203
+msgid "Reference implementations: single-page and multi-step (wizard) forms with AJAX."
+msgstr "Reference implementations: single-page and multi-step (wizard) forms with AJAX."
+
+#: includes/extensions/form-kit/class-form-kit-demo.php:205
+msgid "Single-page form"
+msgstr "Single-page form"
+
+#: includes/extensions/form-kit/class-form-kit-demo.php:210
+msgid "Wizard form"
+msgstr "Wizard form"
+
+#: includes/extensions/form-kit/class-form-renderer.php:77
+msgid "Leave empty"
+msgstr "Leave empty"
+
+#: includes/extensions/form-kit/class-form-renderer.php:96
+msgid "Back"
+msgstr "Back"
+
+#: includes/extensions/form-kit/class-form-renderer.php:98
+#: includes/extensions/form-kit/class-form-renderer.php:100
+msgid "Submit"
+msgstr "Submit"
+
+#: page.php:70 single.php:108
+msgid "Member Access Required"
+msgstr "Member Access Required"
+
+#: page.php:71 single.php:109
+msgid "This content is available exclusively to ZSkeleton members. To access our comprehensive library, reports, and professional resources, please consider joining our membership."
+msgstr "This content is available exclusively to ZSkeleton members. To access our comprehensive library, reports, and professional resources, please consider joining our membership."
+
+#: page.php:76 single.php:114
+msgid "Learn About Membership"
+msgstr "Learn About Membership"
+
+#: page.php:87 single.php:125
+msgid "New to ZSkeleton? Check out our"
+msgstr "New to ZSkeleton? Check out our"
+
+#: page.php:87 single.php:125
+msgid "free articles"
+msgstr "free articles"
+
+#: page.php:87 single.php:125
+msgid "to get started."
+msgstr "to get started."
+
+#: includes/post-types/class-faqs.php:36
+msgctxt "Post Type General Name"
+msgid "FAQs"
+msgstr "FAQs"
+
+#: includes/post-types/class-faqs.php:37
+msgctxt "Post Type Singular Name"
+msgid "FAQ"
+msgstr "FAQ"
+
+#: includes/post-types/class-faqs.php:39 includes/post-types/class-faqs.php:66
+msgid "FAQ"
+msgstr "FAQ"
+
+#: includes/post-types/class-faqs.php:40
+msgid "FAQ Archives"
+msgstr "FAQ Archives"
+
+#: includes/post-types/class-faqs.php:41
+msgid "FAQ Attributes"
+msgstr "FAQ Attributes"
+
+#: includes/post-types/class-faqs.php:42
+msgid "Parent FAQ:"
+msgstr "Parent FAQ:"
+
+#: includes/post-types/class-faqs.php:43
+msgid "All FAQs"
+msgstr "All FAQs"
+
+#: includes/post-types/class-faqs.php:44
+msgid "Add New FAQ"
+msgstr "Add New FAQ"
+
+#: includes/post-types/class-faqs.php:45
+#: includes/post-types/class-glossary-terms.php:50
+#: includes/post-types/class-services.php:53
+#: includes/post-types/class-sliders.php:237
+msgid "Add New"
+msgstr "Add New"
+
+#: includes/post-types/class-faqs.php:46
+msgid "New FAQ"
+msgstr "New FAQ"
+
+#: includes/post-types/class-faqs.php:47
+msgid "Edit FAQ"
+msgstr "Edit FAQ"
+
+#: includes/post-types/class-faqs.php:48
+msgid "Update FAQ"
+msgstr "Update FAQ"
+
+#: includes/post-types/class-faqs.php:49
+msgid "View FAQ"
+msgstr "View FAQ"
+
+#: includes/post-types/class-faqs.php:50
+msgid "View FAQs"
+msgstr "View FAQs"
+
+#: includes/post-types/class-faqs.php:51
+msgid "Search FAQs"
+msgstr "Search FAQs"
+
+#: includes/class-taxonomy-landing.php:48 includes/post-types/class-faqs.php:52
+#: includes/post-types/class-services.php:60
+msgid "Not found"
+msgstr "Not found"
+
+#: includes/post-types/class-faqs.php:53
+#: includes/post-types/class-services.php:61
+msgid "Not found in Trash"
+msgstr "Not found in Trash"
+
+#: includes/post-types/class-faqs.php:54
+#: includes/post-types/class-services.php:62
+msgid "Featured Image"
+msgstr "Featured Image"
+
+#: includes/post-types/class-faqs.php:55
+#: includes/post-types/class-services.php:63
+msgid "Set featured image"
+msgstr "Set featured image"
+
+#: includes/post-types/class-faqs.php:56
+#: includes/post-types/class-services.php:64
+msgid "Remove featured image"
+msgstr "Remove featured image"
+
+#: includes/post-types/class-faqs.php:57
+#: includes/post-types/class-services.php:65
+msgid "Use as featured image"
+msgstr "Use as featured image"
+
+#: includes/post-types/class-faqs.php:58
+msgid "Insert into FAQ"
+msgstr "Insert into FAQ"
+
+#: includes/post-types/class-faqs.php:59
+msgid "Uploaded to this FAQ"
+msgstr "Uploaded to this FAQ"
+
+#: includes/post-types/class-faqs.php:60
+msgid "FAQs list"
+msgstr "FAQs list"
+
+#: includes/post-types/class-faqs.php:61
+msgid "FAQs list navigation"
+msgstr "FAQs list navigation"
+
+#: includes/post-types/class-faqs.php:62
+msgid "Filter FAQs list"
+msgstr "Filter FAQs list"
+
+#: includes/post-types/class-faqs.php:100
+msgctxt "Taxonomy General Name"
+msgid "FAQ Categories"
+msgstr "FAQ Categories"
+
+#: includes/post-types/class-faqs.php:101
+msgctxt "Taxonomy Singular Name"
+msgid "FAQ Category"
+msgstr "FAQ Category"
+
+#: includes/post-types/class-faqs.php:104
+msgid "Parent Category"
+msgstr "Parent Category"
+
+#: includes/post-types/class-faqs.php:105
+msgid "Parent Category:"
+msgstr "Parent Category:"
+
+#: includes/post-types/class-faqs.php:106
+msgid "New Category Name"
+msgstr "New Category Name"
+
+#: includes/post-types/class-faqs.php:107
+msgid "Add New Category"
+msgstr "Add New Category"
+
+#: includes/post-types/class-faqs.php:108
+msgid "Edit Category"
+msgstr "Edit Category"
+
+#: includes/post-types/class-faqs.php:109
+msgid "Update Category"
+msgstr "Update Category"
+
+#: includes/post-types/class-faqs.php:110
+msgid "View Category"
+msgstr "View Category"
+
+#: includes/post-types/class-faqs.php:111
+msgid "Separate categories with commas"
+msgstr "Separate categories with commas"
+
+#: includes/post-types/class-faqs.php:112
+msgid "Add or remove categories"
+msgstr "Add or remove categories"
+
+#: includes/class-taxonomy-landing.php:45
+#: includes/post-types/class-faqs.php:113
+msgid "Choose from the most used"
+msgstr "Choose from the most used"
+
+#: includes/post-types/class-faqs.php:114
+msgid "Popular Categories"
+msgstr "Popular Categories"
+
+#: includes/post-types/class-faqs.php:115
+msgid "Search Categories"
+msgstr "Search Categories"
+
+#: includes/post-types/class-faqs.php:116
+msgid "Not Found"
+msgstr "Not Found"
+
+#: includes/post-types/class-faqs.php:117
+msgid "No categories"
+msgstr "No categories"
+
+#: includes/post-types/class-faqs.php:118
+msgid "Categories list"
+msgstr "Categories list"
+
+#: includes/post-types/class-faqs.php:119
+msgid "Categories list navigation"
+msgstr "Categories list navigation"
+
+#: includes/post-types/class-faqs.php:166
+msgid "Display Order"
+msgstr "Display Order"
+
+#: includes/post-types/class-faqs.php:183
+msgid "Featured FAQ"
+msgstr "Featured FAQ"
+
+#: includes/post-types/class-faqs.php:188
+msgid "Difficulty Level"
+msgstr "Difficulty Level"
+
+#: includes/post-types/class-faqs.php:190
+msgid "Beginner"
+msgstr "Beginner"
+
+#: includes/post-types/class-faqs.php:191
+msgid "Intermediate"
+msgstr "Intermediate"
+
+#: includes/post-types/class-faqs.php:192
+msgid "Advanced"
+msgstr "Advanced"
+
+#: includes/post-types/class-faqs.php:251
+msgid "Category"
+msgstr "Category"
+
+#: includes/post-types/class-faqs.php:252
+#: includes/post-types/class-glossary-terms.php:183
+msgid "Order"
+msgstr "Order"
+
+#: includes/post-types/class-faqs.php:254
+msgid "Difficulty"
+msgstr "Difficulty"
+
+#: template-parts/blog/listing-hero.php:28
+#, php-format
+msgid "Search Results for: %s"
+msgstr "Search Results for: %s"
+
+#: functions.php:282
+#, php-format
+msgid "Search Results for: %1$s - %2$s"
+msgstr "Search Results for: %1$s - %2$s"
+
+#: functions.php:288
+#, php-format
+msgid "Search results for \"%1$s\" on %2$s."
+msgstr "Search results for \"%1$s\" on %2$s."
+
+#: template-parts/blog/listing-hero.php:51
+#: template-parts/blog/listing-hero.php:55
+#: template-parts/blog/listing-hero.php:56
+msgid "News & Insights"
+msgstr "News & Insights"
+
+#: template-parts/blog/listing-hero.php:46
+#: template-parts/blog/listing-hero.php:52
+#: template-parts/blog/listing-hero.php:56
+msgid "Read the latest insights, practical guidance, and updates from our community."
+msgstr "Read the latest insights, practical guidance, and updates from our community."
+
+#: template-parts/blog/listing-hero.php:59
+msgid "Search blog posts"
+msgstr "Search blog posts"
+
+#: index.php:67 template-parts/blog/blog-card.php:24
+#: template-parts/page-title-bar.php:82 template-parts/page-title-bar.php:87
+msgid "Members Only"
+msgstr "Members Only"
+
+#: index.php:84 template-parts/blog/blog-card.php:41
+msgid "This content is available exclusively to ZSkeleton members. Join our membership to access our comprehensive library and professional resources."
+msgstr "This content is available exclusively to ZSkeleton members. Join our membership to access our comprehensive library and professional resources."
+
+#: index.php:103 page-blog.php:127
+msgid "Nothing Found"
+msgstr "Nothing Found"
+
+#: index.php:106
+msgid "Sorry, but nothing matched your search terms. Please try again with some different keywords."
+msgstr "Sorry, but nothing matched your search terms. Please try again with some different keywords."
+
+#: index.php:109 page-blog.php:128
+msgid "It seems we can't find what you're looking for. Perhaps searching can help."
+msgstr "It seems we can't find what you're looking for. Perhaps searching can help."
+
+#. Template Name of the theme
+msgid "Complete Payment"
+msgstr "Complete Payment"
+
+#. Template Name of the theme
+msgid "Contact (modern)"
+msgstr "Contact (modern)"
+
+#. Template Name of the theme
+#: includes/common-pages.php:59
+msgid "Reset Password"
+msgstr "Reset Password"
+
+#: page.php:120 template-parts/membership-plans-pricing.php:33
+#: template-parts/seo-expert/landing.php:384
+msgid "Choose Your Membership"
+msgstr "Choose Your Membership"
+
+#. Template Name of the theme
+#: includes/admin/class-theme-settings.php:2850
+msgid "Login"
+msgstr "Login"
+
+#. Template Name of the theme
+msgid "Payment Success"
+msgstr "Payment Success"
+
+#. Template Name of the theme
+msgid "Membership Registration"
+msgstr "Membership Registration"
+
+#: page.php:61 single.php:81
+msgid "Pages:"
+msgstr "Pages:"
+
+#: page.php:76 single.php:114
+msgid "Upgrade Membership"
+msgstr "Upgrade Membership"
+
+#: sidebar.php:36
+msgid "View Profile"
+msgstr "View Profile"
+
+#: sidebar.php:42
+msgid "Unlock exclusive ZSkeleton content with a membership."
+msgstr "Unlock exclusive ZSkeleton content with a membership."
+
+#: sidebar.php:44
+msgid "Join Now"
+msgstr "Join Now"
+
+#: sidebar.php:54
+msgid "Join ZSkeleton"
+msgstr "Join ZSkeleton"
+
+#: sidebar.php:55
+msgid "Become a member of ZSkeleton and access exclusive content and resources."
+msgstr "Become a member of ZSkeleton and access exclusive content and resources."
+
+#: sidebar.php:59
+msgid "Learn More"
+msgstr "Learn More"
+
+#: sidebar.php:72
+msgid "Search Resources"
+msgstr "Search Resources"
+
+#: sidebar.php:76
+msgid "Browse by Page"
+msgstr "Browse by Page"
+
+#: sidebar.php:90
+msgid "Latest Updates"
+msgstr "Latest Updates"
+
+#: sidebar.php:137
+msgid "View All Posts"
+msgstr "View All Posts"
+
+#: sidebar.php:144
+msgid "Get in Touch"
+msgstr "Get in Touch"
+
+#: sidebar.php:145
+msgid "Have questions about membership or your account?"
+msgstr "Have questions about membership or your account?"
+
+#: sidebar.php:155
+msgid "Membership Inquiries"
+msgstr "Membership Inquiries"
+
+#: sidebar.php:160
+msgid "Media & Press"
+msgstr "Media & Press"
+
+#: single-faq.php:24
+msgid "Back to All FAQs"
+msgstr "Back to All FAQs"
+
+#: single.php:93
+msgid "Tags:"
+msgstr "Tags:"
+
+#: single.php:151
+msgid "← Previous Post"
+msgstr "← Previous Post"
+
+#: single.php:160
+msgid "Next Post →"
+msgstr "Next Post →"
+
+#: template-parts/membership-plans-pricing.php:47
+msgid "Most Popular"
+msgstr "Most Popular"
+
+#: template-parts/membership-plans-pricing.php:67
+msgid "One-time Annual Payment"
+msgstr "One-time Annual Payment"
+
+#: template-parts/membership-plans-pricing.php:99
+msgid "Current Plan"
+msgstr "Current Plan"
+
+#: template-parts/membership-plans-pricing.php:104
+#: template-parts/membership-plans-pricing.php:108
+msgid "Upgrade"
+msgstr "Upgrade"
+
+#: template-parts/membership-plans-pricing.php:114
+#: template-parts/membership-plans-pricing.php:118
+msgid "Change Plan"
+msgstr "Change Plan"
+
+#: template-parts/membership-plans-pricing.php:125
+#: template-parts/membership-plans-pricing.php:129
+#: template-parts/membership-plans-pricing.php:136
+#: template-parts/membership-plans-pricing.php:140
+msgid "Get Started"
+msgstr "Get Started"
+
+#: template-parts/page-title-bar.php:44
+msgid "Breadcrumbs"
+msgstr "Breadcrumbs"
+
+#: template-parts/page-title-bar.php:78
+#, php-format
+msgid "Updated: %s"
+msgstr "Updated: %s"
+
+#: archive-service.php:52
+msgid "Read more"
+msgstr "Read more"
+
+#: archive-service.php:59
+msgid "No services found."
+msgstr "No services found."
+
+#: footer.php:66 includes/admin/class-theme-settings.php:1612
+#: includes/admin/class-theme-settings.php:3262
+#, php-format
+msgid "About %s"
+msgstr "About %s"
+
+#: footer.php:71 includes/admin/class-theme-settings.php:1633
+#: includes/admin/class-theme-settings.php:3264
+#, php-format
+msgid "%s is a reusable WordPress base theme built for modern membership and content websites."
+msgstr "%s is a reusable WordPress base theme built for modern membership and content websites."
+
+#: functions.php:2462
+msgid "Primary brand color"
+msgstr "Primary brand color"
+
+#: functions.php:2481
+msgid "Secondary color"
+msgstr "Secondary color"
+
+#: functions.php:2482
+msgid "Borders, soft UI, and supporting accents."
+msgstr "Borders, soft UI, and supporting accents."
+
+#: functions.php:2501
+msgid "Accent color"
+msgstr "Accent color"
+
+#: functions.php:2502
+msgid "Highlights, badges, and subtle section tints."
+msgstr "Highlights, badges, and subtle section tints."
+
+#: functions.php:2521
+msgid "Page background"
+msgstr "Page background"
+
+#: functions.php:2522
+msgid "Main canvas color (warm cream works well on mobile)."
+msgstr "Main canvas color (warm cream works well on mobile)."
+
+#: functions.php:2541
+msgid "Buttons background"
+msgstr "Buttons background"
+
+#: functions.php:2542
+msgid "Primary-style buttons and default form buttons."
+msgstr "Primary-style buttons and default form buttons."
+
+#: functions.php:2581
+msgid "Counters text color"
+msgstr "Counters text color"
+
+#: functions.php:2582
+msgid "Large numbers in hero and stat blocks."
+msgstr "Large numbers in hero and stat blocks."
+
+#: functions.php:3747
+msgid "Sidebar Layout"
+msgstr "Sidebar Layout"
+
+#: functions.php:3757
+msgid "Show sidebar"
+msgstr "Show sidebar"
+
+#: includes/admin/class-content-restrictions.php:175
+msgid "Display this content to non-members as a preview."
+msgstr "Display this content to non-members as a preview."
+
+#: includes/admin/class-content-restrictions.php:194
+msgid "Leave empty to use the default message."
+msgstr "Leave empty to use the default message."
+
+#: includes/admin/class-theme-settings.php:126
+msgid "You are not allowed to manage options for this site."
+msgstr "You are not allowed to manage options for this site."
+
+#: includes/admin/class-theme-settings.php:165
+msgid "Settings saved."
+msgstr "Settings saved."
+
+#: includes/admin/class-theme-settings.php:374
+msgid "Site Logo (non-Arabic)"
+msgstr "Site Logo (non-Arabic)"
+
+#: includes/admin/class-theme-settings.php:381
+msgid "Used when the site locale is not Arabic (e.g. English). If empty, the main Site Logo is used."
+msgstr "Used when the site locale is not Arabic (e.g. English). If empty, the main Site Logo is used."
+
+#: includes/admin/class-theme-settings.php:391
+msgid "Mobile Logo (non-Arabic)"
+msgstr "Mobile Logo (non-Arabic)"
+
+#: includes/admin/class-theme-settings.php:398
+msgid "Mobile variant for non-Arabic locales. If empty, falls back to the non-Arabic site logo, then the main mobile logo, then the main site logo."
+msgstr "Mobile variant for non-Arabic locales. If empty, falls back to the non-Arabic site logo, then the main mobile logo, then the main site logo."
+
+#: includes/admin/class-theme-settings.php:457
+msgid "Headers, key actions, and brand emphasis."
+msgstr "Headers, key actions, and brand emphasis."
+
+#: includes/admin/class-theme-settings.php:479
+msgid "Borders, soft chrome, and secondary UI."
+msgstr "Borders, soft chrome, and secondary UI."
+
+#: includes/admin/class-theme-settings.php:494
+msgid "Accent Color"
+msgstr "Accent Color"
+
+#: includes/admin/class-theme-settings.php:501
+msgid "Highlights, badges, and gentle section tints."
+msgstr "Highlights, badges, and gentle section tints."
+
+#: includes/admin/class-theme-settings.php:516
+msgid "Page Background"
+msgstr "Page Background"
+
+#: includes/admin/class-theme-settings.php:523
+msgid "Main page canvas; warm off-white reads well on small screens."
+msgstr "Main page canvas; warm off-white reads well on small screens."
+
+#: includes/admin/class-theme-settings.php:538
+msgid "Buttons Background"
+msgstr "Buttons Background"
+
+#: includes/admin/class-theme-settings.php:545
+msgid "Fill color for primary buttons and default form buttons site-wide."
+msgstr "Fill color for primary buttons and default form buttons site-wide."
+
+#: includes/admin/class-theme-settings.php:582
+msgid "Counters Text Color"
+msgstr "Counters Text Color"
+
+#: includes/admin/class-theme-settings.php:589
+msgid "Color for large stat numbers in hero and stat blocks."
+msgstr "Color for large stat numbers in hero and stat blocks."
+
+#: includes/admin/class-theme-settings.php:1122
+msgid "Login page"
+msgstr "Login page"
+
+#: includes/admin/class-theme-settings.php:1128
+msgid "— WordPress default (wp-login.php)"
+msgstr "— WordPress default (wp-login.php)"
+
+#: includes/admin/class-theme-settings.php:1129
+msgid "Used when a visitor must sign in before membership checkout (WooCommerce guest checkout disabled). Supports redirect back after login."
+msgstr "Used when a visitor must sign in before membership checkout (WooCommerce guest checkout disabled). Supports redirect back after login."
+
+#: includes/admin/class-theme-settings.php:1136
+msgid "Registration page"
+msgstr "Registration page"
+
+#: includes/admin/class-theme-settings.php:1142
+#: includes/admin/class-theme-settings.php:1156
+msgid "— WordPress default"
+msgstr "— WordPress default"
+
+#: includes/admin/class-theme-settings.php:1143
+msgid "Theme registration template (e.g. membership signup)."
+msgstr "Theme registration template (e.g. membership signup)."
+
+#: includes/admin/class-theme-settings.php:1150
+msgid "Forgot password page"
+msgstr "Forgot password page"
+
+#: includes/admin/class-theme-settings.php:1157
+msgid "Page where users request a password reset email."
+msgstr "Page where users request a password reset email."
+
+#: includes/admin/class-theme-settings.php:1164
+msgid "Set new password page"
+msgstr "Set new password page"
+
+#: includes/admin/class-theme-settings.php:1170
+msgid "— WordPress default (link from email)"
+msgstr "— WordPress default (link from email)"
+
+#: includes/admin/class-theme-settings.php:1171
+msgid "Optional branded page for entering a new password. Email links still carry the key; defaults to wp-login.php?action=rp when unset."
+msgstr "Optional branded page for entering a new password. Email links still carry the key; defaults to wp-login.php?action=rp when unset."
+
+#: includes/admin/class-theme-settings.php:1606
+msgid "Footer Widget Area 1 Heading"
+msgstr "Footer Widget Area 1 Heading"
+
+#: includes/admin/class-theme-settings.php:1613
+msgid "Default heading shown in Footer Widget Area 1 when the area has no widgets."
+msgstr "Default heading shown in Footer Widget Area 1 when the area has no widgets."
+
+#: includes/admin/class-theme-settings.php:1626
+msgid "Footer Widget Area 1 Description"
+msgstr "Footer Widget Area 1 Description"
+
+#: includes/admin/class-theme-settings.php:1636
+msgid "Default description shown in Footer Widget Area 1 when the area has no widgets."
+msgstr "Default description shown in Footer Widget Area 1 when the area has no widgets."
+
+#: includes/admin/class-theme-settings.php:2192
+msgid "Activate the ZSkeleton Membership & Payments plugin to show membership statistics."
+msgstr "Activate the ZSkeleton Membership & Payments plugin to show membership statistics."
+
+#: includes/admin/class-theme-settings.php:2289
+msgid "Auth pages control where users go for login and password flows. When WooCommerce “Allow customers to place orders without an account” is enabled, guests can go straight to checkout for a plan; otherwise they are sent to the login page below first."
+msgstr "Auth pages control where users go for login and password flows. When WooCommerce “Allow customers to place orders without an account” is enabled, guests can go straight to checkout for a plan; otherwise they are sent to the login page below first."
+
+#: includes/admin/class-theme-settings.php:3068
+msgid "Please enter a valid Contact Email."
+msgstr "Please enter a valid Contact Email."
+
+#: includes/admin/class-theme-settings.php:3428
+msgid "Auth page settings were updated from theme slugs. Review the dropdowns under Content and save if needed."
+msgstr "Auth page settings were updated from theme slugs. Review the dropdowns under Content and save if needed."
+
+#: includes/class-taxonomy-landing.php:32
+msgctxt "Taxonomy general name"
+msgid "Landings"
+msgstr "Landings"
+
+#: includes/class-taxonomy-landing.php:33
+msgctxt "Taxonomy singular name"
+msgid "Landing"
+msgstr "Landing"
+
+#: includes/class-taxonomy-landing.php:34
+msgid "Landings"
+msgstr "Landings"
+
+#: includes/class-taxonomy-landing.php:35
+msgid "All landings"
+msgstr "All landings"
+
+#: includes/class-taxonomy-landing.php:36
+msgid "Parent landing"
+msgstr "Parent landing"
+
+#: includes/class-taxonomy-landing.php:37
+msgid "Parent landing:"
+msgstr "Parent landing:"
+
+#: includes/class-taxonomy-landing.php:38
+msgid "New landing name"
+msgstr "New landing name"
+
+#: includes/class-taxonomy-landing.php:39
+msgid "Add new landing"
+msgstr "Add new landing"
+
+#: includes/class-taxonomy-landing.php:40
+msgid "Edit landing"
+msgstr "Edit landing"
+
+#: includes/class-taxonomy-landing.php:41
+msgid "Update landing"
+msgstr "Update landing"
+
+#: includes/class-taxonomy-landing.php:42
+msgid "View landing"
+msgstr "View landing"
+
+#: includes/class-taxonomy-landing.php:43
+msgid "Separate landings with commas"
+msgstr "Separate landings with commas"
+
+#: includes/class-taxonomy-landing.php:44
+msgid "Add or remove landings"
+msgstr "Add or remove landings"
+
+#: includes/class-taxonomy-landing.php:46
+msgid "Popular landings"
+msgstr "Popular landings"
+
+#: includes/class-taxonomy-landing.php:47
+msgid "Search landings"
+msgstr "Search landings"
+
+#: includes/class-taxonomy-landing.php:49
+msgid "No landings"
+msgstr "No landings"
+
+#: includes/class-taxonomy-landing.php:50
+msgid "Landings list"
+msgstr "Landings list"
+
+#: includes/class-taxonomy-landing.php:51
+msgid "Landings list navigation"
+msgstr "Landings list navigation"
+
+#: includes/admin/class-theme-settings.php:2092
+#: includes/admin/class-theme-settings.php:2126
+#: includes/class-zskeleton-contact-customizer.php:78
+msgid "Contact & social"
+msgstr "Contact & social"
+
+#: includes/class-zskeleton-contact-customizer.php:90
+msgid "WhatsApp (digits or full wa.me link)"
+msgstr "WhatsApp (digits or full wa.me link)"
+
+#: includes/class-zskeleton-contact-customizer.php:125
+msgid "X / Twitter URL"
+msgstr "X / Twitter URL"
+
+#: includes/contact-page-layout.php:134
+msgid "Shown below the page title on the modern contact template."
+msgstr "Shown below the page title on the modern contact template."
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:158
+msgid "Hero statistics"
+msgstr "Hero statistics"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:162
+msgid "Figure"
+msgstr "Figure"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:163
+msgid "Label"
+msgstr "Label"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:171
+msgid "Ratings strip"
+msgstr "Ratings strip"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:175
+msgid "Score"
+msgstr "Score"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:176
+msgid "Platform"
+msgstr "Platform"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:177
+msgid "Count text"
+msgstr "Count text"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:185
+msgid "Why choose us (points)"
+msgstr "Why choose us (points)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:189
+msgid "Title"
+msgstr "Title"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:190
+msgid "Body"
+msgstr "Body"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:198
+msgid "Methodology steps"
+msgstr "Methodology steps"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:202
+msgid "Step title"
+msgstr "Step title"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:203
+msgid "Step body"
+msgstr "Step body"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:211
+msgid "Tools & technologies"
+msgstr "Tools & technologies"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:229
+msgid "SEO Expert profile"
+msgstr "SEO Expert profile"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:247
+msgid "Switch this page to the “SEO Expert” template to use these fields."
+msgstr "Switch this page to the “SEO Expert” template to use these fields."
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:66
+msgid "Expert display name"
+msgstr "Expert display name"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:67
+msgid "Hero title (H1)"
+msgstr "Hero title (H1)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:68
+msgid "Hero subtitle"
+msgstr "Hero subtitle"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:72
+msgid "Years experience (single number)"
+msgstr "Years experience (single number)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:73
+msgid "Primary CTA label"
+msgstr "Primary CTA label"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:74
+msgid "Secondary CTA label"
+msgstr "Secondary CTA label"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:76
+msgid "Brand / team name (footer)"
+msgstr "Brand / team name (footer)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:77
+msgid "Intro body (after hero)"
+msgstr "Intro body (after hero)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:78
+msgid "Pricing section body"
+msgstr "Pricing section body"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:84
+msgid "Why Arabic market (prose)"
+msgstr "Why Arabic market (prose)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:90
+msgid "How expert achieves results (prose)"
+msgstr "How expert achieves results (prose)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:96
+msgid "Campaign success factors (prose)"
+msgstr "Campaign success factors (prose)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:102
+msgid "How to choose an expert (prose)"
+msgstr "How to choose an expert (prose)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:108
+msgid "Closing CTA block"
+msgstr "Closing CTA block"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:316
+msgid "Apply README-shaped defaults (empty fields only)"
+msgstr "Apply README-shaped defaults (empty fields only)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:327
+msgid "Fill empty fields from default Arabic copy for أحمد مكي?"
+msgstr "Fill empty fields from default Arabic copy for أحمد مكي?"
+
+#: includes/kits/seo-expert/seo-expert-kit.php:404
+msgid "خبير سيو — أحمد مكي"
+msgstr "خبير سيو — أحمد مكي"
+
+#: includes/post-types/class-faqs.php:174
+msgid "Lower numbers appear first."
+msgstr "Lower numbers appear first."
+
+#: includes/post-types/class-faqs.php:185
+msgid "Show in featured FAQ sections."
+msgstr "Show in featured FAQ sections."
+
+#: includes/post-types/class-services.php:44
+msgctxt "Post Type General Name"
+msgid "Services"
+msgstr "Services"
+
+#: includes/post-types/class-services.php:45
+msgctxt "Post Type Singular Name"
+msgid "Service"
+msgstr "Service"
+
+#: includes/post-types/class-services.php:46
+msgid "Services"
+msgstr "Services"
+
+#: includes/post-types/class-services.php:47
+#: includes/post-types/class-services.php:74
+msgid "Service"
+msgstr "Service"
+
+#: includes/post-types/class-services.php:48
+msgid "Service Archives"
+msgstr "Service Archives"
+
+#: includes/post-types/class-services.php:49
+msgid "Service Attributes"
+msgstr "Service Attributes"
+
+#: includes/post-types/class-services.php:50
+msgid "Parent Service:"
+msgstr "Parent Service:"
+
+#: includes/post-types/class-services.php:51
+msgid "All Services"
+msgstr "All Services"
+
+#: includes/post-types/class-services.php:52
+msgid "Add New Service"
+msgstr "Add New Service"
+
+#: includes/post-types/class-services.php:54
+msgid "New Service"
+msgstr "New Service"
+
+#: includes/post-types/class-services.php:55
+msgid "Edit Service"
+msgstr "Edit Service"
+
+#: includes/post-types/class-services.php:56
+msgid "Update Service"
+msgstr "Update Service"
+
+#: includes/post-types/class-services.php:57
+msgid "View Service"
+msgstr "View Service"
+
+#: includes/post-types/class-services.php:58
+msgid "View Services"
+msgstr "View Services"
+
+#: includes/post-types/class-services.php:59
+msgid "Search Services"
+msgstr "Search Services"
+
+#: includes/post-types/class-services.php:66
+msgid "Insert into service"
+msgstr "Insert into service"
+
+#: includes/post-types/class-services.php:67
+msgid "Uploaded to this service"
+msgstr "Uploaded to this service"
+
+#: includes/post-types/class-services.php:68
+msgid "Services list"
+msgstr "Services list"
+
+#: includes/post-types/class-services.php:69
+msgid "Services list navigation"
+msgstr "Services list navigation"
+
+#: includes/post-types/class-services.php:70
+msgid "Filter services list"
+msgstr "Filter services list"
+
+#: includes/post-types/class-services.php:75
+msgid "Site services"
+msgstr "Site services"
+
+#: includes/post-types/class-services.php:130
+msgid "Choose service icon"
+msgstr "Choose service icon"
+
+#: includes/post-types/class-services.php:131
+msgid "Use as icon"
+msgstr "Use as icon"
+
+#: includes/post-types/class-services.php:142
+msgid "Service icon"
+msgstr "Service icon"
+
+#: includes/post-types/class-services.php:165
+msgid "Optional smaller image or symbol shown next to the title in listings. The featured image is the main thumbnail."
+msgstr "Optional smaller image or symbol shown next to the title in listings. The featured image is the main thumbnail."
+
+#: includes/post-types/class-services.php:173
+msgid "Select icon"
+msgstr "Select icon"
+
+#: includes/post-types/class-services.php:174
+msgid "Remove icon"
+msgstr "Remove icon"
+
+#: includes/post-types/class-services.php:243
+msgid "Icon"
+msgstr "Icon"
+
+#: includes/repeater/class-zskeleton-repeater.php:214
+msgid "Select the matching page template to edit these fields."
+msgstr "Select the matching page template to edit these fields."
+
+#: includes/repeater/class-zskeleton-repeater.php:247
+msgid "Add row"
+msgstr "Add row"
+
+#: includes/repeater/class-zskeleton-repeater.php:288
+msgid "Remove row"
+msgstr "Remove row"
+
+#: includes/repeater/class-zskeleton-repeater.php:426
+msgid "Term"
+msgstr "Term"
+
+#: includes/repeater/class-zskeleton-repeater.php:430
+msgid "Definition"
+msgstr "Definition"
+
+#: includes/admin/class-theme-features-admin.php:99
+#: includes/post-types/class-glossary-terms.php:48
+#: includes/repeater/class-zskeleton-repeater.php:437
+msgid "Glossary"
+msgstr "Glossary"
+
+#: page-complete-payment.php:18 page-forgot-password.php:18 page-login.php:18
+#: page-memberships.php:18 page-payment-success.php:18 page-profile.php:18
+#: page-register.php:18 page-reset-password.php:18
+msgid "Please activate the ZSkeleton Membership & Payments plugin to use this page."
+msgstr "Please activate the ZSkeleton Membership & Payments plugin to use this page."
+
+#. Template Name of the theme
+#: includes/common-pages.php:55
+msgid "Forgot Password"
+msgstr "Forgot Password"
+
+#. Template Name of the theme
+msgid "الصفحة الرئيسية للسيو بالعربية"
+msgstr "الصفحة الرئيسية للسيو بالعربية"
+
+#. Template Name of the theme
+msgid "Privacy Policy (general)"
+msgstr "Privacy Policy (general)"
+
+#: page-privacy-general.php:18
+msgid "How we handle information on this site."
+msgstr "How we handle information on this site."
+
+#. Template Name of the theme
+msgid "Member Profile"
+msgstr "Member Profile"
+
+#. Template Name of the theme
+msgid "Refund Policy (general)"
+msgstr "Refund Policy (general)"
+
+#. Template Name of the theme
+msgid "SEO Expert"
+msgstr "SEO Expert"
+
+#. Template Name of the theme
+msgid "Shipping Policy (general)"
+msgstr "Shipping Policy (general)"
+
+#: page-shipping-general.php:18
+msgid "Delivery timelines, regions, and digital fulfillment."
+msgstr "Delivery timelines, regions, and digital fulfillment."
+
+#: single-service.php:41
+msgid "Back to all services"
+msgstr "Back to all services"
+
+#: template-parts/legal-policy-general.php:26
+msgid "This page explains how we collect, use, and protect information when you browse our site or use our services. Replace this text with your organization’s policy."
+msgstr "This page explains how we collect, use, and protect information when you browse our site or use our services. Replace this text with your organization’s policy."
+
+#: template-parts/legal-policy-general.php:28
+msgid "We collect only the information needed to operate the site, respond to inquiries, and improve our content. Analytics may use cookies or similar technologies in line with your browser settings."
+msgstr "We collect only the information needed to operate the site, respond to inquiries, and improve our content. Analytics may use cookies or similar technologies in line with your browser settings."
+
+#: template-parts/legal-policy-general.php:29
+msgid "We do not sell personal data. Data may be processed by trusted hosting, email, or analytics providers under appropriate agreements."
+msgstr "We do not sell personal data. Data may be processed by trusted hosting, email, or analytics providers under appropriate agreements."
+
+#: template-parts/legal-policy-general.php:30
+msgid "You may request access, correction, or deletion of your personal data where applicable law provides such rights."
+msgstr "You may request access, correction, or deletion of your personal data where applicable law provides such rights."
+
+#: template-parts/legal-policy-general.php:34
+msgid "This page summarizes how refunds and billing adjustments work for purchases made through this site. Update amounts, windows, and exceptions to match your terms."
+msgstr "This page summarizes how refunds and billing adjustments work for purchases made through this site. Update amounts, windows, and exceptions to match your terms."
+
+#: template-parts/legal-policy-general.php:36
+msgid "Eligible refunds are returned to the original payment method unless otherwise required by law or agreed in writing."
+msgstr "Eligible refunds are returned to the original payment method unless otherwise required by law or agreed in writing."
+
+#: template-parts/legal-policy-general.php:37
+msgid "Digital goods and completed services may be non-refundable after delivery; subscription cancellations typically stop renewal rather than refund past periods."
+msgstr "Digital goods and completed services may be non-refundable after delivery; subscription cancellations typically stop renewal rather than refund past periods."
+
+#: template-parts/legal-policy-general.php:38
+msgid "To request a review, contact us with your order reference and a short description of the issue."
+msgstr "To request a review, contact us with your order reference and a short description of the issue."
+
+#: template-parts/legal-policy-general.php:42
+msgid "This page describes how physical or digital goods are fulfilled. Adjust regions, carriers, and timelines to match your operations."
+msgstr "This page describes how physical or digital goods are fulfilled. Adjust regions, carriers, and timelines to match your operations."
+
+#: template-parts/legal-policy-general.php:44
+msgid "Digital products are usually delivered by email or secure download link after payment confirmation."
+msgstr "Digital products are usually delivered by email or secure download link after payment confirmation."
+
+#: template-parts/legal-policy-general.php:45
+msgid "Physical shipments are processed within the timeframe shown at checkout; tracking is provided when available."
+msgstr "Physical shipments are processed within the timeframe shown at checkout; tracking is provided when available."
+
+#: template-parts/legal-policy-general.php:46
+msgid "International orders may be subject to customs, duties, or delays outside our control."
+msgstr "International orders may be subject to customs, duties, or delays outside our control."
+
+#: template-parts/marketing/section-stat-strip.php:39
+msgid "Key figures"
+msgstr "Key figures"
+
+#: theme.json
+msgctxt "Custom template name"
+msgid "Homepage"
+msgstr "Homepage"
+
+#: theme.json
+msgctxt "Custom template name"
+msgid "Memberships"
+msgstr "Memberships"
+
+#: theme.json
+msgctxt "Custom template name"
+msgid "FAQs"
+msgstr "FAQs"
+
+#: theme.json
+msgctxt "Gradient name"
+msgid "Primary Gradient"
+msgstr "Primary Gradient"
+
+#: theme.json
+msgctxt "Gradient name"
+msgid "Soft Surface Gradient"
+msgstr "Soft Surface Gradient"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Primary Blue"
+msgstr "Primary Blue"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Academic Navy"
+msgstr "Academic Navy"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Professional Gray"
+msgstr "Professional Gray"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Neutral Silver"
+msgstr "Neutral Silver"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Secondary Steel"
+msgstr "Secondary Steel"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Accent Mint"
+msgstr "Accent Mint"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Background Cream"
+msgstr "Background Cream"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Success Green"
+msgstr "Success Green"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Alert Red"
+msgstr "Alert Red"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Background Light"
+msgstr "Background Light"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Card White"
+msgstr "Card White"
+
+#: theme.json
+msgctxt "Font family name"
+msgid "Inter (Primary UI)"
+msgstr "Inter (Primary UI)"
+
+#: theme.json
+msgctxt "Font family name"
+msgid "Crimson Text (Academic Content)"
+msgstr "Crimson Text (Academic Content)"
+
+#: theme.json
+msgctxt "Font family name"
+msgid "JetBrains Mono (Code)"
+msgstr "JetBrains Mono (Code)"
+
+#: theme.json
+msgctxt "Font size name"
+msgid "Small"
+msgstr "Small"
+
+#: theme.json
+msgctxt "Font size name"
+msgid "Medium"
+msgstr "Medium"
+
+#: theme.json
+msgctxt "Font size name"
+msgid "Large"
+msgstr "Large"
+
+#: theme.json
+msgctxt "Font size name"
+msgid "Extra Large"
+msgstr "Extra Large"
+
+#: theme.json
+msgctxt "Font size name"
+msgid "Extra Extra Large"
+msgstr "Extra Extra Large"
+
+#: theme.json
+msgctxt "Font size name"
+msgid "Huge"
+msgstr "Huge"
+
+#: functions.php:2561
+msgid "Buttons text color"
+msgstr "Buttons text color"
+
+#: functions.php:2562
+msgid "Label color on primary-style buttons (default black)."
+msgstr "Label color on primary-style buttons (default black)."
+
+#: includes/admin/class-theme-settings.php:560
+msgid "Buttons Text Color"
+msgstr "Buttons Text Color"
+
+#: includes/admin/class-theme-settings.php:567
+msgid "Text color on primary-style and default form buttons (default black)."
+msgstr "Text color on primary-style and default form buttons (default black)."
+
+#: includes/class-zskeleton-contact-customizer.php:166
+msgid "Show floating WhatsApp button"
+msgstr "Show floating WhatsApp button"
+
+#: includes/class-zskeleton-contact-customizer.php:167
+msgid "Fixed bottom-left, opposite the Back to top button."
+msgstr "Fixed bottom-left, opposite the Back to top button."
+
+#: includes/admin/class-theme-settings.php:955
+#: includes/class-zskeleton-contact-customizer.php:185
+msgid "WhatsApp link URL"
+msgstr "WhatsApp link URL"
+
+#: includes/class-zskeleton-contact-customizer.php:186
+msgid "Example: https://wa.me/15551234567 — required for the button to appear."
+msgstr "Example: https://wa.me/15551234567 — required for the button to appear."
+
+#: includes/admin/class-theme-settings.php:934
+msgid "Floating WhatsApp button"
+msgstr "Floating WhatsApp button"
+
+#: includes/admin/class-theme-settings.php:941
+msgid "Show a fixed WhatsApp link on the bottom-left (opposite the Back to top button on the right)."
+msgstr "Show a fixed WhatsApp link on the bottom-left (opposite the Back to top button on the right)."
+
+#. translators: %s: sentence that options sync with the Customizer.
+#: includes/admin/class-theme-settings.php:964
+#, php-format
+msgid "Full URL to open when the button is clicked (for example a wa.me link or https://api.whatsapp.com/send?…). Required for the button to appear. %s"
+msgstr "Full URL to open when the button is clicked (for example a wa.me link or https://api.whatsapp.com/send?…). Required for the button to appear. %s"
+
+#: includes/post-types/class-sliders.php:223
+msgid "Content image"
+msgstr "Content image"
+
+#: includes/post-types/class-sliders.php:332
+msgid "Choose content image"
+msgstr "Choose content image"
+
+#: includes/post-types/class-sliders.php:348
+msgid "Add one or more slides. All fields are optional. Use background + content image together for split layouts (column image vs full-bleed backdrop) or hero (backdrop + optional foreground visual above the text)."
+msgstr "Add one or more slides. All fields are optional. Use background + content image together for split layouts (column image vs full-bleed backdrop) or hero (backdrop + optional foreground visual above the text)."
+
+#: functions.php:896
+msgid "Header — right of logo (split header only)"
+msgstr "Header — right of logo (split header only)"
+
+#: functions.php:924 includes/admin/class-theme-settings.php:691
+msgid "Default (tagline bar + logo row + search toggle)"
+msgstr "Default (tagline bar + logo row + search toggle)"
+
+#: functions.php:925 includes/admin/class-theme-settings.php:692
+msgid "Split: top search & socials, logo centered between menus"
+msgstr "Split: top search & socials, logo centered between menus"
+
+#: functions.php:995
+msgid "Languages"
+msgstr "Languages"
+
+#: functions.php:2326
+msgid "Footer Bottom (left column)"
+msgstr "Footer Bottom (left column)"
+
+#: functions.php:2328
+msgid "Bottom bar — left column (e.g. copyright or horizontal menu)."
+msgstr "Bottom bar — left column (e.g. copyright or horizontal menu)."
+
+#: functions.php:2336
+msgid "Footer Bottom (right column)"
+msgstr "Footer Bottom (right column)"
+
+#: functions.php:2338
+msgid "Bottom bar — right column (e.g. vertical menu or legal links)."
+msgstr "Bottom bar — right column (e.g. vertical menu or legal links)."
+
+#: functions.php:3759
+msgid "Leave unchecked for full-width content. Check to show the main sidebar on this page."
+msgstr "Leave unchecked for full-width content. Check to show the main sidebar on this page."
+
+#: includes/admin/class-theme-features-admin.php:37
+#: includes/admin/class-theme-features-admin.php:38
+#: includes/admin/class-theme-features-admin.php:70
+msgid "Theme Features"
+msgstr "Theme Features"
+
+#: includes/admin/class-theme-features-admin.php:50
+#: includes/admin/class-theme-features-admin.php:51
+msgid "Overview"
+msgstr "Overview"
+
+#: includes/admin/class-theme-features-admin.php:63
+msgid "You do not have permission to access this page."
+msgstr "You do not have permission to access this page."
+
+#: includes/admin/class-theme-features-admin.php:72
+msgid "Structured tools and content that ship with ZSkeleton. This area is separate from ZSkeleton Theme Settings under Appearance."
+msgstr "Structured tools and content that ship with ZSkeleton. This area is separate from ZSkeleton Theme Settings under Appearance."
+
+#: includes/admin/class-theme-features-admin.php:79
+#: includes/post-types/class-sliders.php:235
+msgid "Sliders"
+msgstr "Sliders"
+
+#: includes/admin/class-theme-features-admin.php:83
+msgid "Build animated sliders with slides (optional text and two buttons). Embed with the shortcode on any page."
+msgstr "Build animated sliders with slides (optional text and two buttons). Embed with the shortcode on any page."
+
+#: includes/admin/class-theme-features-admin.php:87
+msgid "or"
+msgstr "or"
+
+#: includes/admin/class-theme-features-admin.php:92
+msgid "Manage sliders"
+msgstr "Manage sliders"
+
+#: includes/admin/class-theme-features-admin.php:103
+msgid "Create and order term + definition entries. Use the entry title for the term and the main editor for the definition."
+msgstr "Create and order term + definition entries. Use the entry title for the term and the main editor for the definition."
+
+#: includes/admin/class-theme-features-admin.php:107
+msgid "Manage glossary"
+msgstr "Manage glossary"
+
+#: includes/admin/class-theme-settings.php:655
+msgid "Footer widget columns"
+msgstr "Footer widget columns"
+
+#: includes/admin/class-theme-settings.php:663
+msgid "1 column"
+msgstr "1 column"
+
+#: includes/admin/class-theme-settings.php:664
+msgid "2 columns"
+msgstr "2 columns"
+
+#: includes/admin/class-theme-settings.php:665
+msgid "3 columns"
+msgstr "3 columns"
+
+#: includes/admin/class-theme-settings.php:666
+msgid "4 columns"
+msgstr "4 columns"
+
+#: includes/admin/class-theme-settings.php:668
+msgid "How many footer widget areas appear in the front-end layout. Unused areas stay available under Appearance → Widgets."
+msgstr "How many footer widget areas appear in the front-end layout. Unused areas stay available under Appearance → Widgets."
+
+#: includes/admin/class-theme-settings.php:683
+msgid "Header layout"
+msgstr "Header layout"
+
+#: includes/admin/class-theme-settings.php:694
+msgid "Split layout shows an inline search and social icons in the top bar, login on the right, and the logo centered between the primary menu (left) and the “Header — right of logo” menu (assign under Appearance → Menus)."
+msgstr "Split layout shows an inline search and social icons in the top bar, login on the right, and the logo centered between the primary menu (left) and the “Header — right of logo” menu (assign under Appearance → Menus)."
+
+#: includes/admin/class-theme-settings.php:737
+msgid "Map latitude"
+msgstr "Map latitude"
+
+#: includes/admin/class-theme-settings.php:744
+msgid "Decimal degrees (e.g. 24.7136). Leave empty if you use “Map address” instead."
+msgstr "Decimal degrees (e.g. 24.7136). Leave empty if you use “Map address” instead."
+
+#: includes/admin/class-theme-settings.php:758
+msgid "Map longitude"
+msgstr "Map longitude"
+
+#: includes/admin/class-theme-settings.php:765
+msgid "Decimal degrees (e.g. 46.6753). Required together with latitude unless you use address."
+msgstr "Decimal degrees (e.g. 46.6753). Required together with latitude unless you use address."
+
+#: includes/admin/class-theme-settings.php:779
+msgid "Map address (optional)"
+msgstr "Map address (optional)"
+
+#: includes/admin/class-theme-settings.php:786
+msgid "Used as the map search query when latitude and longitude are both empty (e.g. street, city, country)."
+msgstr "Used as the map search query when latitude and longitude are both empty (e.g. street, city, country)."
+
+#: includes/admin/class-theme-settings.php:800
+msgid "Map zoom level"
+msgstr "Map zoom level"
+
+#: includes/admin/class-theme-settings.php:809
+msgid "1 (world) to 20 (building). Used for the default embed."
+msgstr "1 (world) to 20 (building). Used for the default embed."
+
+#: includes/admin/class-theme-settings.php:814
+msgid "Same values as Appearance → Customize → Contact & social."
+msgstr "Same values as Appearance → Customize → Contact & social."
+
+#. translators: %s: sentence that social URLs sync with the Customizer.
+#: includes/admin/class-theme-settings.php:827
+#, php-format
+msgid "Facebook page URL (leave empty to hide). %s"
+msgstr "Facebook page URL (leave empty to hide). %s"
+
+#. translators: %s: sentence that social URLs sync with the Customizer.
+#: includes/admin/class-theme-settings.php:845
+#, php-format
+msgid "Twitter/X profile URL (leave empty to hide). %s"
+msgstr "Twitter/X profile URL (leave empty to hide). %s"
+
+#. translators: %s: sentence that social URLs sync with the Customizer.
+#: includes/admin/class-theme-settings.php:863
+#, php-format
+msgid "LinkedIn profile URL (leave empty to hide). %s"
+msgstr "LinkedIn profile URL (leave empty to hide). %s"
+
+#. translators: %s: sentence that social URLs sync with the Customizer.
+#: includes/admin/class-theme-settings.php:881
+#, php-format
+msgid "YouTube channel URL (leave empty to hide). %s"
+msgstr "YouTube channel URL (leave empty to hide). %s"
+
+#. translators: %s: sentence that social URLs sync with the Customizer.
+#: includes/admin/class-theme-settings.php:899
+#, php-format
+msgid "Instagram profile URL (leave empty to hide). %s"
+msgstr "Instagram profile URL (leave empty to hide). %s"
+
+#. translators: %s: sentence that social URLs sync with the Customizer.
+#: includes/admin/class-theme-settings.php:917
+#, php-format
+msgid "GitHub organization URL (leave empty to hide). %s"
+msgstr "GitHub organization URL (leave empty to hide). %s"
+
+#: includes/admin/class-theme-settings.php:986
+msgid "Posts homepage sidebar"
+msgstr "Posts homepage sidebar"
+
+#: includes/admin/class-theme-settings.php:993
+msgid "Show the main sidebar next to the post list when the site homepage is set to your latest posts (Settings → Reading). Leave unchecked for a full-width blog feed."
+msgstr "Show the main sidebar next to the post list when the site homepage is set to your latest posts (Settings → Reading). Leave unchecked for a full-width blog feed."
+
+#: includes/admin/class-theme-settings.php:1084
+msgid "Arabic SEO homepage hero slider"
+msgstr "Arabic SEO homepage hero slider"
+
+#: includes/admin/class-theme-settings.php:1089
+msgid "When a slider is selected, the “الصفحة الرئيسية للسيو بالعربية” template shows it instead of the built-in hero. Create sliders under Theme Features → Sliders."
+msgstr "When a slider is selected, the “الصفحة الرئيسية للسيو بالعربية” template shows it instead of the built-in hero. Create sliders under Theme Features → Sliders."
+
+#: includes/admin/class-theme-settings.php:1111
+msgid "Number of blog articles accessible to non-members. Restriction mode and messages are configured under Memberships → Content Restrictions in the ZSkeleton Membership plugin."
+msgstr "Number of blog articles accessible to non-members. Restriction mode and messages are configured under Memberships → Content Restrictions in the ZSkeleton Membership plugin."
+
+#: includes/admin/class-theme-settings.php:1177
+msgid "Common pages & auth"
+msgstr "Common pages & auth"
+
+#: includes/admin/class-theme-settings.php:1203
+msgid "Blog listing page"
+msgstr "Blog listing page"
+
+#: includes/admin/class-theme-settings.php:1219
+msgid "Featured posts strip"
+msgstr "Featured posts strip"
+
+#: includes/admin/class-theme-settings.php:1226
+msgid "Show a featured row at the top (sticky posts first, then recent posts to fill the count)."
+msgstr "Show a featured row at the top (sticky posts first, then recent posts to fill the count)."
+
+#: includes/admin/class-theme-settings.php:1240
+msgid "Featured posts count"
+msgstr "Featured posts count"
+
+#: includes/admin/class-theme-settings.php:1249
+msgid "How many cards appear in the featured strip."
+msgstr "How many cards appear in the featured strip."
+
+#: includes/admin/class-theme-settings.php:1263
+msgid "De-duplicate latest list"
+msgstr "De-duplicate latest list"
+
+#: includes/admin/class-theme-settings.php:1270
+msgid "On the first page, hide posts that already appear in the featured strip from the paginated “Latest” grid."
+msgstr "On the first page, hide posts that already appear in the featured strip from the paginated “Latest” grid."
+
+#: includes/admin/class-theme-settings.php:1284
+msgid "Category blocks"
+msgstr "Category blocks"
+
+#: includes/admin/class-theme-settings.php:1291
+msgid "Show a section of top-level categories, each with a short list of recent posts."
+msgstr "Show a section of top-level categories, each with a short list of recent posts."
+
+#: includes/admin/class-theme-settings.php:1305
+msgid "Number of category blocks"
+msgstr "Number of category blocks"
+
+#: includes/admin/class-theme-settings.php:1314
+msgid "How many categories to show (ordered by number of posts)."
+msgstr "How many categories to show (ordered by number of posts)."
+
+#: includes/admin/class-theme-settings.php:1328
+msgid "Posts per category block"
+msgstr "Posts per category block"
+
+#: includes/admin/class-theme-settings.php:1337
+msgid "Recent posts shown under each category heading."
+msgstr "Recent posts shown under each category heading."
+
+#: includes/admin/class-theme-settings.php:1351
+msgid "Trending / most-read section"
+msgstr "Trending / most-read section"
+
+#: includes/admin/class-theme-settings.php:1358
+msgid "Show a row of popular posts below the category blocks."
+msgstr "Show a row of popular posts below the category blocks."
+
+#: includes/admin/class-theme-settings.php:1372
+msgid "Trending posts count"
+msgstr "Trending posts count"
+
+#: includes/admin/class-theme-settings.php:1381
+msgid "How many posts appear in the trending / most-read row."
+msgstr "How many posts appear in the trending / most-read row."
+
+#: includes/admin/class-theme-settings.php:1395
+msgid "Trending ranking"
+msgstr "Trending ranking"
+
+#: includes/admin/class-theme-settings.php:1403
+msgid "Most commented (built-in)"
+msgstr "Most commented (built-in)"
+
+#: includes/admin/class-theme-settings.php:1404
+msgid "Most read (theme view counter)"
+msgstr "Most read (theme view counter)"
+
+#: includes/admin/class-theme-settings.php:1406
+msgid "“Most read” requires view tracking below and enough time for counts to accumulate."
+msgstr "“Most read” requires view tracking below and enough time for counts to accumulate."
+
+#: includes/admin/class-theme-settings.php:1420
+msgid "Track post views"
+msgstr "Track post views"
+
+#: includes/admin/class-theme-settings.php:1427
+msgid "Increment a simple read counter when visitors open single posts (throttled per visitor). Used when trending ranking is “Most read”."
+msgstr "Increment a simple read counter when visitors open single posts (throttled per visitor). Used when trending ranking is “Most read”."
+
+#: includes/admin/class-theme-settings.php:1441
+msgid "Lead generation block"
+msgstr "Lead generation block"
+
+#: includes/admin/class-theme-settings.php:1462
+msgid "Lead block title"
+msgstr "Lead block title"
+
+#: includes/admin/class-theme-settings.php:1469
+msgid "Leave empty to use the theme default (translatable)."
+msgstr "Leave empty to use the theme default (translatable)."
+
+#: includes/admin/class-theme-settings.php:1483
+msgid "Lead block text"
+msgstr "Lead block text"
+
+#: includes/admin/class-theme-settings.php:1490
+msgid "Supporting sentence or two. Leave empty for the default."
+msgstr "Supporting sentence or two. Leave empty for the default."
+
+#: includes/admin/class-theme-settings.php:1504
+msgid "Lead block button label"
+msgstr "Lead block button label"
+
+#: includes/admin/class-theme-settings.php:1511
+msgid "Leave empty for the default “Subscribe”."
+msgstr "Leave empty for the default “Subscribe”."
+
+#: includes/admin/class-theme-settings.php:1525
+msgid "Lead block button URL"
+msgstr "Lead block button URL"
+
+#: includes/admin/class-theme-settings.php:1562
+msgid "Allow WebP uploads"
+msgstr "Allow WebP uploads"
+
+#: includes/admin/class-theme-settings.php:1569
+msgid "Allow uploading .webp images to the Media Library. If PHP cannot resize WebP, WordPress may still store the full-size file only (enable GD or Imagick with WebP on the server for thumbnails)."
+msgstr "Allow uploading .webp images to the Media Library. If PHP cannot resize WebP, WordPress may still store the full-size file only (enable GD or Imagick with WebP on the server for thumbnails)."
+
+#: includes/admin/class-theme-settings.php:1583
+msgid "Allow SVG uploads"
+msgstr "Allow SVG uploads"
+
+#: includes/admin/class-theme-settings.php:1590
+msgid "Allow uploading .svg images. SVG can contain scripts; enable only if you trust everyone who can upload files."
+msgstr "Allow uploading .svg images. SVG can contain scripts; enable only if you trust everyone who can upload files."
+
+#: includes/admin/class-theme-settings.php:1877
+msgid "Bot protection"
+msgstr "Bot protection"
+
+#: includes/admin/class-theme-settings.php:1885
+#: includes/admin/class-theme-settings.php:2838
+msgid "Google reCAPTCHA v3"
+msgstr "Google reCAPTCHA v3"
+
+#: includes/admin/class-theme-settings.php:1886
+#: includes/admin/class-theme-settings.php:2838
+msgid "Cloudflare Turnstile"
+msgstr "Cloudflare Turnstile"
+
+#: includes/admin/class-theme-settings.php:1888
+msgid "Choose which service validates submissions. Configure the matching keys below."
+msgstr "Choose which service validates submissions. Configure the matching keys below."
+
+#: includes/admin/class-theme-settings.php:1899
+msgid "Turnstile site key"
+msgstr "Turnstile site key"
+
+#: includes/admin/class-theme-settings.php:1906
+msgid "Public site key from Cloudflare Turnstile (used when Turnstile is selected)."
+msgstr "Public site key from Cloudflare Turnstile (used when Turnstile is selected)."
+
+#: includes/admin/class-theme-settings.php:1918
+msgid "Turnstile secret key"
+msgstr "Turnstile secret key"
+
+#: includes/admin/class-theme-settings.php:1925
+msgid "Secret key from Cloudflare Turnstile. Keep this confidential."
+msgstr "Secret key from Cloudflare Turnstile. Keep this confidential."
+
+#: includes/admin/class-theme-settings.php:1934
+msgid "reCAPTCHA site key"
+msgstr "reCAPTCHA site key"
+
+#: includes/admin/class-theme-settings.php:1941
+msgid "Google reCAPTCHA v3 site key (used when Google reCAPTCHA is selected). Get keys at Google reCAPTCHA Admin."
+msgstr "Google reCAPTCHA v3 site key (used when Google reCAPTCHA is selected). Get keys at Google reCAPTCHA Admin."
+
+#: includes/admin/class-theme-settings.php:1950
+msgid "reCAPTCHA secret key"
+msgstr "reCAPTCHA secret key"
+
+#: includes/admin/class-theme-settings.php:1957
+msgid "Google reCAPTCHA v3 secret key (used when Google reCAPTCHA is selected). Keep this confidential."
+msgstr "Google reCAPTCHA v3 secret key (used when Google reCAPTCHA is selected). Keep this confidential."
+
+#: includes/admin/class-theme-settings.php:1966
+msgid "reCAPTCHA score threshold"
+msgstr "reCAPTCHA score threshold"
+
+#: includes/admin/class-theme-settings.php:1973
+msgid "Google reCAPTCHA v3 only: minimum score (0.0 to 1.0). Default 0.5."
+msgstr "Google reCAPTCHA v3 only: minimum score (0.0 to 1.0). Default 0.5."
+
+#: includes/admin/class-theme-settings.php:2089
+#: includes/admin/class-theme-settings.php:2111
+msgid "Branding"
+msgstr "Branding"
+
+#: includes/admin/class-theme-settings.php:2090
+#: includes/admin/class-theme-settings.php:2116
+msgid "Appearance"
+msgstr "Appearance"
+
+#: includes/admin/class-theme-settings.php:2091
+#: includes/admin/class-theme-settings.php:2121
+msgid "Layout"
+msgstr "Layout"
+
+#: includes/admin/class-theme-settings.php:2268
+msgid "Logos and site title text shown in the header and elsewhere."
+msgstr "Logos and site title text shown in the header and elsewhere."
+
+#: includes/admin/class-theme-settings.php:2272
+msgid "Theme palette and web fonts (mirrors Customizer color controls where applicable)."
+msgstr "Theme palette and web fonts (mirrors Customizer color controls where applicable)."
+
+#: includes/admin/class-theme-settings.php:2276
+msgid "Structural choices for the header and footer widget row."
+msgstr "Structural choices for the header and footer widget row."
+
+#: includes/admin/class-theme-settings.php:2280
+msgid "Public contact email, default map embed, and social profile URLs (synced with Appearance → Customize → Contact & social)."
+msgstr "Public contact email, default map embed, and social profile URLs (synced with Appearance → Customize → Contact & social)."
+
+#: includes/admin/class-theme-settings.php:2298
+msgid "Applies to pages that use the “Blog listing” template: featured row, latest grid, category blocks, trending or most-read, and the lead CTA."
+msgstr "Applies to pages that use the “Blog listing” template: featured row, latest grid, category blocks, trending or most-read, and the lead CTA."
+
+#: includes/admin/class-theme-settings.php:2310
+msgid "Use Google reCAPTCHA v3 (invisible score) or Cloudflare Turnstile. Protection applies only when the selected provider has both keys saved."
+msgstr "Use Google reCAPTCHA v3 (invisible score) or Cloudflare Turnstile. Protection applies only when the selected provider has both keys saved."
+
+#: includes/admin/class-theme-settings.php:2411
+msgid "— Built-in hero (no slider) —"
+msgstr "— Built-in hero (no slider) —"
+
+#: includes/admin/class-theme-settings.php:2583
+msgid "— Select page"
+msgstr "— Select page"
+
+#: includes/admin/class-theme-settings.php:2835
+msgid "Bot protection status"
+msgstr "Bot protection status"
+
+#: includes/admin/class-theme-settings.php:2837
+msgid "Selected provider:"
+msgstr "Selected provider:"
+
+#: includes/admin/class-theme-settings.php:2843
+msgid "Protection is enabled for your forms"
+msgstr "Protection is enabled for your forms"
+
+#: includes/admin/class-theme-settings.php:2847
+msgid "Protected forms"
+msgstr "Protected forms"
+
+#: includes/admin/class-theme-settings.php:2849
+msgid "User registration"
+msgstr "User registration"
+
+#: includes/admin/class-theme-settings.php:2851
+msgid "Contact form"
+msgstr "Contact form"
+
+#: includes/admin/class-theme-settings.php:2852
+msgid "Password reset"
+msgstr "Password reset"
+
+#: includes/admin/class-theme-settings.php:2858
+msgid "reCAPTCHA"
+msgstr "reCAPTCHA"
+
+#: includes/admin/class-theme-settings.php:2859
+msgid "Score threshold:"
+msgstr "Score threshold:"
+
+#: includes/admin/class-theme-settings.php:2864
+msgid "Protection is not active for the selected provider — add both keys and save."
+msgstr "Protection is not active for the selected provider — add both keys and save."
+
+#: includes/admin/class-theme-settings.php:2868
+msgid "How to enable"
+msgstr "How to enable"
+
+#: includes/admin/class-theme-settings.php:2871
+msgid "Open Cloudflare dashboard → Turnstile and create a widget"
+msgstr "Open Cloudflare dashboard → Turnstile and create a widget"
+
+#: includes/admin/class-theme-settings.php:2872
+msgid "Add your site hostnames"
+msgstr "Add your site hostnames"
+
+#: includes/admin/class-theme-settings.php:2873
+msgid "Paste the site key and secret key above, then save"
+msgstr "Paste the site key and secret key above, then save"
+
+#: includes/admin/class-theme-settings.php:2877
+msgid "Go to Google reCAPTCHA Admin and register a v3 site"
+msgstr "Go to Google reCAPTCHA Admin and register a v3 site"
+
+#: includes/admin/class-theme-settings.php:2878
+msgid "Add your domain, then paste site and secret keys above"
+msgstr "Add your domain, then paste site and secret keys above"
+
+#: includes/admin/class-theme-settings.php:2884
+msgid "Forms still work without keys, but are not protected against automated abuse."
+msgstr "Forms still work without keys, but are not protected against automated abuse."
+
+#: includes/admin/class-theme-settings.php:2889
+msgid "Key readiness"
+msgstr "Key readiness"
+
+#. translators: 1: Google ready yes/no, 2: Turnstile ready yes/no
+#: includes/admin/class-theme-settings.php:2892
+#, php-format
+msgid "Google: %1$s · Turnstile: %2$s"
+msgstr "Google: %1$s · Turnstile: %2$s"
+
+#: includes/admin/class-theme-settings.php:2893
+#: includes/admin/class-theme-settings.php:2894
+msgid "ready"
+msgstr "ready"
+
+#: includes/admin/class-theme-settings.php:2893
+#: includes/admin/class-theme-settings.php:2894
+msgid "incomplete"
+msgstr "incomplete"
+
+#: includes/admin/class-theme-settings.php:3291
+msgid "Create & sync common pages"
+msgstr "Create & sync common pages"
+
+#: includes/admin/class-theme-settings.php:3293
+msgid "Creates or updates published pages (login, register, forgot-password, reset-password, memberships, blog) with the correct templates, maps auth fields below, and assigns the WordPress “Posts page” when you use a static front page without a posts page. The ZSkeleton Membership plugin syncs the membership landing page option when it is still unset."
+msgstr "Creates or updates published pages (login, register, forgot-password, reset-password, memberships, blog) with the correct templates, maps auth fields below, and assigns the WordPress “Posts page” when you use a static front page without a posts page. The ZSkeleton Membership plugin syncs the membership landing page option when it is still unset."
+
+#: includes/admin/class-theme-settings.php:3295
+msgid "Set default theme auth pages (slugs only)"
+msgstr "Set default theme auth pages (slugs only)"
+
+#: includes/admin/class-theme-settings.php:3297
+msgid "Only updates auth dropdowns from existing published pages (slugs: login, register, forgot-password or lost-password, reset-password). Use this when pages already exist and you do not want to change templates or titles."
+msgstr "Only updates auth dropdowns from existing published pages (slugs: login, register, forgot-password or lost-password, reset-password). Use this when pages already exist and you do not want to change templates or titles."
+
+#: includes/admin/class-theme-settings.php:3311
+msgid "You need permission to publish pages to run the installer."
+msgstr "You need permission to publish pages to run the installer."
+
+#: includes/admin/class-theme-settings.php:3379
+msgid "Common pages installer was skipped by a filter."
+msgstr "Common pages installer was skipped by a filter."
+
+#: includes/admin/class-theme-settings.php:3387
+msgid "You do not have permission to publish pages."
+msgstr "You do not have permission to publish pages."
+
+#: includes/admin/class-theme-settings.php:3398
+msgid "Common pages installer finished."
+msgstr "Common pages installer finished."
+
+#: includes/admin/class-theme-settings.php:3400
+#, php-format
+msgid "Created: %s"
+msgstr "Created: %s"
+
+#: includes/admin/class-theme-settings.php:3403
+#, php-format
+msgid "Updated templates or status: %s"
+msgstr "Updated templates or status: %s"
+
+#: includes/admin/class-theme-settings.php:3406
+#, php-format
+msgid "Skipped (template missing): %s"
+msgstr "Skipped (template missing): %s"
+
+#: includes/admin/class-theme-settings.php:3409
+#, php-format
+msgid "Could not create: %s"
+msgstr "Could not create: %s"
+
+#: includes/admin/class-theme-settings.php:3411
+msgid "Review the Content tab page dropdowns and save settings if you changed anything else."
+msgstr "Review the Content tab page dropdowns and save settings if you changed anything else."
+
+#: includes/class-recaptcha.php:300
+msgid "Security check failed. Please complete the verification and try again."
+msgstr "Security check failed. Please complete the verification and try again."
+
+#: includes/class-recaptcha.php:319
+msgid "Security verification service is temporarily unavailable."
+msgstr "Security verification service is temporarily unavailable."
+
+#: includes/class-recaptcha.php:327
+msgid "Security check failed. Please try again."
+msgstr "Security check failed. Please try again."
+
+#: includes/class-widget-google-map.php:23
+msgid "ZSkeleton: Google Map"
+msgstr "ZSkeleton: Google Map"
+
+#: includes/class-widget-google-map.php:25
+msgid "Embedded map using theme location settings or a custom address/coordinates."
+msgstr "Embedded map using theme location settings or a custom address/coordinates."
+
+#: includes/class-widget-google-map.php:63 includes/google-map.php:111
+msgid "Map"
+msgstr "Map"
+
+#: includes/class-widget-google-map.php:82
+msgid "No map location is set. Configure the map under Appearance → ZSkeleton Settings → General, or choose “Custom location” in this widget."
+msgstr "No map location is set. Configure the map under Appearance → ZSkeleton Settings → General, or choose “Custom location” in this widget."
+
+#: includes/class-widget-google-map.php:112
+msgid "Title:"
+msgstr "Title:"
+
+#: includes/class-widget-google-map.php:118
+msgid "Use theme default location (General → Map settings)"
+msgstr "Use theme default location (General → Map settings)"
+
+#: includes/class-widget-google-map.php:122
+msgid "Custom location"
+msgstr "Custom location"
+
+#: includes/class-widget-google-map.php:126
+msgid "Custom map location"
+msgstr "Custom map location"
+
+#: includes/class-widget-google-map.php:128
+msgid "Latitude"
+msgstr "Latitude"
+
+#: includes/class-widget-google-map.php:129
+msgid "e.g. 24.7136"
+msgstr "e.g. 24.7136"
+
+#: includes/class-widget-google-map.php:132
+msgid "Longitude"
+msgstr "Longitude"
+
+#: includes/class-widget-google-map.php:133
+msgid "e.g. 46.6753"
+msgstr "e.g. 46.6753"
+
+#: includes/class-widget-google-map.php:136
+msgid "Address (if lat/lng empty)"
+msgstr "Address (if lat/lng empty)"
+
+#: includes/class-widget-google-map.php:140
+msgid "Zoom (1–20, optional)"
+msgstr "Zoom (1–20, optional)"
+
+#: includes/class-widget-google-map.php:145
+msgid "Map height (CSS)"
+msgstr "Map height (CSS)"
+
+#: includes/class-widget-google-map.php:149
+msgid "Map width (CSS)"
+msgstr "Map width (CSS)"
+
+#: includes/class-widget-google-map.php:153
+msgid "Accessible map title"
+msgstr "Accessible map title"
+
+#: includes/class-widget-google-map.php:157
+msgid "Extra CSS class (optional)"
+msgstr "Extra CSS class (optional)"
+
+#: includes/class-widget-nav-menus.php:56
+msgid "ZSkeleton: Menu (horizontal)"
+msgstr "ZSkeleton: Menu (horizontal)"
+
+#: includes/class-widget-nav-menus.php:58
+msgid "Display a menu as a horizontal row (list bullets hidden)."
+msgstr "Display a menu as a horizontal row (list bullets hidden)."
+
+#: includes/class-widget-nav-menus.php:75
+#: includes/class-widget-nav-menus.php:160
+msgid "Select a menu in this widget’s settings."
+msgstr "Select a menu in this widget’s settings."
+
+#: includes/class-widget-nav-menus.php:102
+#: includes/class-widget-nav-menus.php:187
+msgid "Title (optional):"
+msgstr "Title (optional):"
+
+#: includes/class-widget-nav-menus.php:106
+#: includes/class-widget-nav-menus.php:191
+msgid "Menu:"
+msgstr "Menu:"
+
+#: includes/class-widget-nav-menus.php:108
+#: includes/class-widget-nav-menus.php:193
+msgid "— Select a menu —"
+msgstr "— Select a menu —"
+
+#: includes/class-widget-nav-menus.php:141
+msgid "ZSkeleton: Menu (vertical)"
+msgstr "ZSkeleton: Menu (vertical)"
+
+#: includes/class-widget-nav-menus.php:143
+msgid "Display a menu as a vertical list (list bullets hidden)."
+msgstr "Display a menu as a vertical list (list bullets hidden)."
+
+#: includes/class-zskeleton-contact-customizer.php:79
+msgid "Social profile URLs are the same values as under ZSkeleton → General; you can edit them here or on that screen."
+msgstr "Social profile URLs are the same values as under ZSkeleton → General; you can edit them here or on that screen."
+
+#: includes/common-pages.php:47
+msgid "Log In"
+msgstr "Log In"
+
+#: includes/common-pages.php:51
+msgid "Register"
+msgstr "Register"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:69
+msgid "Hero image — Media Library ID (optional)"
+msgstr "Hero image — Media Library ID (optional)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:70
+msgid "Hero image — Custom URL (optional, used if no ID)"
+msgstr "Hero image — Custom URL (optional, used if no ID)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:71
+msgid "Hero image — Alt text (optional)"
+msgstr "Hero image — Alt text (optional)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:75
+msgid "Landing term slug (services grid; Landings taxonomy)"
+msgstr "Landing term slug (services grid; Landings taxonomy)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:80
+msgid "Pricing section — optional image (opposite the icon)"
+msgstr "Pricing section — optional image (opposite the icon)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:82
+msgid "Shown beside the pricing text when set; the circular icon stays on the other side."
+msgstr "Shown beside the pricing text when set; the circular icon stays on the other side."
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:86
+msgid "Why Arabic market — optional side image"
+msgstr "Why Arabic market — optional side image"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:88
+#: includes/kits/seo-expert/class-seo-expert-meta.php:94
+#: includes/kits/seo-expert/class-seo-expert-meta.php:100
+#: includes/kits/seo-expert/class-seo-expert-meta.php:106
+msgid "Placed on the side opposite the section icon when set."
+msgstr "Placed on the side opposite the section icon when set."
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:92
+msgid "Search results section — optional side image"
+msgstr "Search results section — optional side image"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:98
+msgid "Success factors — optional side image"
+msgstr "Success factors — optional side image"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:104
+msgid "How to choose expert — optional side image"
+msgstr "How to choose expert — optional side image"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:109
+msgid "Contact / AI lead — main heading (H2)"
+msgstr "Contact / AI lead — main heading (H2)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:110
+msgid "Contact / AI lead — intro paragraph (HTML: spans, links)"
+msgstr "Contact / AI lead — intro paragraph (HTML: spans, links)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:111
+msgid "Contact / AI lead — subhead “beware”"
+msgstr "Contact / AI lead — subhead “beware”"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:112
+msgid "Contact / AI lead — “beware” body (HTML; use %%CASE_STUDY_URL%% for case-study link)"
+msgstr "Contact / AI lead — “beware” body (HTML; use %%CASE_STUDY_URL%% for case-study link)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:113
+msgid "Contact / AI lead — subhead “why us” (leave empty for “لماذا {expert}؟”)"
+msgstr "Contact / AI lead — subhead “why us” (leave empty for “لماذا {expert}؟”)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:114
+msgid "Contact / AI lead — “why” paragraph 1 (use %%EXPERT_NAME%%)"
+msgstr "Contact / AI lead — “why” paragraph 1 (use %%EXPERT_NAME%%)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:115
+msgid "Contact / AI lead — “why” paragraph 2 (HTML)"
+msgstr "Contact / AI lead — “why” paragraph 2 (HTML)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:116
+msgid "Contact / AI lead — form card title"
+msgstr "Contact / AI lead — form card title"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:117
+msgid "Contact / AI lead — case study URL (optional; overrides %%CASE_STUDY_URL%% default)"
+msgstr "Contact / AI lead — case study URL (optional; overrides %%CASE_STUDY_URL%% default)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:119
+msgid "Related articles — source"
+msgstr "Related articles — source"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:123
+msgid "Most recent blog posts"
+msgstr "Most recent blog posts"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:124
+msgid "Hand-picked posts (IDs below)"
+msgstr "Hand-picked posts (IDs below)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:128
+msgid "Related articles — how many (recent mode)"
+msgstr "Related articles — how many (recent mode)"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:130
+msgid "Between 1 and 12."
+msgstr "Between 1 and 12."
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:133
+msgid "Related articles — post IDs"
+msgstr "Related articles — post IDs"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:135
+msgid "Comma-separated WordPress post IDs (published posts only). Used when source is “Hand-picked”."
+msgstr "Comma-separated WordPress post IDs (published posts only). Used when source is “Hand-picked”."
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:255
+msgid "Used by the “SEO Expert” page template. Expert display name is the single source for headings and structured data. Hero image: set a Media Library attachment ID, or a full image URL, or leave both empty to use the theme default (hero-man.webp). Long fields use the visual editor unless a field is registered as a plain textarea in theme code."
+msgstr "Used by the “SEO Expert” page template. Expert display name is the single source for headings and structured data. Hero image: set a Media Library attachment ID, or a full image URL, or leave both empty to use the theme default (hero-man.webp). Long fields use the visual editor unless a field is registered as a plain textarea in theme code."
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:293
+msgid "Select image"
+msgstr "Select image"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:294
+msgid "Remove image"
+msgstr "Remove image"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:344
+msgid "Choose image"
+msgstr "Choose image"
+
+#: includes/kits/seo-expert/class-seo-expert-meta.php:344
+msgid "Use this image"
+msgstr "Use this image"
+
+#. translators: %s: expert display name
+#: includes/kits/seo-expert/seo-expert-kit.php:120
+#, php-format
+msgid "Portrait of %s"
+msgstr "Portrait of %s"
+
+#: includes/kits/seo-expert/seo-expert-kit.php:123
+msgid "SEO consultant portrait"
+msgstr "SEO consultant portrait"
+
+#: includes/post-types/class-glossary-terms.php:46
+msgctxt "Post type general name"
+msgid "Glossary entries"
+msgstr "Glossary entries"
+
+#: includes/post-types/class-glossary-terms.php:47
+msgctxt "Post type singular name"
+msgid "Glossary entry"
+msgstr "Glossary entry"
+
+#: includes/post-types/class-glossary-terms.php:49
+msgid "Glossary entry"
+msgstr "Glossary entry"
+
+#: includes/post-types/class-glossary-terms.php:51
+msgid "Add glossary entry"
+msgstr "Add glossary entry"
+
+#: includes/post-types/class-glossary-terms.php:52
+msgid "New glossary entry"
+msgstr "New glossary entry"
+
+#: includes/post-types/class-glossary-terms.php:53
+msgid "Edit glossary entry"
+msgstr "Edit glossary entry"
+
+#: includes/post-types/class-glossary-terms.php:54
+msgid "View glossary entry"
+msgstr "View glossary entry"
+
+#: includes/post-types/class-glossary-terms.php:55
+msgid "All entries"
+msgstr "All entries"
+
+#: includes/post-types/class-glossary-terms.php:56
+msgid "Search glossary"
+msgstr "Search glossary"
+
+#: includes/post-types/class-glossary-terms.php:57
+msgid "Parent glossary entry:"
+msgstr "Parent glossary entry:"
+
+#: includes/post-types/class-glossary-terms.php:58
+msgid "No glossary entries found."
+msgstr "No glossary entries found."
+
+#: includes/post-types/class-glossary-terms.php:59
+msgid "No glossary entries found in Trash."
+msgstr "No glossary entries found in Trash."
+
+#: includes/post-types/class-glossary-terms.php:60
+msgid "Glossary archives"
+msgstr "Glossary archives"
+
+#: includes/post-types/class-glossary-terms.php:61
+msgid "Insert into glossary entry"
+msgstr "Insert into glossary entry"
+
+#: includes/post-types/class-glossary-terms.php:62
+msgid "Uploaded to this glossary entry"
+msgstr "Uploaded to this glossary entry"
+
+#: includes/post-types/class-glossary-terms.php:63
+msgid "Filter glossary list"
+msgstr "Filter glossary list"
+
+#: includes/post-types/class-glossary-terms.php:64
+msgid "Glossary list"
+msgstr "Glossary list"
+
+#: includes/post-types/class-glossary-terms.php:65
+msgid "Glossary list navigation"
+msgstr "Glossary list navigation"
+
+#: includes/post-types/class-glossary-terms.php:70
+msgid "Term and definition pairs for glossary pages."
+msgstr "Term and definition pairs for glossary pages."
+
+#: includes/post-types/class-glossary-terms.php:101
+msgid "Glossary settings"
+msgstr "Glossary settings"
+
+#: includes/post-types/class-glossary-terms.php:124
+msgid "Display order"
+msgstr "Display order"
+
+#: includes/post-types/class-glossary-terms.php:126
+msgid "Lower numbers appear first when the theme lists glossary entries."
+msgstr "Lower numbers appear first when the theme lists glossary entries."
+
+#: includes/post-types/class-sliders.php:110
+msgid "Style 1 — Fullscreen hero"
+msgstr "Style 1 — Fullscreen hero"
+
+#: includes/post-types/class-sliders.php:111
+msgid "Style 2 — Split (SEO hero image position)"
+msgstr "Style 2 — Split (SEO hero image position)"
+
+#: includes/post-types/class-sliders.php:112
+msgid "Style 3 — Two columns (image + content)"
+msgstr "Style 3 — Two columns (image + content)"
+
+#: includes/post-types/class-sliders.php:195
+msgid "Title (optional)"
+msgstr "Title (optional)"
+
+#: includes/post-types/class-sliders.php:199
+msgid "Short description (optional)"
+msgstr "Short description (optional)"
+
+#: includes/post-types/class-sliders.php:203
+msgid "Primary button label"
+msgstr "Primary button label"
+
+#: includes/post-types/class-sliders.php:207
+msgid "Primary button URL"
+msgstr "Primary button URL"
+
+#: includes/post-types/class-sliders.php:211
+msgid "Secondary button label"
+msgstr "Secondary button label"
+
+#: includes/post-types/class-sliders.php:215
+msgid "Secondary button URL"
+msgstr "Secondary button URL"
+
+#: includes/post-types/class-sliders.php:219
+msgid "Background image"
+msgstr "Background image"
+
+#: includes/post-types/class-sliders.php:233
+msgctxt "post type general name"
+msgid "Sliders"
+msgstr "Sliders"
+
+#: includes/post-types/class-sliders.php:234
+msgctxt "post type singular name"
+msgid "Slider"
+msgstr "Slider"
+
+#: includes/post-types/class-sliders.php:236
+msgid "Slider"
+msgstr "Slider"
+
+#: includes/post-types/class-sliders.php:238
+msgid "Add slider"
+msgstr "Add slider"
+
+#: includes/post-types/class-sliders.php:239
+msgid "New slider"
+msgstr "New slider"
+
+#: includes/post-types/class-sliders.php:240
+msgid "Edit slider"
+msgstr "Edit slider"
+
+#: includes/post-types/class-sliders.php:241
+msgid "View slider"
+msgstr "View slider"
+
+#: includes/post-types/class-sliders.php:242
+msgid "All sliders"
+msgstr "All sliders"
+
+#: includes/post-types/class-sliders.php:243
+msgid "Search sliders"
+msgstr "Search sliders"
+
+#: includes/post-types/class-sliders.php:244
+msgid "No sliders found."
+msgstr "No sliders found."
+
+#: includes/post-types/class-sliders.php:245
+msgid "No sliders found in Trash."
+msgstr "No sliders found in Trash."
+
+#: includes/post-types/class-sliders.php:274
+#: includes/slider/class-zskeleton-slider-frontend.php:400
+msgid "Slides"
+msgstr "Slides"
+
+#: includes/post-types/class-sliders.php:283
+msgid "Slider display"
+msgstr "Slider display"
+
+#: includes/post-types/class-sliders.php:331
+msgid "Choose background image"
+msgstr "Choose background image"
+
+#: includes/post-types/class-sliders.php:362
+msgid "Add slide"
+msgstr "Add slide"
+
+#: includes/post-types/class-sliders.php:401
+#: includes/post-types/class-sliders.php:530
+msgid "Slide"
+msgstr "Slide"
+
+#: includes/post-types/class-sliders.php:402
+msgid "Remove"
+msgstr "Remove"
+
+#: includes/post-types/class-sliders.php:438
+#: includes/post-types/class-sliders.php:447
+msgid "Set image"
+msgstr "Set image"
+
+#: includes/post-types/class-sliders.php:512
+msgid "Show dot indicators"
+msgstr "Show dot indicators"
+
+#: includes/post-types/class-sliders.php:518
+msgid "Show prev / next arrows"
+msgstr "Show prev / next arrows"
+
+#: includes/post-types/class-sliders.php:522
+msgid "Autoplay interval (ms)"
+msgstr "Autoplay interval (ms)"
+
+#: includes/post-types/class-sliders.php:524
+msgid "Use 0 to disable autoplay."
+msgstr "Use 0 to disable autoplay."
+
+#: includes/post-types/class-sliders.php:527
+msgid "Transition style"
+msgstr "Transition style"
+
+#: includes/post-types/class-sliders.php:529
+msgid "Fade"
+msgstr "Fade"
+
+#: includes/post-types/class-sliders.php:531
+msgid "Zoom"
+msgstr "Zoom"
+
+#: includes/post-types/class-sliders.php:535
+msgid "Slider style"
+msgstr "Slider style"
+
+#: includes/post-types/class-sliders.php:541
+msgid "Style 1 is the default layered hero. Style 2 uses a two-zone layout with the image anchored like the SEO Expert hero. Style 3 uses a simple image column beside the text."
+msgstr "Style 1 is the default layered hero. Style 2 uses a two-zone layout with the image anchored like the SEO Expert hero. Style 3 uses a simple image column beside the text."
+
+#: includes/post-types/class-sliders.php:544
+msgid "Minimum height (CSS)"
+msgstr "Minimum height (CSS)"
+
+#: includes/post-types/class-sliders.php:546
+msgid "Example: 420px or min(70vh, 560px). Leave empty for default."
+msgstr "Example: 420px or min(70vh, 560px). Leave empty for default."
+
+#: includes/post-types/class-sliders.php:549
+msgid "Slider border radius (CSS)"
+msgstr "Slider border radius (CSS)"
+
+#: includes/post-types/class-sliders.php:551
+msgid "Outer rounded corners of the slider. Example: 20px or clamp(10px, 2vw, 24px)."
+msgstr "Outer rounded corners of the slider. Example: 20px or clamp(10px, 2vw, 24px)."
+
+#: includes/post-types/class-sliders.php:554
+msgid "Arrows & dots border radius (CSS)"
+msgstr "Arrows & dots border radius (CSS)"
+
+#: includes/post-types/class-sliders.php:556
+msgid "Prev/next buttons and dot indicators. Use 999px for pills, or 8px for soft squares."
+msgstr "Prev/next buttons and dot indicators. Use 999px for pills, or 8px for soft squares."
+
+#: includes/post-types/class-sliders.php:560
+msgid "Colors & overlay"
+msgstr "Colors & overlay"
+
+#: includes/post-types/class-sliders.php:560
+msgid "Leave blank to use theme defaults for text and buttons."
+msgstr "Leave blank to use theme defaults for text and buttons."
+
+#: includes/post-types/class-sliders.php:562
+msgid "Title color"
+msgstr "Title color"
+
+#: includes/post-types/class-sliders.php:566
+msgid "Description color"
+msgstr "Description color"
+
+#: includes/post-types/class-sliders.php:570
+msgid "Primary button accent"
+msgstr "Primary button accent"
+
+#: includes/post-types/class-sliders.php:572
+msgid "Used for the main call-to-action gradient. Leave empty to use the theme primary color."
+msgstr "Used for the main call-to-action gradient. Leave empty to use the theme primary color."
+
+#: includes/post-types/class-sliders.php:575
+msgid "Overlay color"
+msgstr "Overlay color"
+
+#: includes/post-types/class-sliders.php:577
+msgid "Tint over the slide background. Default: slate blue (#0f172a)."
+msgstr "Tint over the slide background. Default: slate blue (#0f172a)."
+
+#: includes/post-types/class-sliders.php:580
+msgid "Overlay opacity (%)"
+msgstr "Overlay opacity (%)"
+
+#: includes/post-types/class-sliders.php:582
+msgid "0–100. Default 45% if left empty (readable text on most photos)."
+msgstr "0–100. Default 45% if left empty (readable text on most photos)."
+
+#: includes/post-types/class-sliders.php:586
+msgid "Layout & controls (optional)"
+msgstr "Layout & controls (optional)"
+
+#: includes/post-types/class-sliders.php:588
+msgid "Minimum height on small screens (CSS)"
+msgstr "Minimum height on small screens (CSS)"
+
+#: includes/post-types/class-sliders.php:590
+msgid "Applied below ~768px. Example: 360px or min(55vh, 480px). Leave empty to match desktop min-height."
+msgstr "Applied below ~768px. Example: 360px or min(55vh, 480px). Leave empty to match desktop min-height."
+
+#: includes/post-types/class-sliders.php:593
+msgid "Arrow button background"
+msgstr "Arrow button background"
+
+#: includes/post-types/class-sliders.php:597
+msgid "Arrow button background opacity (%)"
+msgstr "Arrow button background opacity (%)"
+
+#: includes/post-types/class-sliders.php:599
+msgid "Used with the background color above (glass effect). Default 14% if empty."
+msgstr "Used with the background color above (glass effect). Default 14% if empty."
+
+#: includes/post-types/class-sliders.php:602
+msgid "Arrow icon color"
+msgstr "Arrow icon color"
+
+#: includes/post-types/class-sliders.php:606
+msgid "Dot (inactive) color"
+msgstr "Dot (inactive) color"
+
+#: includes/post-types/class-sliders.php:610
+msgid "Dot (inactive) opacity (%)"
+msgstr "Dot (inactive) opacity (%)"
+
+#: includes/post-types/class-sliders.php:614
+msgid "Dot (active) color"
+msgstr "Dot (active) color"
+
+#: includes/post-types/class-sliders.php:618
+msgid "Typography (optional)"
+msgstr "Typography (optional)"
+
+#: includes/post-types/class-sliders.php:618
+msgid "Any valid font-size value, e.g. clamp(1.25rem, 3vw, 2rem) or 1.125rem."
+msgstr "Any valid font-size value, e.g. clamp(1.25rem, 3vw, 2rem) or 1.125rem."
+
+#: includes/post-types/class-sliders.php:620
+msgid "Title font size"
+msgstr "Title font size"
+
+#: includes/post-types/class-sliders.php:624
+msgid "Description font size"
+msgstr "Description font size"
+
+#: includes/post-types/class-sliders.php:628
+msgid "Primary button font size"
+msgstr "Primary button font size"
+
+#: includes/post-types/class-sliders.php:632
+msgid "Secondary button font size"
+msgstr "Secondary button font size"
+
+#: includes/slider/class-zskeleton-slider-frontend.php:83
+#: includes/slider/class-zskeleton-slider-frontend.php:392
+msgid "Previous slide"
+msgstr "Previous slide"
+
+#: includes/slider/class-zskeleton-slider-frontend.php:84
+#: includes/slider/class-zskeleton-slider-frontend.php:395
+msgid "Next slide"
+msgstr "Next slide"
+
+#: includes/slider/class-zskeleton-slider-frontend.php:85
+msgid "Go to slide"
+msgstr "Go to slide"
+
+#: includes/slider/class-zskeleton-slider-frontend.php:379
+msgid "carousel"
+msgstr "carousel"
+
+#. translators: %d: slide number
+#: includes/slider/class-zskeleton-slider-frontend.php:402
+#, php-format
+msgid "Go to slide %d"
+msgstr "Go to slide %d"
+
+#: includes/upload-mime-types.php:99
+msgid "Could not read the uploaded SVG file."
+msgstr "Could not read the uploaded SVG file."
+
+#: includes/upload-mime-types.php:105
+msgid "The file does not appear to be a valid SVG."
+msgstr "The file does not appear to be a valid SVG."
+
+#. Template Name of the theme
+msgid "Blog listing"
+msgstr "Blog listing"
+
+#: page-blog.php:79
+msgid "Latest articles"
+msgstr "Latest articles"
+
+#. Template Name of the theme
+msgid "Terms & Conditions (general)"
+msgstr "Terms & Conditions (general)"
+
+#: template-parts/blog/section-category-blocks.php:57
+msgid "Browse by category"
+msgstr "Browse by category"
+
+#: template-parts/blog/section-category-blocks.php:76
+msgid "View all"
+msgstr "View all"
+
+#: template-parts/blog/section-lead-gen.php:24
+msgid "Stay ahead with our newsletter"
+msgstr "Stay ahead with our newsletter"
+
+#: template-parts/blog/section-lead-gen.php:25
+msgid "Get practical guides and updates in your inbox. No spam — unsubscribe anytime."
+msgstr "Get practical guides and updates in your inbox. No spam — unsubscribe anytime."
+
+#: template-parts/blog/section-lead-gen.php:26
+msgid "Subscribe"
+msgstr "Subscribe"
+
+#: template-parts/blog/section-trending.php:64
+msgid "Most read"
+msgstr "Most read"
+
+#: template-parts/blog/section-trending.php:65
+msgid "Trending"
+msgstr "Trending"
+
+#: template-parts/header-split-top-search.php:46
+msgid "Search"
+msgstr "Search"
+
+#: template-parts/header-split-top-search.php:47
+msgid "Search…"
+msgstr "Search…"
+
+#: template-parts/header-split-top-search.php:51
+msgid "Social media"
+msgstr "Social media"
+
+#: template-parts/header-split-top-search.php:120
+msgid "Primary navigation"
+msgstr "Primary navigation"
+
+#: template-parts/header-split-top-search.php:201
+msgid "Header links right of logo"
+msgstr "Header links right of logo"
+
+#: functions.php:54
+msgid "Post"
+msgstr "Post"
+
+#: includes/admin/class-theme-settings.php:1448
+msgid "Show a call-to-action band at the bottom of the first blog listing page when at least one lead field or the button URL is saved."
+msgstr "Show a call-to-action band at the bottom of the first blog listing page when at least one lead field or the button URL is saved."
+
+#: includes/admin/class-theme-settings.php:1532
+msgid "Link for the button (newsletter page, contact form, external URL, etc.). Saving only this URL is enough to show the block (title, text, and label use defaults until you customize them)."
+msgstr "Link for the button (newsletter page, contact form, external URL, etc.). Saving only this URL is enough to show the block (title, text, and label use defaults until you customize them)."
+
+#: functions.php:421
+#, php-format
+msgid ""
+"Hi %s,\n"
+"\n"
+"Thank you for registering with ZSkeleton!\n"
+"\n"
+"Please set your password by clicking the link below:\n"
+"\n"
+"%s\n"
+"\n"
+"This link will expire in 24 hours for security reasons.\n"
+"\n"
+"If you didn't request this password reset, please ignore this email.\n"
+"\n"
+"Best regards,\n"
+"ZSkeleton Team"
+msgstr ""
+"Hi %s,\n"
+"\n"
+"Thank you for registering with ZSkeleton!\n"
+"\n"
+"Please set your password by clicking the link below:\n"
+"\n"
+"%s\n"
+"\n"
+"This link will expire in 24 hours for security reasons.\n"
+"\n"
+"If you didn't request this password reset, please ignore this email.\n"
+"\n"
+"Best regards,\n"
+"ZSkeleton Team"

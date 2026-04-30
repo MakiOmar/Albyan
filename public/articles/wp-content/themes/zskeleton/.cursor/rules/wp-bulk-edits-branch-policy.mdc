@@ -1,0 +1,15 @@
+---
+description: Branch policy for large or bulk code edits
+alwaysApply: true
+---
+
+# Bulk Edits Branch Policy
+
+- Before starting any huge or bulk change, create a separate git branch from `master`.
+- Never implement bulk edits directly on `master`.
+- Use a descriptive branch name for bulk work (example: `bulk/refactor-theme-options`).
+- Treat changes as bulk when they affect many files, shared architecture, or a wide refactor scope.
+- If asked to start a new bulk edit while another bulk branch context exists, pause and ask:
+  - "Should this new bulk branch be planned to merge into `master`, or stay isolated for now?"
+- Do not begin the new bulk implementation until the user answers that merge-intent question.
+- Record the user decision in the branch/PR description so merge intent stays explicit.

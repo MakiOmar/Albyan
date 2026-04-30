@@ -1,0 +1,16 @@
+---
+description: Privacy, personal data handling, and uninstall cleanup rules
+globs: **/*.php
+alwaysApply: false
+---
+
+# Privacy, Retention, and Uninstall
+
+- Classify and minimize personal data collection; collect only what is necessary.
+- Document where personal data is stored (options, meta, custom tables, logs).
+- Add data export/erase compatibility hooks when storing user-related personal data.
+- Avoid logging sensitive values; redact tokens, emails, and private payloads.
+- Provide uninstall cleanup routines with clear user-controlled data retention behavior.
+- Never delete user content unexpectedly; require explicit opt-in for destructive cleanup.
+- Use secure defaults for telemetry/integrations and require explicit consent where needed.
+- Ensure third-party requests disclose purpose and avoid sending sensitive data by default.

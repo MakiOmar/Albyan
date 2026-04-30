@@ -1,0 +1,33 @@
+---
+description: Enforce form protection based on theme captcha settings
+alwaysApply: true
+---
+
+# Form Protection From Theme Settings
+
+- If the theme provides settings for reCAPTCHA, Cloudflare Turnstile, or any other anti-bot provider, every eligible form must enforce protection according to those settings.
+- Do not enable protection on one form and leave others unprotected when global protection is enabled in theme settings.
+- Treat protection configuration as centralized behavior, not per-form ad hoc logic.
+
+## Required Enforcement
+
+- Read protection provider, keys, and enable/disable state from theme settings.
+- Apply the selected protection provider consistently across all forms (contact, login, register, comment, custom forms, and AJAX forms where applicable).
+- If provider is enabled but credentials are missing/invalid, fail safely:
+  - block insecure submission where required, and
+  - show a clear user-facing message plus admin-facing guidance.
+- Server-side verification is mandatory; client-side widgets alone are not sufficient.
+
+## Architecture Requirements
+
+- Use a shared helper/service for provider detection and token verification.
+- Avoid duplicating provider logic in templates.
+- Keep graceful fallbacks when protection is disabled by settings.
+- Keep plugin/service integrations optional and guarded to avoid fatal errors.
+
+## Validation Checklist
+
+- Confirm each form respects the current protection setting.
+- Confirm switching provider in settings updates behavior for all forms.
+- Confirm disabled protection setting disables challenge behavior consistently.
+- Confirm no PHP notices, warnings, JS runtime errors, or broken submissions are introduced.

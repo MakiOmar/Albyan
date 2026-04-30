@@ -1,0 +1,131 @@
+0000.000 (0) Opened log file at time: Wed, 29 Apr 2026 07:54:31 +0000 on https://albyan.institute/articles
+0000.004 (0) UpdraftPlus WordPress backup plugin (https://updraftplus.com): 1.26.3 WP: 6.9.4 PHP: 8.3.6 (fpm-fcgi, Linux albyan-website 6.8.0-110-generic #110-Ubuntu SMP PREEMPT_DYNAMIC Thu Mar 19 15:09:20 UTC 2026 x86_64) MySQL: 8.0.45-0ubuntu0.24.04.1 (max packet size=67108864) WPLANG: ar Server: nginx/1.24.0 safe_mode: 0 max_execution_time: 900 memory_limit: 256M (used: 4.2M | 6M) multisite: N openssl: OpenSSL 3.0.13 30 Jan 2024 mcrypt: N LANG:  WP Proxy: disabled ZipArchive::addFile: Y
+0000.008 (0) Free space on disk containing Updraft's temporary directory: 65368.5 MB
+0000.014 (0) Tasks: Backup files: 0 (schedule: unset) Backup DB: 1 (schedule: unset)
+0000.017 (0) Semaphore (d, byna_options) being initialised
+0000.025 (0) Requesting semaphore lock (d) (apparently not via scheduler)
+0000.032 (0) Set semaphore last lock (d) time to 2026-04-29 07:54:31
+0000.035 (0) Semaphore lock (d) complete
+0000.044 (0) Backup run: resumption=0, nonce=a50f90b98e5f, file_nonce=a50f90b98e5f begun at=1777449271 (0s ago), job type=backup
+0000.047 (0) Scheduling a resumption (1) after 300 seconds (1777449571) in case this run gets aborted
+0000.076 (0) This backup run is not intended for files - skipping
+0000.079 (0) Beginning creation of database dump (WordPress DB)
+0000.081 (0) SQL compatibility mode is: NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+0000.087 (0) Testing potential mysqldump binary: /usr/bin/mysqldump
+0000.110 (0) Output: /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;\n/*!40103 SET TIME_ZONE='+00:00' */;\n/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;\n/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;\n/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;\n/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;\nDROP TABLE IF EXISTS `byna_options`;\n/*!40101 SET @saved_cs_client     = @@character_set_client */;\n/*!50503 SET character_set_client = utf8mb4 */ (truncated - 1560 bytes total)
+0000.114 (0) Working binary mysqldump found: /usr/bin/mysqldump
+0000.137 (0) Table byna_options: Total expected rows (via COUNT): 357
+0000.142 (0) Table is relatively small; fetch_rows will thus be: 500 (allow_further_reductions=1, is_first_fetch=1, known_bigger_than_table=1)
+0000.190 (0) Table byna_options: Rows added in this batch (next record: 1416): 353 (uncompressed bytes in this segment=939027) in 0.06 seconds
+0000.204 (0) Table byna_options: finishing file(s) (2, 217.5 KB)
+0000.212 (0) Table byna_users: Total expected rows (via COUNT): 1
+0000.214 (0) Table is relatively small; fetch_rows will thus be: 20 (allow_further_reductions=1, is_first_fetch=1, known_bigger_than_table=1)
+0000.219 (0) Table byna_users: Rows added in this batch (next record: 1): 1 (uncompressed bytes in this segment=1432) in 0.01 seconds
+0000.231 (0) Table byna_users: finishing file(s) (2, 0.6 KB)
+0000.240 (0) Table byna_usermeta: Total expected rows (via COUNT): 34
+0000.243 (0) Table is relatively small; fetch_rows will thus be: 50 (allow_further_reductions=1, is_first_fetch=1, known_bigger_than_table=1)
+0000.249 (0) Table byna_usermeta: Rows added in this batch (next record: 35): 34 (uncompressed bytes in this segment=18396) in 0.01 seconds
+0000.260 (0) Table byna_usermeta: finishing file(s) (2, 3.8 KB)
+0000.269 (0) Table byna_commentmeta: Total expected rows (via COUNT): 0
+0000.274 (0) Table byna_commentmeta: Rows added in this batch (next record: -1): 0 (uncompressed bytes in this segment=708) in 0.01 seconds
+0000.288 (0) Table byna_commentmeta: finishing file(s) (2, 0.4 KB)
+0000.296 (0) Table byna_comments: Total expected rows (via COUNT): 0
+0000.305 (0) Table byna_comments: Rows added in this batch (next record: -1): 0 (uncompressed bytes in this segment=1715) in 0.01 seconds
+0000.315 (0) Table byna_comments: finishing file(s) (2, 0.5 KB)
+0000.329 (0) Table byna_links: Total expected rows (via COUNT): 0
+0000.332 (0) Table byna_links: Rows added in this batch (next record: -1): 0 (uncompressed bytes in this segment=1310) in 0.01 seconds
+0000.342 (0) Table byna_links: finishing file(s) (2, 0.5 KB)
+0000.354 (0) Table byna_postmeta: Total expected rows (via COUNT): 287
+0000.358 (0) Table is relatively small; fetch_rows will thus be: 500 (allow_further_reductions=1, is_first_fetch=1, known_bigger_than_table=1)
+0000.369 (0) Table byna_postmeta: Rows added in this batch (next record: 468): 287 (uncompressed bytes in this segment=38242) in 0.02 seconds
+0000.383 (0) Table byna_postmeta: finishing file(s) (2, 5.5 KB)
+0000.395 (0) Table byna_posts: Total expected rows (via COUNT): 98
+0000.398 (0) Table is relatively small; fetch_rows will thus be: 100 (allow_further_reductions=1, is_first_fetch=1, known_bigger_than_table=1)
+0000.416 (0) Table byna_posts: Rows added in this batch (next record: 118): 98 (uncompressed bytes in this segment=218720) in 0.03 seconds
+0000.432 (0) Table byna_posts: finishing file(s) (2, 33.2 KB)
+0000.442 (0) Table byna_term_relationships: Total expected rows (approximate): 31
+0000.449 (0) Table byna_term_relationships: Rows added in this batch (next record: 100000): 30 (uncompressed bytes in this segment=1082) in 0.01 seconds
+0000.463 (0) Table byna_term_relationships: finishing file(s) (2, 0.5 KB)
+0000.478 (0) Table byna_term_taxonomy: Total expected rows (via COUNT): 7
+0000.481 (0) Table is relatively small; fetch_rows will thus be: 20 (allow_further_reductions=1, is_first_fetch=1, known_bigger_than_table=1)
+0000.489 (0) Table byna_term_taxonomy: Rows added in this batch (next record: 7): 7 (uncompressed bytes in this segment=1111) in 0.02 seconds
+0000.504 (0) Table byna_term_taxonomy: finishing file(s) (2, 0.5 KB)
+0000.517 (0) Table byna_termmeta: Total expected rows (via COUNT): 0
+0000.523 (0) Table byna_termmeta: Rows added in this batch (next record: -1): 0 (uncompressed bytes in this segment=662) in 0.01 seconds
+0000.537 (0) Table byna_termmeta: finishing file(s) (2, 0.4 KB)
+0000.546 (0) Table byna_terms: Total expected rows (via COUNT): 7
+0000.550 (0) Table is relatively small; fetch_rows will thus be: 20 (allow_further_reductions=1, is_first_fetch=1, known_bigger_than_table=1)
+0000.557 (0) Table byna_terms: Rows added in this batch (next record: 7): 7 (uncompressed bytes in this segment=963) in 0.01 seconds
+0000.567 (0) Table byna_terms: finishing file(s) (2, 0.5 KB)
+0000.586 (0) Table byna_duplicator_packages: Total expected rows (via COUNT): 1
+0000.590 (0) Table is relatively small; fetch_rows will thus be: 20 (allow_further_reductions=1, is_first_fetch=1, known_bigger_than_table=1)
+0000.594 (0) Table byna_duplicator_packages: Rows added in this batch (next record: 1): 1 (uncompressed bytes in this segment=17097) in 0.02 seconds
+0000.612 (0) Table byna_duplicator_packages: finishing file(s) (2, 4.9 KB)
+0000.630 (0) Table byna_tm_taskmeta: Total expected rows (via COUNT): 0
+0000.639 (0) Table byna_tm_taskmeta: Rows added in this batch (next record: -1): 0 (uncompressed bytes in this segment=662) in 0.02 seconds
+0000.658 (0) Table byna_tm_taskmeta: finishing file(s) (2, 0.4 KB)
+0000.671 (0) Table byna_tm_tasks: Total expected rows (via COUNT): 0
+0000.680 (0) Table byna_tm_tasks: Rows added in this batch (next record: -1): 0 (uncompressed bytes in this segment=872) in 0.01 seconds
+0000.693 (0) Table byna_tm_tasks: finishing file(s) (2, 0.4 KB)
+0000.703 (0) Table byna_wpfm_backup: Total expected rows (via COUNT): 0
+0000.707 (0) Table byna_wpfm_backup: Rows added in this batch (next record: -1): 0 (uncompressed bytes in this segment=522) in 0.01 seconds
+0000.717 (0) Table byna_wpfm_backup: finishing file(s) (2, 0.3 KB)
+0000.728 (0) Table byna_wpo_404_detector: Total expected rows (via COUNT): 0
+0000.732 (0) Table byna_wpo_404_detector: Rows added in this batch (next record: -1): 0 (uncompressed bytes in this segment=869) in 0.01 seconds
+0000.739 (0) Table byna_wpo_404_detector: finishing file(s) (2, 0.4 KB)
+0000.743 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_options.table.tmpr1417.gz (1/17/fopen): adding to final database dump
+0000.748 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_options.table.gz (2/17/fopen): adding to final database dump
+0000.750 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_users.table.tmpr2.gz (3/17/fopen): adding to final database dump
+0000.752 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_users.table.gz (4/17/fopen): adding to final database dump
+0000.754 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_usermeta.table.tmpr36.gz (5/17/fopen): adding to final database dump
+0000.758 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_usermeta.table.gz (6/17/fopen): adding to final database dump
+0000.761 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_commentmeta.table.tmpr0.gz (7/17/fopen): adding to final database dump
+0000.766 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_commentmeta.table.gz (8/17/fopen): adding to final database dump
+0000.769 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_comments.table.tmpr0.gz (9/17/fopen): adding to final database dump
+0000.772 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_comments.table.gz (10/17/fopen): adding to final database dump
+0000.776 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_links.table.tmpr0.gz (11/17/fopen): adding to final database dump
+0000.781 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_links.table.gz (12/17/fopen): adding to final database dump
+0000.786 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_postmeta.table.tmpr469.gz (13/17/fopen): adding to final database dump
+0000.792 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_postmeta.table.gz (14/17/fopen): adding to final database dump
+0000.795 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_posts.table.tmpr119.gz (15/17/fopen): adding to final database dump
+0000.804 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_posts.table.gz (16/17/fopen): adding to final database dump
+0000.808 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_term_relationships.table.tmpr100001.gz (17/17/fopen): adding to final database dump
+0000.813 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_term_relationships.table.gz (18/17/fopen): adding to final database dump
+0000.816 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_term_taxonomy.table.tmpr8.gz (19/17/fopen): adding to final database dump
+0000.819 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_term_taxonomy.table.gz (20/17/fopen): adding to final database dump
+0000.825 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_termmeta.table.tmpr0.gz (21/17/fopen): adding to final database dump
+0000.828 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_termmeta.table.gz (22/17/fopen): adding to final database dump
+0000.831 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_terms.table.tmpr8.gz (23/17/fopen): adding to final database dump
+0000.836 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_terms.table.gz (24/17/fopen): adding to final database dump
+0000.840 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_duplicator_packages.table.tmpr2.gz (25/17/fopen): adding to final database dump
+0000.844 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_duplicator_packages.table.gz (26/17/fopen): adding to final database dump
+0000.847 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_tm_taskmeta.table.tmpr0.gz (27/17/fopen): adding to final database dump
+0000.850 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_tm_taskmeta.table.gz (28/17/fopen): adding to final database dump
+0000.853 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_tm_tasks.table.tmpr0.gz (29/17/fopen): adding to final database dump
+0000.860 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_tm_tasks.table.gz (30/17/fopen): adding to final database dump
+0000.864 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_wpfm_backup.table.tmpr0.gz (31/17/fopen): adding to final database dump
+0000.867 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_wpfm_backup.table.gz (32/17/fopen): adding to final database dump
+0000.871 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_wpo_404_detector.table.tmpr0.gz (33/17/fopen): adding to final database dump
+0000.875 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db-table-byna_wpo_404_detector.table.gz (34/17/fopen): adding to final database dump
+0000.885 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db.gz: finished writing out complete database file (270.5 KB)
+0000.908 (0) Total database tables backed up: 17 (backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db.gz, size: 277145, sha1: 2ea563eb81648bd96342e19d199600c7a9e45671, sha256: 7cb6e237ce156e5036366a191b1c37d1c7a9c9ac66fdaa64af927e93fa449a83)
+0000.930 (0) backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db.gz: db: This file has not yet been successfully uploaded: will queue
+0000.935 (0) Saving backup history. Total backup size: 270.6 KB
+0000.942 (0) Requesting upload of the files that have not yet been successfully uploaded (1)
+0000.954 (0) Cloud backup selection (1/1): none with instance (1/1) (last)
+0000.960 (0) No remote despatch: user chose no remote backup service
+0000.967 (0) Recording as successfully uploaded: backup_2026-04-29-1054_Albyan_Institute_a50f90b98e5f-db.gz
+0000.982 (0) Retain: beginning examination of existing backup sets; user setting: retain_files=2, retain_db=2
+0000.985 (0) Number of backup sets in history: 1; groups (db): 1
+0000.991 (0) Examining (for databases) backup set with group_id=0, nonce=a50f90b98e5f, datestamp=1777449271 (Apr 29 2026 07:54:31)
+0000.997 (0) This backup set is the backup set just made, so will not be deleted.
+0000.997 (0) Number of backup sets in history: 1; groups (files): 1
+0001.000 (0) Examining (for files) backup set with nonce=a50f90b98e5f, datestamp=1777449271 (Apr 29 2026 07:54:31)
+0001.000 (0) This backup set remains non-empty (f=0/d=1); will retain in history
+0001.006 (0) Retain: saving new backup history (sets now: 1) and finishing retain operation
+0001.014 (0) Resume backup (a50f90b98e5f, 0): finish run
+0001.023 (0) Decremented the semaphore (d) by 1
+0001.029 (0) Semaphore (d) unlocked
+0001.034 (0) There were no errors in the uploads, so the 'resume' event (1) is being unscheduled
+0001.055 (0) No email will/can be sent - the user has not configured an email address.
+0001.058 (0) The backup succeeded and is now complete

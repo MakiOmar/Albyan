@@ -1,0 +1,6 @@
+[2026-04-29 07:53:56 : INFO] - Full Cache Purge triggered by: plugin activation/deactivation 
+[2026-04-29 07:54:14 : INFO] - Pruning the Cache log file 
+[2026-04-29 07:55:02 : INFO] - Full Cache Purge due to change in the value of WebP redirection 
+[2026-04-29 07:55:57 : INFO] - Setting changed, purging cache 
+[2026-04-29 07:57:03 : INFO] - Full Cache Purge triggered by: WP_Optimize_Minify_Cache_Functions::purge_others 
+[2026-04-29 07:57:35 : INFO] - Full Cache Purge triggered by: WP_Optimize_Minify_Cache_Functions::purge_others 

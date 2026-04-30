@@ -1,0 +1,16 @@
+---
+description: Hook-first architecture and reusable module rules
+globs: **/*.php
+alwaysApply: false
+---
+
+# Hook Architecture and Reusability
+
+- Use actions and filters to integrate behavior instead of tight coupling.
+- Keep callback functions single-purpose and testable.
+- Prefix custom hooks, option keys, meta keys, and constants with project namespace.
+- Reuse shared utilities for repeated formatting, validation, or query logic.
+- Keep admin, frontend, and data-access concerns separated.
+- Prefer composition through small modules over inheritance-heavy classes.
+- Ensure every public extension point has predictable arguments and defaults.
+- When deprecating behavior, keep compatibility shims and clear migration notes.

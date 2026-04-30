@@ -1,0 +1,16 @@
+---
+description: Rules for secure REST API and AJAX handlers
+globs: **/*.php
+alwaysApply: false
+---
+
+# REST and AJAX Endpoint Rules
+
+- Validate, sanitize, and normalize every inbound parameter.
+- Enforce permission checks in `permission_callback` and AJAX handlers.
+- Return structured responses with `wp_send_json_success/error` or `WP_REST_Response`.
+- Use nonces for authenticated actions and verify intent before mutation.
+- Avoid leaking internal exception messages in endpoint responses.
+- Keep handlers thin; delegate business logic to reusable functions/classes.
+- Add pagination, limits, and explicit sorting for list endpoints.
+- Use explicit status codes for REST errors where appropriate.

@@ -1,0 +1,96 @@
+/**
+ * Slider slides meta box — Classic Editor friendly stacked layout.
+ */
+
+/* Color picker fields in Slider display meta (Iris popup width). */
+.zs-meta-fields .zskeleton-slider-color-field + .wp-picker-container {
+	margin-top: 4px;
+}
+
+.zskeleton-slider-slides-wrap {
+	max-width: 920px;
+}
+
+/* Clone source for “Add slide”; must stay out of layout. */
+.zskeleton-slider-slide-template-root {
+	display: none !important;
+	height: 0;
+	overflow: hidden;
+}
+
+.zskeleton-slider-slide-card {
+	border: 1px solid #c3c4c7;
+	border-radius: 6px;
+	background: #fff;
+	margin-bottom: 16px;
+	padding: 0;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.zskeleton-slider-slide-card__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 14px;
+	background: #f6f7f7;
+	border-bottom: 1px solid #dcdcde;
+	font-weight: 600;
+	font-size: 13px;
+}
+
+.zskeleton-slider-slide-card__body {
+	padding: 14px 16px 16px;
+	display: grid;
+	gap: 12px;
+}
+
+.zskeleton-slider-slide-card__row,
+.zskeleton-slider-slide-card__images-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+}
+
+@media (max-width: 782px) {
+	.zskeleton-slider-slide-card__row,
+	.zskeleton-slider-slide-card__images-row {
+		grid-template-columns: 1fr;
+	}
+}
+
+.zskeleton-slider-slide-card__field label {
+	display: block;
+	font-weight: 600;
+	margin-bottom: 4px;
+	font-size: 12px;
+}
+
+.zskeleton-slider-slide-card__field input[type="text"],
+.zskeleton-slider-slide-card__field input[type="url"],
+.zskeleton-slider-slide-card__field textarea {
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+
+.zskeleton-slider-slide-card__field textarea {
+	min-height: 72px;
+}
+
+.zskeleton-slider-slide-card__media {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: 10px;
+}
+
+.zskeleton-slider-image-preview img,
+.zskeleton-slider-content-image-preview img {
+	display: block;
+	border-radius: 4px;
+	border: 1px solid #dcdcde;
+}
+
+.zskeleton-slider-slides-actions {
+	margin-top: 8px;
+}

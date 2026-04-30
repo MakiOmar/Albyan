@@ -1,0 +1,45 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "zskeleton/blog-trending",
+	"version": "1.0.0",
+	"title": "Blog: Trending / most read",
+	"category": "zskeleton-blog",
+	"icon": "chart-line",
+	"description": "Popular posts row from Content settings (comments or view counts). First listing page only.",
+	"keywords": [ "blog", "trending", "popular", "zskeleton", "ZSkeleton" ],
+	"textdomain": "zskeleton",
+	"editorScript": "zskeleton-blog-hub-blocks-editor",
+	"attributes": {
+		"useThemeCount": {
+			"type": "boolean",
+			"default": true
+		},
+		"postCount": {
+			"type": "number",
+			"default": 5
+		},
+		"useThemeMode": {
+			"type": "boolean",
+			"default": true
+		},
+		"rankingMode": {
+			"type": "string",
+			"default": "comments"
+		},
+		"sectionHeading": {
+			"type": "string",
+			"default": ""
+		},
+		"useThemeVisibility": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"visibility": false
+	},
+	"render": "file:./render.php"
+}

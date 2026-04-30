@@ -1,0 +1,16 @@
+---
+description: Security, sanitization, escaping, and nonce requirements
+globs: **/*.{php,js}
+alwaysApply: false
+---
+
+# WordPress Security and Data Handling
+
+- Validate and sanitize all input from request data, options, and metadata.
+- Escape all output by context: `esc_html`, `esc_attr`, `esc_url`, `wp_kses_post`.
+- Protect all state-changing actions with nonces and verify capabilities.
+- Never trust `$_GET`, `$_POST`, `$_REQUEST`, `$_COOKIE`; sanitize before use.
+- Use `$wpdb->prepare()` for custom SQL and avoid unsafe string concatenation.
+- Disallow `eval`, unsafe dynamic includes, and obfuscated code patterns.
+- Do not expose stack traces, SQL errors, or internal paths to users.
+- If rendering HTML from user content, allow only explicit safe tags and attributes.

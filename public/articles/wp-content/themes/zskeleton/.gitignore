@@ -1,0 +1,61 @@
+# WordPress Theme .gitignore
+
+# Temporary files
+*.tmp
+*.temp
+*~
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Node.js (if using build tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs (theme-bundled min files are produced by `npm run build` and committed)
+dist/
+build/
+
+# Logs
+*.log
+
+# Cache files
+.cache/
+.sass-cache/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# WordPress specific
+wp-config.php
+.htaccess
+
+# Development tools
+.phpcs.xml
+phpunit.xml
+composer.lock
+vendor/
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Office / stray uploads (do not ship in theme repo)
+*.docx

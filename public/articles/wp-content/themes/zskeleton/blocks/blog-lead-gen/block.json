@@ -1,0 +1,45 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "zskeleton/blog-lead-gen",
+	"version": "1.0.0",
+	"title": "Blog: Lead CTA",
+	"category": "zskeleton-blog",
+	"icon": "megaphone",
+	"description": "Newsletter / lead band from Content settings. First listing page only.",
+	"keywords": [ "blog", "cta", "newsletter", "zskeleton", "ZSkeleton" ],
+	"textdomain": "zskeleton",
+	"editorScript": "zskeleton-blog-hub-blocks-editor",
+	"attributes": {
+		"useThemeCopy": {
+			"type": "boolean",
+			"default": true
+		},
+		"leadTitle": {
+			"type": "string",
+			"default": ""
+		},
+		"leadText": {
+			"type": "string",
+			"default": ""
+		},
+		"buttonText": {
+			"type": "string",
+			"default": ""
+		},
+		"buttonUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"useThemeVisibility": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"visibility": false
+	},
+	"render": "file:./render.php"
+}

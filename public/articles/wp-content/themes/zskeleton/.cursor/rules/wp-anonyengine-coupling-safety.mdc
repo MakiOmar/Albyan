@@ -1,0 +1,23 @@
+---
+description: Keep SmartPage loosely coupled to AnonyEngine plugin
+globs: **/*.php
+alwaysApply: true
+---
+
+# SmartPage <-> AnonyEngine Coupling Safety
+
+- Treat `anonyengine` as optional at runtime; theme code must run safely when the plugin is inactive or missing.
+- Never call plugin functions, classes, constants, or globals without guards (`function_exists`, `class_exists`, `defined`, `isset`).
+- Wrap plugin-dependent logic in adapter/helper functions inside the theme (`inc/`) and call those wrappers from templates.
+- Provide safe fallbacks for every plugin-powered feature (empty arrays, default strings, disabled UI, or core WordPress behavior).
+- Do not `require` or `include` plugin files directly from the theme.
+- Register hooks conditionally: only attach callbacks that depend on plugin APIs after capability checks pass.
+- Use feature detection instead of activation assumptions; avoid hard dependencies in global bootstrapping code.
+- Fail soft: if plugin calls fail or return unexpected values, log defensively (when debugging) and continue rendering without fatal errors.
+- For admin notices, show a non-blocking recommendation when plugin-dependent features are unavailable.
+
+## Required Patterns
+
+- Use a single helper gate such as `smartpage_has_anonyengine()` and reuse it everywhere.
+- Keep plugin checks close to call sites or centralize through wrappers; avoid scattered inline assumptions.
+- In templates, branch to fallback markup/content rather than skipping entire page rendering.

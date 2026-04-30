@@ -1,0 +1,373 @@
+/**
+ * ZSkeleton Admin Styles
+ * 
+ * General admin panel styles for the ZSkeleton theme
+ */
+
+/* General Admin Styling */
+.zskeleton-admin-notice {
+    border-left: 4px solid #1e3a8a;
+    background: #f0f9ff;
+    padding: 12px;
+    margin: 15px 0;
+    border-radius: 0 4px 4px 0;
+}
+
+.zskeleton-admin-notice.error {
+    border-left-color: #dc3545;
+    background: #fef2f2;
+}
+
+.zskeleton-admin-notice.success {
+    border-left-color: #10b981;
+    background: #f0f9ff;
+}
+
+.zskeleton-admin-notice.warning {
+    border-left-color: #f59e0b;
+    background: #fffbeb;
+}
+
+/* ZSkeleton Branding in Admin */
+.zskeleton-admin-header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    color: white;
+    padding: 20px;
+    margin: -10px -20px 20px -20px;
+    border-radius: 6px;
+}
+
+.zskeleton-admin-header h1 {
+    color: white;
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.zskeleton-admin-header p {
+    color: rgba(255, 255, 255, 0.9);
+    margin: 8px 0 0 0;
+    font-size: 14px;
+}
+
+/* Form Elements */
+.zskeleton-form-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.zskeleton-form-table th,
+.zskeleton-form-table td {
+    padding: 15px 10px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.zskeleton-form-table th {
+    font-weight: 600;
+    color: #1e3a8a;
+    width: 200px;
+    vertical-align: top;
+}
+
+.zskeleton-form-table td {
+    vertical-align: top;
+}
+
+/* Buttons */
+.zskeleton-button {
+    background: #1e3a8a;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.zskeleton-button:hover {
+    background: #1e40af;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+}
+
+.zskeleton-button.secondary {
+    background: #6b7280;
+}
+
+.zskeleton-button.secondary:hover {
+    background: #4b5563;
+}
+
+.zskeleton-button.danger {
+    background: #dc3545;
+}
+
+.zskeleton-button.danger:hover {
+    background: #c82333;
+}
+
+/* Cards */
+.zskeleton-admin-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.zskeleton-admin-card h3 {
+    margin-top: 0;
+    color: #1e3a8a;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Grid Layout */
+.zskeleton-admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+/* Status Indicators */
+.zskeleton-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.zskeleton-status.active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.zskeleton-status.inactive {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.zskeleton-status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* Loading States */
+.zskeleton-loading {
+    position: relative;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.zskeleton-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #1e3a8a;
+    border-radius: 50%;
+    animation: zskeleton-spin 1s linear infinite;
+}
+
+@keyframes zskeleton-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Meta Boxes */
+.zskeleton-meta-box {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.zskeleton-meta-box h4 {
+    margin-top: 0;
+    color: #1e3a8a;
+    font-size: 16px;
+    font-weight: 600;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 10px;
+}
+
+/* List Tables */
+.zskeleton-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.zskeleton-list-table th,
+.zskeleton-list-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.zskeleton-list-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #1e3a8a;
+}
+
+.zskeleton-list-table tr:hover {
+    background: #f8f9fa;
+}
+
+.zskeleton-list-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Tabs */
+.zskeleton-tabs {
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 20px;
+}
+
+.zskeleton-tab {
+    display: inline-block;
+    padding: 12px 20px;
+    margin-right: 5px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: #666;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.zskeleton-tab:hover {
+    color: #1e3a8a;
+    background: rgba(30, 58, 138, 0.05);
+}
+
+.zskeleton-tab.active {
+    color: #1e3a8a;
+    border-bottom-color: #1e3a8a;
+    font-weight: 600;
+}
+
+/* Progress Bars */
+.zskeleton-progress {
+    width: 100%;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.zskeleton-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #1e3a8a 0%, #1e40af 100%);
+    transition: width 0.3s ease;
+}
+
+/* Tooltips */
+.zskeleton-tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.zskeleton-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.zskeleton-tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .zskeleton-admin-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .zskeleton-form-table th,
+    .zskeleton-form-table td {
+        display: block;
+        width: 100%;
+        padding: 10px 0;
+    }
+    
+    .zskeleton-form-table th {
+        border-bottom: none;
+        margin-bottom: 5px;
+    }
+    
+    .zskeleton-tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .zskeleton-tab {
+        display: inline-block;
+        min-width: 100px;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .zskeleton-admin-card {
+        background: #1f2937;
+        border-color: #374151;
+        color: #f9fafb;
+    }
+    
+    .zskeleton-admin-card h3 {
+        color: #60a5fa;
+    }
+    
+    .zskeleton-list-table {
+        background: #1f2937;
+        border-color: #374151;
+        color: #f9fafb;
+    }
+    
+    .zskeleton-list-table th {
+        background: #374151;
+        color: #60a5fa;
+    }
+    
+    .zskeleton-list-table td {
+        border-color: #4b5563;
+    }
+    
+    .zskeleton-list-table tr:hover {
+        background: #374151;
+    }
+}

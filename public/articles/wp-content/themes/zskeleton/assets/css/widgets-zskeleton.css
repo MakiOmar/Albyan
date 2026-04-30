@@ -1,0 +1,291 @@
+/**
+ * ZSkeleton legacy widgets: social icons, heading, contact lines (Appearance → Widgets / block inserter).
+ *
+ * @package ZSkeleton_Theme
+ */
+
+/* Shared: title underline length + thickness via CSS custom properties */
+.zskeleton-widget-heading {
+	--zskeleton-widget-underline-width: 3rem;
+	--zskeleton-widget-underline-thickness: 2px;
+	/* Set by heading widget: optional --zskeleton-widget-title-font-size (see .zskeleton-widget-heading__text) */
+	--zskeleton-widget-title-color: inherit;
+	--zskeleton-widget-underline-color: currentColor;
+	margin: 0 0 0.75rem;
+}
+
+.zskeleton-widget-heading__text {
+	margin: 0;
+	padding: 0;
+	color: var(--zskeleton-widget-title-color, inherit);
+}
+
+.zskeleton-widget-heading__rule {
+	display: block;
+	width: var(--zskeleton-widget-underline-width, 3rem);
+	max-width: 100%;
+	height: var(--zskeleton-widget-underline-thickness, 2px);
+	margin-top: 0.4em;
+	background: var(--zskeleton-widget-underline-color, currentColor);
+	border: 0;
+}
+
+/* When using theme before_title/after_title (wrapped) */
+.zskeleton-widget-heading .footer-widget-title,
+.zskeleton-widget-heading .footer-bottom-widget-title,
+.zskeleton-widget-heading h1,
+.zskeleton-widget-heading h2,
+.zskeleton-widget-heading h3,
+.zskeleton-widget-heading h4 {
+	color: var(--zskeleton-widget-title-color, inherit);
+}
+
+/* Social widget: theme injects a heading via before_title/after_title — underline via ::after only. */
+.zskeleton-widget-heading .footer-widget-title::after,
+.zskeleton-widget-heading .footer-bottom-widget-title::after,
+/* Heading widget: uses .zskeleton-widget-heading__text + .zskeleton-widget-heading__rule — exclude ::after on __text to avoid two lines. */
+.zskeleton-widget-heading h1:not(.zskeleton-widget-heading__text)::after,
+.zskeleton-widget-heading h2:not(.zskeleton-widget-heading__text)::after,
+.zskeleton-widget-heading h3:not(.zskeleton-widget-heading__text)::after,
+.zskeleton-widget-heading h4:not(.zskeleton-widget-heading__text)::after {
+	content: "";
+	display: block;
+	width: var(--zskeleton-widget-underline-width, 3rem);
+	max-width: 100%;
+	height: var(--zskeleton-widget-underline-thickness, 2px);
+	margin-top: 0.4em;
+	background: var(--zskeleton-widget-underline-color, currentColor);
+}
+
+/* If theme title already has bottom border, avoid double line */
+.zskeleton-widget-heading .footer-widget-title,
+.zskeleton-widget-heading .footer-bottom-widget-title,
+.zskeleton-widget-heading h1,
+.zskeleton-widget-heading h2,
+.zskeleton-widget-heading h3,
+.zskeleton-widget-heading h4 {
+	border-bottom: none;
+	padding-bottom: 0;
+}
+
+/* Heading-only widget (native title element) */
+.zskeleton-widget-heading-block .zskeleton-widget-heading__text {
+	font-size: var(--zskeleton-widget-title-font-size, inherit);
+	font-weight: 600;
+	line-height: 1.25;
+}
+
+/* Social icons grid */
+.zskeleton-social-icons-widget {
+	--zskeleton-social-cols: 4;
+	/* Horizontal and vertical gap between icon cells; widget can override (default 15px). */
+	--zskeleton-social-gap: 15px;
+	/* Widget instance can set #fff for dark footers; default matches body text on light areas. */
+	--zskeleton-social-icon-color: currentColor;
+	/* Set --zskeleton-social-icons-max-width on the widget (Style 1); empty CSS default = full sidebar width. */
+	max-width: min(100%, var(--zskeleton-social-icons-max-width, 100%));
+	box-sizing: border-box;
+}
+
+/* Widget: “Max width” = none in Appearance → Widgets. */
+.zskeleton-social-icons-widget--no-max-width {
+	max-width: none;
+}
+
+.zskeleton-social-icons-widget--no-max-width .header-social-icons {
+	max-width: none;
+}
+
+.zskeleton-social-icons-widget .zskeleton-widget-heading {
+	margin-bottom: 0.85rem;
+}
+
+.zskeleton-social-icons {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(var(--zskeleton-social-cols, 4), minmax(0, 1fr));
+	gap: var(--zskeleton-social-gap, 15px);
+}
+
+.zskeleton-social-icons__item {
+	margin: 0;
+}
+
+.zskeleton-social-icons__link {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 2.5rem;
+	padding: 0.4rem;
+	color: var(--zskeleton-social-icon-color, #fff);
+	background: rgba(255, 255, 255, 0.08);
+	border-radius: 8px;
+	text-decoration: none;
+	transition: background 0.2s ease, transform 0.15s ease;
+	box-sizing: border-box;
+}
+
+/* .site-footer a { display: block } would break flex centering; keep row layout. */
+.site-footer .zskeleton-social-icons__link {
+	display: flex;
+	margin-bottom: 0;
+}
+
+.zskeleton-social-icons__link:hover,
+.zskeleton-social-icons__link:focus {
+	background: rgba(255, 255, 255, 0.18);
+	color: var(--zskeleton-social-icon-color, #fff);
+	transform: translateY(-1px);
+	outline: none;
+}
+
+.zskeleton-social-icons__icon {
+	display: block;
+	width: 1.35rem;
+	height: 1.35rem;
+	flex-shrink: 0;
+	fill: currentColor;
+}
+
+.zskeleton-social-icons-widget__empty {
+	margin: 0;
+	font-size: 0.875rem;
+	opacity: 0.85;
+}
+
+/* Style 2: circular buttons; grid uses --zskeleton-social-cols (1–4) from the widget, same as Style 1 */
+.zskeleton-social-icons-widget--style-topbar {
+	--zskeleton-social-cols: 4;
+	--zskeleton-social-gap: 15px;
+}
+
+.zskeleton-social-icons-widget--style-topbar .zskeleton-widget-heading {
+	margin-bottom: 0.75rem;
+}
+
+.zskeleton-social-icons-widget--style-topbar .header-social-icons {
+	/* Match theme .header-social-icons cap; set --zskeleton-header-social-icons-max-width on a parent to override. */
+	max-width: min(100%, var(--zskeleton-header-social-icons-max-width, 24rem));
+	min-width: 0;
+	display: grid;
+	grid-template-columns: repeat(var(--zskeleton-social-cols, 4), minmax(0, 1fr));
+	gap: var(--zskeleton-social-gap, 15px);
+	align-items: center;
+	justify-items: center;
+}
+
+.zskeleton-social-icons-widget--style-topbar .header-social-icons a {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	height: 38px;
+	max-width: 100%;
+	border-radius: 50%;
+	border: 1px solid rgba(255, 255, 255, 0.88);
+	color: var(--zskeleton-social-icon-color, #fff) !important;
+	opacity: 0.95;
+	text-decoration: none;
+	transition: opacity 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+	box-sizing: border-box;
+}
+
+.zskeleton-social-icons-widget--style-topbar .header-social-icons a:hover,
+.zskeleton-social-icons-widget--style-topbar .header-social-icons a:focus {
+	opacity: 1;
+	background-color: rgba(255, 255, 255, 0.12);
+	border-color: #fff;
+	outline: none;
+}
+
+.zskeleton-social-icons-widget--style-topbar .header-social-icons a svg {
+	width: 18px;
+	height: 18px;
+	fill: currentColor !important;
+	color: inherit;
+}
+
+/* Footer global link rule: keep circle buttons as flex, not block-stacked. */
+.site-footer .zskeleton-social-icons-widget--style-topbar .header-social-icons a {
+	margin-bottom: 0;
+}
+
+/* Contact lines: phone + email (default vertical; optional horizontal row) */
+.zskeleton-contact-lines {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.zskeleton-contact-lines--horizontal {
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.75rem 1.25rem;
+}
+
+.zskeleton-contact-lines__item {
+	margin: 0;
+}
+
+.zskeleton-contact-lines--horizontal .zskeleton-contact-lines__item {
+	flex: 0 1 auto;
+	max-width: 100%;
+}
+
+.zskeleton-contact-lines__link {
+	display: inline-flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-items: center;
+	gap: 0.5rem;
+	text-decoration: none;
+	color: inherit;
+	line-height: 1.4;
+	word-break: break-word;
+}
+
+/* Footer sets `.site-footer a { display: block }` which would stack icon + text; keep row layout. */
+.site-footer .zskeleton-contact-lines__link {
+	display: flex;
+	margin-bottom: 0;
+}
+
+.zskeleton-contact-lines__link:hover,
+.zskeleton-contact-lines__link:focus {
+	opacity: 0.92;
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+.zskeleton-contact-lines__link > .zskeleton-contact-lines__icon {
+	flex-shrink: 0;
+	display: flex;
+	line-height: 0;
+}
+
+.zskeleton-contact-lines__svg {
+	display: block;
+	width: 1.25rem;
+	height: 1.25rem;
+	flex-shrink: 0;
+	stroke: currentColor;
+	fill: none;
+}
+
+.zskeleton-contact-lines__text {
+	flex: 1;
+	min-width: 0;
+}
+
+.zskeleton-contact-lines-widget__empty {
+	margin: 0;
+	font-size: 0.875rem;
+	opacity: 0.85;
+}

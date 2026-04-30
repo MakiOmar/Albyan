@@ -1,0 +1,60 @@
+/**
+ * WooCommerce + ZSkeleton theme fixes.
+ *
+ * page.php styles treat all .page-content-body tables like “professional” tables
+ * (overflow hidden, strong th styling). Cart/checkout totals need normal table behavior.
+ */
+
+/* Rounded-corner clip from theme tables must not hide totals / amount cells. */
+.page-content-body .woocommerce table.shop_table,
+.site-main .woocommerce table.shop_table {
+	overflow: visible;
+}
+
+/* Let columns size naturally (avoids squeezed / zero-width amount column, esp. RTL). */
+.woocommerce table.shop_table {
+	table-layout: auto;
+	width: 100%;
+}
+
+/* Theme paints every .page-content-body th as primary header — WC row labels are not that. */
+.woocommerce .shop_table th,
+.woocommerce .shop_table td {
+	max-width: none;
+	overflow: visible;
+	vertical-align: middle;
+	box-sizing: border-box;
+}
+
+.woocommerce .cart_totals .shop_table th,
+.woocommerce-checkout .woocommerce-checkout-review-order-table th {
+	background: transparent;
+	color: var(--professional-gray, #374151);
+	font-weight: 600;
+	font-size: 0.95rem;
+	text-align: start;
+	border-bottom: 1px solid var(--border-light, #c5d4e0);
+}
+
+.woocommerce .cart_totals .shop_table td,
+.woocommerce-checkout .woocommerce-checkout-review-order-table td {
+	text-align: start;
+	color: var(--professional-gray, #374151);
+	border-bottom: 1px solid var(--border-light, #c5d4e0);
+}
+
+/* Card wrapper from page.php uses overflow:hidden — can clip nested WC layouts. */
+.woocommerce-page .page-content.formal-card,
+body.woocommerce-cart .page-content.formal-card,
+body.woocommerce-checkout .page-content.formal-card {
+	overflow: visible;
+}
+
+/* Flex children (cart form + collaterals) keep a sane minimum for the totals box. */
+.woocommerce-cart .cart-collaterals {
+	min-width: min(100%, 22rem);
+}
+
+.woocommerce-cart .woocommerce-cart-form {
+	min-width: 0;
+}

@@ -1,0 +1,16 @@
+---
+description: Accessibility and admin/frontend UX quality rules
+globs: **/*.{php,js,css,scss}
+alwaysApply: false
+---
+
+# Accessibility and UI Rules
+
+- Ensure keyboard navigation works for all interactive controls.
+- Provide visible focus styles and never remove focus outlines without replacement.
+- Use semantic HTML and proper heading hierarchy in templates and admin pages.
+- Ensure form controls have labels, help text where needed, and accessible error messages.
+- Use ARIA only when semantic HTML cannot express intent.
+- Validate color contrast and avoid relying on color alone for status feedback.
+- Provide accessible loading, empty, error, and success states for async workflows.
+- Ensure modals, notices, and toasts are announced appropriately to assistive tech.

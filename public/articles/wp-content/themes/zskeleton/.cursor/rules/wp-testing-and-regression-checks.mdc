@@ -1,0 +1,14 @@
+---
+description: Testing and regression requirements for WordPress changes
+alwaysApply: true
+---
+
+# Testing and Regression Checks
+
+- Add or update tests for bug fixes and critical business logic when test framework exists.
+- For UI or template changes, verify empty, loading, error, and success states.
+- Manually validate core flows impacted by the change before finalizing.
+- Ensure no new PHP notices, warnings, or JS runtime errors are introduced.
+- Keep tests deterministic; mock or isolate network-dependent behavior.
+- Do not bypass failing checks without a clear, documented reason.
+- Confirm changed routes/endpoints return expected status and payload shape.

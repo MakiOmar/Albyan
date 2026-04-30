@@ -1,0 +1,16 @@
+---
+description: Database safety rules for custom tables and options
+globs: **/*.php
+alwaysApply: false
+---
+
+# Database and Options Safety
+
+- Use WordPress APIs (`get_option`, meta APIs, settings APIs) before custom SQL.
+- For custom SQL, use `$wpdb->prepare()` and explicit column allowlists.
+- Make schema/setup routines idempotent and safe to run multiple times.
+- Never run destructive data operations without guards and capability checks.
+- Add sensible defaults and validate option values before persisting.
+- Keep data migrations reversible when feasible and log migration intent.
+- Index frequently filtered columns in custom tables.
+- Avoid storing large transient or cache blobs in autoloaded options.

@@ -1,0 +1,29 @@
+---
+description: Keep theme settings fields synchronized with import/export
+alwaysApply: true
+---
+
+# Theme Settings Import/Export Synchronization
+
+- Any time a theme setting field is added, renamed, removed, or updated, the import/export flow must be updated in the same change.
+- Import and export must remain schema-aware and compatible with the current settings structure.
+- Do not ship settings changes if export output or import mapping still reflects an older field set.
+
+## Required Actions on Field Changes
+
+- Update export payload generation to include the latest setting fields.
+- Update import parsing and mapping to handle the latest setting fields.
+- Add safe defaults and fallback behavior for missing or legacy fields during import.
+- Preserve backward compatibility for previously exported files when possible.
+- If backward compatibility is not possible, document migration behavior clearly.
+
+## Validation Checklist
+
+- Confirm a newly added field appears in exported data.
+- Confirm an updated field imports correctly with the new format.
+- Confirm legacy export files still import safely (or fail with a clear, non-breaking message).
+- Confirm no PHP notices, warnings, or fatal errors are introduced by import/export changes.
+
+## Implementation Note
+
+- Keep a single source of truth for settings schema (or field registry) and reuse it for UI field rendering, export construction, and import mapping to reduce drift.

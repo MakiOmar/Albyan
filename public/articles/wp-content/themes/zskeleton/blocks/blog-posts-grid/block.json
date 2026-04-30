@@ -1,0 +1,41 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "zskeleton/blog-posts-grid",
+	"version": "1.0.0",
+	"title": "Blog: Latest posts grid",
+	"category": "zskeleton-blog",
+	"icon": "grid-view",
+	"description": "Paginated blog post cards for this page. Use once per blog listing. Optionally match the theme option to hide posts that already appear in the featured strip.",
+	"keywords": [ "blog", "posts", "archive", "zskeleton", "ZSkeleton" ],
+	"textdomain": "zskeleton",
+	"editorScript": "zskeleton-blog-hub-blocks-editor",
+	"attributes": {
+		"showHeading": {
+			"type": "boolean",
+			"default": true
+		},
+		"heading": {
+			"type": "string",
+			"default": ""
+		},
+		"matchThemeExcludeFeatured": {
+			"type": "boolean",
+			"default": true
+		},
+		"postsPerPage": {
+			"type": "number",
+			"default": 0
+		},
+		"columns": {
+			"type": "number",
+			"default": 0
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"visibility": false
+	},
+	"render": "file:./render.php"
+}

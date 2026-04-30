@@ -1,0 +1,16 @@
+---
+description: PHP standards for WordPress themes and plugins
+globs: **/*.{php,inc}
+alwaysApply: false
+---
+
+# WordPress PHP Standards
+
+- Follow WordPress PHP coding standards: spaces for indentation and snake_case for function names.
+- Add `defined( 'ABSPATH' ) || exit;` to direct-accessible PHP files.
+- Use core APIs when available (`wp_parse_args`, `wp_json_encode`, `wp_remote_get`, etc.).
+- Avoid short tags and avoid custom wrappers when core functions exist.
+- Keep template files free from business logic; move logic to helpers or service-like functions.
+- Prefer early returns to reduce nesting and improve readability.
+- Do not use deprecated WordPress functions; replace with supported alternatives.
+- For complex branches, add short comments explaining intent, not mechanics.

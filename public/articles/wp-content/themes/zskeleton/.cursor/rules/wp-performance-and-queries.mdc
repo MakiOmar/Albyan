@@ -1,0 +1,16 @@
+---
+description: Query, caching, and runtime performance rules
+globs: **/*.php
+alwaysApply: false
+---
+
+# WordPress Performance and Queries
+
+- Avoid heavy work in templates; precompute data in dedicated functions.
+- Prevent N+1 patterns in loops; fetch data in batches where possible.
+- Use `WP_Query` arguments carefully and reset post data with `wp_reset_postdata()`.
+- Prefer object cache and transients for expensive operations.
+- Avoid remote requests during page render unless strictly required.
+- Load assets only where needed using conditional enqueue logic.
+- Defer or async non-critical scripts where compatible with dependencies.
+- Minimize autoloaded options and avoid large serialized option payloads.

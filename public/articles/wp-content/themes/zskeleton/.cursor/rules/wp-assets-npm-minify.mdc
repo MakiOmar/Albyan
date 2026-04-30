@@ -1,0 +1,18 @@
+---
+description: Use npm scripts to generate minified JS/CSS; never hand-edit or ad-hoc minify
+globs: "{package.json,style.css,**/*.{js,css,scss}}"
+alwaysApply: false
+---
+
+# Minified assets via npm
+
+- **Source of truth** for production assets: non-minified files (`style.css`, `assets/css/*.css` except `*.min.css`, `assets/js/*.js` except `*.min.js`). **Minified** outputs are `assets/css/*.min.css`, `assets/js/*.min.js`, and `style.min.css` via [package.json](package.json) scripts.
+- **Always (re)generate** minified files with npm—never paste “minified” content by hand, never edit `*.min.js` / `*.min.css` to ship fixes, and do not run `terser` or `cleancss` **directly**; use the matching `npm run` script so paths, flags, and tool versions stay consistent.
+- **After** changing a source file, run the **narrowest** build that covers it, or `npm run build` / `npm run build:css` / `npm run build:js` as appropriate. Use `npm run dev` (or `watch`) when doing sustained asset work.
+- If a new source file needs a minified copy, add a **named script** in `package.json` (mirroring existing `build:css:*` / `build:js:*` patterns) and run that script—do not add a one-off shell command in docs or copy another minified file as a template.
+
+## Examples
+
+- Root stylesheet: `npm run build:css:main` (outputs `assets/css/style.min.css` from `style.css`).
+- One JS bundle: `npm run build:js:main` (outputs `assets/js/main.min.js`).
+- Full theme asset pass: `npm run build`.

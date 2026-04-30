@@ -1,0 +1,16 @@
+---
+description: Internationalization and localization rules for WordPress code
+globs: **/*.{php,js}
+alwaysApply: false
+---
+
+# i18n and l10n Standards
+
+- Wrap user-facing strings with translation functions (`__`, `_e`, `esc_html__`, `esc_attr__`).
+- Always use the correct project text domain consistently across theme/plugin files.
+- Use placeholders instead of string concatenation in translated strings.
+- Add translator comments for ambiguous placeholders and context-sensitive strings.
+- Escape translated output by context (`esc_html__`, `esc_attr__`, `wp_kses_post` as needed).
+- Do not hardcode date/time/currency formats; use WordPress locale-aware APIs.
+- Keep JS/UI labels translation-ready through localized script data or translation APIs.
+- When adding new strings, ensure language files are updated in the release process.

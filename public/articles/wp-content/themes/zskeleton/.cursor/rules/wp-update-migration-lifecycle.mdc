@@ -1,0 +1,15 @@
+---
+description: Safe update lifecycle, schema migration, and backward compatibility
+alwaysApply: true
+---
+
+# Update and Migration Lifecycle
+
+- Treat updates as compatibility-sensitive: preserve existing behavior by default.
+- Add explicit version checks for one-time migrations and make them idempotent.
+- Separate install/upgrade routines from runtime request handling.
+- For data shape changes, provide migration logic and safe fallback reads.
+- Mark deprecated hooks/functions with clear alternatives and maintain shims when possible.
+- Include rollback strategy for risky updates (feature flags, reversible migrations, guarded writes).
+- Document upgrade-impacting changes in changelog/release notes before shipping.
+- Validate updates against fresh install and upgrade-from-previous-version scenarios.

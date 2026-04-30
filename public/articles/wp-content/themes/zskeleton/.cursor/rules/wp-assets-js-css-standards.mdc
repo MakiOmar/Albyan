@@ -1,0 +1,16 @@
+---
+description: Frontend asset standards for WordPress themes/plugins
+globs: **/*.{js,css,scss}
+alwaysApply: false
+---
+
+# JS and CSS Standards
+
+- Keep JavaScript modular; avoid global namespace pollution.
+- Use `const`/`let`, avoid `var`, and avoid `console.log` in committed code.
+- Enqueue scripts/styles via WordPress APIs; do not hardcode asset tags in templates.
+- Localize script data using WordPress helpers instead of inline globals.
+- Prefer mobile-first responsive styles and avoid `!important` unless unavoidable.
+- Keep CSS maintainable with variables/tokens for repeated values.
+- Lazy-load non-critical assets and media where possible.
+- Ensure accessibility basics: focus states, keyboard support, and semantic markup.

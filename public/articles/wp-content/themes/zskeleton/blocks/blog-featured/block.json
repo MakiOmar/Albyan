@@ -1,0 +1,37 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "zskeleton/blog-featured",
+	"version": "1.0.0",
+	"title": "Blog: Featured posts",
+	"category": "zskeleton-blog",
+	"icon": "star-filled",
+	"description": "Featured strip from ZSkeleton Content settings (sticky-first, then recent). Shown only on the first page of the blog listing.",
+	"keywords": [ "blog", "featured", "posts", "zskeleton", "ZSkeleton" ],
+	"textdomain": "zskeleton",
+	"editorScript": "zskeleton-blog-hub-blocks-editor",
+	"attributes": {
+		"useThemeCount": {
+			"type": "boolean",
+			"default": true
+		},
+		"postCount": {
+			"type": "number",
+			"default": 3
+		},
+		"sectionHeading": {
+			"type": "string",
+			"default": ""
+		},
+		"useThemeVisibility": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"visibility": false
+	},
+	"render": "file:./render.php"
+}

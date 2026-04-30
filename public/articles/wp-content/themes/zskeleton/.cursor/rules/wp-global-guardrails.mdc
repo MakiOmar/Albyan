@@ -1,0 +1,16 @@
+---
+description: Global WordPress quality and safety guardrails
+alwaysApply: true
+---
+
+# WordPress Global Guardrails
+
+- Build for WordPress conventions first; avoid custom architecture unless necessary.
+- Keep changes small and scoped to the request; do not refactor unrelated code.
+- Never edit WordPress core files or vendor code directly.
+- Never hardcode secrets, API keys, or environment-specific paths.
+- Prefer reusable helpers and hooks over duplicated logic.
+- Keep functions focused and readable; split large functions into smaller units.
+- Handle failure paths explicitly and return safe fallbacks.
+- Preserve backward compatibility unless the task explicitly allows breaking changes.
+- Document non-obvious decisions briefly, focusing on why.

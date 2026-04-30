@@ -1,0 +1,31 @@
+---
+description: Enforce color picker and Flatpickr for date inputs
+alwaysApply: true
+---
+
+# UI Input Controls: Color and Date
+
+- For any color input, use a color selector control (for example `<input type="color">`).
+- Do not use plain text inputs for entering color values.
+- If a custom UI is needed, it must still expose a visual color picker and preserve accessible labels.
+
+- For date inputs, use the Flatpickr library as the date picker UI.
+- Do not rely on free-text date fields for user-entered dates.
+- Configure Flatpickr with consistent format, locale, and min/max constraints based on the feature requirements.
+
+## Examples
+
+```html
+<!-- Good: color selector -->
+<input type="color" name="accent_color" aria-label="Accent color" />
+
+<!-- Bad: text input for color -->
+<input type="text" name="accent_color" />
+```
+
+```javascript
+// Good: Flatpickr date input
+flatpickr('#publish_date', {
+  dateFormat: 'Y-m-d',
+});
+```

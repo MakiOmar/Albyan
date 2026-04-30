@@ -1,0 +1,45 @@
+
+2026-04-27 12:31:29  | INFO | Purge request check started on admin_bar_init hook.
+2026-04-27 12:31:29  | INFO | Purge request detected. Action: done, method: GET
+2026-04-27 12:31:33  | INFO | Purge request check started on admin_bar_init hook.
+2026-04-27 12:31:33  | INFO | Purge request detected. Action: purge, method: GET
+2026-04-27 12:31:33  | INFO | Purge request nonce validated. Current URL: https://albyan.institute/articles/
+2026-04-27 12:31:33  | INFO | Executing full purge operation.
+2026-04-27 12:31:33  | INFO | Starting fastcgi purge_all on cache path: /var/cache/nginx/fastcgi_cache
+2026-04-27 12:31:33  | INFO | * * * * *
+2026-04-27 12:31:33  | INFO | * Purged Everything!
+2026-04-27 12:31:33  | INFO | * * * * *
+2026-04-27 12:31:33  | INFO | Full purge operation finished and rt_nginx_helper_after_purge_all fired.
+2026-04-27 12:31:33  | INFO | Purge flow complete. Redirecting to: /articles/wp-admin/options-general.php?page=nginx&nginx_helper_action=done&nginx_helper_urls=all&_wpnonce=4ea23bae11
+2026-04-27 12:31:33  | INFO | Purge request check started on admin_bar_init hook.
+2026-04-27 12:31:33  | INFO | Purge request detected. Action: done, method: GET
+2026-04-27 12:33:03  | INFO | Purge request check started on admin_bar_init hook.
+2026-04-27 12:33:03  | INFO | Purge request detected. Action: purge, method: GET
+2026-04-27 12:33:03  | INFO | Purge request nonce validated. Current URL: https://albyan.institute/articles/
+2026-04-27 12:33:03  | INFO | Executing full purge operation.
+2026-04-27 12:33:03  | INFO | Starting fastcgi purge_all on cache path: /var/cache/nginx/fastcgi_cache
+2026-04-27 12:33:03  | INFO | * * * * *
+2026-04-27 12:33:03  | INFO | * Purged Everything!
+2026-04-27 12:33:03  | INFO | * * * * *
+2026-04-27 12:33:03  | INFO | Full purge operation finished and rt_nginx_helper_after_purge_all fired.
+2026-04-27 12:33:03  | INFO | Purge flow complete. Redirecting to: /articles/wp-admin/options-general.php?page=nginx&nginx_helper_action=done&nginx_helper_urls=all&_wpnonce=4ea23bae11
+2026-04-27 12:33:03  | INFO | Purge request check started on admin_bar_init hook.
+2026-04-27 12:33:03  | INFO | Purge request detected. Action: done, method: GET
+2026-04-27 12:33:33  | INFO | Purge request check started on admin_bar_init hook.
+2026-04-27 12:33:33  | INFO | Purge request detected. Action: purge, method: GET
+2026-04-27 12:33:33  | INFO | Purge request nonce validated. Current URL: https://albyan.institute/articles/
+2026-04-27 12:33:33  | INFO | Executing full purge operation.
+2026-04-27 12:33:33  | INFO | Starting fastcgi purge_all on cache path: /var/cache/nginx/fastcgi_cache
+2026-04-27 12:33:33  | INFO | * * * * *
+2026-04-27 12:33:33  | INFO | * Purged Everything!
+2026-04-27 12:33:33  | INFO | * * * * *
+2026-04-27 12:33:33  | INFO | Full purge operation finished and rt_nginx_helper_after_purge_all fired.
+2026-04-27 12:33:33  | INFO | Purge flow complete. Redirecting to: /articles/wp-admin/options-general.php?page=nginx&nginx_helper_action=done&nginx_helper_urls=all&_wpnonce=4ea23bae11
+2026-04-27 12:33:33  | INFO | Purge request check started on admin_bar_init hook.
+2026-04-27 12:33:33  | INFO | Purge request detected. Action: done, method: GET
+2026-04-27 12:35:03  | INFO | Purge request check started on admin_bar_init hook.
+2026-04-27 12:35:03  | INFO | Purge request ignored because nginx_helper_action is empty.
+2026-04-29 07:45:39  | INFO | Purge request check started on admin_bar_init hook.
+2026-04-29 07:45:39  | INFO | Purge request ignored because nginx_helper_action is empty.
+2026-04-29 07:45:48  | INFO | Purge request check started on admin_bar_init hook.
+2026-04-29 07:45:48  | INFO | Purge request ignored because nginx_helper_action is empty.
