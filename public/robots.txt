@@ -1,5 +1,5 @@
 User-agent: *
-Disallow: /
+Allow: /
 
 # Block admin and private areas
 Disallow: /admin/
@@ -34,11 +34,11 @@ Disallow: /storage/app/temp/
 Disallow: /storage/app/cache/
 
 # Allow public storage for course/blog images
-Disallow: /storage/app/public/courses/
-Disallow: /storage/app/public/blog/
-Disallow: /storage/app/public/webinars/
-Disallow: /storage/app/public/categories/
-Disallow: /storage/app/public/instructors/
+Allow: /storage/app/public/courses/
+Allow: /storage/app/public/blog/
+Allow: /storage/app/public/webinars/
+Allow: /storage/app/public/categories/
+Allow: /storage/app/public/instructors/
 
 Allow: /
 User-agent: Googlebot
@@ -50,6 +50,13 @@ Allow: /
 User-agent: ChatGPT-User
 Allow: /public/uploads/all/
 
+
+# Sitemap location
+Sitemap: https://albyan.institute/sitemap.xml
+Sitemap: https://albyan.institute/sitemap-courses.xml
+Sitemap: https://albyan.institute/sitemap-blog.xml
+Sitemap: https://albyan.institute/sitemap-upcoming-courses.xml
+Sitemap: https://albyan.institute/sitemap-courses-index.xml
 
 
 Disallow: /*&amp;lt;iframe
