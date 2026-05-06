@@ -4,3 +4,7 @@
 [2026-04-29 07:55:57 : INFO] - Setting changed, purging cache 
 [2026-04-29 07:57:03 : INFO] - Full Cache Purge triggered by: WP_Optimize_Minify_Cache_Functions::purge_others 
 [2026-04-29 07:57:35 : INFO] - Full Cache Purge triggered by: WP_Optimize_Minify_Cache_Functions::purge_others 
+[2026-05-01 05:00:56 : INFO] - Full Cache Purge triggered by action: wpo_active_plugin_or_theme_updated 
+[2026-05-01 05:01:31 : INFO] - Full Cache Purge triggered by: WPO_Page_Cache::disable 
+[2026-05-01 05:01:31 : INFO] - Pruning the Cache log file 
+[2026-05-01 05:02:34 : INFO] - Full Cache Purge triggered by: plugin activation/deactivation 

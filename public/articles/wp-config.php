@@ -1,6 +1,4 @@
 <?php
-define( 'WP_CACHE', true );
-
 /**
  * The base configuration for WordPress
  *
@@ -19,26 +17,19 @@ define( 'WP_CACHE', true );
  *
  * @package WordPress
  */
-
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
 define( 'DB_NAME', "byanartic" );
-
 /** Database username */
 define( 'DB_USER', "albyandb" );
-
 /** Database password */
 define( 'DB_PASSWORD', "StrongPass123!" );
-
 /** Database hostname */
 define( 'DB_HOST', "localhost" );
-
 /** Database charset to use in creating database tables. */
 define( 'DB_CHARSET', 'utf8mb4' );
-
 /** The database collate type. Don't change this if in doubt. */
 define( 'DB_COLLATE', '' );
-
 /**#@+
  * Authentication unique keys and salts.
  *
@@ -58,9 +49,7 @@ define( 'AUTH_SALT',        '-jB5!v:,5cp)>SEtar/IFUm(~eTxB#*/0*s<{u>A~Trhy~L?83w
 define( 'SECURE_AUTH_SALT', '9WK#@)MF$kmllvX6iU1+,r5!bru0ZUD-U_UZ?uXK=(AqQ2pWzzOv^7t;R|j3#7Jt' );
 define( 'LOGGED_IN_SALT',   '*uJ3LW )5I&;00M<;<trKjaC?zf&E!Zx:TNiL&yX].C;@Mrg6ye{RC[x4M#[o>qM' );
 define( 'NONCE_SALT',       'nr2Pn+rvTyM3p6spgRo%OuR)4aSt;&<lJ7@pk?A.k{|cI,.>EVl9@8auKZr`ac!:' );
-
 /**#@-*/
-
 /**
  * WordPress database table prefix.
  *
@@ -74,7 +63,6 @@ define( 'NONCE_SALT',       'nr2Pn+rvTyM3p6spgRo%OuR)4aSt;&<lJ7@pk?A.k{|cI,.>EVl
  * @link https://developer.wordpress.org/advanced-administration/wordpress/wp-config/#table-prefix
  */
 $table_prefix = 'byna_';
-
 /**
  * For developers: WordPress debugging mode.
  *
@@ -95,15 +83,10 @@ define('FORCE_SSL_ADMIN', true);
 define('RT_WP_NGINX_HELPER_CACHE_PATH', '/var/cache/nginx/fastcgi_cache');
 define('NGINX_HELPER_LOG', false);
 /* Add any custom values between this line and the "stop editing" line. */
-
-
-
 /* That's all, stop editing! Happy publishing. */
-
 /** Absolute path to the WordPress directory. */
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/' );
 }
-
 /** Sets up WordPress vars and included files. */
 require_once ABSPATH . 'wp-settings.php';
