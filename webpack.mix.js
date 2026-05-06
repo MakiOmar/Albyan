@@ -15,9 +15,9 @@ mix
 .js('resources/js/app.js', 'public/assets/default/js/app.min.js')
 //
 // scss
-// .sass('resources/sass/app.scss', 'public/assets/default/css')
-// .sass('resources/sass/panel.scss', 'public/assets/default/css')
-// .sass('resources/sass/rtl-app.scss', 'public/assets/default/css')
+.sass('resources/sass/app.scss', 'public/assets/default/css')
+.sass('resources/sass/panel.scss', 'public/assets/default/css')
+.sass('resources/sass/rtl-app.scss', 'public/assets/default/css')
 
 // agora
 // .sass('resources/sass/agora/agora.scss', 'public/assets/default/agora')

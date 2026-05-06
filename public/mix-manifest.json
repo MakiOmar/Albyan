@@ -6,5 +6,8 @@
     "/assets/default/js/parts/upcoming_course_show.min.js": "/assets/default/js/parts/upcoming_course_show.min.js",
     "/assets/default/js/parts/cart.min.js": "/assets/default/js/parts/cart.min.js",
     "/assets/default/js/parts/profile.min.js": "/assets/default/js/parts/profile.min.js",
-    "/assets/default/js/parts/forgot_password.min.js": "/assets/default/js/parts/forgot_password.min.js"
+    "/assets/default/js/parts/forgot_password.min.js": "/assets/default/js/parts/forgot_password.min.js",
+    "/assets/default/css/rtl-app.css": "/assets/default/css/rtl-app.css",
+    "/assets/default/css/panel.css": "/assets/default/css/panel.css",
+    "/assets/default/css/app.css": "/assets/default/css/app.css"
 }

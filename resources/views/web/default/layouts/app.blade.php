@@ -21,10 +21,10 @@
     @endif
 
     <!-- General CSS File -->
-    <link rel="stylesheet" href="/assets/default/css/app.min.css">
+    <link rel="stylesheet" href="/assets/default/css/app.css">
 
     @if($isRtl)
-        <link rel="stylesheet" href="/assets/default/css/rtl-app.min.css">
+        <link rel="stylesheet" href="/assets/default/css/rtl-app.css">
     @endif
 
     @stack('styles_top')
