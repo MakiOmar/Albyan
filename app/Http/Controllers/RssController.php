@@ -70,6 +70,10 @@ class RssController extends Controller
      */
     public function blog()
     {
+        if (isLaravelPublicBlogDisabled()) {
+            abort(404);
+        }
+
         try {
             $xml = Cache::remember('rss-blog.xml', 3600, function () {
                 $baseUrl = config('app.url', request()->getSchemeAndHttpHost());

@@ -33,6 +33,20 @@
 
                 </div>
 
+                {{-- Optional: hide built-in public blog when using an external site (e.g. WordPress) --}}
+                <div class="mb-5">
+                    <h5>{{ trans('update.public_blog_visibility') }}</h5>
+                    <div class="form-group mt-3 custom-switches-stacked">
+                        <label class="custom-switch pl-0">
+                            <input type="hidden" name="value[disable_laravel_public_blog]" value="0">
+                            <input type="checkbox" name="value[disable_laravel_public_blog]" id="disable_laravel_public_blogSwitch" value="1" {{ (!empty($itemValue) and !empty($itemValue['disable_laravel_public_blog']) and $itemValue['disable_laravel_public_blog']) ? 'checked="checked"' : '' }} class="custom-switch-input"/>
+                            <span class="custom-switch-indicator"></span>
+                            <label class="custom-switch-description mb-0 cursor-pointer" for="disable_laravel_public_blogSwitch">{{ trans('update.disable_laravel_public_blog') }}</label>
+                        </label>
+                        <p class="font-12 text-gray mb-0">{{ trans('update.disable_laravel_public_blog_hint') }}</p>
+                    </div>
+                </div>
+
                 <div class="mb-5">
                     <h5>{{ trans('update.delete_contents') }}</h5>
 

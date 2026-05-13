@@ -242,7 +242,7 @@ class HomeController extends Controller
                 ->get();
         }
 
-        if (in_array(HomeSection::$blog, $selectedSectionsName)) {
+        if (in_array(HomeSection::$blog, $selectedSectionsName) && !isLaravelPublicBlogDisabled()) {
             $blog = Blog::where('status', 'publish')
                 ->with(['category', 'author' => function ($query) {
                     $query->select('id', 'full_name');
