@@ -16,6 +16,8 @@ use App\Models\Setting;
 use App\Models\Translation\SettingTranslation;
 use App\Models\UserBank;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class SettingsController extends Controller
@@ -196,6 +198,11 @@ class SettingsController extends Controller
             );
 
             cache()->forget('settings.' . $name);
+
+            if ($name === Setting::$generalOptionsName) {
+                Cache::forget('rss-blog.xml');
+                Artisan::call('sitemap:generate', ['type' => 'all']);
+            }
 
             if ($name == 'general') {
                 cache()->forget('settings.getDefaultLocale');

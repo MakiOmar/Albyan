@@ -1853,6 +1853,14 @@ function getGeneralOptionsSettings($key = null)
     return App\Models\Setting::getGeneralOptionsSettings($key);
 }
 
+/**
+ * When true, public Laravel blog pages, guest blog API, blog RSS, and blog URLs in sitemaps are turned off (e.g. blog is hosted on external WordPress).
+ */
+function isLaravelPublicBlogDisabled(): bool
+{
+    return !empty(getGeneralOptionsSettings('disable_laravel_public_blog'));
+}
+
 function getGiftsGeneralSettings($key = null)
 {
     return App\Models\Setting::getGiftsGeneralSettings($key);

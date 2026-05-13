@@ -1748,6 +1748,9 @@ return [
 "direct_publication_of_reviews_hint" => "سيتم نشر التقييمات دون موافقة المسؤول",
 "direct_publication_of_blog" => "النشر التلقائي لمقالات المدونة",
 "direct_publication_of_blog_hint" => "سيتم نشر مقالات المدونة دون موافقة المسؤول",
+"public_blog_visibility" => "المدونة العامة (Laravel)",
+"disable_laravel_public_blog" => "تعطيل مدونة Laravel العامة وواجهة API وRSS وخرائط المدونة",
+"disable_laravel_public_blog_hint" => "فعّل هذا عند استضافة المدونة العامة خارج المنصة (مثلاً WordPress). تبقى إدارة المدونة في لوحة التحكم والإدارة متاحة.",
 "publish" => "نشر",
 
 // Offline banks credits status

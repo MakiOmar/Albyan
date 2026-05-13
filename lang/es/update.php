@@ -1749,6 +1749,9 @@ return [
 "direct_publication_of_reviews_hint" => "Reviews will be published without admin approval",
 "direct_publication_of_blog" => "Blog articles auto approval",
 "direct_publication_of_blog_hint" => "Blog articles will be published without admin approval",
+"public_blog_visibility" => "Public blog (Laravel)",
+"disable_laravel_public_blog" => "Disable public Laravel blog, API blog, RSS, and blog sitemaps",
+"disable_laravel_public_blog_hint" => "Enable when the public blog is hosted elsewhere (for example WordPress). Admin and panel blog management remain available.",
 "publish" => "Publish",
 
 // Offline banks credits status

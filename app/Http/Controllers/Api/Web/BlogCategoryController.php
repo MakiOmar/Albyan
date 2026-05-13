@@ -11,6 +11,9 @@ class BlogCategoryController extends Controller
     //
 
     public function index(){
+        if (isLaravelPublicBlogDisabled()) {
+            abort(404);
+        }
 
         $categories=BlogCategory::all()->map(function($category){
             return $category->details ;

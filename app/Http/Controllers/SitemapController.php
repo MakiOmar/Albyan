@@ -31,10 +31,14 @@ class SitemapController extends Controller
 
                 $urls = array_merge($urls, $this->getStaticPages());
                 $urls = array_merge($urls, $this->getPublishedCourses());
-                $urls = array_merge($urls, $this->getPublishedBlogPosts());
+                if (!isLaravelPublicBlogDisabled()) {
+                    $urls = array_merge($urls, $this->getPublishedBlogPosts());
+                }
                 $urls = array_merge($urls, $this->getPublishedUpcomingCourses());
                 $urls = array_merge($urls, $this->getCategories());
-                $urls = array_merge($urls, $this->getBlogCategories());
+                if (!isLaravelPublicBlogDisabled()) {
+                    $urls = array_merge($urls, $this->getBlogCategories());
+                }
                 $urls = array_merge($urls, $this->getInstructors());
 
                 return $this->generateUrlsetXml($urls);
@@ -105,6 +109,11 @@ class SitemapController extends Controller
 
     public function blogCategoriesSitemap()
     {
+        if (isLaravelPublicBlogDisabled()) {
+            return response($this->generateUrlsetXml([]), 200)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        }
+
         try {
             $xml = Cache::remember('sitemap-blog-categories.xml', 86400, function () {
                 return $this->generateUrlsetXml($this->getBlogCategories());
@@ -140,13 +149,16 @@ class SitemapController extends Controller
         $staticPages = [
             '/' => ['priority' => 1.0, 'changeFreq' => 'daily'],
             '/classes' => ['priority' => 0.9, 'changeFreq' => 'daily'],
-            '/blog' => ['priority' => 0.8, 'changeFreq' => 'daily'],
             '/instructors' => ['priority' => 0.7, 'changeFreq' => 'weekly'],
             '/organizations' => ['priority' => 0.7, 'changeFreq' => 'weekly'],
             '/reward-courses' => ['priority' => 0.65, 'changeFreq' => 'daily'],
             '/about' => ['priority' => 0.6, 'changeFreq' => 'monthly'],
             '/contact' => ['priority' => 0.6, 'changeFreq' => 'monthly'],
         ];
+
+        if (!isLaravelPublicBlogDisabled()) {
+            $staticPages['/blog'] = ['priority' => 0.8, 'changeFreq' => 'daily'];
+        }
 
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
@@ -404,13 +416,15 @@ class SitemapController extends Controller
             }
         }
 
-        $blogCount = $this->blogSitemapQuery()->count();
-        if ($blogCount <= self::MAX_URLS_PER_SITEMAP) {
-            $entries[] = ['loc' => $base . '/sitemap-blog.xml', 'lastmod' => $now];
-        } else {
-            $pages = (int) ceil($blogCount / self::MAX_URLS_PER_SITEMAP);
-            for ($p = 1; $p <= $pages; $p++) {
-                $entries[] = ['loc' => $base . '/sitemap-blog-page-' . $p . '.xml', 'lastmod' => $now];
+        if (!isLaravelPublicBlogDisabled()) {
+            $blogCount = $this->blogSitemapQuery()->count();
+            if ($blogCount <= self::MAX_URLS_PER_SITEMAP) {
+                $entries[] = ['loc' => $base . '/sitemap-blog.xml', 'lastmod' => $now];
+            } else {
+                $pages = (int) ceil($blogCount / self::MAX_URLS_PER_SITEMAP);
+                for ($p = 1; $p <= $pages; $p++) {
+                    $entries[] = ['loc' => $base . '/sitemap-blog-page-' . $p . '.xml', 'lastmod' => $now];
+                }
             }
         }
 
@@ -425,7 +439,9 @@ class SitemapController extends Controller
         }
 
         $entries[] = ['loc' => $base . '/sitemap-categories.xml', 'lastmod' => $now];
-        $entries[] = ['loc' => $base . '/sitemap-blog-categories.xml', 'lastmod' => $now];
+        if (!isLaravelPublicBlogDisabled()) {
+            $entries[] = ['loc' => $base . '/sitemap-blog-categories.xml', 'lastmod' => $now];
+        }
         $entries[] = ['loc' => $base . '/sitemap-instructors.xml', 'lastmod' => $now];
 
         return $entries;
@@ -456,6 +472,11 @@ class SitemapController extends Controller
 
     public function blog()
     {
+        if (isLaravelPublicBlogDisabled()) {
+            return response($this->generateUrlsetXml([]), 200)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        }
+
         try {
             $total = $this->blogSitemapQuery()->count();
             if ($total > self::MAX_URLS_PER_SITEMAP) {
@@ -530,6 +551,11 @@ class SitemapController extends Controller
 
     public function blogPaginated($page = 1)
     {
+        if (isLaravelPublicBlogDisabled()) {
+            return response($this->generateUrlsetXml([]), 200)
+                ->header('Content-Type', 'application/xml; charset=utf-8');
+        }
+
         try {
             $page = max(1, (int) $page);
             $total = $this->blogSitemapQuery()->count();

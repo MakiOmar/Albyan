@@ -12,6 +12,10 @@ class BlogController extends Controller
 {
     public function index(Request $request, $category = null)
     {
+        if (isLaravelPublicBlogDisabled()) {
+            abort(404);
+        }
+
         $author = $request->get('author', null);
         $search = $request->get('search', null);
 
@@ -71,6 +75,10 @@ class BlogController extends Controller
 
     public function show($slug)
     {
+        if (isLaravelPublicBlogDisabled()) {
+            abort(404);
+        }
+
         if (!empty($slug)) {
             $post = Blog::where('slug', $slug)
                 ->where('status', 'publish')

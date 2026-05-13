@@ -7,10 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Api\Blog;
 use Illuminate\Http\Request;
 
-class
-BlogController extends Controller
+class BlogController extends Controller
 {
     public function index(Request $request){
+        if (isLaravelPublicBlogDisabled()) {
+            abort(404);
+        }
+
         $blog = Blog::with([
             "badges"=> function ($query) {
                 $query->where('targetable_type', 'App\Models\Blog');
@@ -47,6 +50,10 @@ BlogController extends Controller
 
     }
     public function show($id){
+        if (isLaravelPublicBlogDisabled()) {
+            abort(404);
+        }
+
         $blog=Blog::find($id) ;
         abort_unless($blog,404) ;
 
@@ -60,6 +67,9 @@ BlogController extends Controller
     }
     public function list(Request $request, $id = null)
     {
+        if (isLaravelPublicBlogDisabled()) {
+            abort(404);
+        }
 
         $query = Blog::where('status', 'publish')
             ->orderBy('updated_at', 'desc')
