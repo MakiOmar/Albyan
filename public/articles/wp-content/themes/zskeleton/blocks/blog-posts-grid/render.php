@@ -28,16 +28,35 @@ $blog_query = zskeleton_blog_hub_main_posts_query( $overrides );
 ob_start();
 
 if ( $blog_query->have_posts() ) {
-	$show_heading = ! isset( $attributes['showHeading'] ) || $attributes['showHeading'];
+	$h            = zskeleton_blog_hub_heading_attrs_merge( is_array( $attributes ) ? $attributes : array() );
+	$show_heading = $h['showHeading'];
 	$heading_text = isset( $attributes['heading'] ) ? trim( (string) $attributes['heading'] ) : '';
 	if ( $show_heading && $hub ) {
 		if ( '' === $heading_text ) {
 			$heading_text = (string) apply_filters( 'zskeleton_blog_hub_latest_title', __( 'Latest articles', 'zskeleton' ) );
 		}
-		printf(
-			'<h2 class="blog-latest-heading">%s</h2>',
-			esc_html( $heading_text )
-		);
+		$title_row = '';
+		if ( function_exists( 'zskeleton_render_block_heading_title_row' ) ) {
+			$title_row = zskeleton_render_block_heading_title_row(
+				array(
+					'title_inner_html' => esc_html( $heading_text ),
+					'heading_tag'      => 'h2',
+					'attributes'       => zskeleton_blog_hub_heading_attrs_for_title_row( $h ),
+					'title_class'      => 'blog-latest-heading',
+					'align'            => 'left',
+					'heading_id'       => '',
+					'listing_gap_px'   => (int) $h['titleListingGapPx'],
+				)
+			);
+		}
+		if ( '' !== $title_row ) {
+			echo $title_row; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Markup from zskeleton_render_block_heading_title_row().
+		} else {
+			printf(
+				'<h2 class="blog-latest-heading">%s</h2>',
+				esc_html( $heading_text )
+			);
+		}
 	}
 
 	echo '<div class="practices-grid">';

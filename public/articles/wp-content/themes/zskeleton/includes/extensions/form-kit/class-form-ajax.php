@@ -118,6 +118,15 @@ class ZSkeleton_Form_Ajax {
 		if ( ! ZSkeleton_Form_Handler::rate_limit_allow( $form_id ) ) {
 			wp_send_json_error( array( 'message' => __( 'Too many requests. Please wait.', 'zskeleton' ) ), 429 );
 		}
+		if ( $def->allow_public_submission() && class_exists( 'ZSkeleton_ReCAPTCHA' ) && function_exists( 'zskeleton_recaptcha' ) ) {
+			$captcha = zskeleton_recaptcha();
+			if ( $captcha && $captcha->is_enabled() ) {
+				$verification = $captcha->verify_form_submission();
+				if ( is_wp_error( $verification ) ) {
+					wp_send_json_error( array( 'message' => $verification->get_error_message() ), 400 );
+				}
+			}
+		}
 
 		$data = $this->strip_internal_keys( wp_unslash( $_POST ) );
 		$res  = ZSkeleton_Form_Handler::process_request(

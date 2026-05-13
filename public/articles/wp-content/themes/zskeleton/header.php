@@ -121,15 +121,10 @@
                         </div>
                     </div>
 
-                    <!-- Mobile Menu Toggle -->
                     <?php
                     $mobile_menu_button_style = function_exists( 'zskeleton_get_mobile_menu_button_style' ) ? zskeleton_get_mobile_menu_button_style() : 'style1';
                     $mobile_menu_panel_style   = function_exists( 'zskeleton_get_mobile_menu_panel_style' ) ? zskeleton_get_mobile_menu_panel_style() : 'style1';
                     ?>
-                    <button class="menu-toggle <?php echo 'style2' === $mobile_menu_button_style ? 'menu-toggle--style-2' : 'menu-toggle--style-1'; ?>" aria-controls="site-navigation-mobile" aria-expanded="false">
-                        <span class="screen-reader-text"><?php _e('Primary Menu', 'zskeleton'); ?></span>
-                        <span class="menu-icon"></span>
-                    </button>
 
                     <!-- Desktop Navigation Menu -->
                     <nav id="site-navigation" class="main-navigation desktop-navigation">
@@ -267,6 +262,12 @@
                             </a>
                         <?php endif; ?>
                     </div>
+
+                    <!-- Mobile Menu Toggle (after header-actions so flex order places logo + burger at outer edges on small screens) -->
+                    <button class="menu-toggle <?php echo 'style2' === $mobile_menu_button_style ? 'menu-toggle--style-2' : 'menu-toggle--style-1'; ?>" aria-controls="site-navigation-mobile" aria-expanded="false">
+                        <span class="screen-reader-text"><?php _e('Primary Menu', 'zskeleton'); ?></span>
+                        <span class="menu-icon"></span>
+                    </button>
                 </div>
 
                 <?php zskeleton_header_search(); ?>

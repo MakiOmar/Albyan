@@ -1,0 +1,246 @@
+/**
+ * Testimonials image slider block (front + editor).
+ * Slides use container query units (100cqi) — never 100vw — to avoid breaking the page column or RTL layout.
+ *
+ * @package ZSkeleton_Theme
+ */
+
+.zskeleton-tis {
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	overflow-x: hidden;
+	padding-block: clamp(2.5rem, 5vw, 4rem);
+	padding-inline: clamp(1rem, 4vw, 2rem);
+	background-color: var(--zskeleton-tis-section-bg, #f5f6f8);
+	color: var(--zskeleton-tis-heading, #2b2f36);
+	text-align: center;
+}
+
+.zskeleton-tis__header {
+	max-width: 52rem;
+	margin-inline: auto;
+	margin-block-end: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.zskeleton-tis__badge {
+	display: inline-block;
+	margin-block: 0 0.75rem;
+	margin-inline: 0;
+	padding-block: 0.35rem;
+	padding-inline: 1rem;
+	background-color: var(--zskeleton-tis-badge-bg, #1a2744);
+	color: var(--zskeleton-tis-badge-text, #fff);
+	font-size: 0.875rem;
+	font-weight: 600;
+	border-radius: 0.35rem;
+}
+
+.zskeleton-tis .zskeleton-block-heading__title.zskeleton-tis__title,
+.zskeleton-tis__title {
+	margin: 0 0 0.75rem;
+	font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+	font-weight: 700;
+	line-height: 1.35;
+	color: var(--zskeleton-tis-heading, #2b2f36);
+}
+
+.zskeleton-tis__intro {
+	margin: 0;
+	font-size: 1rem;
+	line-height: 1.65;
+	color: var(--zskeleton-tis-intro, #4a5058);
+}
+
+.zskeleton-tis__carousel {
+	--zskeleton-tis-per-view: 1;
+	--zskeleton-tis-per-view-mobile: var(--zskeleton-tis-per-view, 1);
+	--zskeleton-tis-per-view-active: var(--zskeleton-tis-per-view, 1);
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	margin-block-end: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+@media (max-width: 767px) {
+	.zskeleton-tis__carousel {
+		--zskeleton-tis-per-view-active: var(--zskeleton-tis-per-view-mobile, var(--zskeleton-tis-per-view, 1));
+	}
+}
+
+.zskeleton-tis__viewport {
+	/* LTR scroll coordinates so scrollLeft / scrollTo({ left }) match dot navigation (section may be RTL for text). */
+	direction: ltr;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	overflow-x: auto;
+	overflow-y: hidden;
+	scroll-snap-type: x mandatory;
+	scroll-behavior: smooth;
+	-webkit-overflow-scrolling: touch;
+	overscroll-behavior-x: contain;
+	overscroll-behavior-y: auto;
+	touch-action: pan-x pinch-zoom;
+	outline: none;
+	container-type: inline-size;
+	container-name: zskeleton-tis-carousel;
+	/* Hide native scrollbar; strip still scrolls via dots, swipe, trackpad, keyboard. */
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.zskeleton-tis__viewport::-webkit-scrollbar {
+	display: none;
+	height: 0;
+	width: 0;
+}
+
+.zskeleton-tis__viewport:focus-visible {
+	outline: 2px solid var(--zskeleton-tis-btn-bg, #2563eb);
+	outline-offset: 4px;
+}
+
+.zskeleton-tis__track {
+	--zskeleton-tis-slide-gap: clamp(0.75rem, 2vw, 1.25rem);
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	gap: var(--zskeleton-tis-slide-gap);
+	padding-block: 0.25rem;
+	padding-inline: clamp(0.5rem, 2vw, 1rem);
+	width: max-content;
+	box-sizing: border-box;
+}
+
+/*
+ * Card width = (strip width − gaps) ÷ slidesPerView (always honors N visible).
+ * Do NOT wrap with min(22rem, …): when the share is wider than 22rem, min() would fix every card at 22rem
+ * and extra cards fit on wide screens (e.g. 4×22rem). Cap width only for single-slide mode below.
+ * --zskeleton-tis-per-view is set inline on .zskeleton-tis__carousel (block attribute, 1–6).
+ */
+.zskeleton-tis__slide {
+	flex-grow: 0;
+	flex-shrink: 0;
+	flex-basis: calc(
+		(100cqi - (var(--zskeleton-tis-per-view-active, 1) - 1) * var(--zskeleton-tis-slide-gap, 1rem)) /
+			var(--zskeleton-tis-per-view-active, 1)
+	);
+	min-width: 0;
+	margin: 0;
+	scroll-snap-align: center;
+	background: var(--zskeleton-tis-card-bg, #fff);
+	border-radius: 0.75rem;
+	overflow: hidden;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* One slide per view: keep cards from stretching edge-to-edge on ultra-wide strips. */
+.zskeleton-tis__carousel[data-slides-per-view='1'] .zskeleton-tis__slide {
+	flex-basis: min(22rem, 100cqi);
+	max-width: min(22rem, 100cqi);
+}
+
+@media (max-width: 767px) {
+	.zskeleton-tis__carousel[data-slides-per-view-mobile='1'] .zskeleton-tis__slide {
+		flex-basis: min(22rem, 100cqi);
+		max-width: min(22rem, 100cqi);
+	}
+}
+
+.zskeleton-tis__img {
+	display: block;
+	height: auto;
+}
+
+.zskeleton-tis__figcaption {
+	padding-block: 0.65rem 0.85rem;
+	padding-inline: 1rem;
+	font-size: 0.875rem;
+	color: var(--zskeleton-tis-figcaption, #4a5058);
+	text-align: center;
+}
+
+.zskeleton-tis__dots {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 0.5rem;
+	margin-block-start: 1rem;
+}
+
+.zskeleton-tis__dot {
+	width: 0.55rem;
+	height: 0.55rem;
+	padding: 0;
+	border: 0;
+	border-radius: 999px;
+	background: var(--zskeleton-tis-dot, #c5cad3);
+	cursor: pointer;
+	transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.zskeleton-tis__dot:not( [aria-selected="true"] ):hover,
+.zskeleton-tis__dot:not( [aria-selected="true"] ):focus-visible {
+	filter: brightness(0.78);
+	outline: none;
+}
+
+.zskeleton-tis__dot.is-active,
+.zskeleton-tis__dot[aria-selected="true"] {
+	background: var(--zskeleton-tis-dot-active, #1a2744);
+	transform: scale(1.15);
+}
+
+.zskeleton-tis__footer {
+	max-width: 42rem;
+	margin-inline: auto;
+}
+
+.zskeleton-tis__cta-text {
+	margin: 0 0 1rem;
+	font-size: 1.05rem;
+	font-weight: 700;
+	color: var(--zskeleton-tis-cta, #1a2744);
+}
+
+.zskeleton-tis__cta-btn-wrap {
+	margin: 0;
+}
+
+.zskeleton-tis__btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding-block: 0.85rem;
+	padding-inline: 1.75rem;
+	background: var(--zskeleton-tis-btn-bg, #2563eb);
+	color: var(--zskeleton-tis-btn-text, #fff) !important;
+	font-weight: 600;
+	font-size: 1rem;
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+	border-radius: 999px;
+	transition: background 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.zskeleton-tis__btn:hover,
+.zskeleton-tis__btn:focus-visible {
+	filter: brightness(0.93);
+	color: var(--zskeleton-tis-btn-text, #fff) !important;
+	box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+}
+
+.zskeleton-tis__empty {
+	margin: 1rem auto;
+	max-width: 36rem;
+	padding: 1rem;
+	background: #fff8e6;
+	border: 1px solid #f0d090;
+	border-radius: 0.5rem;
+	color: #5c4a12;
+	font-size: 0.9rem;
+}

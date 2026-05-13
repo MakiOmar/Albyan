@@ -1,0 +1,28 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "zskeleton/theme-slider",
+	"version": "1.0.0",
+	"title": "Theme: Slider",
+	"category": "theme",
+	"icon": "images-alt2",
+	"description": "Display a published slider from ZSkeleton Sliders.",
+	"keywords": [ "slider", "carousel", "zskeleton", "theme" ],
+	"textdomain": "zskeleton",
+	"editorScript": "zskeleton-blog-hub-blocks-editor",
+	"editorStyle": "file:../../assets/css/slider.css",
+	"style": "file:../../assets/css/slider.css",
+	"attributes": {
+		"sliderId": {
+			"type": "number",
+			"default": 0
+		}
+	},
+	"supports": {
+		"html": false,
+		"inserter": true,
+		"align": [ "wide", "full" ],
+		"visibility": false
+	},
+	"render": "file:./render.php"
+}

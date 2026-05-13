@@ -34,7 +34,15 @@
 		"useThemeVisibility": {
 			"type": "boolean",
 			"default": true
-		}
+		},
+		"showHeading": { "type": "boolean", "default": true },
+		"titleDashicon": { "type": "string", "default": "" },
+		"titleShowSeparator": { "type": "boolean", "default": true },
+		"titleSeparatorWidthPx": { "type": "number", "default": 72 },
+		"titleSeparatorHeightPx": { "type": "number", "default": 4 },
+		"titleSeparatorRadiusPx": { "type": "number", "default": 999 },
+		"titleSeparatorColor": { "type": "string", "default": "#b8d4eb" },
+		"titleListingGapPx": { "type": "number", "default": 20 }
 	},
 	"supports": {
 		"html": false,

@@ -46,6 +46,10 @@ class ZSkeleton_Sliders {
 
 	const META_MIN_HEIGHT_MOBILE = '_zskeleton_slider_min_height_mobile';
 
+	const META_CONTENT_IMAGE_MAX_HEIGHT = '_zskeleton_slider_content_image_max_height';
+
+	const META_CONTENT_IMAGE_MAX_HEIGHT_MOBILE = '_zskeleton_slider_content_image_max_height_mobile';
+
 	const META_NAV_BG_COLOR = '_zskeleton_slider_nav_bg_color';
 
 	const META_NAV_BG_OPACITY = '_zskeleton_slider_nav_bg_opacity';
@@ -221,6 +225,10 @@ class ZSkeleton_Sliders {
 			'slide_content_image_id'   => array(
 				'type'  => 'image_id',
 				'label' => __( 'Content image', 'zskeleton' ),
+			),
+			'slide_background_color'   => array(
+				'type'  => 'text',
+				'label' => __( 'Slide background color', 'zskeleton' ),
 			),
 		);
 	}
@@ -439,6 +447,18 @@ class ZSkeleton_Sliders {
 						<input type="url" class="widefat" id="zs-slide-<?php echo esc_attr( $index ); ?>-s-u" name="zskeleton_slider_slides[<?php echo esc_attr( $index ); ?>][button_secondary_url]" value="<?php echo esc_attr( isset( $row['button_secondary_url'] ) ? (string) $row['button_secondary_url'] : '' ); ?>" placeholder="https://…" />
 					</div>
 				</div>
+				<div class="zskeleton-slider-slide-card__row">
+					<div class="zskeleton-slider-slide-card__field">
+						<label for="zs-slide-<?php echo esc_attr( $index ); ?>-bg-c"><?php echo esc_html( $fields['slide_background_color']['label'] ); ?></label>
+						<input
+							type="color"
+							class="widefat"
+							id="zs-slide-<?php echo esc_attr( $index ); ?>-bg-c"
+							name="zskeleton_slider_slides[<?php echo esc_attr( $index ); ?>][slide_background_color]"
+							value="<?php echo esc_attr( self::sanitize_slider_hex_color( isset( $row['slide_background_color'] ) ? (string) $row['slide_background_color'] : '' ) ?: '#0f172a' ); ?>"
+						/>
+					</div>
+				</div>
 				<div class="zskeleton-slider-slide-card__images-row">
 					<div class="zskeleton-slider-slide-card__field">
 						<span class="label-like" style="display:block;font-weight:600;margin-bottom:6px;font-size:12px;"><?php echo esc_html( $fields['slide_image_id']['label'] ); ?></span>
@@ -483,6 +503,8 @@ class ZSkeleton_Sliders {
 		$overlay_color = get_post_meta( $post->ID, self::META_OVERLAY_COLOR, true );
 		$overlay_op    = get_post_meta( $post->ID, self::META_OVERLAY_OPACITY, true );
 		$min_height_m  = get_post_meta( $post->ID, self::META_MIN_HEIGHT_MOBILE, true );
+		$content_img_h = get_post_meta( $post->ID, self::META_CONTENT_IMAGE_MAX_HEIGHT, true );
+		$content_img_h_m = get_post_meta( $post->ID, self::META_CONTENT_IMAGE_MAX_HEIGHT_MOBILE, true );
 		$nav_bg_c      = get_post_meta( $post->ID, self::META_NAV_BG_COLOR, true );
 		$nav_bg_op     = get_post_meta( $post->ID, self::META_NAV_BG_OPACITY, true );
 		$nav_icon_c    = get_post_meta( $post->ID, self::META_NAV_ICON_COLOR, true );
@@ -597,6 +619,16 @@ class ZSkeleton_Sliders {
 				<label class="zs-meta-field__label" for="zskeleton_slider_min_height_mobile"><?php esc_html_e( 'Minimum height on small screens (CSS)', 'zskeleton' ); ?></label>
 				<input type="text" class="widefat" id="zskeleton_slider_min_height_mobile" name="zskeleton_slider_min_height_mobile" value="<?php echo esc_attr( is_string( $min_height_m ) ? $min_height_m : '' ); ?>" placeholder="min(52dvh, 420px)" />
 				<p class="zs-meta-field__hint"><?php esc_html_e( 'Applied below ~768px. Example: 360px or min(55vh, 480px). Leave empty to match desktop min-height.', 'zskeleton' ); ?></p>
+			</div>
+			<div class="zs-meta-field">
+				<label class="zs-meta-field__label" for="zskeleton_slider_content_image_max_height"><?php esc_html_e( 'Content image max height (CSS)', 'zskeleton' ); ?></label>
+				<input type="text" class="widefat" id="zskeleton_slider_content_image_max_height" name="zskeleton_slider_content_image_max_height" value="<?php echo esc_attr( is_string( $content_img_h ) ? $content_img_h : '' ); ?>" placeholder="400px" />
+				<p class="zs-meta-field__hint"><?php esc_html_e( 'Controls the image inserted from slide Content image (all layouts). Example: 400px or min(46vh, 420px). Leave empty for default 400px.', 'zskeleton' ); ?></p>
+			</div>
+			<div class="zs-meta-field">
+				<label class="zs-meta-field__label" for="zskeleton_slider_content_image_max_height_mobile"><?php esc_html_e( 'Content image max height on mobile (CSS)', 'zskeleton' ); ?></label>
+				<input type="text" class="widefat" id="zskeleton_slider_content_image_max_height_mobile" name="zskeleton_slider_content_image_max_height_mobile" value="<?php echo esc_attr( is_string( $content_img_h_m ) ? $content_img_h_m : '' ); ?>" placeholder="280px" />
+				<p class="zs-meta-field__hint"><?php esc_html_e( 'Applied below ~768px. Leave empty to reuse desktop content image max height.', 'zskeleton' ); ?></p>
 			</div>
 			<div class="zs-meta-field">
 				<label class="zs-meta-field__label" for="zskeleton_slider_nav_bg_color"><?php esc_html_e( 'Arrow button background', 'zskeleton' ); ?></label>
@@ -760,6 +792,11 @@ class ZSkeleton_Sliders {
 
 		$min_h_m = isset( $_POST['zskeleton_slider_min_height_mobile'] ) ? self::sanitize_slider_css_token_value( wp_unslash( (string) $_POST['zskeleton_slider_min_height_mobile'] ) ) : '';
 		update_post_meta( $post_id, self::META_MIN_HEIGHT_MOBILE, $min_h_m );
+
+		$content_img_h = isset( $_POST['zskeleton_slider_content_image_max_height'] ) ? self::sanitize_slider_css_token_value( wp_unslash( (string) $_POST['zskeleton_slider_content_image_max_height'] ) ) : '';
+		update_post_meta( $post_id, self::META_CONTENT_IMAGE_MAX_HEIGHT, $content_img_h );
+		$content_img_h_m = isset( $_POST['zskeleton_slider_content_image_max_height_mobile'] ) ? self::sanitize_slider_css_token_value( wp_unslash( (string) $_POST['zskeleton_slider_content_image_max_height_mobile'] ) ) : '';
+		update_post_meta( $post_id, self::META_CONTENT_IMAGE_MAX_HEIGHT_MOBILE, $content_img_h_m );
 
 		$nav_bg = isset( $_POST['zskeleton_slider_nav_bg_color'] ) ? self::sanitize_slider_hex_color( wp_unslash( (string) $_POST['zskeleton_slider_nav_bg_color'] ) ) : '';
 		update_post_meta( $post_id, self::META_NAV_BG_COLOR, $nav_bg );

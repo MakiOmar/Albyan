@@ -15,6 +15,47 @@
 		}
 	}
 
+	/**
+	 * Google reCAPTCHA v3: Form Kit uses fetch on submit, so zskeleton-recaptcha.js's native submit() path never runs.
+	 * Resolve when token field is absent, already filled, or after grecaptcha.execute.
+	 *
+	 * @param {HTMLFormElement} form Form element.
+	 * @returns {Promise<void>}
+	 */
+	function ensureFormKitRecaptcha(form) {
+		return new Promise(function (resolve, reject) {
+			var tokenInput = form.querySelector('input[name="recaptcha_token"]');
+			if (!tokenInput) {
+				resolve();
+				return;
+			}
+			if (typeof zskeletonRecaptcha === 'undefined' || !zskeletonRecaptcha.enabled) {
+				reject(new Error('recaptcha_config'));
+				return;
+			}
+			if (tokenInput.value && String(tokenInput.value).trim()) {
+				resolve();
+				return;
+			}
+			if (typeof grecaptcha === 'undefined' || typeof grecaptcha.ready !== 'function' || typeof grecaptcha.execute !== 'function') {
+				reject(new Error('recaptcha_load'));
+				return;
+			}
+			var actionInput = form.querySelector('input[name="recaptcha_action"]');
+			var action = actionInput && actionInput.value ? String(actionInput.value) : 'submit';
+			grecaptcha.ready(function () {
+				grecaptcha.execute(zskeletonRecaptcha.siteKey, { action: action })
+					.then(function (token) {
+						tokenInput.value = token || '';
+						resolve();
+					})
+					.catch(function () {
+						reject(new Error('recaptcha_token'));
+					});
+			});
+		});
+	}
+
 	function showNotice(form, msg, isError) {
 		var el = form.querySelector('.zs-form__notices');
 		if (!el) {
@@ -229,16 +270,18 @@
 		form.addEventListener('submit', function (e) {
 			e.preventDefault();
 			clearFieldErrors(form);
-			var fd = new FormData(form);
-			fd.set('action', 'zskeleton_form_submit');
-			fetch(ajaxUrl, {
-				method: 'POST',
-				credentials: 'same-origin',
-				body: fd
-			})
-				.then(function (r) {
-					return r.text().then(function (text) {
-						return { ok: r.ok, json: parseJsonSafe(text) };
+			ensureFormKitRecaptcha(form)
+				.then(function () {
+					var fd = new FormData(form);
+					fd.set('action', 'zskeleton_form_submit');
+					return fetch(ajaxUrl, {
+						method: 'POST',
+						credentials: 'same-origin',
+						body: fd
+					}).then(function (r) {
+						return r.text().then(function (text) {
+							return { ok: r.ok, json: parseJsonSafe(text) };
+						});
 					});
 				})
 				.then(function (res) {
@@ -266,8 +309,12 @@
 						}
 					}
 				})
-				.catch(function () {
-					showNotice(form, (cfg.i18n && cfg.i18n.genericError) || (cfg.i18n && cfg.i18n.errorShort) || '', true);
+				.catch(function (err) {
+					var msg = (cfg.i18n && cfg.i18n.genericError) || (cfg.i18n && cfg.i18n.errorShort) || '';
+					if (err && err.message && 0 === String(err.message).indexOf('recaptcha')) {
+						msg = (cfg.i18n && cfg.i18n.recaptchaFailed) || msg;
+					}
+					showNotice(form, msg, true);
 				});
 		});
 	}

@@ -477,7 +477,19 @@ $brand             = zskeleton_seo_expert_get( $post_id, 'brand_or_team_name' );
 		?>
 		<div class="seo-ar-ai-lead-grid">
 			<div class="seo-ar-ai-lead-copy">
-				<h2 id="seo-expert-ai-lead-heading"><?php echo esc_html( $ai_lead_title ); ?></h2>
+				<?php
+				if ( function_exists( 'zskeleton_seo_ar_ai_lead_render_title_stack' ) ) {
+					zskeleton_seo_ar_ai_lead_render_title_stack(
+						array(
+							'heading_id'            => 'seo-expert-ai-lead-heading',
+							'title'                 => $ai_lead_title,
+							'title_separator_style' => 'line',
+						)
+					);
+				} else {
+					echo '<h2 id="seo-expert-ai-lead-heading">' . esc_html( $ai_lead_title ) . '</h2>';
+				}
+				?>
 				<p class="seo-ar-lead-text"><?php echo wp_kses_post( $ai_lead_intro ); ?></p>
 
 				<h3 class="seo-ar-ai-lead-subhead"><?php echo esc_html( $ai_lead_sub_warn ); ?></h3>

@@ -407,6 +407,32 @@ $zskeleton_mbn_style = function_exists( 'zskeleton_get_mobile_bottom_nav_style' 
 	</div>
 <?php else : ?>
 	<!-- Mobile Bottom Navigation (Style 1) -->
+	<div class="zskeleton-mbn2 zskeleton-mbn2--style1" data-zskeleton-mbn2 dir="<?php echo esc_attr( is_rtl() ? 'rtl' : 'ltr' ); ?>">
+		<div class="zskeleton-mbn2__backdrop" data-zskeleton-mbn2-backdrop hidden aria-hidden="true"></div>
+
+		<div id="zskeleton-mbn2-popover-search" class="zskeleton-mbn2__popover zskeleton-mbn2__popover--search" role="search" aria-label="<?php esc_attr_e( 'Site search', 'zskeleton' ); ?>" hidden>
+			<form class="zskeleton-mbn2-search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+				<span class="zskeleton-mbn2-search__icon" aria-hidden="true">
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<circle cx="11" cy="11" r="8"></circle>
+						<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+					</svg>
+				</span>
+				<label class="screen-reader-text" for="zskeleton-mbn2-search-field"><?php esc_html_e( 'Search', 'zskeleton' ); ?></label>
+				<input
+					id="zskeleton-mbn2-search-field"
+					class="zskeleton-mbn2-search__input"
+					type="search"
+					name="s"
+					value="<?php echo esc_attr( get_search_query() ); ?>"
+					placeholder="<?php echo esc_attr__( '…Search', 'zskeleton' ); ?>"
+					dir="auto"
+					autocomplete="off"
+				/>
+				<button class="zskeleton-mbn2-search__submit" type="submit"><?php esc_html_e( 'Search', 'zskeleton' ); ?></button>
+			</form>
+		</div>
+
 	<nav class="mobile-bottom-nav" aria-label="<?php esc_attr_e( 'Mobile navigation', 'zskeleton' ); ?>">
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="nav-item <?php echo is_front_page() ? 'active' : ''; ?>" aria-label="<?php esc_attr_e( 'Home', 'zskeleton' ); ?>">
 			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -415,6 +441,15 @@ $zskeleton_mbn_style = function_exists( 'zskeleton_get_mobile_bottom_nav_style' 
 			</svg>
 			<span><?php esc_html_e( 'Home', 'zskeleton' ); ?></span>
 		</a>
+
+		<button type="button" class="nav-item nav-item--search mobile-bottom-nav__search-trigger" data-zskeleton-mbn2-search-toggle aria-expanded="false" aria-controls="zskeleton-mbn2-popover-search" aria-label="<?php esc_attr_e( 'Search', 'zskeleton' ); ?>">
+			<span class="screen-reader-text"><?php esc_html_e( 'Search', 'zskeleton' ); ?></span>
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+				<circle cx="11" cy="11" r="8"></circle>
+				<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+			</svg>
+			<span><?php esc_html_e( 'Search', 'zskeleton' ); ?></span>
+		</button>
 
 		<?php if ( is_user_logged_in() ) : ?>
 			<a href="<?php echo esc_url( home_url( '/profile/' ) ); ?>" class="nav-item <?php echo is_page( 'profile' ) ? 'active' : ''; ?>" aria-label="<?php esc_attr_e( 'Profile', 'zskeleton' ); ?>">
@@ -471,6 +506,7 @@ $zskeleton_mbn_style = function_exists( 'zskeleton_get_mobile_bottom_nav_style' 
 			</a>
 		<?php endif; ?>
 	</nav>
+	</div>
 <?php endif; ?>
 
 <?php wp_footer(); ?>
@@ -551,22 +587,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Search toggle
-    const searchToggle = document.querySelector('.search-toggle');
-    const headerSearch = document.querySelector('.header-search');
-    
-    if (searchToggle && headerSearch) {
-        searchToggle.addEventListener('click', function() {
-            const isExpanded = this.getAttribute('aria-expanded') === 'true';
-            
-            this.setAttribute('aria-expanded', !isExpanded);
-            headerSearch.style.display = isExpanded ? 'none' : 'block';
-            
-            if (!isExpanded) {
-                headerSearch.querySelector('.search-field').focus();
-            }
-        });
-    }
+    // Header search toggle is handled by assets/js/main.js.
     
     // Mobile menu toggle
     const menuToggle = document.querySelector('.menu-toggle');
@@ -911,6 +932,47 @@ document.addEventListener('DOMContentLoaded', function() {
 .mobile-bottom-nav .nav-item span {
 	font-size: 0.75rem;
 	font-weight: 500;
+}
+
+.mobile-bottom-nav button.nav-item {
+	appearance: none;
+	-webkit-appearance: none;
+	font: inherit;
+	line-height: normal;
+	text-align: center;
+	cursor: pointer;
+	width: auto;
+	box-sizing: border-box;
+	border: none!important;
+	border-radius: 8px;
+	background: transparent!important;
+	color: inherit!important;
+}
+
+.mobile-bottom-nav button.nav-item:focus {
+	outline: none;
+}
+
+.mobile-bottom-nav button.nav-item:focus-visible {
+	outline: 2px solid var(--primary-blue, #2563eb);
+	outline-offset: 2px;
+}
+
+/* Style 1: bottom-bar search should be icon-only, black, and no background */
+.mobile-bottom-nav .nav-item--search {
+	color: #000;
+	background: transparent;
+	border: 0;
+}
+
+.mobile-bottom-nav .nav-item--search:hover,
+.mobile-bottom-nav .nav-item--search:focus {
+	color: #000;
+	background: transparent;
+}
+
+.mobile-bottom-nav .nav-item--search svg {
+	margin-bottom: 0;
 }
 
 /* Mobile bottom navigation — Style 2 (primary bar + popovers) */

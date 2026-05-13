@@ -3,7 +3,7 @@
  * Template Name: Blog listing
  *
  * Static page that lists blog posts (works whether or not this page is set as “Posts page” under Settings → Reading).
- * First page: featured strip, latest grid, trending/most-read, category term grid, lead CTA (configurable under ZSkeleton Settings → Content).
+ * First page: featured strip (curated checkbox + sticky only—no newest fill), latest grid, trending/most-read, category term grid, lead CTA (Settings → Content).
  * For a block-built layout, use the “Blog listing (block editor)” template and ZSkeleton blog blocks.
  *
  * @package ZSkeleton_Theme

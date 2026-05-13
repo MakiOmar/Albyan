@@ -64,10 +64,9 @@
 
 /* Academic Content Styling */
 .academic-content {
-    font-family: 'Crimson Text', Georgia, serif;
     font-size: 1.125rem;
     line-height: 1.7;
-    max-width: 800px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
@@ -77,7 +76,6 @@
 .academic-content h4,
 .academic-content h5,
 .academic-content h6 {
-    font-family: 'Crimson Text', serif;
     font-weight: 600;
     color: var(--academic-navy);
     margin-top: 2em;
@@ -106,7 +104,6 @@
 }
 
 .academic-content code {
-    font-family: 'JetBrains Mono', monospace;
     background: var(--background-light);
     padding: 2px 6px;
     border-radius: 4px;
@@ -809,6 +806,50 @@ body.rtl .search-form .search-submit {
         padding: 6px 10px;
         font-size: 0.875rem;
     }
+}
+
+/**
+ * Single service: hero title bar (matches block editor gradient hero pattern).
+ */
+.service-single-title-bar {
+    background: linear-gradient(135deg, #07152f 0%, #152a55 55%, #0f766e 100%);
+    color: #fff;
+    text-align: center;
+    margin: 0 0 1.5rem;
+    padding: clamp(3rem, 10vw, 5.3125rem) clamp(1rem, 3vw, 1.5rem) clamp(2.75rem, 8vw, 4.375rem);
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.service-single-title-bar__inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.service-single-title-bar__title {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(2rem, 5.5vw, 3.375rem);
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.service-single-title-bar__lead {
+    margin: 1rem auto 0;
+    max-width: 52rem;
+    color: #e0f2fe;
+    font-size: clamp(1.0625rem, 2.2vw, 1.3125rem);
+    line-height: 1.9;
+}
+
+.single-zskeleton_services .service-single-icon {
+    margin-bottom: 1rem;
+}
+
+.single-zskeleton_services .service-single-thumb {
+    margin-bottom: 1rem;
 }
 
 /* Print Styles */

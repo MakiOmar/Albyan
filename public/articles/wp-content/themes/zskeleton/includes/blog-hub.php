@@ -12,6 +12,9 @@ defined( 'ABSPATH' ) || exit;
 /** Post meta key for simple read counts (used when trending mode is “views”). */
 const ZSKELETON_BLOG_POST_VIEWS_META = '_zskeleton_post_views';
 
+/** Post meta: mark a post for the blog hub “Featured” strip (highest priority). */
+const ZSKELETON_BLOG_HUB_POST_FEATURED_META = '_zskeleton_blog_hub_featured';
+
 /**
  * @param string $option Option name.
  * @param mixed  $default Default when unset.
@@ -90,7 +93,8 @@ function zskeleton_blog_hub_user_has_post_access( $user_id, $post_id ) {
 }
 
 /**
- * Ordered list of post IDs for the featured strip (stickies first, then recent fill).
+ * Ordered list of post IDs for the featured strip:
+ * posts marked “Blog featured” (post meta), then sticky posts only (no fallback to newest posts).
  *
  * @param int $count Desired count (clamped 1–12).
  * @return int[]
@@ -99,48 +103,127 @@ function zskeleton_blog_hub_get_featured_post_ids( $count ) {
 	$count = max( 1, min( 12, absint( $count ) ) );
 	$ids   = array();
 
-	$sticky = get_option( 'sticky_posts' );
-	if ( is_array( $sticky ) && ! empty( $sticky ) ) {
-		$sticky = array_values( array_filter( array_map( 'absint', $sticky ) ) );
-		$q      = new WP_Query(
-			array(
-				'post_type'           => 'post',
-				'post_status'         => 'publish',
-				'post__in'            => $sticky,
-				'posts_per_page'      => $count,
-				'orderby'             => 'post__in',
-				'ignore_sticky_posts' => true,
-				'no_found_rows'       => true,
-				'fields'              => 'ids',
-			)
-		);
-		if ( ! empty( $q->posts ) ) {
-			$ids = array_map( 'absint', $q->posts );
-		}
-		wp_reset_postdata();
+	// 1) Curated: posts with ZSKELETON_BLOG_HUB_POST_FEATURED_META (menu order, then newest).
+	$q_manual = new WP_Query(
+		array(
+			'post_type'           => 'post',
+			'post_status'         => 'publish',
+			'posts_per_page'      => $count,
+			'orderby'             => array(
+				'menu_order' => 'ASC',
+				'date'       => 'DESC',
+			),
+			'ignore_sticky_posts' => true,
+			'no_found_rows'       => true,
+			'fields'              => 'ids',
+			'meta_query'          => array(
+				array(
+					'key'   => ZSKELETON_BLOG_HUB_POST_FEATURED_META,
+					'value' => '1',
+				),
+			),
+		)
+	);
+	if ( ! empty( $q_manual->posts ) ) {
+		$ids = array_map( 'absint', $q_manual->posts );
 	}
+	wp_reset_postdata();
 
 	$need = $count - count( $ids );
-	if ( $need > 0 ) {
-		$not_in = array_merge( $ids, array( 0 ) );
-		$q2     = new WP_Query(
-			array(
-				'post_type'           => 'post',
-				'post_status'         => 'publish',
-				'posts_per_page'      => $need,
-				'post__not_in'        => $not_in,
-				'ignore_sticky_posts' => true,
-				'no_found_rows'       => true,
-				'fields'              => 'ids',
+	if ( $need <= 0 ) {
+		return array_slice( array_values( array_unique( array_filter( $ids ) ) ), 0, $count );
+	}
+
+	// 2) Sticky posts (not already included), preserve sticky_posts order.
+	$sticky = get_option( 'sticky_posts' );
+	if ( is_array( $sticky ) && ! empty( $sticky ) ) {
+		$sticky = array_values(
+			array_filter(
+				array_map( 'absint', $sticky ),
+				function ( $sid ) use ( $ids ) {
+					return $sid > 0 && ! in_array( $sid, $ids, true );
+				}
 			)
 		);
-		if ( ! empty( $q2->posts ) ) {
-			$ids = array_merge( $ids, array_map( 'absint', $q2->posts ) );
+		if ( ! empty( $sticky ) ) {
+			$q = new WP_Query(
+				array(
+					'post_type'           => 'post',
+					'post_status'         => 'publish',
+					'post__in'            => $sticky,
+					'posts_per_page'      => $need,
+					'orderby'             => 'post__in',
+					'ignore_sticky_posts' => true,
+					'no_found_rows'       => true,
+					'fields'              => 'ids',
+				)
+			);
+			if ( ! empty( $q->posts ) ) {
+				$ids = array_merge( $ids, array_map( 'absint', $q->posts ) );
+			}
+			wp_reset_postdata();
 		}
-		wp_reset_postdata();
 	}
 
 	return array_slice( array_values( array_unique( array_filter( $ids ) ) ), 0, $count );
+}
+
+/**
+ * Default Inspector values for Blog featured / trending / latest title row styling.
+ *
+ * @return array<string, mixed>
+ */
+function zskeleton_blog_hub_default_heading_control_attrs(): array {
+	return array(
+		'showHeading'            => true,
+		'titleDashicon'          => '',
+		'titleShowSeparator'     => true,
+		'titleSeparatorWidthPx'  => 72,
+		'titleSeparatorHeightPx' => 4,
+		'titleSeparatorRadiusPx' => 999,
+		'titleSeparatorColor'    => '#b8d4eb',
+		'titleListingGapPx'      => 20,
+	);
+}
+
+/**
+ * Merge saved block attrs with defaults for Dashicon accent bar + title/listing gap.
+ *
+ * @param array<string, mixed> $attributes Partial block attrs from parser.
+ * @return array<string, mixed>
+ */
+function zskeleton_blog_hub_heading_attrs_merge( array $attributes ): array {
+	$defaults = zskeleton_blog_hub_default_heading_control_attrs();
+	$allowed  = array_keys( $defaults );
+	$slice    = array();
+	foreach ( $allowed as $key ) {
+		if ( array_key_exists( $key, $attributes ) ) {
+			$slice[ $key ] = $attributes[ $key ];
+		}
+	}
+	$merged                         = wp_parse_args( $slice, $defaults );
+	$merged['showHeading']          = isset( $merged['showHeading'] ) && $merged['showHeading'];
+	$merged['titleShowSeparator']   = isset( $merged['titleShowSeparator'] ) && $merged['titleShowSeparator'];
+	$merged['titleSeparatorWidthPx'] = min( 480, max( 4, (int) $merged['titleSeparatorWidthPx'] ) );
+	$merged['titleSeparatorHeightPx'] = min( 64, max( 1, (int) $merged['titleSeparatorHeightPx'] ) );
+	$merged['titleSeparatorRadiusPx'] = min( 999, max( 0, (int) $merged['titleSeparatorRadiusPx'] ) );
+	$merged['titleListingGapPx']   = min( 200, max( 0, (int) $merged['titleListingGapPx'] ) );
+	$merged['titleSeparatorColor'] = function_exists( 'zskeleton_block_heading_separator_hex' )
+		? zskeleton_block_heading_separator_hex( $merged['titleSeparatorColor'], '#b8d4eb' )
+		: '#b8d4eb';
+	return $merged;
+}
+
+/**
+ * Strip keys that are not passed into {@see zskeleton_render_block_heading_title_row()}.
+ *
+ * @param array<string, mixed> $merged Output of {@see zskeleton_blog_hub_heading_attrs_merge()}.
+ * @return array<string, mixed>
+ */
+function zskeleton_blog_hub_heading_attrs_for_title_row( array $merged ): array {
+	$out = $merged;
+	unset( $out['showHeading'], $out['titleListingGapPx'] );
+	return $out;
 }
 
 /**
@@ -424,7 +507,7 @@ function zskeleton_blog_hub_render_category_terms_listing( array $args = array()
 		);
 	} else {
 		$default_category_id = (int) get_option( 'default_category', 1 );
-		$terms = get_terms(
+		$terms               = get_terms(
 			array(
 				'taxonomy'   => 'category',
 				'hide_empty' => true,
@@ -471,7 +554,7 @@ function zskeleton_blog_hub_render_category_terms_listing( array $args = array()
 /**
  * Remember dynamic blog hub HTML before `render_block` filters (editor + frontend).
  *
- * @param string $block_name Full block name, e.g. zskeleton/blog-featured.
+ * @param string $block_name Full block name, e.g. zskeleton/blog-featured or zskeleton/seo-ar-ai-lead.
  * @param string $html       Final string returned from the render callback.
  * @return void
  */
@@ -479,7 +562,7 @@ function zskeleton_blog_hub_stash_dynamic_blog_block_html( $block_name, $html ) 
 	if ( ! is_string( $block_name ) || ! is_string( $html ) || strlen( $html ) < 1 ) {
 		return;
 	}
-	if ( 0 !== strpos( $block_name, 'zskeleton/blog-' ) ) {
+	if ( 0 !== strpos( $block_name, 'zskeleton/blog-' ) && 'zskeleton/seo-ar-ai-lead' !== $block_name ) {
 		return;
 	}
 	if ( ! isset( $GLOBALS['zskeleton_blog_hub_dynamic_block_stash'] ) || ! is_array( $GLOBALS['zskeleton_blog_hub_dynamic_block_stash'] ) ) {
@@ -491,9 +574,9 @@ function zskeleton_blog_hub_stash_dynamic_blog_block_html( $block_name, $html ) 
 /**
  * Restore output after `render_block_{$name}` if generic filters cleared it (WP 6.9+ visibility, etc.).
  *
- * @param string               $block_content Block output.
- * @param array                $parsed_block  Parsed block.
- * @param \WP_Block|null       $instance      Block instance.
+ * @param string         $block_content Block output.
+ * @param array          $parsed_block  Parsed block.
+ * @param \WP_Block|null $instance      Block instance.
  * @return string
  */
 function zskeleton_blog_hub_restore_dynamic_blog_block_stash( $block_content, $parsed_block, $instance ) {
@@ -503,7 +586,7 @@ function zskeleton_blog_hub_restore_dynamic_blog_block_stash( $block_content, $p
 	} elseif ( is_array( $parsed_block ) && ! empty( $parsed_block['blockName'] ) ) {
 		$name = (string) $parsed_block['blockName'];
 	}
-	if ( '' === $name || 0 !== strpos( $name, 'zskeleton/blog-' ) ) {
+	if ( '' === $name || ( 0 !== strpos( $name, 'zskeleton/blog-' ) && 'zskeleton/seo-ar-ai-lead' !== $name ) ) {
 		return $block_content;
 	}
 	$stash_map = isset( $GLOBALS['zskeleton_blog_hub_dynamic_block_stash'] ) && is_array( $GLOBALS['zskeleton_blog_hub_dynamic_block_stash'] )
@@ -535,9 +618,61 @@ function zskeleton_blog_hub_register_dynamic_block_stash_restore_filters(): void
 		'zskeleton/blog-trending',
 		'zskeleton/blog-category-terms',
 		'zskeleton/blog-lead-gen',
+		'zskeleton/seo-ar-ai-lead',
 	);
 	foreach ( $blocks as $block_name ) {
 		add_filter( 'render_block_' . $block_name, 'zskeleton_blog_hub_restore_dynamic_blog_block_stash', 999998, 3 );
 	}
 }
 add_action( 'init', 'zskeleton_blog_hub_register_dynamic_block_stash_restore_filters', 5 );
+
+/**
+ * Dynamic ZSkeleton blog hub block names stored in post content.
+ *
+ * @return string[]
+ */
+function zskeleton_blog_hub_dynamic_block_names(): array {
+	return array(
+		'zskeleton/blog-category-terms',
+		'zskeleton/blog-featured',
+		'zskeleton/blog-posts-grid',
+		'zskeleton/blog-trending',
+		'zskeleton/blog-lead-gen',
+	);
+}
+
+/**
+ * Whether post content includes any blog hub block (for front-end CSS scope).
+ *
+ * @param WP_Post|object|null $post Post object.
+ * @return bool
+ */
+function zskeleton_post_content_has_blog_hub_blocks( $post ): bool {
+	if ( ! $post instanceof WP_Post || '' === trim( (string) $post->post_content ) ) {
+		return false;
+	}
+	foreach ( zskeleton_blog_hub_dynamic_block_names() as $block_name ) {
+		if ( function_exists( 'has_block' ) && has_block( $block_name, $post ) ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Whether `blog-page.css` should load on this front request.
+ *
+ * @return bool
+ */
+function zskeleton_should_enqueue_blog_hub_page_styles(): bool {
+	if ( function_exists( 'zskeleton_is_blog_listing_public_view' ) && zskeleton_is_blog_listing_public_view() ) {
+		return true;
+	}
+	if ( is_singular() ) {
+		$obj = get_queried_object();
+		if ( $obj instanceof WP_Post && zskeleton_post_content_has_blog_hub_blocks( $obj ) ) {
+			return true;
+		}
+	}
+	return false;
+}

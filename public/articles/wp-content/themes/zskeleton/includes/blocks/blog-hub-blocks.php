@@ -22,7 +22,9 @@ defined( 'ABSPATH' ) || exit;
  * @return string
  */
 function zskeleton_blog_hub_render_block_visibility_compat( $block_content, $block ) {
-	if ( ! empty( $block['blockName'] ) && is_string( $block['blockName'] ) && 0 === strpos( $block['blockName'], 'zskeleton/blog-' ) ) {
+	$name = ( ! empty( $block['blockName'] ) && is_string( $block['blockName'] ) ) ? $block['blockName'] : '';
+	// Blog hub, slider, Arabic SEO AI lead, and contact-form dynamic blocks: same WP visibility quirk can clear REST preview output.
+	if ( '' !== $name && ( 0 === strpos( $name, 'zskeleton/blog-' ) || 'zskeleton/theme-slider' === $name || 'zskeleton/seo-ar-ai-lead' === $name || 'zskeleton/contact-form' === $name ) ) {
 		return $block_content;
 	}
 	return wp_render_block_visibility_support( $block_content, $block );
@@ -120,8 +122,9 @@ add_action( 'init', 'zskeleton_register_blog_listing_pattern_fallback', 15 );
 /**
  * Load blog listing + component styles in the block editor so hub blocks match the public blog listing.
  *
- * The front only enqueues `blog-page.css` on the blog listing view; the editor has no `body.zskeleton-blog-listing`
- * and needs the same rules under `.editor-styles-wrapper` (see `blog-page.css` and `blog-hub-block-editor.css`).
+ * The front enqueues `blog-page.css` on hub listing templates, Posts page using those templates,
+ * or any singular view whose content includes a hub block (`zskeleton_should_enqueue_blog_hub_page_styles()`).
+ * The editor loads the same selectors under `.editor-styles-wrapper` (see `blog-hub-block-editor.css`).
  *
  * @return void
  */
@@ -239,3 +242,23 @@ function zskeleton_register_blog_hub_blocks(): void {
 	}
 }
 add_action( 'init', 'zskeleton_register_blog_hub_blocks', 9 );
+
+/**
+ * Load Dashicons when the latest posts grid block uses a title icon.
+ *
+ * @param string $block_content Block HTML.
+ * @param array  $block         Parsed block.
+ * @return string
+ */
+function zskeleton_blog_posts_grid_enqueue_dashicons_on_render( $block_content, $block ) {
+	if ( empty( $block['blockName'] ) || 'zskeleton/blog-posts-grid' !== $block['blockName'] ) {
+		return $block_content;
+	}
+	$attrs = isset( $block['attrs'] ) && is_array( $block['attrs'] ) ? $block['attrs'] : array();
+	$icon  = isset( $attrs['titleDashicon'] ) ? sanitize_key( (string) $attrs['titleDashicon'] ) : '';
+	if ( '' !== $icon ) {
+		wp_enqueue_style( 'dashicons' );
+	}
+	return $block_content;
+}
+add_filter( 'render_block', 'zskeleton_blog_posts_grid_enqueue_dashicons_on_render', 9, 2 );

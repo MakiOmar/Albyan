@@ -32,7 +32,7 @@ if ( have_posts() ) {
 				);
 				?>
 				<?php if ( get_the_content() ) : ?>
-					<article class="formal-card page-content legal-policy-page__editor">
+					<article class="page-content legal-policy-page__editor">
 						<div class="entry-content academic-content">
 							<?php the_content(); ?>
 						</div>

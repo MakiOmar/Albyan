@@ -342,5 +342,7 @@ $has_right_nav = has_nav_menu( 'header_nav_right' );
 				</div>
 			<?php endif; ?>
 		</nav>
+
+		<?php zskeleton_header_search(); ?>
 	</div>
 </div>

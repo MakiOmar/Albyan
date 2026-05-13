@@ -1877,6 +1877,27 @@ class ZSkeleton_Theme_Settings {
             )
         );
 
+        register_setting(
+            self::OPTION_GROUP,
+            'zskeleton_theme_contact_page_id',
+            array(
+                'sanitize_callback' => array($this, 'sanitize_optional_page_id_setting'),
+                'default' => 0,
+            )
+        );
+        add_settings_field(
+            'zskeleton_theme_contact_page_id',
+            __('Contact page (theme links)', 'zskeleton'),
+            array($this, 'page_select_field_callback'),
+            'zskeleton-content-settings',
+            'zskeleton_content_settings',
+            array(
+                'id' => 'zskeleton_theme_contact_page_id',
+                'none_label' => __('— Use main Contact page (slug / theme mapping)', 'zskeleton'),
+                'description' => __('Optional page used wherever the theme outputs a “contact” URL from settings (e.g. FAQ CTA, patterns). When unset, matches the main Contact link (header/footer).', 'zskeleton'),
+            )
+        );
+
         add_settings_field(
             'zskeleton_auth_pages_set_defaults',
             __('Common pages & auth', 'zskeleton'),
@@ -1928,7 +1949,7 @@ class ZSkeleton_Theme_Settings {
             array(
                 'id' => 'zskeleton_blog_show_featured',
                 'default' => '1',
-                'description' => __('Show a featured row at the top (sticky posts first, then recent posts to fill the count).', 'zskeleton'),
+                'description' => __('Show a featured row: posts flagged “Show in blog Featured strip” first, then sticky posts. Remaining slots stay empty—recent posts are not pulled in.', 'zskeleton'),
             )
         );
 
@@ -4041,6 +4062,7 @@ class ZSkeleton_Theme_Settings {
             'zskeleton_map_longitude' => '',
             'zskeleton_map_address' => '',
             'zskeleton_map_zoom' => '14',
+            'zskeleton_theme_contact_page_id' => 0,
             'zskeleton_hero_title' => 'ZSkeleton',
             'zskeleton_hero_subtitle' => 'Launch your next WordPress project faster with reusable templates and core features.',
             'zskeleton_newsletter_title' => 'Stay Updated with ZSkeleton',

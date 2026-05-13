@@ -269,22 +269,23 @@
             const $searchClose = $('.search-close');
             const $searchForm = $('.header-search');
             
-            // Open search
+            // Open search (header + mobile bottom bar may each expose a .search-toggle — keep state in sync)
             $searchToggle.on('click', function(e) {
                 e.preventDefault();
-                
-                const isExpanded = $(this).attr('aria-expanded') === 'true';
-                
-                $(this).attr('aria-expanded', !isExpanded);
-                $searchForm.toggleClass('active');
-                
-                if (!isExpanded) {
+
+                const isExpanded = $searchForm.hasClass('active');
+                const nextExpanded = !isExpanded;
+
+                $searchToggle.attr('aria-expanded', nextExpanded ? 'true' : 'false');
+                $searchForm.toggleClass('active', nextExpanded);
+
+                if (nextExpanded) {
                     setTimeout(function() {
                         $searchForm.find('.search-field').focus();
                     }, 300);
                 }
             });
-            
+
             // Close search
             function closeSearch() {
                 $searchToggle.attr('aria-expanded', 'false');

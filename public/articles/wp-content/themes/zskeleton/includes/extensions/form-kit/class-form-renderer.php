@@ -78,12 +78,37 @@ class ZSkeleton_Form_Renderer {
 				echo '<input type="text" id="' . esc_attr( $form_uid . '-hp-' . $hp ) . '" name="' . esc_attr( $hp ) . '" value="" tabindex="-1" autocomplete="off" />';
 				echo '</div>';
 			}
+			self::maybe_render_public_bot_protection( $definition );
 			self::render_footer_nav( $definition, $form_uid );
 			?>
 			<div class="zs-form__notices" role="alert" aria-live="polite" aria-atomic="true" tabindex="-1" hidden></div>
 		</form>
 		<?php
 		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Output Turnstile / reCAPTCHA for publicly submittable forms when theme bot protection is configured.
+	 *
+	 * @param ZSkeleton_Form_Definition $definition Definition.
+	 */
+	private static function maybe_render_public_bot_protection( ZSkeleton_Form_Definition $definition ) {
+		if ( ! $definition->allow_public_submission() ) {
+			return;
+		}
+		if ( ! class_exists( 'ZSkeleton_ReCAPTCHA' ) || ! function_exists( 'zskeleton_recaptcha' ) ) {
+			return;
+		}
+		$captcha = zskeleton_recaptcha();
+		if ( ! $captcha || ! $captcha->is_enabled() ) {
+			return;
+		}
+		ZSkeleton_Form_Assets::request_public_captcha( $captcha->get_provider() );
+		$captcha->enqueue_scripts();
+		$action = 'form_kit_' . sanitize_key( $definition->get_id() );
+		echo '<div class="zs-form__captcha">';
+		$captcha->render_field( $action );
+		echo '</div>';
 	}
 
 	/**

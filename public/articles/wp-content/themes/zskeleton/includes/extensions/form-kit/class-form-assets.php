@@ -23,6 +23,13 @@ class ZSkeleton_Form_Assets {
 	private static $needs_media = false;
 
 	/**
+	 * When a public Form Kit form is rendered with bot protection, script deps for form-kit.js.
+	 *
+	 * @var string ''|'google_recaptcha'|'cloudflare_turnstile'
+	 */
+	private static $public_captcha_provider = '';
+
+	/**
 	 * Register hooks.
 	 */
 	public static function init() {
@@ -40,6 +47,22 @@ class ZSkeleton_Form_Assets {
 		self::$context_needed[ $context ] = true;
 		if ( $definition && self::definition_uses_type( $definition, array( 'media', 'image' ) ) ) {
 			self::$needs_media = true;
+		}
+	}
+
+	/**
+	 * Public Form Kit output includes Turnstile/reCAPTCHA — load provider scripts before form-kit.js.
+	 *
+	 * @param string $provider google_recaptcha|cloudflare_turnstile.
+	 */
+	public static function request_public_captcha( $provider ) {
+		$provider = (string) $provider;
+		if ( 'cloudflare_turnstile' === $provider ) {
+			self::$public_captcha_provider = 'cloudflare_turnstile';
+			return;
+		}
+		if ( 'google_recaptcha' === $provider ) {
+			self::$public_captcha_provider = 'google_recaptcha';
 		}
 	}
 
@@ -101,12 +124,14 @@ class ZSkeleton_Form_Assets {
 		$ver_css = is_readable( ZSkeleton_THEME_DIR . '/assets/css/' . $css ) ? (string) filemtime( ZSkeleton_THEME_DIR . '/assets/css/' . $css ) : ZSkeleton_FORM_KIT_VERSION;
 		$ver_js  = is_readable( ZSkeleton_THEME_DIR . '/assets/js/' . $js ) ? (string) filemtime( ZSkeleton_THEME_DIR . '/assets/js/' . $js ) : ZSkeleton_FORM_KIT_VERSION;
 
+		$fk_script_deps = self::form_kit_script_dependencies( $context );
+
 		if ( 'admin' === $context ) {
 			wp_enqueue_style( 'zskeleton-form-kit', ZSkeleton_THEME_URL . '/assets/css/' . $css, array(), $ver_css );
-			wp_enqueue_script( 'zskeleton-form-kit', ZSkeleton_THEME_URL . '/assets/js/' . $js, array( 'jquery' ), $ver_js, true );
+			wp_enqueue_script( 'zskeleton-form-kit', ZSkeleton_THEME_URL . '/assets/js/' . $js, $fk_script_deps, $ver_js, true );
 		} else {
 			wp_enqueue_style( 'zskeleton-form-kit', ZSkeleton_THEME_URL . '/assets/css/' . $css, array( 'zskeleton-style' ), $ver_css );
-			wp_enqueue_script( 'zskeleton-form-kit', ZSkeleton_THEME_URL . '/assets/js/' . $js, array(), $ver_js, true );
+			wp_enqueue_script( 'zskeleton-form-kit', ZSkeleton_THEME_URL . '/assets/js/' . $js, $fk_script_deps, $ver_js, true );
 		}
 
 		wp_localize_script(
@@ -121,6 +146,7 @@ class ZSkeleton_Form_Assets {
 					'errorShort'         => __( 'Error', 'zskeleton' ),
 					'invalidShort'       => __( 'Invalid', 'zskeleton' ),
 					'successOk'          => __( 'OK', 'zskeleton' ),
+					'recaptchaFailed'    => __( 'Security verification failed. Please refresh the page and try again.', 'zskeleton' ),
 					'mediaTitle'         => __( 'Select media', 'zskeleton' ),
 					'mediaButton'        => __( 'Use this file', 'zskeleton' ),
 				),
@@ -130,5 +156,30 @@ class ZSkeleton_Form_Assets {
 		if ( self::$needs_media && 'admin' === $context && function_exists( 'wp_enqueue_media' ) ) {
 			wp_enqueue_media();
 		}
+	}
+
+	/**
+	 * Script handles form-kit.js should load after (Turnstile / Google v3 helpers).
+	 *
+	 * @param string $context admin|public.
+	 * @return string[]
+	 */
+	private static function form_kit_script_dependencies( $context ) {
+		if ( 'admin' === $context ) {
+			$deps = array( 'jquery' );
+			if ( 'cloudflare_turnstile' === self::$public_captcha_provider ) {
+				$deps[] = 'cloudflare-turnstile';
+			} elseif ( 'google_recaptcha' === self::$public_captcha_provider ) {
+				$deps[] = 'zskeleton-recaptcha';
+			}
+			return $deps;
+		}
+		if ( 'cloudflare_turnstile' === self::$public_captcha_provider ) {
+			return array( 'cloudflare-turnstile' );
+		}
+		if ( 'google_recaptcha' === self::$public_captcha_provider ) {
+			return array( 'jquery', 'zskeleton-recaptcha' );
+		}
+		return array();
 	}
 }

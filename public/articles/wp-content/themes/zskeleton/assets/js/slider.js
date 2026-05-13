@@ -171,9 +171,37 @@
 		qsa(document, '.zskeleton-slider').forEach(initSlider);
 	}
 
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', boot);
-	} else {
-		boot();
+	var bootScheduled = false;
+	function scheduleBoot() {
+		if (bootScheduled) {
+			return;
+		}
+		bootScheduled = true;
+		window.requestAnimationFrame(function () {
+			bootScheduled = false;
+			boot();
+		});
 	}
+
+	function observeLateSliders() {
+		if (!window.MutationObserver || !document.body) {
+			return;
+		}
+		var obs = new MutationObserver(function () {
+			scheduleBoot();
+		});
+		obs.observe(document.body, { childList: true, subtree: true });
+	}
+
+	function start() {
+		boot();
+		observeLateSliders();
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', start);
+	} else {
+		start();
+	}
+	window.addEventListener('load', scheduleBoot);
 })();
