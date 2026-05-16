@@ -10,13 +10,11 @@
     @include('web.default.includes.metas')
     <meta name="theme" content="{{ str_replace('web.', '', getTemplate()) }}">
     <title>{{ $pageTitle ?? 'دبلومة الأمن السيبراني' }}{{ !empty($generalSettings['site_name']) ? (' | '.$generalSettings['site_name']) : '' }}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/default/css/app.css">
     @if($isRtl)
         <link rel="stylesheet" href="/assets/default/css/rtl-app.css">
     @endif
+    @include('web.default.includes.landing_google_cairo_font')
     @stack('styles_top')
     <style>
         :root {
@@ -32,7 +30,6 @@
             --csl-border: rgba(255, 255, 255, 0.12);
         }
         body.csl-page {
-            font-family: 'Cairo', sans-serif;
             background: var(--csl-navy);
             color: var(--csl-white);
             margin: 0;
@@ -178,6 +175,77 @@
         }
         .csl-section-alt {
             background: var(--csl-navy-mid);
+        }
+        /* Light sections: white background, dark typography */
+        .csl-section-light {
+            background: #f4f7fb;
+            color: #1a2b3c;
+        }
+        .csl-section-light .csl-section-title {
+            color: #041428;
+        }
+        .csl-section-light .csl-section-title::after {
+            background: linear-gradient(90deg, var(--csl-blue), transparent);
+        }
+        .csl-section-light .csl-section-desc,
+        .csl-section-light p,
+        .csl-section-light li,
+        .csl-section-light .text-white {
+            color: #4a5568 !important;
+        }
+        .csl-section-light h2,
+        .csl-section-light h3 {
+            color: #041428;
+        }
+        .csl-section-light .csl-job-pill {
+            background: #ffffff;
+            border: 1px solid #dce4ee;
+            color: #01477d;
+            box-shadow: 0 2px 8px rgba(1, 71, 125, 0.06);
+        }
+        .csl-section-light .csl-salary-box {
+            background: linear-gradient(135deg, #e6faf5 0%, #e8f2fa 100%);
+            border: 1px solid rgba(1, 71, 125, 0.15);
+            color: #1a2b3c;
+        }
+        .csl-section-light .csl-salary-box strong {
+            color: #01477d;
+        }
+        .csl-section-light .csl-salary-box span {
+            color: #5a6b7c;
+        }
+        .csl-section-light .csl-pricing-card {
+            background: #ffffff;
+            border: 1px solid #dce4ee;
+            box-shadow: 0 16px 48px rgba(1, 71, 125, 0.1);
+            color: #1a2b3c;
+        }
+        .csl-section-light .csl-price {
+            color: #01477d;
+        }
+        .csl-section-light .csl-pricing-card ul,
+        .csl-section-light .csl-pricing-card p {
+            color: #4a5568 !important;
+        }
+        .csl-section-light .csl-faq .card {
+            background: #ffffff;
+            border: 1px solid #dce4ee;
+            box-shadow: 0 2px 8px rgba(1, 71, 125, 0.05);
+        }
+        .csl-section-light .csl-faq .btn-link {
+            color: #041428 !important;
+        }
+        .csl-section-light .csl-faq .card-body {
+            color: #5a6b7c;
+            border-top-color: #e8edf3;
+        }
+        .csl-section-light .csl-highlight-item {
+            background: #ffffff;
+            border-color: #dce4ee;
+            color: #1a2b3c;
+        }
+        .csl-section-light .csl-highlight-item::before {
+            color: #01477d;
         }
         .csl-section-title {
             font-size: clamp(1.5rem, 3vw, 1.85rem);
@@ -381,7 +449,7 @@
     </style>
     @include('web.default.includes.gtm_head')
 </head>
-<body class="csl-page {{ $isRtl ? 'rtl' : 'ltr' }}">
+<body class="landing-google-cairo csl-page {{ $isRtl ? 'rtl' : 'ltr' }}">
     @include('web.default.includes.gtm_noscript')
 
     <header class="csl-topbar">

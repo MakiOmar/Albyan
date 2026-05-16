@@ -8,17 +8,14 @@
     @include('web.default.includes.metas')
     <meta name="theme" content="{{ str_replace('web.', '', getTemplate()) }}">
     <title>{{ $pageTitle ?? '' }}{{ !empty($generalSettings['site_name']) ? (' | '.$generalSettings['site_name']) : '' }}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/default/css/app.css">
     @if($isRtl)
         <link rel="stylesheet" href="/assets/default/css/rtl-app.css">
     @endif
+    @include('web.default.includes.landing_google_cairo_font')
     @stack('styles_top')
     @stack('scripts_top')
     <style>
-        body { font-family: 'Cairo', sans-serif; }
         .landing-page-wrap {
             min-height: 100vh;
             background: url('/store/1/1.png') center center no-repeat;
@@ -39,7 +36,7 @@
     </style>
     @include('web.default.includes.gtm_head')
 </head>
-<body class="{{ $isRtl ? 'rtl' : '' }}">
+<body class="landing-google-cairo {{ $isRtl ? 'rtl' : '' }}">
     @include('web.default.includes.gtm_noscript')
 <div class="landing-page-wrap">
     <div class="landing-page-content">

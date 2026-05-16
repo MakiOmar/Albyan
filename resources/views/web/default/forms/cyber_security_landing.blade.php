@@ -96,7 +96,7 @@
     </section>
 
     {{-- Careers --}}
-    <section class="csl-section" id="careers">
+    <section class="csl-section csl-section-light" id="careers">
         <div class="csl-container">
             <h2 class="csl-section-title">فرص العمل والرواتب</h2>
             <p class="csl-section-desc">بعد التخرج يمكن للطالب التقديم على وظائف مثل:</p>
@@ -108,11 +108,11 @@
                 <div class="csl-job-pill">IT Security Support</div>
                 <div class="csl-job-pill">Information Security Assistant</div>
             </div>
-            <p class="text-white mb-4">يُعد الأمن السيبراني من أكثر المجالات طلبًا بالإمارات والخليج والعالم.</p>
+            <p class="mb-4">يُعد الأمن السيبراني من أكثر المجالات طلبًا بالإمارات والخليج والعالم.</p>
             <div class="csl-salary-box">
                 <span>متوسط الرواتب بالمجال قد يصل إلى</span>
                 <strong>35,000 درهم</strong>
-                <span class="d-block mt-2 font-14" style="color: var(--csl-muted);">حسب الخبرة والمهارات والتخصص</span>
+                <span class="d-block mt-2 font-14">حسب الخبرة والمهارات والتخصص</span>
             </div>
         </div>
     </section>
@@ -142,22 +142,22 @@
     </section>
 
     {{-- Fees --}}
-    <section class="csl-section" id="fees">
+    <section class="csl-section csl-section-light" id="fees">
         <div class="csl-container">
             <h2 class="csl-section-title text-center">الرسوم والأقساط</h2>
             <div class="csl-pricing-card">
                 <p class="mb-1">رسوم الدبلومة كاملة</p>
                 <div class="csl-price">35,000 <span class="font-20">درهم</span></div>
                 <p class="mt-4 mb-3 font-weight-bold">تشمل الرسوم:</p>
-                <ul class="list-unstyled text-right mb-4" style="color:#555;">
+                <ul class="list-unstyled text-right mb-4">
                     <li class="mb-2">✓ الدراسة الأكاديمية</li>
                     <li class="mb-2">✓ التدريب العملي</li>
                     <li class="mb-2">✓ مشروع التخرج</li>
                     <li class="mb-2">✓ الشهادة المعتمدة</li>
                 </ul>
                 <p class="font-weight-bold mb-2">خيارات الدفع:</p>
-                <p class="mb-0" style="color:#555;">متاح التقسيط عبر Tabby · متاح التقسيط عبر Tamara</p>
-                <p class="mt-3 mb-0 font-14" style="color:#777;">للتسجيل ومعرفة تفاصيل الأقساط يرجى التواصل مع فريق القبول.</p>
+                <p class="mb-0">متاح التقسيط عبر Tabby · متاح التقسيط عبر Tamara</p>
+                <p class="mt-3 mb-0 font-14">للتسجيل ومعرفة تفاصيل الأقساط يرجى التواصل مع فريق القبول.</p>
             </div>
         </div>
     </section>
@@ -175,7 +175,7 @@
     </section>
 
     {{-- FAQ --}}
-    <section class="csl-section" id="faq">
+    <section class="csl-section csl-section-light" id="faq">
         <div class="csl-container">
             <h2 class="csl-section-title">الأسئلة الشائعة</h2>
             <div class="csl-faq" id="cslFaqAccordion">
