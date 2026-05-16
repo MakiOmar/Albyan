@@ -11,11 +11,11 @@ use Illuminate\Http\Request;
 class FormsController extends Controller
 {
     /**
-     * Resolve the landing form by config (LANDING_FORM_ID). Returns form or null.
+     * Resolve a landing form by config key (e.g. landing, cyber_security_landing).
      */
-    private function getLandingForm()
+    private function getLandingFormByConfig(string $configKey)
     {
-        $formId = config('landing.form_id');
+        $formId = config("{$configKey}.form_id");
         if (empty($formId)) {
             return null;
         }
@@ -36,9 +36,17 @@ class FormsController extends Controller
             ->first();
     }
 
-    public function landing(Request $request)
+    /**
+     * @deprecated Use getLandingFormByConfig('landing')
+     */
+    private function getLandingForm()
     {
-        $form = $this->getLandingForm();
+        return $this->getLandingFormByConfig('landing');
+    }
+
+    private function renderLandingPage(Request $request, string $configKey, string $viewName)
+    {
+        $form = $this->getLandingFormByConfig($configKey);
         if (empty($form)) {
             abort(404);
         }
@@ -48,6 +56,7 @@ class FormsController extends Controller
             'pageTitle' => $form->title,
             'pageRobot' => getPageRobotNoIndex(),
             'form' => $form,
+            'landingConfigKey' => $configKey,
         ];
 
         if (!empty($form->start_date) && $form->start_date > time()) {
@@ -83,12 +92,12 @@ class FormsController extends Controller
             return view('web.default.forms.tanks', $data);
         }
 
-        return view('web.default.forms.landing', $data);
+        return view($viewName, $data);
     }
 
-    public function landingStore(Request $request)
+    private function storeLandingSubmission(Request $request, string $configKey, string $thankYouPath)
     {
-        $form = $this->getLandingForm();
+        $form = $this->getLandingFormByConfig($configKey);
         if (empty($form)) {
             abort(404);
         }
@@ -99,7 +108,7 @@ class FormsController extends Controller
         }
 
         $turnstileRules = turnstile_validation_rules();
-        if (! empty($turnstileRules)) {
+        if (!empty($turnstileRules)) {
             $request->validate($turnstileRules);
         }
 
@@ -130,7 +139,7 @@ class FormsController extends Controller
         ];
         sendNotification('submit_form_by_users', $notifyOptions, 1);
 
-        $redirectUrl = $form->enable_tank_you_message ? '/landing?tanks=1' : '/';
+        $redirectUrl = $form->enable_tank_you_message ? $thankYouPath : '/';
         $toastData = [
             'title' => trans('public.request_success'),
             'msg' => trans('update.the_form_information_has_been_saved_successfully'),
@@ -138,6 +147,26 @@ class FormsController extends Controller
         ];
 
         return redirect($redirectUrl)->with(['toast' => $toastData]);
+    }
+
+    public function landing(Request $request)
+    {
+        return $this->renderLandingPage($request, 'landing', 'web.default.forms.landing');
+    }
+
+    public function landingStore(Request $request)
+    {
+        return $this->storeLandingSubmission($request, 'landing', '/landing?tanks=1');
+    }
+
+    public function cyberSecurityLanding(Request $request)
+    {
+        return $this->renderLandingPage($request, 'cyber_security_landing', 'web.default.forms.cyber_security_landing');
+    }
+
+    public function cyberSecurityLandingStore(Request $request)
+    {
+        return $this->storeLandingSubmission($request, 'cyber_security_landing', '/landing/cyber-security?tanks=1');
     }
 
     public function index(Request $request, $url)
@@ -173,7 +202,7 @@ class FormsController extends Controller
                 return view('web.default.forms.expired', $data);
             }
 
-            if ($form->enable_login and empty($user)) { // if enable login and user not login
+            if ($form->enable_login and empty($user)) {
                 return view('web.default.forms.please_login', $data);
             }
 
@@ -304,7 +333,6 @@ class FormsController extends Controller
         $access = true;
 
         if ($form->enable_login and !empty($user)) {
-            // check user and role and group
             $userGroupsIds = $form->userGroups->pluck('id')->toArray();
             $usersIds = $form->users->pluck('id')->toArray();
             $rolesIds = $form->roles->pluck('id')->toArray();
