@@ -21,11 +21,11 @@
     <!-- General CSS File -->
     <link href="/assets/default/css/font.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="/assets/default/css/app.min.css">
+    <link rel="stylesheet" href="/assets/default/css/app.css">
     <link rel="stylesheet" href="/assets/default/css/panel.min.css">
 
     @if($isRtl)
-        <link rel="stylesheet" href="/assets/default/css/rtl-app.min.css">
+        <link rel="stylesheet" href="/assets/default/css/rtl-app.css">
     @endif
 
     @stack('styles_top')
