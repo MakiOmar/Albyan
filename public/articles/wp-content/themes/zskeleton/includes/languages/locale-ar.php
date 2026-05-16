@@ -237,6 +237,13 @@ function zskeleton_get_arabic_gettext_map() {
         'Map & directions' => 'الخريطة والاتجاهات',
         'Open in maps' => 'فتح في الخرائط',
         'Contact form is unavailable.' => 'نموذج التواصل غير متاح.',
+        // Contact form block (blocks/contact-form-block/editor.js).
+        'Contact form' => 'نموذج التواصل',
+        'Show title and introduction' => 'إظهار العنوان والمقدمة',
+        'Heading' => 'العنوان',
+        'Introduction' => 'المقدمة',
+        'Leave empty to use the default heading (same as the Contact page).' => 'اتركه فارغاً لاستخدام العنوان الافتراضي (كما في صفحة التواصل).',
+        'Leave empty to use the default introduction (same as the Contact page).' => 'اتركه فارغاً لاستخدام المقدمة الافتراضية (كما في صفحة التواصل).',
         'Shown below the page title on the modern contact template.' => 'يظهر أسفل عنوان الصفحة في قالب التواصل الحديث.',
         'Phone (displayed on contact page)' => 'الهاتف (يظهر في صفحة التواصل)',
         'Map link (Google Maps / OpenStreetMap URL)' => 'رابط الخريطة (خرائط جوجل / OpenStreetMap)',

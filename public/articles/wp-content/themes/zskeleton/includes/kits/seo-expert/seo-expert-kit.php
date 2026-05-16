@@ -308,10 +308,25 @@ function zskeleton_seo_expert_get_related_blog_posts( $landing_page_id ) {
 }
 
 /**
- * Front assets for SEO Expert template.
+ * Front assets for the SEO Expert landing template (`page-seo-expert.php`) only.
  */
 function zskeleton_seo_expert_enqueue_assets() {
-	if ( ! is_page_template( 'page-seo-expert.php' ) ) {
+	if ( is_admin() ) {
+		return;
+	}
+
+	$load = is_page_template( 'page-seo-expert.php' );
+
+	/**
+	 * Whether to enqueue SEO Expert front CSS, fonts, and hero script on this request.
+	 *
+	 * Default is true only when the page uses `page-seo-expert.php`. Return true to load
+	 * on additional templates (not recommended unless markup matches).
+	 *
+	 * @param bool $load Whether to enqueue (after template gate).
+	 */
+	$load = (bool) apply_filters( 'zskeleton_enqueue_seo_expert_css', $load );
+	if ( ! $load ) {
 		return;
 	}
 

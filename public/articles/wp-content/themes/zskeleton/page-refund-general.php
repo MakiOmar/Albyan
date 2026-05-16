@@ -23,7 +23,7 @@ if ( have_posts() ) {
 		<div class="site-content legal-policy-page">
 			<div class="<?php echo zskeleton_page_main_container_class( 'container', '', get_the_ID() ); ?>">
 				<?php if ( get_the_content() ) : ?>
-					<article class="formal-card page-content legal-policy-page__editor">
+					<article class="page-content legal-policy-page__editor">
 						<div class="entry-content academic-content">
 							<?php the_content(); ?>
 						</div>

@@ -39,7 +39,16 @@ try {
         { orig: 'assets/css/demo-content.css', min: 'assets/css/demo-content.min.css' },
         { orig: 'assets/css/membership-plans.css', min: 'assets/css/membership-plans.min.css' },
         { orig: 'assets/css/form-kit.css', min: 'assets/css/form-kit.min.css' },
-        { orig: 'assets/css/page-contact.css', min: 'assets/css/page-contact.min.css' }
+        { orig: 'assets/css/page-contact.css', min: 'assets/css/page-contact.min.css' },
+        { orig: 'assets/css/page-single-shared.css', min: 'assets/css/page-single-shared.min.css' },
+        { orig: 'assets/css/single-post.css', min: 'assets/css/single-post.min.css' },
+        { orig: 'assets/css/testimonials-image-slider.css', min: 'assets/css/testimonials-image-slider.min.css' },
+        { orig: 'assets/css/zskeleton-block-heading.css', min: 'assets/css/zskeleton-block-heading.min.css' },
+        { orig: 'assets/css/section-title-block.css', min: 'assets/css/section-title-block.min.css' },
+        { orig: 'assets/css/expert-profile-block.css', min: 'assets/css/expert-profile-block.min.css' },
+        { orig: 'assets/css/contact-form-block.css', min: 'assets/css/contact-form-block.min.css' },
+        { orig: 'assets/css/feature-promo-card.css', min: 'assets/css/feature-promo-card.min.css' },
+        { orig: 'blocks/seo-ar-ai-lead/style.css', min: 'blocks/seo-ar-ai-lead/style.min.css' }
     ];
 
     const jsFiles = [
@@ -52,6 +61,7 @@ try {
         { orig: 'assets/js/membership-plans.js', min: 'assets/js/membership-plans.min.js' },
         { orig: 'assets/js/membership-admin.js', min: 'assets/js/membership-admin.min.js' },
         { orig: 'assets/js/form-kit.js', min: 'assets/js/form-kit.min.js' },
+        { orig: 'assets/js/testimonials-image-slider.js', min: 'assets/js/testimonials-image-slider.min.js' },
     ];
 
     let totalOriginalCSS = 0;

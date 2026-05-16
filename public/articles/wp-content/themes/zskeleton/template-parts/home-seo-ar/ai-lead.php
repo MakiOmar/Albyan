@@ -25,7 +25,20 @@ $ref_base                           = isset( $args['ref_base'] ) ? (string) $arg
 			?>
 			<div class="seo-ar-ai-lead-grid">
 				<div class="seo-ar-ai-lead-copy">
-					<h2 id="seo-ar-ai-lead-heading"><?php echo esc_html( 'شركة خدمات سيو لعصر الذكاء الاصطناعي' ); ?></h2>
+					<?php
+					// Title row + separator (same markup as zskeleton/seo-ar-ai-lead block; defaults.php loaded via theme bootstrap).
+					if ( function_exists( 'zskeleton_seo_ar_ai_lead_render_title_stack' ) ) {
+						zskeleton_seo_ar_ai_lead_render_title_stack(
+							array(
+								'heading_id'            => 'seo-ar-ai-lead-heading',
+								'title'                 => 'شركة خدمات سيو لعصر الذكاء الاصطناعي',
+								'title_separator_style' => 'line',
+							)
+						);
+					} else {
+						echo '<h2 id="seo-ar-ai-lead-heading">' . esc_html( 'شركة خدمات سيو لعصر الذكاء الاصطناعي' ) . '</h2>';
+					}
+					?>
 					<p class="seo-ar-lead-text">
 						<?php
 						echo wp_kses_post(

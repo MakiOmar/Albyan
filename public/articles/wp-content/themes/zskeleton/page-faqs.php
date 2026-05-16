@@ -69,7 +69,7 @@ zskeleton_the_page_title_bar(
                 <div class="faq-cta-content">
                     <h3><?php _e('Still have questions?', 'zskeleton'); ?></h3>
                     <p><?php _e("Can't find what you're looking for? Our team is here to help.", 'zskeleton'); ?></p>
-                    <a href="<?php echo esc_url(zskeleton_get_page_url('contact')); ?>" class="btn btn-primary">
+                    <a href="<?php echo esc_url( zskeleton_get_theme_contact_page_url() ); ?>" class="btn btn-primary">
                         <?php _e('Contact Us', 'zskeleton'); ?>
                     </a>
                 </div>

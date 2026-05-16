@@ -51,7 +51,7 @@ $sections = array(
 $block = $sections[ $kind ];
 ?>
 <div class="legal-policy-general">
-	<article class="formal-card page-content legal-policy-general__article">
+	<article class="page-content legal-policy-general__article">
 		<div class="entry-content academic-content">
 			<p class="legal-policy-general__lead"><?php echo esc_html( $block['lead'] ); ?></p>
 			<ul class="legal-policy-general__list">

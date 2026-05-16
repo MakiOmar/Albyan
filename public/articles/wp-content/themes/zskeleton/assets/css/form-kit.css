@@ -477,6 +477,16 @@
 /* Actions                                                                    */
 /* ------------------------------------------------------------------------- */
 
+.zs-form__captcha {
+	margin-block-start: clamp(1rem, 3vw, 1.5rem);
+}
+
+.zs-form__captcha .zskeleton-turnstile,
+.zs-form__captcha .cf-turnstile {
+	display: flex;
+	justify-content: flex-start;
+}
+
 .zs-form__actions {
 	display: flex;
 	flex-direction: column-reverse;

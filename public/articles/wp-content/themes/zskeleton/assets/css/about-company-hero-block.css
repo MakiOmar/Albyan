@@ -1,0 +1,112 @@
+.zskeleton-about-company-hero {
+	position: relative;
+	overflow: hidden;
+	padding: 0 !important;
+	margin: 0 !important;
+	width: 100% !important;
+	max-width: 100% !important;
+	background-color: var(--ach-bg, #ececec);
+	background-image: var(--ach-bg-image, none);
+	background-size: var(--ach-bg-size, cover);
+	background-position: var(--ach-bg-pos, center center);
+	background-repeat: no-repeat;
+	border-radius: 0;
+}
+
+.zskeleton-about-company-hero__overlay {
+	position: absolute;
+	inset: 0;
+	background: var(--ach-overlay, rgba(255, 255, 255, 0.18));
+	pointer-events: none;
+}
+
+.zskeleton-about-company-hero__inner {
+	position: relative;
+	z-index: 1;
+	max-width: 760px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.zskeleton-about-company-hero__profile-wrap {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 14px;
+}
+
+.zskeleton-about-company-hero__profile {
+	width: clamp(90px, 15vw, 120px);
+	height: clamp(90px, 15vw, 120px);
+	border-radius: 999px;
+	object-fit: cover;
+	border: 2px solid var(--ach-profile-border, #eb6b2d);
+}
+
+.zskeleton-about-company-hero__title {
+	margin: 0;
+	color: var(--ach-title, #101520);
+	font-size: clamp(1.75rem, 4vw, 3rem);
+	line-height: 1.2;
+}
+
+.zskeleton-about-company-hero__separator {
+	display: block;
+	width: var(--ach-sep-w, 120px);
+	height: var(--ach-sep-h, 4px);
+	margin: 14px auto 16px;
+	border-radius: var(--ach-sep-r, 999px);
+	background-color: var(--ach-sep, #eb6b2d);
+}
+
+.zskeleton-about-company-hero__description {
+	max-width: 640px;
+	margin: 0 auto;
+	color: var(--ach-desc, #2a2f37);
+	font-size: 1rem;
+	line-height: 1.85;
+}
+
+.zskeleton-about-company-hero__buttons {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 12px;
+	margin-top: 26px;
+}
+
+.zskeleton-about-company-hero__btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 11px 24px;
+	min-width: 138px;
+	border-radius: 999px;
+	border: 1px solid transparent;
+	font-weight: 600;
+	font-size: 0.95rem;
+	line-height: 1;
+	text-decoration: none;
+	transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.zskeleton-about-company-hero__btn:hover,
+.zskeleton-about-company-hero__btn:focus-visible {
+	opacity: 0.92;
+	transform: translateY(-1px);
+}
+
+.zskeleton-about-company-hero__btn--one {
+	color: var(--ach-b1-fg, #1b1f27);
+	background-color: var(--ach-b1-bg, #f8f8f8);
+	border-color: var(--ach-b1-bd, #eb6b2d);
+}
+
+.zskeleton-about-company-hero__btn--two {
+	color: var(--ach-b2-fg, #ffffff);
+	background-color: var(--ach-b2-bg, #eb6b2d);
+	border-color: var(--ach-b2-bd, #eb6b2d);
+}
+
+.editor-styles-wrapper .zskeleton-about-company-hero {
+	min-height: 320px;
+}

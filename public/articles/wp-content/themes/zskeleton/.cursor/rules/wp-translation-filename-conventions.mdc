@@ -1,0 +1,17 @@
+---
+description: Enforce translation filename conventions for themes and plugins
+alwaysApply: true
+---
+
+# Translation Filename Conventions
+
+- Theme translation files (`.po` and `.mo`) must use language-only filenames, such as `ar.po`, `ar.mo`, `en_US.po`, `en_US.mo`.
+- Do not use theme text-domain-prefixed filenames like `zskeleton-ar.po` or `zskeleton-en_US.mo`.
+- Plugin translation files (`.po` and `.mo`) must use `text-domain-language`, such as `woocommerce-ar.po`, `akismet-en_US.mo`.
+- For plugins, always keep the text domain prefix to match WordPress plugin translation loading conventions.
+
+## Examples
+
+- Theme: `languages/ar.po` and `languages/ar.mo` (correct)
+- Theme: `languages/zskeleton-ar.po` and `languages/zskeleton-ar.mo` (incorrect)
+- Plugin: `languages/my-plugin-ar.po` and `languages/my-plugin-ar.mo` (correct)

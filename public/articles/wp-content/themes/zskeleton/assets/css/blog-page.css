@@ -1,12 +1,13 @@
 /**
  * Blog listing template hub: featured strip, category term listing, trending, lead CTA,
- * plus layout polish when body.zskeleton-blog-listing (template or Posts page).
+ * plus layout polish when body has .zskeleton-blog-listing, hub templates,
+ * .zskeleton-blog-hub-blocks (any page embedding hub blocks), or .editor-styles-wrapper.
  *
  * @package ZSkeleton_Theme
  */
 
 /* --- Full-width container: comfortable side padding (template + posts page) --- */
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .wide-container {
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .wide-container {
 	max-width: min(1400px, 100%);
 	width: 100%;
 	margin-left: auto;
@@ -16,11 +17,11 @@
 	box-sizing: border-box;
 }
 
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .wide-container--no-sidebar {
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .wide-container--no-sidebar {
 	max-width: min(1200px, 100%);
 }
 
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .editor-styles-wrapper ) .page-hero .hero-content {
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .page-hero .hero-content {
 	padding-left: clamp(1rem, 4vw, 2.75rem);
 	padding-right: clamp(1rem, 4vw, 2.75rem);
 }
@@ -28,21 +29,21 @@
 /* Hero navy + search: assets/css/blog-listing-hero.css (enqueued for index/archives + dependency of this file). */
 
 /* --- Grids & cards --- */
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .practices-grid {
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .practices-grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
 	gap: clamp(1.25rem, 2.5vw, 2rem);
 	align-items: stretch;
 }
 
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .blog-hub-featured__grid,
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .blog-hub-trending__grid,
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .zskeleton-term-list.practices-grid {
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .blog-hub-featured__grid,
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .blog-hub-trending__grid,
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .zskeleton-term-list.practices-grid {
 	gap: clamp(1.25rem, 2.5vw, 2rem);
 }
 
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .content-card,
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .zskeleton-term-list__item.formal-card {
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .content-card,
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .zskeleton-term-list__item.formal-card {
 	border-radius: 12px;
 	box-shadow: 0 4px 24px rgba(26, 42, 74, 0.08);
 	border: 1px solid rgba(100, 127, 188, 0.18);
@@ -51,21 +52,21 @@
 	transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .content-card:hover,
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .zskeleton-term-list__item.formal-card:hover {
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .content-card:hover,
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .zskeleton-term-list__item.formal-card:hover {
 	box-shadow: 0 8px 32px rgba(26, 42, 74, 0.12);
 }
 
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .content-card h3 a {
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .content-card h3 a {
 	text-decoration: none;
 	color: var(--academic-navy, #1a2a4a);
 }
 
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .content-card h3 a:hover {
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .content-card h3 a:hover {
 	color: var(--primary-blue, #647fbc);
 }
 
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .pagination-wrapper {
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .pagination-wrapper {
 	margin-top: 2rem;
 	margin-bottom: 0.5rem;
 }
@@ -339,24 +340,36 @@
 	color: var(--primary-blue, #647fbc);
 }
 
+/* Dashicon/accent rows: spacing to listing comes from the title-row margin (Inspector “Space between…”); avoid stacking h2 margins. */
+.zskeleton-block-blog-posts-grid .zskeleton-block-heading__title.blog-latest-heading,
+.blog-hub-featured .zskeleton-block-heading__title.blog-latest-heading,
+.blog-hub-trending .zskeleton-block-heading__title.blog-latest-heading {
+	margin-bottom: 0;
+}
+
+/* Shared title row (Dashicon + accent bar): fallback when no inline spacing is set */
+.zskeleton-block-blog-posts-grid .zskeleton-block-heading__title-head:not([style*='margin-bottom']) {
+	margin-bottom: 1.25rem;
+}
+
 /* --- Footer newsletter on blog listing pages (global section, tighter design here) --- */
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .newsletter-section {
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .newsletter-section {
 	padding-top: clamp(2.5rem, 5vw, 3.5rem);
 	padding-bottom: clamp(2.5rem, 5vw, 3.5rem);
 }
 
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .newsletter-section .container {
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .newsletter-section .container {
 	max-width: min(960px, 100%);
 	padding-left: clamp(1rem, 4vw, 2.75rem);
 	padding-right: clamp(1rem, 4vw, 2.75rem);
 }
 
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .newsletter-content h2 {
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .newsletter-content h2 {
 	font-size: clamp(1.5rem, 3vw, 2rem);
 	margin-bottom: 0.75rem;
 }
 
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .newsletter-form .form-group {
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .newsletter-form .form-group {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.75rem;
@@ -365,7 +378,7 @@
 	margin-top: 1.25rem;
 }
 
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .newsletter-form input[type="email"] {
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .newsletter-form input[type="email"] {
 	min-width: min(100%, 320px);
 	min-height: 48px;
 	padding: 0.65rem 1rem;
@@ -374,7 +387,7 @@
 	font-size: 1rem;
 }
 
-:is( .zskeleton-blog-listing, .page-template-page-blog-php, .editor-styles-wrapper ) .newsletter-form .btn {
+:is( .zskeleton-blog-listing, .page-template-page-blog-php, .page-template-page-blog-blocks-php, .zskeleton-blog-hub-blocks, .editor-styles-wrapper ) .newsletter-form .btn {
 	min-height: 48px;
 	padding-left: 1.5rem;
 	padding-right: 1.5rem;

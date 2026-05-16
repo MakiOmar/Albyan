@@ -1,0 +1,41 @@
+---
+description: Load CSS/JS only when needed; global base + template/post-type bundles; dedupe inline styles
+globs: "**/*.{php,css,js}"
+alwaysApply: false
+---
+
+# Conditional CSS and JS loading
+
+## Default: scope assets to the request
+
+- **Do not** register or enqueue styles/scripts on every front-end request unless they are truly universal (layout, typography, header/footer, critical utilities).
+- Use `wp_enqueue_style` / `wp_enqueue_script` from a single coherent place (for example the theme’s `wp_enqueue_scripts` callback in `functions.php` or a dedicated inc file), with **guards** so each handle runs only when the matching template or context applies.
+- Prefer **conditional tags** and **template checks**: `is_front_page()`, `is_home()`, `is_singular()`, `is_singular( 'post' )`, `is_page()`, `is_page_template( 'templates/foo.php' )`, `is_archive()`, `is_tax()`, etc.
+- For **custom post types**, use `is_singular( 'cpt_slug' )`, `is_post_type_archive( 'cpt_slug' )`, or `get_post_type()` where appropriate so CPT singles/archives get their own bundles without loading them on unrelated views.
+
+## Layering: global then specific
+
+1. **Global (most pages)** — one or a few handles for variables, reset/base, layout, navigation, and components reused almost everywhere. Keep this bundle as small as reason allows.
+2. **Context-specific** — additional handles per major area: for example blog listing, SEO landing, WooCommerce, a specific page template, or a post type single. Enqueue these **only** inside the matching condition.
+3. **Order** — enqueue global dependencies first; register context styles with `array( 'parent-handle' )` as the dependency array when they extend the global layer.
+
+## File organization
+
+- Use **predictable paths** under `assets/css/` and `assets/js/` (for example `assets/css/single-post.css`, `assets/css/page-seo-home-ar.css`) so it is obvious what each file is for.
+- When a **single page** needs unique styling, prefer a **dedicated stylesheet** named after the template or feature and enqueue it only for that template or page ID/slug (if stable), rather than bloating global CSS.
+- When **one post type** needs shared single styling, use one file (for example `single-{post_type}.css` pattern or a shared `singular-cpt.css`) and enqueue inside `is_singular( 'that_type' )` (or equivalent).
+
+## Inline and repeated styles
+
+- **Avoid** large duplicated `<style>` blocks or inline `style=""` sprawl across templates.
+- If the **same CSS** appears in more than one template or PHP partial, **extract** it to a single file under `assets/css/`, enqueue that handle wherever those views load, and remove the duplicates.
+- Reserve inline styles for **truly dynamic** values (for example theme customizer output) or **one-off** critical snippets; even then, prefer `wp_add_inline_style( 'existing-handle', $css )` attached to an enqueued stylesheet so caching and dependency order stay clear.
+
+## Scripts
+
+- Apply the same rules to JS: **global** = essentials used broadly; **route-specific** = sliders, charts, or editors only on pages that need them. Use dynamic imports or separate registered handles enqueued under the same conditional guards as their matching CSS.
+
+## Compatibility
+
+- Follow [wp-assets-js-css-standards.mdc](wp-assets-js-css-standards.mdc) (WordPress enqueue APIs, no raw `<link>`/`<script>` for theme assets).
+- After adding or changing built assets, follow [wp-assets-npm-minify.mdc](wp-assets-npm-minify.mdc) for minified outputs.

@@ -13,7 +13,9 @@ if ( ! zskeleton_blog_hub_is_first_listing_page() ) {
 	return '';
 }
 
-$zsb = array();
+$zsb = array(
+	'heading_attrs' => zskeleton_blog_hub_heading_attrs_merge( is_array( $attributes ) ? $attributes : array() ),
+);
 
 $use_theme_count = ! isset( $attributes['useThemeCount'] ) || (bool) $attributes['useThemeCount'];
 if ( ! $use_theme_count ) {
@@ -31,11 +33,7 @@ if ( isset( $attributes['useThemeVisibility'] ) && ! (bool) $attributes['useThem
 }
 
 ob_start();
-if ( ! empty( $zsb ) ) {
-	get_template_part( 'template-parts/blog/section', 'featured', array( 'zskeleton_block' => $zsb ) );
-} else {
-	get_template_part( 'template-parts/blog/section', 'featured' );
-}
+get_template_part( 'template-parts/blog/section', 'featured', array( 'zskeleton_block' => $zsb ) );
 $html = trim( (string) ob_get_clean() );
 
 if ( '' === $html ) {

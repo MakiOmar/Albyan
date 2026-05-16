@@ -5,6 +5,12 @@
  * (overflow hidden, strong th styling). Cart/checkout totals need normal table behavior.
  */
 
+/* Constrain WC shortcode/block wrapper inside standard page content (overrides wider inner rules). */
+.page-content-body > .woocommerce {
+	max-width: 1200px !important;
+	margin: auto;
+}
+
 /* Rounded-corner clip from theme tables must not hide totals / amount cells. */
 .page-content-body .woocommerce table.shop_table,
 .site-main .woocommerce table.shop_table {

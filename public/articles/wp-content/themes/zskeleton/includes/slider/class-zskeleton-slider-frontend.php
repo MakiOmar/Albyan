@@ -61,10 +61,16 @@ class ZSkeleton_Slider_Frontend {
 		$css_ver = is_readable( ZSkeleton_THEME_DIR . '/assets/css/' . $css ) ? (string) filemtime( ZSkeleton_THEME_DIR . '/assets/css/' . $css ) : ZSkeleton_VERSION;
 		$js_ver  = is_readable( ZSkeleton_THEME_DIR . '/assets/js/' . $js ) ? (string) filemtime( ZSkeleton_THEME_DIR . '/assets/js/' . $js ) : ZSkeleton_VERSION;
 
+		// Main theme handle is not registered in the block editor; avoid a missing-dep edge case there.
+		$slider_style_deps = array();
+		if ( wp_style_is( 'zskeleton-style', 'registered' ) ) {
+			$slider_style_deps[] = 'zskeleton-style';
+		}
+
 		wp_enqueue_style(
 			'zskeleton-slider',
 			ZSkeleton_THEME_URL . '/assets/css/' . $css,
-			array( 'zskeleton-style' ),
+			$slider_style_deps,
 			$css_ver
 		);
 
@@ -98,7 +104,8 @@ class ZSkeleton_Slider_Frontend {
 		if ( ! $post instanceof WP_Post ) {
 			return;
 		}
-		if ( has_shortcode( (string) $post->post_content, 'zskeleton_slider' ) ) {
+		$content = (string) $post->post_content;
+		if ( has_shortcode( $content, 'zskeleton_slider' ) || has_block( 'zskeleton/theme-slider', $post ) ) {
 			self::enqueue_assets();
 		}
 	}
@@ -199,6 +206,15 @@ class ZSkeleton_Slider_Frontend {
 		$mh_m  = ZSkeleton_Sliders::sanitize_slider_css_token_value( is_string( $mh_m ) ? $mh_m : '' );
 		if ( '' !== $mh_m ) {
 			$parts[] = '--zs-slider-min-height-mobile: ' . esc_attr( $mh_m );
+		}
+		$cimh = ZSkeleton_Sliders::sanitize_slider_css_token_value( (string) get_post_meta( $post_id, ZSkeleton_Sliders::META_CONTENT_IMAGE_MAX_HEIGHT, true ) );
+		if ( '' === $cimh ) {
+			$cimh = '400px';
+		}
+		$parts[] = '--zs-slider-content-image-max-height: ' . esc_attr( $cimh );
+		$cimh_m = ZSkeleton_Sliders::sanitize_slider_css_token_value( (string) get_post_meta( $post_id, ZSkeleton_Sliders::META_CONTENT_IMAGE_MAX_HEIGHT_MOBILE, true ) );
+		if ( '' !== $cimh_m ) {
+			$parts[] = '--zs-slider-content-image-max-height-mobile: ' . esc_attr( $cimh_m );
 		}
 
 		$nav_hex = ZSkeleton_Sliders::sanitize_slider_hex_color( (string) get_post_meta( $post_id, ZSkeleton_Sliders::META_NAV_BG_COLOR, true ) );
@@ -621,8 +637,13 @@ class ZSkeleton_Slider_Frontend {
 
 		$primary_btn   = ( $p_label !== '' && $p_url !== '' );
 		$secondary_btn = ( $s_label !== '' && $s_url !== '' );
+		$slide_bg      = ZSkeleton_Sliders::sanitize_slider_hex_color( isset( $row['slide_background_color'] ) ? (string) $row['slide_background_color'] : '' );
+		$slide_style   = '';
+		if ( '' !== $slide_bg ) {
+			$slide_style = ' style="--zs-slide-bg:' . esc_attr( $slide_bg ) . ';background-color:' . esc_attr( $slide_bg ) . ';"';
+		}
 		?>
-		<article class="zskeleton-slider__slide<?php echo $is_active ? ' is-active' : ''; ?>" data-index="<?php echo esc_attr( (string) (int) $index ); ?>" aria-hidden="<?php echo $is_active ? 'false' : 'true'; ?>">
+		<article class="zskeleton-slider__slide<?php echo $is_active ? ' is-active' : ''; ?>" data-index="<?php echo esc_attr( (string) (int) $index ); ?>" aria-hidden="<?php echo $is_active ? 'false' : 'true'; ?>"<?php echo $slide_style; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from sanitized hex values only. ?>>
 		<?php if ( 'split_seo' === $layout ) : ?>
 			<?php
 			// Darken base when background photo and floating content image differ (same flag semantics as dual-bg).

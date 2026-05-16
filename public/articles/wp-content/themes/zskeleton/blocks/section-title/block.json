@@ -1,0 +1,38 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "zskeleton/section-title",
+	"version": "1.0.0",
+	"title": "Section title",
+	"category": "layout",
+	"icon": "heading",
+	"description": "Heading band with adjustable width, height, padding, alignment, background, text color, and corner radius.",
+	"keywords": [ "heading", "section", "title", "banner", "zskeleton" ],
+	"textdomain": "zskeleton",
+	"editorScript": "zskeleton-section-title-block-editor",
+	"style": "file:../../assets/css/section-title-block.css",
+	"editorStyle": "file:../../assets/css/section-title-block.css",
+	"attributes": {
+		"title": { "type": "string", "default": "Section title" },
+		"headingLevel": { "type": "number", "default": 2 },
+		"containerWidth": { "type": "string", "default": "min(1200px, 100%)" },
+		"minHeight": { "type": "string", "default": "" },
+		"padding": { "type": "string", "default": "clamp(1rem, 3vw, 2.5rem)" },
+		"textPosition": { "type": "string", "default": "center" },
+		"backgroundColor": { "type": "string", "default": "#f1f5f9" },
+		"textColor": { "type": "string", "default": "#0f172a" },
+		"borderRadius": { "type": "string", "default": "12px" },
+		"titleDashicon": { "type": "string", "default": "" },
+		"titleShowSeparator": { "type": "boolean", "default": true },
+		"titleSeparatorWidthPx": { "type": "number", "default": 72 },
+		"titleSeparatorHeightPx": { "type": "number", "default": 4 },
+		"titleSeparatorRadiusPx": { "type": "number", "default": 999 },
+		"titleSeparatorColor": { "type": "string", "default": "#b8d4eb" }
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"anchor": true
+	},
+	"render": "file:./render.php"
+}

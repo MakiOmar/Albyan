@@ -1,0 +1,169 @@
+/**
+ * Front + editor: Feature promo card block.
+ *
+ * @package ZSkeleton_Theme
+ */
+
+.zskeleton-feature-promo-card {
+	--fpc-card-bg: #ffffff;
+	--fpc-header-bg: #f0f4f7;
+	--fpc-title: #1e293b;
+	--fpc-body: #475569;
+	--fpc-list: #475569;
+	--fpc-bullet: #64748b;
+	--fpc-icon: #334e68;
+	--fpc-btn-bg: #5086b3;
+	--fpc-btn-fg: #ffffff;
+	--fpc-radius: 24px;
+	--fpc-pad: 32px;
+	--fpc-header-pt: 28px;
+	--fpc-wave: 26px;
+	box-sizing: border-box;
+	max-width: 100%;
+	background-color: var(--fpc-card-bg);
+	border-radius: var(--fpc-radius);
+	box-shadow: var(--fpc-shadow, 0 10px 40px rgba(15, 23, 42, 0.08));
+	overflow: hidden;
+}
+
+.zskeleton-feature-promo-card *,
+.zskeleton-feature-promo-card *::before,
+.zskeleton-feature-promo-card *::after {
+	box-sizing: border-box;
+}
+
+.zskeleton-feature-promo-card__header {
+	background-color: var(--fpc-header-bg);
+	padding: var(--fpc-header-pt) var(--fpc-pad) calc(var(--fpc-wave) + 12px);
+	text-align: center;
+	border-bottom-left-radius: 55% var(--fpc-wave);
+	border-bottom-right-radius: 55% var(--fpc-wave);
+}
+
+.zskeleton-feature-promo-card__icon-wrap {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 72px;
+}
+
+.zskeleton-feature-promo-card__icon-img {
+	display: block;
+	max-width: 120px;
+	height: auto;
+	margin-inline: auto;
+}
+
+.zskeleton-feature-promo-card__icon-dashicon {
+	font-size: 64px!important;
+	width: 64px!important;
+	height: 64px!important;
+	line-height: 1;
+	color: var(--fpc-icon);
+}
+
+.zskeleton-feature-promo-card__body {
+	padding: 8px var(--fpc-pad) var(--fpc-pad);
+	text-align: center;
+}
+
+.zskeleton-feature-promo-card .zskeleton-block-heading__title.zskeleton-feature-promo-card__title,
+.zskeleton-feature-promo-card__title {
+	margin: 0 0 0.75rem;
+	font-size: clamp(1.25rem, 2.5vw, 1.65rem);
+	font-weight: 700;
+	line-height: 1.35;
+	color: var(--fpc-title);
+}
+
+.zskeleton-feature-promo-card__body-copy {
+	margin: 0 0 1rem;
+	font-size: 1rem;
+	line-height: 1.65;
+	color: var(--fpc-body);
+}
+
+.zskeleton-feature-promo-card__body-copy p {
+	margin: 0 0 0.65em;
+}
+
+.zskeleton-feature-promo-card__body-copy p:last-child {
+	margin-bottom: 0;
+}
+
+.zskeleton-feature-promo-card__list {
+	margin: 0 0 1.5rem;
+	margin-inline: auto;
+	padding: 0;
+	padding-inline-start: 1.25em;
+	list-style: disc;
+	list-style-position: outside;
+	color: var(--fpc-list);
+	font-size: 0.95rem;
+	line-height: 1.55;
+	text-align: start;
+	display: block;
+	max-width: max-content;
+}
+
+.zskeleton-feature-promo-card__list li {
+	padding-inline-start: 0.35em;
+	margin-bottom: 0.35em;
+}
+
+.zskeleton-feature-promo-card__list li::marker {
+	color: var(--fpc-bullet);
+}
+
+.zskeleton-feature-promo-card__cta {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 0.25rem;
+	padding: 0.65rem 1.75rem;
+	border-radius: 999px;
+	font-weight: 700;
+	font-size: 0.95rem;
+	text-decoration: none;
+	background-color: var(--fpc-btn-bg);
+	color: var(--fpc-btn-fg);
+	transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.zskeleton-feature-promo-card__cta:hover,
+.zskeleton-feature-promo-card__cta:focus-visible {
+	opacity: 0.92;
+}
+
+.zskeleton-feature-promo-card__cta:focus-visible {
+	outline: 2px solid var(--fpc-btn-bg);
+	outline-offset: 2px;
+}
+
+.zskeleton-feature-promo-card--shadow-none {
+	--fpc-shadow: none;
+}
+
+.zskeleton-feature-promo-card--shadow-soft {
+	--fpc-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+}
+
+.zskeleton-feature-promo-card--shadow-medium {
+	--fpc-shadow: 0 10px 40px rgba(15, 23, 42, 0.08);
+}
+
+.zskeleton-feature-promo-card--shadow-strong {
+	--fpc-shadow: 0 16px 48px rgba(15, 23, 42, 0.12);
+}
+
+/* Block editor: inline fields above the server preview. */
+.editor-styles-wrapper .zskeleton-feature-promo-card-block-root .zskeleton-feature-promo-card-editor-title {
+	margin: 0 0 0.5rem;
+	font-size: 1.25rem;
+}
+
+.editor-styles-wrapper .zskeleton-feature-promo-card-block-root .zskeleton-feature-promo-card-editor-body {
+	margin: 0 0 1rem;
+	font-size: 0.95rem;
+	color: #475569;
+}

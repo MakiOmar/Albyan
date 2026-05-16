@@ -131,12 +131,186 @@
 		return createElement(Fragment, null, children);
 	}
 
+	/** Title row (Dashicon + accent bar) options for Blog: Latest posts grid — same set as testimonials / Expert-style blocks. */
+	var BLOG_GRID_TITLE_DASHICON_OPTIONS = [
+		{ label: __('None', 'zskeleton'), value: '' },
+		{ label: __('User', 'zskeleton'), value: 'admin-users' },
+		{ label: __('ID card', 'zskeleton'), value: 'id' },
+		{ label: __('ID (alt)', 'zskeleton'), value: 'id-alt' },
+		{ label: __('Business', 'zskeleton'), value: 'businessman' },
+		{ label: __('Nametag', 'zskeleton'), value: 'nametag' },
+		{ label: __('Star', 'zskeleton'), value: 'star-filled' },
+		{ label: __('Award', 'zskeleton'), value: 'awards' },
+		{ label: __('Book', 'zskeleton'), value: 'book-alt' },
+		{ label: __('Megaphone', 'zskeleton'), value: 'megaphone' },
+		{ label: __('Chart', 'zskeleton'), value: 'chart-area' },
+		{ label: __('Groups', 'zskeleton'), value: 'groups' },
+		{ label: __('Heart', 'zskeleton'), value: 'heart' },
+		{ label: __('Site / globe', 'zskeleton'), value: 'admin-site' },
+		{ label: __('Learn more', 'zskeleton'), value: 'welcome-learn-more' },
+		{ label: __('Portfolio', 'zskeleton'), value: 'portfolio' },
+		{ label: __('Lightbulb', 'zskeleton'), value: 'lightbulb' },
+		{ label: __('Clipboard', 'zskeleton'), value: 'clipboard' },
+	];
+
+	function blogGridClampSepWidth(n) {
+		var v = parseInt(n, 10);
+		if (isNaN(v)) {
+			return 72;
+		}
+		return Math.min(480, Math.max(4, v));
+	}
+
+	function blogGridClampSepHeight(n) {
+		var v = parseInt(n, 10);
+		if (isNaN(v)) {
+			return 4;
+		}
+		return Math.min(64, Math.max(1, v));
+	}
+
+	function blogGridClampSepRadius(n) {
+		var v = parseInt(n, 10);
+		if (isNaN(v)) {
+			return 999;
+		}
+		return Math.min(999, Math.max(0, v));
+	}
+
+	function blogGridClampTitleListingGapPx(n) {
+		var v = parseInt(n, 10);
+		if (isNaN(v)) {
+			return 20;
+		}
+		return Math.min(200, Math.max(0, v));
+	}
+
+	/**
+	 * Title icon, separator, spacing under title — shared by Latest / Featured / Trending blocks.
+	 *
+	 * @param {{}} a Attributes.
+	 * @param {Function} setAttributes Block setAttributes.
+	 * @param {{ includeShowHeading?: boolean }} opts When true, prepend “Show section title”.
+	 * @returns {*}
+	 */
+	function renderBlogHubTitleAppearancePanel(a, setAttributes, opts) {
+		opts = opts || {};
+		return createElement(
+			PanelBody,
+			{ title: __('Title appearance', 'zskeleton'), initialOpen: false },
+			opts.includeShowHeading
+				? createElement(ToggleControl, {
+						label: __('Show section title', 'zskeleton'),
+						help: __(
+							'Turn off to show only the listing. The editor still saves a section title text for accessibility labels.',
+							'zskeleton'
+						),
+						checked: a.showHeading !== false,
+						onChange: function (v) {
+							setAttributes({ showHeading: !!v });
+						},
+				  })
+				: null,
+			createElement(SelectControl, {
+				label: __('Title icon', 'zskeleton'),
+				help: __(
+					'Optional Dashicon before the heading (same accent bar as Latest posts grid).',
+					'zskeleton'
+				),
+				value: a.titleDashicon || '',
+				options: BLOG_GRID_TITLE_DASHICON_OPTIONS,
+				onChange: function (v) {
+					setAttributes({ titleDashicon: v || '' });
+				},
+			}),
+			createElement(ToggleControl, {
+				label: __('Show accent bar under title', 'zskeleton'),
+				checked: a.titleShowSeparator !== false,
+				onChange: function (v) {
+					setAttributes({ titleShowSeparator: !!v });
+				},
+			}),
+			createElement(RangeControl, {
+				label: __('Separator width (px)', 'zskeleton'),
+				value: blogGridClampSepWidth(a.titleSeparatorWidthPx),
+				onChange: function (v) {
+					setAttributes({ titleSeparatorWidthPx: v });
+				},
+				min: 4,
+				max: 480,
+				step: 1,
+			}),
+			createElement(RangeControl, {
+				label: __('Separator height (px)', 'zskeleton'),
+				value: blogGridClampSepHeight(a.titleSeparatorHeightPx),
+				onChange: function (v) {
+					setAttributes({ titleSeparatorHeightPx: v });
+				},
+				min: 1,
+				max: 64,
+				step: 1,
+			}),
+			createElement(RangeControl, {
+				label: __('Separator border radius (px)', 'zskeleton'),
+				value: blogGridClampSepRadius(a.titleSeparatorRadiusPx),
+				onChange: function (v) {
+					setAttributes({ titleSeparatorRadiusPx: v });
+				},
+				min: 0,
+				max: 999,
+				step: 1,
+			}),
+			createElement(
+				'div',
+				{ className: 'components-base-control', style: { marginBottom: '12px' } },
+				createElement(
+					'label',
+					{
+						className: 'components-base-control__label',
+						htmlFor: 'zskeleton-blog-hub-title-sep-color',
+					},
+					__('Separator color', 'zskeleton')
+				),
+				createElement('input', {
+					id: 'zskeleton-blog-hub-title-sep-color',
+					type: 'color',
+					value: /^#[0-9A-Fa-f]{6}$/.test(a.titleSeparatorColor || '')
+						? a.titleSeparatorColor
+						: '#b8d4eb',
+					onChange: function (e) {
+						setAttributes({ titleSeparatorColor: e.target.value });
+					},
+					'aria-label': __('Separator color', 'zskeleton'),
+					style: { width: '100%', maxWidth: '120px', height: '32px', cursor: 'pointer' },
+				})
+			),
+			createElement(RangeControl, {
+				label: __('Space between title and listing (px)', 'zskeleton'),
+				help: __(
+					'Vertical space from the title row (including accent bar) to the post cards grid.',
+					'zskeleton'
+				),
+				value: blogGridClampTitleListingGapPx(a.titleListingGapPx),
+				onChange: function (v) {
+					setAttributes({ titleListingGapPx: v });
+				},
+				min: 0,
+				max: 200,
+				step: 1,
+			})
+		);
+	}
+
+	/** Same editor script as blog hub blocks; hub must call `registerBlockType` so bootstrapped server metadata merges into the block store. */
+	var THEME_SLIDER_BLOCK = 'zskeleton/theme-slider';
+
 	var dynamicBlockNames = [
 		'zskeleton/blog-featured',
 		'zskeleton/blog-posts-grid',
 		'zskeleton/blog-trending',
 		'zskeleton/blog-category-terms',
 		'zskeleton/blog-lead-gen',
+		THEME_SLIDER_BLOCK,
 	];
 
 	function createDynamicEdit(blockName) {
@@ -172,6 +346,20 @@
 		);
 	});
 
+	function getThemeSliderSelectOptions() {
+		var raw =
+			window.zskeletonSliderBlockData && Array.isArray(window.zskeletonSliderBlockData.sliders)
+				? window.zskeletonSliderBlockData.sliders
+				: [];
+		var options = [{ label: __('Select a slider', 'zskeleton'), value: '0' }];
+		raw.forEach(function (row) {
+			if (row && row.value !== undefined && row.label) {
+				options.push({ label: String(row.label), value: String(row.value) });
+			}
+		});
+		return options;
+	}
+
 	function wrapBlockEdit(BlockEdit) {
 		return function (props) {
 			var a = props.attributes || {};
@@ -200,7 +388,7 @@
 							createElement(ToggleControl, {
 								label: __('Use theme post count', 'zskeleton'),
 								help: __(
-									'When off, set how many cards appear (sticky posts still take priority).',
+									'When off, set card count on this block. Only posts flagged in “Blog listing” on each edit screen, plus sticky posts—newest posts are not added.',
 									'zskeleton'
 								),
 								checked: a.useThemeCount !== false,
@@ -230,7 +418,8 @@
 									props.setAttributes({ sectionHeading: v });
 								},
 							})
-						)
+						),
+						renderBlogHubTitleAppearancePanel(a, props.setAttributes, { includeShowHeading: true })
 					)
 				);
 			}
@@ -301,7 +490,8 @@
 									props.setAttributes({ sectionHeading: v });
 								},
 							})
-						)
+						),
+						renderBlogHubTitleAppearancePanel(a, props.setAttributes, { includeShowHeading: true })
 					)
 				);
 			}
@@ -434,7 +624,8 @@
 									props.setAttributes({ columns: parseInt(v, 10) || 0 });
 								},
 							})
-						)
+						),
+						renderBlogHubTitleAppearancePanel(a, props.setAttributes, {})
 					)
 				);
 			}
@@ -513,6 +704,32 @@
 								__('Hand-pick categories', 'zskeleton')
 							),
 							createElement(BlogCategoryTermsHandPickPanel, { key: 'handpick', attributes: a, setAttributes: props.setAttributes })
+						)
+					)
+				);
+			}
+			if (props.name === THEME_SLIDER_BLOCK) {
+				var sliderOpts = getThemeSliderSelectOptions();
+				var sid = a.sliderId !== undefined && a.sliderId !== null ? String(a.sliderId) : '0';
+				return createElement(
+					Fragment,
+					null,
+					createElement(BlockEdit, props),
+					createElement(
+						InspectorControls,
+						null,
+						createElement(
+							PanelBody,
+							{ title: __('Slider', 'zskeleton'), initialOpen: true },
+							createElement(SelectControl, {
+								label: __('Select slider', 'zskeleton'),
+								value: sid,
+								options: sliderOpts,
+								onChange: function (v) {
+									var n = parseInt(v, 10);
+									props.setAttributes({ sliderId: !isNaN(n) && n > 0 ? n : 0 });
+								},
+							})
 						)
 					)
 				);

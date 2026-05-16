@@ -1,0 +1,55 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "zskeleton/stepper",
+	"version": "1.0.0",
+	"title": "Stepper",
+	"category": "widgets",
+	"icon": "editor-ol",
+	"description": "Configurable stepper with style one and mobile vertical layout.",
+	"keywords": [ "stepper", "steps", "process", "timeline", "zskeleton" ],
+	"textdomain": "zskeleton",
+	"editorScript": "zskeleton-stepper-block-editor",
+	"style": "file:../../assets/css/stepper.css",
+	"editorStyle": "file:../../assets/css/stepper.css",
+	"attributes": {
+		"styleVariant": { "type": "string", "default": "style-1" },
+		"steps": {
+			"type": "array",
+			"default": [
+				{ "label": "Step 1", "number": "1", "accentColor": "#facc15" },
+				{ "label": "Step 2", "number": "2", "accentColor": "#ec4899" },
+				{ "label": "Step 3", "number": "3", "accentColor": "#06b6d4" },
+				{ "label": "Step 4", "number": "4", "accentColor": "#d1d5db" }
+			]
+		},
+		"currentStep": { "type": "number", "default": 1 },
+		"mobileVertical": { "type": "boolean", "default": true },
+		"mobileBreakpointPx": { "type": "number", "default": 782 },
+		"maxWidthPx": { "type": "number", "default": 980 },
+		"sectionPaddingYpx": { "type": "number", "default": 18 },
+		"sectionPaddingXpx": { "type": "number", "default": 18 },
+		"itemGapPx": { "type": "number", "default": 26 },
+		"lineThicknessPx": { "type": "number", "default": 2 },
+		"circleSizePx": { "type": "number", "default": 34 },
+		"titleFontSizePx": { "type": "number", "default": 14 },
+		"titleGapTopPx": { "type": "number", "default": 10 },
+		"underlineWidthPx": { "type": "number", "default": 52 },
+		"underlineHeightPx": { "type": "number", "default": 3 },
+		"sectionBackground": { "type": "string", "default": "#ffffff" },
+		"circleBackground": { "type": "string", "default": "#f3f4f6" },
+		"circleTextColor": { "type": "string", "default": "#4b5563" },
+		"activeCircleBackground": { "type": "string", "default": "#e5e7eb" },
+		"activeCircleTextColor": { "type": "string", "default": "#111827" },
+		"stepTextColor": { "type": "string", "default": "#111827" },
+		"activeStepTextColor": { "type": "string", "default": "#111827" },
+		"underlineColor": { "type": "string", "default": "#cbd5e1" },
+		"activeUnderlineColor": { "type": "string", "default": "#94a3b8" },
+		"connectorColor": { "type": "string", "default": "#d1d5db" }
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"render": "file:./render.php"
+}

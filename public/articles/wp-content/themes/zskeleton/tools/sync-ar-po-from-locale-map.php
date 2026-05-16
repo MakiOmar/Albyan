@@ -1,6 +1,6 @@
 <?php
 /**
- * Fill zskeleton-ar.po msgstr values from includes/languages/locale-ar.php map (single-line msgids).
+ * Fill ar.po msgstr values from includes/languages/locale-ar.php map (single-line msgids).
  *
  * CLI: php tools/sync-ar-po-from-locale-map.php
  *
@@ -27,7 +27,7 @@ if ( ! function_exists( 'add_filter' ) ) {
 }
 require_once $theme_dir . '/includes/languages/locale-ar.php';
 
-$po_path = $theme_dir . '/languages/zskeleton-ar.po';
+$po_path = $theme_dir . '/languages/ar.po';
 $po = file_get_contents( $po_path );
 if ( false === $po ) {
 	fwrite( STDERR, "Cannot read PO file.\n" );
@@ -66,4 +66,4 @@ foreach ( $map as $en => $ar ) {
 }
 
 file_put_contents( $po_path, $po );
-echo "Updated {$updated} entries in zskeleton-ar.po from locale map.\n";
+echo "Updated {$updated} entries in ar.po from locale map.\n";

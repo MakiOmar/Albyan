@@ -1,0 +1,28 @@
+---
+description: Before debugging, search for similar existing code or fixes, then read to confirm root cause
+alwaysApply: true
+---
+
+# Debug: Discover First, Then Read
+
+When investigating a bug, failing build, runtime error, or unexpected behavior, follow this order before changing code.
+
+## 1. Search for similar work already in the project
+
+- Use codebase search for the **error message**, **hook name**, **function**, **feature flag**, or **symptom** (not only the exact file the user mentioned).
+- Look for **existing helpers**, **shared patterns**, **prior fixes** (comments, changelog, git history if useful), and **tests** that cover the same flow.
+- Check whether **project rules** in `.cursor/rules/` already document constraints for this area (security, i18n, assets, etc.).
+
+Do not assume the first file you open is the root cause; confirm whether the same problem was solved elsewhere and reuse that approach when it fits.
+
+## 2. Read to understand the problem
+
+- Open and read the **call path** involved (caller → callee → hooks), not a single line in isolation.
+- Reconcile **symptoms** with **actual code**: stack traces, logs, network responses, and reproduction steps must match what the code does.
+- Only after you can state the **root cause** in one sentence should you propose a **minimal** fix.
+
+## 3. Avoid anti-patterns
+
+- Do not apply speculative fixes without evidence.
+- Do not duplicate logic if an existing abstraction or pattern already handles the case.
+- If the issue is environmental or external (hosting, plugin conflict), say so after checking what the theme actually controls.

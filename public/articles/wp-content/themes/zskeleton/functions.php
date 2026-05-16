@@ -23,8 +23,21 @@ define('ZSkeleton_THEME_URL', get_template_directory_uri());
 require_once ZSkeleton_THEME_DIR . '/includes/theme-colors.php';
 require_once ZSkeleton_THEME_DIR . '/includes/mobile-bottom-nav.php';
 require_once ZSkeleton_THEME_DIR . '/includes/blog-hub.php';
+require_once ZSkeleton_THEME_DIR . '/includes/blog-hub-featured-meta.php';
 require_once ZSkeleton_THEME_DIR . '/includes/taxonomy-term-listing.php';
 require_once ZSkeleton_THEME_DIR . '/includes/blocks/blog-hub-blocks.php';
+require_once ZSkeleton_THEME_DIR . '/includes/blocks/block-type-metadata-min-assets.php';
+require_once ZSkeleton_THEME_DIR . '/includes/blocks/block-heading-shared.php';
+require_once ZSkeleton_THEME_DIR . '/includes/blocks/slider-block.php';
+require_once ZSkeleton_THEME_DIR . '/includes/blocks/expert-profile-block.php';
+require_once ZSkeleton_THEME_DIR . '/includes/blocks/about-company-hero-block.php';
+require_once ZSkeleton_THEME_DIR . '/includes/blocks/feature-promo-card-block.php';
+require_once ZSkeleton_THEME_DIR . '/includes/blocks/section-title-block.php';
+require_once ZSkeleton_THEME_DIR . '/includes/blocks/testimonials-image-slider-block.php';
+require_once ZSkeleton_THEME_DIR . '/includes/blocks/case-studies-split-block.php';
+require_once ZSkeleton_THEME_DIR . '/includes/blocks/stepper-block.php';
+require_once ZSkeleton_THEME_DIR . '/includes/blocks/seo-ar-ai-lead-block.php';
+require_once ZSkeleton_THEME_DIR . '/includes/blocks/contact-form-block.php';
 require_once ZSkeleton_THEME_DIR . '/includes/class-walker-nav-menu-split-logo.php';
 
 // Arabic gettext fallback (when languages/ar.mo is absent); safe alongside Loco Translate.
@@ -800,6 +813,9 @@ function zskeleton_get_blog_breadcrumbs_html( $post_id = 0 ) {
  * @param array<string, mixed> $args Optional. Passed to template-parts/page-title-bar.php.
  */
 function zskeleton_the_page_title_bar($args = array()) {
+    if (is_front_page()) {
+        return;
+    }
     get_template_part('template-parts/page-title-bar', null, $args);
 }
 
@@ -1697,7 +1713,9 @@ add_action( 'wp_enqueue_scripts', 'zskeleton_enqueue_blog_listing_hero_css', 11 
  * Styles for the Blog listing page template (hub sections).
  */
 function zskeleton_enqueue_blog_page_css() {
-	if ( is_admin() || ! zskeleton_is_blog_listing_public_view() ) {
+	if ( is_admin()
+		|| ! function_exists( 'zskeleton_should_enqueue_blog_hub_page_styles' )
+		|| ! zskeleton_should_enqueue_blog_hub_page_styles() ) {
 		return;
 	}
 
@@ -1729,6 +1747,73 @@ function zskeleton_enqueue_blog_page_css() {
 add_action( 'wp_enqueue_scripts', 'zskeleton_enqueue_blog_page_css', 12 );
 
 /**
+ * Shared layout and content styles for default pages (page.php) and single posts (single.php).
+ *
+ * @return void
+ */
+function zskeleton_enqueue_page_single_shared_css(): void {
+	if ( is_admin() ) {
+		return;
+	}
+	if ( ! is_page() && ! is_singular( 'post' ) ) {
+		return;
+	}
+
+	$use_minified = (bool) get_option( 'zskeleton_use_minified_assets', true );
+	$file         = $use_minified && is_readable( ZSkeleton_THEME_DIR . '/assets/css/page-single-shared.min.css' )
+		? 'page-single-shared.min.css'
+		: 'page-single-shared.css';
+	$path         = ZSkeleton_THEME_DIR . '/assets/css/' . $file;
+	if ( ! is_readable( $path ) ) {
+		$file = 'page-single-shared.css';
+		$path = ZSkeleton_THEME_DIR . '/assets/css/' . $file;
+	}
+	if ( ! is_readable( $path ) ) {
+		return;
+	}
+
+	wp_enqueue_style(
+		'zskeleton-page-single-shared',
+		ZSkeleton_THEME_URL . '/assets/css/' . $file,
+		array( 'zskeleton-components' ),
+		(string) filemtime( $path )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'zskeleton_enqueue_page_single_shared_css', 12 );
+
+/**
+ * Single post template styles (hero, featured image, tags, post navigation).
+ *
+ * @return void
+ */
+function zskeleton_enqueue_single_post_css(): void {
+	if ( is_admin() || ! is_singular( 'post' ) ) {
+		return;
+	}
+
+	$use_minified = (bool) get_option( 'zskeleton_use_minified_assets', true );
+	$file         = $use_minified && is_readable( ZSkeleton_THEME_DIR . '/assets/css/single-post.min.css' )
+		? 'single-post.min.css'
+		: 'single-post.css';
+	$path         = ZSkeleton_THEME_DIR . '/assets/css/' . $file;
+	if ( ! is_readable( $path ) ) {
+		$file = 'single-post.css';
+		$path = ZSkeleton_THEME_DIR . '/assets/css/' . $file;
+	}
+	if ( ! is_readable( $path ) ) {
+		return;
+	}
+
+	wp_enqueue_style(
+		'zskeleton-single-post',
+		ZSkeleton_THEME_URL . '/assets/css/' . $file,
+		array( 'zskeleton-page-single-shared' ),
+		(string) filemtime( $path )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'zskeleton_enqueue_single_post_css', 13 );
+
+/**
  * Styles for the Arabic SEO homepage template (page-home-seo-ar.php).
  *
  * @return void
@@ -1737,7 +1822,12 @@ function zskeleton_enqueue_seo_home_ar_css() {
 	if ( is_admin() ) {
 		return;
 	}
-	if ( ! is_page_template( 'page-home-seo-ar.php' ) ) {
+	$load_template = is_page_template( 'page-home-seo-ar.php' );
+	$load_block    = false;
+	if ( ! $load_template && is_singular() && function_exists( 'zskeleton_seo_ar_page_has_ai_lead_block' ) ) {
+		$load_block = zskeleton_seo_ar_page_has_ai_lead_block( (int) get_queried_object_id() );
+	}
+	if ( ! $load_template && ! $load_block ) {
 		return;
 	}
 
@@ -2406,7 +2496,40 @@ function zskeleton_get_page_url($slug, $fallback = '#') {
     return $fallback;
 }
 
+/**
+ * Permalink for the theme “contact” page chosen in ZSkeleton Settings → Content, or the mapped Contact URL.
+ *
+ * Use anywhere a contact link should respect that setting (CTAs, blocks, footers, etc.).
+ *
+ * @return string
+ */
+function zskeleton_get_theme_contact_page_url() {
+    $page_id = (int) get_option( 'zskeleton_theme_contact_page_id', 0 );
+    if ( $page_id < 1 ) {
+        $legacy = (int) get_option( 'zskeleton_faq_cta_contact_page_id', 0 );
+        if ( $legacy > 0 ) {
+            update_option( 'zskeleton_theme_contact_page_id', $legacy );
+            delete_option( 'zskeleton_faq_cta_contact_page_id' );
+            $page_id = $legacy;
+        }
+    }
+    if ( $page_id > 0 && 'publish' === get_post_status( $page_id ) ) {
+        $url = get_permalink( $page_id );
+        if ( is_string( $url ) && '' !== $url ) {
+            return $url;
+        }
+    }
+    return zskeleton_get_page_url( 'contact' );
+}
 
+/**
+ * Back-compat alias for {@see zskeleton_get_theme_contact_page_url()}.
+ *
+ * @return string
+ */
+function zskeleton_get_faq_cta_contact_url() {
+    return zskeleton_get_theme_contact_page_url();
+}
 
 // Common pages (login, register, blog, etc.) are created via includes/common-pages.php: Appearance → ZSkeleton Settings → Content → “Create & sync common pages”, or once when switching to this theme (see zskeleton_common_pages_auto_installed).
 
@@ -2969,7 +3092,7 @@ add_action('customize_register', 'zskeleton_customize_register');
  */
 function zskeleton_header_search() {
     ?>
-    <div class="header-search" style="display: none;">
+    <div id="header-search" class="header-search">
         <button class="search-close" type="button" aria-label="<?php _e('Close Search', 'zskeleton'); ?>">
             ×
         </button>
@@ -4209,6 +4332,26 @@ function zskeleton_blog_listing_body_class( array $classes ): array {
 	return $classes;
 }
 add_filter( 'body_class', 'zskeleton_blog_listing_body_class' );
+
+/**
+ * Body class when hub blocks are embedded outside the official blog listing templates (scoped `blog-page.css` rules).
+ *
+ * @param string[] $classes Body classes.
+ * @return string[]
+ */
+function zskeleton_blog_hub_embedded_blocks_body_class( array $classes ): array {
+	if ( zskeleton_is_blog_listing_public_view() ) {
+		return $classes;
+	}
+	if ( is_singular() && function_exists( 'zskeleton_post_content_has_blog_hub_blocks' ) ) {
+		$post = get_queried_object();
+		if ( $post instanceof WP_Post && zskeleton_post_content_has_blog_hub_blocks( $post ) ) {
+			$classes[] = 'zskeleton-blog-hub-blocks';
+		}
+	}
+	return $classes;
+}
+add_filter( 'body_class', 'zskeleton_blog_hub_embedded_blocks_body_class', 11 );
 
 /**
  * Register sidebar toggle metabox for pages (skipped for editor-only legal templates).

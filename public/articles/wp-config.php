@@ -82,6 +82,7 @@ define('DISALLOW_FILE_EDIT', true);
 define('FORCE_SSL_ADMIN', true);
 define('RT_WP_NGINX_HELPER_CACHE_PATH', '/var/cache/nginx/fastcgi_cache');
 define('NGINX_HELPER_LOG', false);
+define('FS_METHOD', 'direct');
 /* Add any custom values between this line and the "stop editing" line. */
 /* That's all, stop editing! Happy publishing. */
 /** Absolute path to the WordPress directory. */

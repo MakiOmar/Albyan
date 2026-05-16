@@ -369,8 +369,10 @@ function zskeleton_get_theme_color_css_variables() {
 	$css .= 'body{background-color:var(--zskeleton-color-background);color:var(--professional-gray);-webkit-font-smoothing:antialiased;}';
 	$css .= '.site,#page{background-color:transparent;}';
 	$css .= '.header-top,.header-topbar-split{background:linear-gradient(135deg,var(--zskeleton-color-primary) 0%,var(--academic-navy) 100%);box-shadow:0 1px 0 rgba(15,23,42,0.06);}';
-	$css .= '.formal-card,.content-card,.main-content article{border-radius:12px;transition:box-shadow .25s ease,transform .2s ease;}';
-	$css .= '@media (hover:hover){.formal-card:hover,.content-card:hover{box-shadow:0 12px 40px -12px rgba(15,23,42,0.12);}}';
+	// Skip shells that wrap .zskeleton-slider so per-slider --zs-slider-border-radius is not clipped or overridden by a fixed 12px card radius.
+	$card_radius_sel = '.formal-card:not(:has(.zskeleton-slider)),.content-card:not(:has(.zskeleton-slider)),.main-content article:not(:has(.zskeleton-slider):not(:has(.zskeleton-slider__slide))';
+	$css .= $card_radius_sel . '{border-radius:12px;transition:box-shadow .25s ease,transform .2s ease;}';
+	$css .= '@media (hover:hover){.formal-card:not(:has(.zskeleton-slider)):hover,.content-card:not(:has(.zskeleton-slider)):hover{box-shadow:0 12px 40px -12px rgba(15,23,42,0.12);}}';
 	$css .= '.site-footer{border-top:1px solid var(--border-light);background:linear-gradient(135deg,var(--zskeleton-color-primary) 0%,var(--academic-navy) 100%);color:#fff;padding-bottom:0;}';
 	$css .= '.site-footer h3,.site-footer a{color:#fff;}';
 

@@ -87,7 +87,6 @@ img {
     height: auto;
     max-width: 100%;
     display: block;
-    aspect-ratio: attr(width) / attr(height);
 }
 
 /* Specific logo image fixes */
@@ -300,7 +299,6 @@ html {
 }
 
 body {
-    font-family: var(--zskeleton-font-family-base, Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
     line-height: 1.6;
     color: var(--professional-gray, #374151);
     background-color: var(--zskeleton-color-background, #FAFDD6);
@@ -311,7 +309,6 @@ body {
 
 /* Typography System */
 h1, h2, h3, h4, h5, h6 {
-    font-family: var(--zskeleton-font-family-headings, Arial, sans-serif);
     font-weight: 600;
     color: #1e293b;
     line-height: 1.4;
@@ -327,7 +324,6 @@ h5 { font-size: 1.125rem; }
 h6 { font-size: 1rem; font-weight: 500; }
 
 .academic-content {
-    font-family: var(--zskeleton-font-family-base, Georgia, serif);
     font-size: 1.125rem;
     line-height: 1.7;
     max-width: 800px;
@@ -337,15 +333,12 @@ h6 { font-size: 1rem; font-weight: 500; }
 .academic-content h1,
 .academic-content h2,
 .academic-content h3 {
-    font-family: var(--zskeleton-font-family-headings, Georgia, serif);
     font-weight: 600;
 }
 
 /* Color Palette — defaults match includes/theme-colors.php; front-end overrides via wp_add_inline_style. */
 :root {
-    /* Filled by wp_add_inline_style when Google Fonts are configured; fallbacks match body stack. */
-    --zskeleton-font-family-base: Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --zskeleton-font-family-headings: Arial, sans-serif;
+    /* Font stacks are set via wp_add_inline_style from theme settings (see functions.php). */
     --zskeleton-color-primary: #647FBC;
     --zskeleton-color-secondary: #91ADC8;
     --zskeleton-color-accent: #AED6CF;
@@ -369,7 +362,7 @@ h6 { font-size: 1rem; font-weight: 500; }
 
 /* Layout Container */
 .container {
-    max-width: 1200px;
+    max-width: 1600px;
     margin: 0 auto;
     padding: 0 20px;
 }
@@ -377,7 +370,6 @@ h6 { font-size: 1rem; font-weight: 500; }
 .wide-container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 20px;
 }
 
 /* Full-width main column when the page sidebar is disabled (see zskeleton_page_main_container_class). */
@@ -708,7 +700,11 @@ h6 { font-size: 1rem; font-weight: 500; }
         padding: 12px 0;
         min-height: 60px;
     }
-    
+    .header-main > .container {
+        padding: 0 10px;
+        margin: 0;
+        width: 100%;
+    }
     .header-flex {
         gap: 10px;
     }
@@ -1491,6 +1487,65 @@ ul.sub-menu {
         var(--zskeleton-nav-item-hover-bg, transparent)
     );
     text-decoration: none;
+}
+
+/* Desktop primary nav: visual indicator for items that open a dropdown (mobile drawer uses its own ::after) */
+.desktop-navigation .nav-menu > .menu-item-has-children > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+}
+
+.desktop-navigation .nav-menu > .menu-item-has-children > a::after {
+    content: '';
+    display: inline-block;
+    flex-shrink: 0;
+    width: 0.45em;
+    height: 0.45em;
+    border-style: solid;
+    border-color: currentColor;
+    border-width: 0 0.12em 0.12em 0;
+    transform: translateY(-0.06em) rotate(45deg);
+    opacity: 0.82;
+}
+
+.desktop-navigation .nav-menu > .menu-item-has-children:hover > a::after,
+.desktop-navigation .nav-menu > .menu-item-has-children:focus-within > a::after {
+    opacity: 1;
+}
+
+/* Nested dropdown parents: caret toward the flyout (LTR right, RTL left) */
+.desktop-navigation .nav-menu .sub-menu .menu-item-has-children > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.desktop-navigation .nav-menu .sub-menu .menu-item-has-children > a::after {
+    content: '';
+    display: inline-block;
+    flex-shrink: 0;
+    width: 0.4em;
+    height: 0.4em;
+    margin-inline-start: auto;
+    border-style: solid;
+    border-color: currentColor;
+    border-width: 0 0.12em 0.12em 0;
+    transform: translateY(-0.04em) rotate(-45deg);
+    opacity: 0.82;
+}
+
+html[dir='rtl'] .desktop-navigation .nav-menu .sub-menu .menu-item-has-children > a::after,
+body.rtl .desktop-navigation .nav-menu .sub-menu .menu-item-has-children > a::after {
+    transform: translateY(-0.04em) rotate(45deg);
+}
+
+.desktop-navigation .nav-menu .sub-menu .menu-item-has-children:hover > a::after,
+.desktop-navigation .nav-menu .sub-menu .menu-item-has-children:focus-within > a::after {
+    opacity: 1;
 }
 
 /*
@@ -2296,7 +2351,7 @@ body.rtl .site-header--split-top-search .header-main-split .nav-menu .sub-menu {
         width: auto;
     }
     
-    /* Mobile menu toggle button */
+    /* Mobile menu toggle button (DOM order: branding → header-actions → menu; space-between places logo and burger at outer edges) */
     .menu-toggle {
         display: flex;
         align-items: center;
@@ -2311,7 +2366,6 @@ body.rtl .site-header--split-top-search .header-main-split .nav-menu .sub-menu {
         transition: all 0.3s ease;
         color: var(--zskeleton-mobile-menu-button-bar-color, #ffffff);
         flex-shrink: 0;
-        order: 2;
     }
     
     .menu-toggle:hover,
@@ -2745,13 +2799,17 @@ body.rtl .site-header--split-top-search .header-main-split .nav-menu .sub-menu {
         outline: none;
     }
     
-    /* Mobile header actions */
+    /* Mobile header actions (search control lives in mobile bottom nav — see .search-toggle hide below) */
     .header-actions {
         display: flex;
         align-items: center;
         gap: 8px;
-        order: 3;
         flex-shrink: 0;
+    }
+
+    /* Hide header search trigger on small screens; Style 1 uses bottom bar search; Style 2 uses MBN2 popover */
+    .site-header:not(.site-header--split-top-search) .header-actions .search-toggle {
+        display: none !important;
     }
     
     .search-toggle {
@@ -3068,8 +3126,8 @@ body.rtl .site-header--split-top-search .header-main-split .nav-menu .sub-menu {
     .container,
     .wide-container,
     .hero-container {
-        padding-left: 15px;
-        padding-right: 15px;
+        padding-left: 0;
+        padding-right: 0;
     }
     
     /* Prevent any element from exceeding viewport width (exclude table internals — breaks WC/cart cells). */

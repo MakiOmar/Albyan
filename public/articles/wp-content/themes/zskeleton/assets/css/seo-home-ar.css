@@ -1,11 +1,12 @@
-﻿/**
+﻿@import url("../../blocks/seo-ar-ai-lead/style.css");
+
+/**
  * Arabic SEO homepage (page-home-seo-ar.php).
  * Inherits theme Google font via .seo-ar-homepage (no Tahoma override).
  */
 .seo-ar-homepage {
 	background: #f7f8f9;
 	color: #0f172a;
-	font-family: var(--zskeleton-font-family-base, inherit);
 }
 
 /* Wrapper when hero is replaced by [zskeleton_slider] from theme settings. */
@@ -66,7 +67,6 @@
 	line-height: 1.2;
 	margin: 0;
 	font-weight: 900;
-	font-family: var(--zskeleton-font-family-headings, inherit);
 	text-shadow: 0 2px 24px rgba(0, 20, 50, 0.65), 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
@@ -99,7 +99,6 @@
 	font-size: clamp(24px, 3.2vw, 38px);
 	line-height: 1;
 	color: #cfff16;
-	font-family: var(--zskeleton-font-family-headings, inherit);
 }
 
 .seo-ar-stat-card span {
@@ -124,7 +123,6 @@
 	text-decoration: none;
 	font-weight: 700;
 	transition: 0.2s ease;
-	font-family: var(--zskeleton-font-family-base, inherit);
 }
 
 .seo-ar-btn-primary {
@@ -166,7 +164,6 @@
 	padding: 8px 20px 8px 24px;
 	text-align: start;
 	border-inline-start: 1px solid rgba(0, 106, 172, 0.22);
-	font-family: var(--zskeleton-font-family-base, inherit);
 	color: #072635;
 }
 
@@ -256,7 +253,6 @@
 	margin: 0 0 24px;
 	color: #0c3e65;
 	font-weight: 900;
-	font-family: var(--zskeleton-font-family-headings, inherit);
 }
 
 .seo-ar-review-logos {
@@ -342,7 +338,6 @@
 	line-height: 1.25;
 	color: #0c3e65;
 	font-weight: 800;
-	font-family: var(--zskeleton-font-family-headings, inherit);
 	max-width: 920px;
 }
 
@@ -367,7 +362,6 @@
 	line-height: 1.35;
 	color: #0c3e65;
 	font-weight: 800;
-	font-family: var(--zskeleton-font-family-headings, inherit);
 }
 
 .seo-ar-top-rated-copy p {
@@ -549,256 +543,6 @@
 	padding: 64px 0;
 }
 
-/* AI era + lead form (two columns) */
-.seo-ar-ai-lead {
-	padding: 72px 0;
-	background: #f4f6f8;
-	border-block: 1px solid rgba(12, 62, 101, 0.06);
-}
-
-.seo-ar-lead-notice {
-	margin: 0 0 20px;
-	padding: 12px 16px;
-	border-radius: 8px;
-	font-weight: 600;
-	text-align: start;
-}
-
-.seo-ar-lead-notice--success {
-	background: #ecfdf5;
-	color: #065f46;
-	border: 1px solid #a7f3d0;
-}
-
-.seo-ar-lead-notice--error {
-	background: #fef2f2;
-	color: #991b1b;
-	border: 1px solid #fecaca;
-}
-
-.seo-ar-ai-lead-grid {
-	display: grid;
-	grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-	gap: 40px 48px;
-	align-items: start;
-}
-
-.seo-ar-ai-lead-copy h2 {
-	margin: 0 0 18px;
-	font-size: clamp(1.35rem, 2.4vw, 1.85rem);
-	line-height: 1.25;
-	color: #0c1e3a;
-	font-weight: 800;
-	font-family: var(--zskeleton-font-family-headings, inherit);
-	text-align: start;
-}
-
-.seo-ar-ai-lead-subhead {
-	margin: 28px 0 12px;
-	font-size: clamp(1.05rem, 1.6vw, 1.25rem);
-	color: #0c1e3a;
-	font-weight: 800;
-	font-family: var(--zskeleton-font-family-headings, inherit);
-	text-align: start;
-}
-
-.seo-ar-ai-lead-subhead:first-of-type {
-	margin-top: 24px;
-}
-
-.seo-ar-lead-text {
-	margin: 0 0 14px;
-	line-height: 1.85;
-	color: #334155;
-	font-size: 1.02rem;
-	text-align: start;
-}
-
-.seo-ar-text-highlight {
-	color: #0b5f97;
-	font-weight: 700;
-}
-
-a.seo-ar-text-link {
-	color: #0b5f97;
-	font-weight: 700;
-	text-decoration: underline;
-	text-underline-offset: 3px;
-}
-
-a.seo-ar-text-link:hover {
-	color: #094a78;
-}
-
-.seo-ar-custom-form-box {
-	background: #fff;
-	border-radius: 14px;
-	box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1);
-	border: 1px solid rgba(12, 62, 101, 0.08);
-	overflow: hidden;
-}
-
-.seo-ar-custom-form-box__inner {
-	padding: 0;
-}
-
-.seo-ar-custom-form-box__heading {
-	margin: 0;
-	padding: 16px 18px;
-	background: #0b5f97;
-	color: #fff;
-	font-size: clamp(0.95rem, 1.35vw, 1.05rem);
-	line-height: 1.35;
-	font-weight: 800;
-	text-align: center;
-	font-family: var(--zskeleton-font-family-headings, inherit);
-}
-
-.seo-ar-custom-form-box__form {
-	position: relative;
-	padding: 20px 18px 22px;
-}
-
-/* Gravity Forms inside the card */
-.seo-ar-custom-form-box__form .gform_wrapper {
-	margin: 0;
-	padding: 0;
-}
-
-.seo-ar-custom-form-box__form .gform_wrapper .gform_heading,
-.seo-ar-custom-form-box__form .gform_wrapper .gform_title {
-	display: none;
-}
-
-.seo-ar-custom-form-box__form .gform_wrapper .gform_footer input[type="submit"],
-.seo-ar-custom-form-box__form .gform_wrapper .gform_footer .gform_button {
-	width: 100%;
-	border-radius: 999px;
-	padding: 14px 22px;
-	background: #0b5f97;
-	color: #fff;
-	font-weight: 800;
-	text-transform: uppercase;
-	letter-spacing: 0.06em;
-	border: none;
-	cursor: pointer;
-}
-
-.seo-ar-custom-form-box__form .gform_wrapper .gform_footer input[type="submit"]:hover,
-.seo-ar-custom-form-box__form .gform_wrapper .gform_footer .gform_button:hover {
-	background: #094a78;
-	color: #fff;
-}
-
-/* Fallback form */
-.seo-ar-lead-form-fallback__field {
-	margin: 0 0 14px;
-}
-
-.seo-ar-lead-form-fallback__field label,
-.seo-ar-lead-form-fallback__phone-label {
-	display: block;
-	font-size: 0.8rem;
-	font-weight: 700;
-	color: #0f172a;
-	margin-bottom: 6px;
-}
-
-.seo-ar-lead-form-fallback__field--phone .seo-ar-lead-form-fallback__phone-label {
-	margin-bottom: 6px;
-}
-
-.seo-ar-req {
-	color: #b91c1c;
-}
-
-.seo-ar-lead-form-fallback input[type="text"],
-.seo-ar-lead-form-fallback input[type="email"],
-.seo-ar-lead-form-fallback input[type="tel"],
-.seo-ar-lead-form-fallback textarea,
-.seo-ar-lead-form-fallback select {
-	width: 100%;
-	max-width: 100%;
-	padding: 11px 12px;
-	border: 1px solid #cbd5e1;
-	border-radius: 8px;
-	font-size: 0.95rem;
-	font-family: inherit;
-	background: #fff;
-	box-sizing: border-box;
-}
-
-.seo-ar-lead-form-fallback__phone-row {
-	display: flex;
-	gap: 8px;
-	align-items: stretch;
-}
-
-.seo-ar-lead-form-fallback__phone-row select {
-	max-width: 42%;
-	flex-shrink: 0;
-}
-
-.seo-ar-lead-form-fallback__phone-row input[type="tel"] {
-	flex: 1;
-	min-width: 0;
-}
-
-.seo-ar-lead-form-fallback textarea {
-	min-height: 120px;
-	resize: vertical;
-}
-
-.seo-ar-lead-form-fallback__field--hp {
-	position: absolute;
-	left: -9999px;
-	width: 1px;
-	height: 1px;
-	overflow: hidden;
-}
-
-.seo-ar-lead-form-fallback__field--consent {
-	margin-top: 8px;
-}
-
-.seo-ar-lead-form-fallback__check {
-	display: flex;
-	gap: 10px;
-	align-items: flex-start;
-	font-size: 0.88rem;
-	line-height: 1.45;
-	color: #334155;
-	font-weight: 400;
-}
-
-.seo-ar-lead-form-fallback__check input {
-	margin-top: 3px;
-	flex-shrink: 0;
-}
-
-.seo-ar-lead-form-fallback__submit-wrap {
-	margin: 18px 0 0;
-}
-
-.seo-ar-lead-form-fallback__submit {
-	width: 100%;
-	border-radius: 999px;
-	padding: 14px 22px;
-	background: #0b5f97;
-	color: #fff;
-	font-weight: 800;
-	text-transform: uppercase;
-	letter-spacing: 0.06em;
-	border: none;
-	cursor: pointer;
-	font-size: 0.85rem;
-}
-
-.seo-ar-lead-form-fallback__submit:hover {
-	background: #094a78;
-	color: #fff;
-}
-
 .seo-ar-section-alt {
 	background: #eaf1f5;
 }
@@ -836,7 +580,6 @@ a.seo-ar-text-link:hover {
 	margin: 0 0 8px;
 	font-size: 20px;
 	color: #0b3556;
-	font-family: var(--zskeleton-font-family-headings, inherit);
 }
 
 .seo-ar-feature-card p,
@@ -912,11 +655,6 @@ a.seo-ar-text-link:hover {
 
 	.seo-ar-visual-grid {
 		grid-template-columns: 1fr;
-	}
-
-	.seo-ar-ai-lead-grid {
-		grid-template-columns: 1fr;
-		gap: 32px;
 	}
 }
 

@@ -1,0 +1,40 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "zskeleton/seo-ar-ai-lead",
+	"version": "1.0.0",
+	"title": "SEO AR: AI lead (contact)",
+	"category": "zskeleton-seo",
+	"icon": "chart-line",
+	"description": "Title (optional icon + separator), rich copy, and the theme lead form column. Optional schema.org fragment markup.",
+	"keywords": [ "seo", "arabic", "lead", "contact", "ai", "zskeleton" ],
+	"textdomain": "zskeleton",
+	"editorScript": "zskeleton-seo-ar-ai-lead-block-editor",
+	"style": "file:./style.css",
+	"editorStyle": "file:./style.css",
+	"attributes": {
+		"title": { "type": "string" },
+		"content": { "type": "string" },
+		"titleIconEnabled": { "type": "boolean", "default": false },
+		"titleIconType": { "type": "string", "default": "dashicon" },
+		"titleIconDashicon": { "type": "string", "default": "chart-line" },
+		"titleIconImageId": { "type": "number", "default": 0 },
+		"titleSeparatorStyle": { "type": "string", "default": "line" },
+		"titleSeparatorAlign": { "type": "string", "default": "start" },
+		"titleSeparatorColor": { "type": "string", "default": "" },
+		"titleSeparatorCharacter": { "type": "string", "default": "—" },
+		"sectionHtmlId": { "type": "string", "default": "ai-lead" },
+		"headingWrapperId": { "type": "string", "default": "" },
+		"sectionAriaLabel": { "type": "string", "default": "" },
+		"innerContainerClass": { "type": "string", "default": "" },
+		"structuredDataEnabled": { "type": "boolean", "default": false },
+		"schemaDescription": { "type": "string", "default": "" },
+		"speakableJsonLdEnabled": { "type": "boolean", "default": false },
+		"speakableCssSelectors": { "type": "string", "default": "" }
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"render": "file:./render.php"
+}
