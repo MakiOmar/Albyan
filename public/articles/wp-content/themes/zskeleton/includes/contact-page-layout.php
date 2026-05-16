@@ -301,10 +301,18 @@ function zskeleton_enqueue_contact_page_stylesheets() {
 	$file    = $use_min && is_readable( ZSkeleton_THEME_DIR . '/assets/css/page-contact.min.css' ) ? 'page-contact.min.css' : 'page-contact.css';
 	$path    = ZSkeleton_THEME_DIR . '/assets/css/' . $file;
 	$ver     = is_readable( $path ) ? (string) filemtime( $path ) : ZSkeleton_VERSION;
+	$contact_deps = array();
+	if ( function_exists( 'zskeleton_theme_css_handle_for_style_dependency' ) && function_exists( 'zskeleton_theme_css_handle_for_components_dependency' ) ) {
+		$h1 = zskeleton_theme_css_handle_for_style_dependency();
+		$h2 = zskeleton_theme_css_handle_for_components_dependency();
+		$contact_deps = ( $h1 === $h2 ) ? array( $h1 ) : array( $h1, $h2 );
+	} else {
+		$contact_deps = array( 'zskeleton-style', 'zskeleton-components' );
+	}
 	wp_enqueue_style(
 		'zskeleton-page-contact',
 		ZSkeleton_THEME_URL . '/assets/css/' . $file,
-		array( 'zskeleton-style', 'zskeleton-components' ),
+		$contact_deps,
 		$ver
 	);
 }

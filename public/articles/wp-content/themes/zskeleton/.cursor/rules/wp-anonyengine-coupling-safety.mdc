@@ -1,9 +1,7 @@
 ---
 description: Keep SmartPage loosely coupled to AnonyEngine plugin
-globs: **/*.php
-alwaysApply: true
+alwaysApply: false
 ---
-
 # SmartPage <-> AnonyEngine Coupling Safety
 
 - Treat `anonyengine` as optional at runtime; theme code must run safely when the plugin is inactive or missing.

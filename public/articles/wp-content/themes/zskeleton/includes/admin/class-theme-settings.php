@@ -2576,6 +2576,49 @@ class ZSkeleton_Theme_Settings {
             )
         );
 
+        register_setting(
+            self::OPTION_GROUP,
+            'zskeleton_combine_theme_css',
+            array(
+                'sanitize_callback' => array( $this, 'sanitize_on_off_checkbox' ),
+                'default'           => '0',
+            )
+        );
+        add_settings_field(
+            'zskeleton_combine_theme_css',
+            __( 'Combine global CSS', 'zskeleton' ),
+            array( $this, 'checkbox_field_callback' ),
+            'zskeleton-performance-settings',
+            'zskeleton_performance_settings',
+            array(
+                'id'          => 'zskeleton_combine_theme_css',
+                'default'     => '0',
+                'description' => __( 'Merge the core theme stylesheets (main, components, widgets, page title bar) into one cached file to cut HTTP requests. Optional paths below are appended to that bundle. Page-specific styles still load separately when their templates enqueue them—avoid listing the same file here unless you want it globally and accept possible duplication. Requires a writable uploads directory.', 'zskeleton' ),
+            )
+        );
+
+        register_setting(
+            self::OPTION_GROUP,
+            'zskeleton_combine_theme_css_extra_list',
+            array(
+                'sanitize_callback' => 'zskeleton_sanitize_combine_theme_css_extra_list_option',
+                'default'           => '',
+            )
+        );
+        add_settings_field(
+            'zskeleton_combine_theme_css_extra_list',
+            __( 'Extra CSS files in combined bundle', 'zskeleton' ),
+            array( $this, 'textarea_field_callback' ),
+            'zskeleton-performance-settings',
+            'zskeleton_performance_settings',
+            array(
+                'id'          => 'zskeleton_combine_theme_css_extra_list',
+                'default'     => '',
+                'rows'        => 10,
+                'description' => __( 'One theme-relative path per line (forward slashes), under this theme directory only, ending in .css — for example: assets/css/page-contact.min.css Lines starting with # are comments. Invalid or unsafe paths are dropped on save; missing files are skipped until they exist. Shown order is concatenation order after the core stack. If you bundle page-single-shared, also list single-post (.min).css so post-hero rules stay complete.', 'zskeleton' ),
+            )
+        );
+
         // Performance Information
         add_settings_field(
             'zskeleton_performance_info',
@@ -3076,9 +3119,10 @@ class ZSkeleton_Theme_Settings {
     public function textarea_field_callback($args) {
         $value = get_option($args['id'], $args['default']);
         printf(
-            '<textarea id="%s" name="%s" rows="3" class="large-text">%s</textarea>',
+            '<textarea id="%s" name="%s" rows="%d" class="large-text">%s</textarea>',
             esc_attr($args['id']),
             esc_attr($args['id']),
+            isset($args['rows']) ? max(2, min(40, (int) $args['rows'])) : 3,
             esc_textarea($value)
         );
         if (!empty($args['description'])) {
@@ -3534,6 +3578,7 @@ class ZSkeleton_Theme_Settings {
      */
     public function performance_info_callback($args) {
         $use_minified = get_option('zskeleton_use_minified_assets', true);
+        $combine_css  = '1' === (string) get_option( 'zskeleton_combine_theme_css', '0' );
         
         echo '<div class="zskeleton-performance-info" style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px; padding: 20px; margin: 10px 0;">';
         
@@ -3561,6 +3606,16 @@ class ZSkeleton_Theme_Settings {
             echo '<div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 4px; padding: 15px; margin-bottom: 15px;">';
             echo '<h5 style="margin-top: 0; color: #991b1b;">' . __('Performance Impact', 'zskeleton') . '</h5>';
             echo '<p style="margin: 0; color: #b91c1c;">' . __('Original assets are being loaded, which may result in slower page load times. Enable minified assets for optimal performance.', 'zskeleton') . '</p>';
+            echo '</div>';
+        }
+
+        if ( $combine_css ) {
+            echo '<div style="color: #059669; font-weight: 600; margin-bottom: 10px;">';
+            echo '✅ ' . esc_html__( 'Global theme CSS is combined into one cached file', 'zskeleton' );
+            echo '</div>';
+        } else {
+            echo '<div style="color: #64748b; font-weight: 500; margin-bottom: 10px;">';
+            echo esc_html__( 'Global theme CSS is loaded as separate files (enable “Combine global CSS” above to merge the core stack).', 'zskeleton' );
             echo '</div>';
         }
         
@@ -4056,6 +4111,8 @@ class ZSkeleton_Theme_Settings {
             'zskeleton_split_logo_height' => '56',
             'zskeleton_split_logo_side_padding' => '72',
             'zskeleton_back_to_top_enabled' => '1',
+            'zskeleton_combine_theme_css' => '0',
+            'zskeleton_combine_theme_css_extra_list' => '',
             'zskeleton_whatsapp_float_enabled' => '0',
             'zskeleton_whatsapp_float_url' => '',
             'zskeleton_map_latitude' => '',

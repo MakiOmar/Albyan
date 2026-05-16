@@ -343,10 +343,11 @@ function zskeleton_seo_expert_enqueue_assets() {
 		: 'seo-expert.css';
 	$seo_css_path = get_template_directory() . '/assets/css/' . $seo_css;
 
+	$seo_theme_dep = function_exists( 'zskeleton_theme_css_handle_for_style_dependency' ) ? zskeleton_theme_css_handle_for_style_dependency() : 'zskeleton-style';
 	wp_enqueue_style(
 		'zskeleton-seo-expert',
 		get_template_directory_uri() . '/assets/css/' . $seo_css,
-		array( 'zskeleton-seo-expert-font-tajawal', 'zskeleton-style' ),
+		array( 'zskeleton-seo-expert-font-tajawal', $seo_theme_dep ),
 		is_readable( $seo_css_path ) ? (string) filemtime( $seo_css_path ) : ZSkeleton_VERSION
 	);
 

@@ -1,0 +1,51 @@
+---
+description: Conventional commits for AI-assisted changes; commit sizable work with clear messages
+alwaysApply: true
+---
+
+# Git Conventional Commits (Cursor / agent)
+
+After every **sizable** or logically complete change set, **commit the work** with a **conventional commit** message. Small one-line fixes in the same task may be batched, but do not leave large, finished edits uncommitted at the end of a session or before switching tasks.
+
+This complements **Commit and Release Hygiene**: keep commits **focused** (one concern per commit when practical); split unrelated changes into separate commits.
+
+## Message format
+
+```text
+<type>(<scope>): <description>
+```
+
+- **type**: One of the types below.
+- **scope**: Short hint from the affected path, feature, or component (e.g. `theme-options`, `inc-forms`, `assets`). Use lowercase; hyphens are fine. Omit only when no scope fits (`chore: …` is acceptable).
+- **description**: Imperative mood, concise, no trailing period (common convention).
+
+## Types
+
+| Type | When to use |
+|------|-------------|
+| `feat` | New feature or capability |
+| `fix` | Bug fix |
+| `docs` | Documentation or comment-only changes meant as docs |
+| `style` | Formatting, whitespace, etc.—no semantic change |
+| `refactor` | Code change that is neither fix nor feature |
+| `perf` | Performance improvement |
+| `test` | Tests added or corrected |
+| `chore` | Tooling, build, deps, misc maintenance |
+
+Choosing **type** from the intent of the change (add/implement → often `feat`, fix → `fix`, refactor → `refactor`, tests → `test`, docs/comments → `docs`, format → `style`, speed → `perf`, otherwise → `chore`).
+
+## Examples
+
+- `feat(theme-options): add export field for footer copyright`
+- `fix(inc-contact): validate honeypot before Turnstile check`
+- `refactor(assets): consolidate admin script registration`
+- `chore: update lockfile after dependency bump`
+
+## Agent checklist
+
+1. Stage only files that belong to this commit (`git add` with paths or `git add -p` when splitting).
+2. Run `git status` / diff mentally: message matches what is staged.
+3. Commit: `git commit -m "<type>(<scope>): <description>"`.
+4. If the repo has no commits yet or hooks fail, fix or report instead of forcing a broken state.
+
+Note: Cursor **rules** instruct behavior; they do not run shell on `build_success` automatically. For event-driven git commands, use **Cursor Hooks** (see project hook docs if configured).

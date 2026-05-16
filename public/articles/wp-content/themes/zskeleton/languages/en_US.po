@@ -3694,6 +3694,10 @@ msgctxt "Font size name"
 msgid "Huge"
 msgstr "Huge"
 
+#: includes/wp-login-captcha.php
+msgid "Security verification"
+msgstr "Security verification"
+
 #: functions.php:2561
 msgid "Buttons text color"
 msgstr "Buttons text color"

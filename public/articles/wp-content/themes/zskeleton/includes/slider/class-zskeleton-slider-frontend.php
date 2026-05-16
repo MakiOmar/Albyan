@@ -63,8 +63,9 @@ class ZSkeleton_Slider_Frontend {
 
 		// Main theme handle is not registered in the block editor; avoid a missing-dep edge case there.
 		$slider_style_deps = array();
-		if ( wp_style_is( 'zskeleton-style', 'registered' ) ) {
-			$slider_style_deps[] = 'zskeleton-style';
+		$main_style_handle   = function_exists( 'zskeleton_theme_css_handle_for_style_dependency' ) ? zskeleton_theme_css_handle_for_style_dependency() : 'zskeleton-style';
+		if ( wp_style_is( $main_style_handle, 'registered' ) || wp_style_is( 'zskeleton-style', 'registered' ) || wp_style_is( 'zskeleton-combined-front', 'registered' ) ) {
+			$slider_style_deps[] = $main_style_handle;
 		}
 
 		wp_enqueue_style(

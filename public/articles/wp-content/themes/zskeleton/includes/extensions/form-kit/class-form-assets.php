@@ -130,7 +130,8 @@ class ZSkeleton_Form_Assets {
 			wp_enqueue_style( 'zskeleton-form-kit', ZSkeleton_THEME_URL . '/assets/css/' . $css, array(), $ver_css );
 			wp_enqueue_script( 'zskeleton-form-kit', ZSkeleton_THEME_URL . '/assets/js/' . $js, $fk_script_deps, $ver_js, true );
 		} else {
-			wp_enqueue_style( 'zskeleton-form-kit', ZSkeleton_THEME_URL . '/assets/css/' . $css, array( 'zskeleton-style' ), $ver_css );
+			$form_kit_style_parent = function_exists( 'zskeleton_theme_css_handle_for_style_dependency' ) ? zskeleton_theme_css_handle_for_style_dependency() : 'zskeleton-style';
+			wp_enqueue_style( 'zskeleton-form-kit', ZSkeleton_THEME_URL . '/assets/css/' . $css, array( $form_kit_style_parent ), $ver_css );
 			wp_enqueue_script( 'zskeleton-form-kit', ZSkeleton_THEME_URL . '/assets/js/' . $js, $fk_script_deps, $ver_js, true );
 		}
 

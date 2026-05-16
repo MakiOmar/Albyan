@@ -5224,3 +5224,7 @@ msgstr ""
 msgctxt "Font size name"
 msgid "Huge"
 msgstr ""
+
+#: includes/wp-login-captcha.php
+msgid "Security verification"
+msgstr ""

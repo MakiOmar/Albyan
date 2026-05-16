@@ -8,3 +8,16 @@
 [2026-05-01 05:01:31 : INFO] - Full Cache Purge triggered by: WPO_Page_Cache::disable 
 [2026-05-01 05:01:31 : INFO] - Pruning the Cache log file 
 [2026-05-01 05:02:34 : INFO] - Full Cache Purge triggered by: plugin activation/deactivation 
+[2026-05-13 08:06:20 : INFO] - Cache for multiple term taxonomy have been purged due to post terms update, triggered by action: set_object_terms 
+[2026-05-13 08:06:20 : INFO] - Cache for URL: https://albyan.institute/articles/%d8%af%d9%84%d9%8a%d9%84-%d9%85%d8%b1%d8%a7%d9%83%d8%b2-%d8%a7%d9%84%d8%aa%d8%af%d8%b1%d9%8a%d8%a8-%d9%81%d9%8a-%d8%a7%d9%84%d8%a5%d9%85%d8%a7%d8%b1%d8%a7%d8%aa-%d9%88%d8%a3%d9%81%d8%b6%d9%84-%d8%a7/ has been purged, triggered by action: save_post 
+[2026-05-13 08:06:20 : INFO] - Cache for previous post (with URL: https://albyan.institute/articles/%d8%a7%d9%84%d8%a5%d9%85%d8%a7%d8%b1%d8%a7%d8%aa-%d8%aa%d8%aa%d8%b5%d8%af%d8%b1-%d8%a7%d9%84%d9%85%d9%86%d8%b7%d9%82%d8%a9-%d9%81%d9%8a-%d8%aa%d8%b7%d8%a8%d9%8a%d9%82%d8%a7%d8%aa-%d8%a7%d9%84%d8%b0/) adjacent to post with id: 138 has been purged, triggered by action: save_post 
+[2026-05-13 08:06:20 : INFO] - Cache for all archives page associated with post_type: post and Title: "دليل مراكز التدريب في الإمارات وأفضل الجهات المعتمدة لعام 2026" have been purged, triggered by action: save_post 
+[2026-05-13 08:06:20 : INFO] - Cache for author page URL: https://albyan.institute/articles/author/ahmed-mikki/ associated with post_type: post and Title: "دليل مراكز التدريب في الإمارات وأفضل الجهات المعتمدة لعام 2026" has been purged, triggered by action: save_post 
+[2026-05-13 08:07:19 : INFO] - Cache for multiple term taxonomy have been purged due to post terms update, triggered by action: set_object_terms 
+[2026-05-13 08:07:19 : INFO] - Cache for URL: https://albyan.institute/articles/%d8%af%d9%84%d9%8a%d9%84-%d9%85%d8%b1%d8%a7%d9%83%d8%b2-%d8%a7%d9%84%d8%aa%d8%af%d8%b1%d9%8a%d8%a8-%d9%81%d9%8a-%d8%a7%d9%84%d8%a5%d9%85%d8%a7%d8%b1%d8%a7%d8%aa-%d9%88%d8%a3%d9%81%d8%b6%d9%84-%d8%a7/ has been purged, triggered by action: save_post 
+[2026-05-13 08:07:19 : INFO] - Cache for previous post (with URL: https://albyan.institute/articles/%d8%a7%d9%84%d8%a5%d9%85%d8%a7%d8%b1%d8%a7%d8%aa-%d8%aa%d8%aa%d8%b5%d8%af%d8%b1-%d8%a7%d9%84%d9%85%d9%86%d8%b7%d9%82%d8%a9-%d9%81%d9%8a-%d8%aa%d8%b7%d8%a8%d9%8a%d9%82%d8%a7%d8%aa-%d8%a7%d9%84%d8%b0/) adjacent to post with id: 138 has been purged, triggered by action: save_post 
+[2026-05-13 08:07:19 : INFO] - Cache for all archives page associated with post_type: post and Title: "دليل مراكز التدريب في الإمارات وأفضل الجهات المعتمدة لعام 2026" have been purged, triggered by action: save_post 
+[2026-05-13 08:07:19 : INFO] - Cache for author page URL: https://albyan.institute/articles/author/ahmed-mikki/ associated with post_type: post and Title: "دليل مراكز التدريب في الإمارات وأفضل الجهات المعتمدة لعام 2026" has been purged, triggered by action: save_post 
+[2026-05-13 09:15:33 : INFO] - Full Cache Purge triggered by: plugin activation/deactivation 
+[2026-05-13 09:15:33 : INFO] - Full Cache Purge triggered by: WPO_Page_Cache::disable 
+[2026-05-13 09:15:33 : INFO] - Full Cache Purge triggered by: WP_Optimize_Minify_Cache_Functions::purge_others 

@@ -469,48 +469,6 @@ function zskeleton_document_title_parts($title) {
 add_filter('document_title_parts', 'zskeleton_document_title_parts');
 
 /**
- * Customize password reset email to use custom reset page
- */
-function zskeleton_customize_password_reset_email($message, $key, $user_login, $user_data) {
-    // Create custom reset URL using your custom reset password page
-    $reset_url = add_query_arg(array(
-        'key' => $key,
-        'login' => rawurlencode($user_login)
-    ), home_url('/reset-password/'));
-    
-    // Customize the email message
-    $message = sprintf(
-        __("Hi %s,
-
-Thank you for registering with ZSkeleton!
-
-Please set your password by clicking the link below:
-
-%s
-
-This link will expire in 24 hours for security reasons.
-
-If you didn't request this password reset, please ignore this email.
-
-Best regards,
-ZSkeleton Team", 'zskeleton'),
-        $user_data->display_name ?: $user_data->user_email,
-        $reset_url
-    );
-    
-    return $message;
-}
-add_filter('retrieve_password_message', 'zskeleton_customize_password_reset_email', 10, 4);
-
-/**
- * Customize password reset email subject
- */
-function zskeleton_customize_password_reset_subject($subject, $user_login, $user_data) {
-    return __('Welcome to ZSkeleton - Set Your Password', 'zskeleton');
-}
-add_filter('retrieve_password_title', 'zskeleton_customize_password_reset_subject', 10, 3);
-
-/**
  * Redirect WordPress default password reset to custom page
  */
 function zskeleton_redirect_default_password_reset() {
@@ -1473,55 +1431,74 @@ function zskeleton_enqueue_assets() {
     
     // Check if minified assets should be used
     $use_minified = get_option('zskeleton_use_minified_assets', true);
-    
-    // Main stylesheet - use minified or original based on setting
-    $main_css_file = $use_minified ? 'style.min.css' : 'style.css';
-    $main_css_url = $use_minified ? ZSkeleton_THEME_URL . '/assets/css/' . $main_css_file : get_stylesheet_uri();
-    $main_css_path = $use_minified ? ZSkeleton_THEME_DIR . '/assets/css/' . $main_css_file : get_stylesheet_directory() . '/style.css';
-    $main_css_ver = is_readable( $main_css_path ) ? (string) filemtime( $main_css_path ) : ZSkeleton_VERSION;
-    wp_enqueue_style(
-        'zskeleton-style',
-        $main_css_url,
-        array('zskeleton-google-fonts'),
-        $main_css_ver
-    );
-    
-    // Component styles - use minified or original based on setting
-    $components_css_file = $use_minified ? 'components.min.css' : 'components.css';
-    $components_path     = ZSkeleton_THEME_DIR . '/assets/css/' . $components_css_file;
-    $components_ver      = is_readable($components_path) ? (string) filemtime($components_path) : ZSkeleton_VERSION;
-    wp_enqueue_style(
-        'zskeleton-components',
-        ZSkeleton_THEME_URL . '/assets/css/' . $components_css_file,
-        array('zskeleton-style'),
-        $components_ver
-    );
 
-    $widgets_basename = ( $use_minified && is_readable( ZSkeleton_THEME_DIR . '/assets/css/widgets-zskeleton.min.css' ) )
-        ? 'widgets-zskeleton.min.css'
-        : 'widgets-zskeleton.css';
-    $widgets_path      = ZSkeleton_THEME_DIR . '/assets/css/' . $widgets_basename;
-    if ( is_readable( $widgets_path ) ) {
-        wp_enqueue_style(
-            'zskeleton-widgets',
-            ZSkeleton_THEME_URL . '/assets/css/' . $widgets_basename,
-            array( 'zskeleton-components' ),
-            (string) filemtime( $widgets_path )
-        );
+    $GLOBALS['zskeleton_combined_front_css_enqueued'] = false;
+
+    $style_deps = array( 'zskeleton-google-fonts' );
+
+    $combined_bundle = false;
+    if ( function_exists( 'zskeleton_combine_theme_css_enabled' ) && zskeleton_combine_theme_css_enabled() ) {
+        $combined_bundle = zskeleton_get_theme_combined_front_bundle( (bool) $use_minified );
     }
 
-    // Page title bar (own file + filemtime) so RTL breadcrumbs/title bar are not dropped by stale components cache
-    $page_title_bar_file = $use_minified && is_readable( ZSkeleton_THEME_DIR . '/assets/css/page-title-bar.min.css' )
-        ? 'page-title-bar.min.css'
-        : 'page-title-bar.css';
-    $page_title_bar_path = ZSkeleton_THEME_DIR . '/assets/css/' . $page_title_bar_file;
-    if (is_readable($page_title_bar_path)) {
+    if ( $combined_bundle ) {
         wp_enqueue_style(
-            'zskeleton-page-title-bar',
-            ZSkeleton_THEME_URL . '/assets/css/' . $page_title_bar_file,
-            array('zskeleton-style'),
-            (string) filemtime($page_title_bar_path)
+            'zskeleton-combined-front',
+            $combined_bundle['url'],
+            $style_deps,
+            $combined_bundle['ver']
         );
+        $GLOBALS['zskeleton_combined_front_css_enqueued'] = true;
+    } else {
+        // Main stylesheet - use minified or original based on setting
+        $main_css_file  = $use_minified ? 'style.min.css' : 'style.css';
+        $main_css_url   = $use_minified ? ZSkeleton_THEME_URL . '/assets/css/' . $main_css_file : get_stylesheet_uri();
+        $main_css_path  = $use_minified ? ZSkeleton_THEME_DIR . '/assets/css/' . $main_css_file : get_stylesheet_directory() . '/style.css';
+        $main_css_ver   = is_readable( $main_css_path ) ? (string) filemtime( $main_css_path ) : ZSkeleton_VERSION;
+        wp_enqueue_style(
+            'zskeleton-style',
+            $main_css_url,
+            $style_deps,
+            $main_css_ver
+        );
+
+        // Component styles - use minified or original based on setting
+        $components_css_file = $use_minified ? 'components.min.css' : 'components.css';
+        $components_path     = ZSkeleton_THEME_DIR . '/assets/css/' . $components_css_file;
+        $components_ver      = is_readable( $components_path ) ? (string) filemtime( $components_path ) : ZSkeleton_VERSION;
+        wp_enqueue_style(
+            'zskeleton-components',
+            ZSkeleton_THEME_URL . '/assets/css/' . $components_css_file,
+            array( 'zskeleton-style' ),
+            $components_ver
+        );
+
+        $widgets_basename = ( $use_minified && is_readable( ZSkeleton_THEME_DIR . '/assets/css/widgets-zskeleton.min.css' ) )
+            ? 'widgets-zskeleton.min.css'
+            : 'widgets-zskeleton.css';
+        $widgets_path = ZSkeleton_THEME_DIR . '/assets/css/' . $widgets_basename;
+        if ( is_readable( $widgets_path ) ) {
+            wp_enqueue_style(
+                'zskeleton-widgets',
+                ZSkeleton_THEME_URL . '/assets/css/' . $widgets_basename,
+                array( 'zskeleton-components' ),
+                (string) filemtime( $widgets_path )
+            );
+        }
+
+        // Page title bar (own file + filemtime) so RTL breadcrumbs/title bar are not dropped by stale components cache
+        $page_title_bar_file = $use_minified && is_readable( ZSkeleton_THEME_DIR . '/assets/css/page-title-bar.min.css' )
+            ? 'page-title-bar.min.css'
+            : 'page-title-bar.css';
+        $page_title_bar_path = ZSkeleton_THEME_DIR . '/assets/css/' . $page_title_bar_file;
+        if ( is_readable( $page_title_bar_path ) ) {
+            wp_enqueue_style(
+                'zskeleton-page-title-bar',
+                ZSkeleton_THEME_URL . '/assets/css/' . $page_title_bar_file,
+                array( 'zskeleton-style' ),
+                (string) filemtime( $page_title_bar_path )
+            );
+        }
     }
 
     // Apply selected locale font families globally (inputs, footer, SEO template, etc.).
@@ -1552,7 +1529,8 @@ function zskeleton_enqueue_assets() {
 
     $color_css = function_exists( 'zskeleton_get_theme_color_css_variables' ) ? zskeleton_get_theme_color_css_variables() : '';
 
-    wp_add_inline_style( 'zskeleton-style', $font_css . $color_css );
+    $inline_target = ( $combined_bundle ) ? 'zskeleton-combined-front' : 'zskeleton-style';
+    wp_add_inline_style( $inline_target, $font_css . $color_css );
     
     // Main JavaScript - use minified or original based on setting
     $main_js_file = $use_minified ? 'main.min.js' : 'main.js';
@@ -1611,7 +1589,7 @@ function zskeleton_enqueue_woocommerce_compat_css(): void {
 		return;
 	}
 
-	$deps = array( 'zskeleton-style' );
+	$deps = array( zskeleton_theme_css_handle_for_style_dependency() );
 	if ( wp_style_is( 'woocommerce-general', 'registered' ) ) {
 		$deps[] = 'woocommerce-general';
 	}
@@ -1657,7 +1635,7 @@ function zskeleton_enqueue_membership_plans_pricing_css() {
     wp_enqueue_style(
         'zskeleton-membership-plans-pricing',
         ZSkeleton_THEME_URL . '/assets/css/' . $pricing_file,
-        array('zskeleton-style'),
+        array(zskeleton_theme_css_handle_for_style_dependency()),
         is_readable( $pricing_path ) ? (string) filemtime( $pricing_path ) : ZSkeleton_VERSION
     );
 }
@@ -1732,7 +1710,7 @@ function zskeleton_enqueue_blog_page_css() {
 		return;
 	}
 
-	$deps = array( 'zskeleton-components' );
+	$deps = array( zskeleton_theme_css_handle_for_components_dependency() );
 	if ( wp_style_is( 'zskeleton-blog-listing-hero', 'registered' ) ) {
 		$deps[] = 'zskeleton-blog-listing-hero';
 	}
@@ -1775,7 +1753,7 @@ function zskeleton_enqueue_page_single_shared_css(): void {
 	wp_enqueue_style(
 		'zskeleton-page-single-shared',
 		ZSkeleton_THEME_URL . '/assets/css/' . $file,
-		array( 'zskeleton-components' ),
+		array( zskeleton_theme_css_handle_for_components_dependency() ),
 		(string) filemtime( $path )
 	);
 }
@@ -1847,7 +1825,7 @@ function zskeleton_enqueue_seo_home_ar_css() {
 	wp_enqueue_style(
 		'zskeleton-seo-home-ar',
 		ZSkeleton_THEME_URL . '/assets/css/' . $file,
-		array( 'zskeleton-style' ),
+		array( zskeleton_theme_css_handle_for_style_dependency() ),
 		(string) filemtime( $path )
 	);
 }
@@ -1875,7 +1853,7 @@ function zskeleton_enqueue_membership_plans_pricing_css_forced() {
     wp_enqueue_style(
         'zskeleton-membership-plans-pricing',
         ZSkeleton_THEME_URL . '/assets/css/' . $pricing_file,
-        array('zskeleton-style'),
+        array(zskeleton_theme_css_handle_for_style_dependency()),
         is_readable( $pricing_path ) ? (string) filemtime( $pricing_path ) : ZSkeleton_VERSION
     );
 }
@@ -2056,11 +2034,12 @@ require_once ZSkeleton_THEME_DIR . '/includes/class-zskeleton-contact-customizer
 
 
 
-
-
+require_once ZSkeleton_THEME_DIR . '/includes/frontend-combined-css.php';
 require_once ZSkeleton_THEME_DIR . '/includes/admin/class-theme-settings.php';
 require_once ZSkeleton_THEME_DIR . '/includes/admin/class-sitemap-status.php';
 require_once ZSkeleton_THEME_DIR . '/includes/class-recaptcha.php';
+require_once ZSkeleton_THEME_DIR . '/includes/wp-login-captcha.php';
+require_once ZSkeleton_THEME_DIR . '/includes/wp-login-branding.php';
 require_once ZSkeleton_THEME_DIR . '/includes/extensions/form-kit/form-kit.php';
 require_once ZSkeleton_THEME_DIR . '/includes/contact-form-kit.php';
 require_once ZSkeleton_THEME_DIR . '/includes/contact-page-layout.php';
@@ -3640,16 +3619,26 @@ add_action('wp_head', 'zskeleton_auth_styles');
  */
 
 /**
- * Replace WordPress with ZSkeleton in email templates
+ * Site title for outbound mail (decoded HTML entities, safe for headers).
+ *
+ * @return string
  */
+function zskeleton_get_site_title_for_mail() {
+	$name = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+	return sanitize_text_field( $name );
+}
 
 /**
- * Customize email sender name
+ * Use the site title as the visible From name (replaces WordPress / theme product name).
+ *
+ * @param string $original_email_from Default from name from WordPress.
+ * @return string
  */
-function zskeleton_mail_from_name($original_email_from) {
-    return 'ZSkeleton';
+function zskeleton_mail_from_name( $original_email_from ) {
+	$title = zskeleton_get_site_title_for_mail();
+	return '' !== $title ? $title : $original_email_from;
 }
-add_filter('wp_mail_from_name', 'zskeleton_mail_from_name');
+add_filter( 'wp_mail_from_name', 'zskeleton_mail_from_name' );
 
 /**
  * Customize email sender address to use admin email
@@ -3662,107 +3651,173 @@ add_filter('wp_mail_from', 'zskeleton_mail_from');
 /**
  * Customize password reset email content
  */
-function zskeleton_custom_retrieve_password_message($message, $key, $user_login, $user_data) {
-    $site_name = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
-    
-    $message = sprintf(__('Someone has requested a password reset for the following ZSkeleton account:', 'zskeleton')) . "\r\n\r\n";
-    $message .= sprintf(__('ZSkeleton Site: %s', 'zskeleton'), $site_name) . "\r\n\r\n";
-    $message .= sprintf(__('Username: %s', 'zskeleton'), $user_login) . "\r\n\r\n";
-    $message .= __('If this was a mistake, ignore this email and nothing will happen.', 'zskeleton') . "\r\n\r\n";
-    $message .= __('To reset your password, visit the following address:', 'zskeleton') . "\r\n\r\n";
-    $message .= home_url('/reset-password/?key=' . $key . '&login=' . rawurlencode($user_login)) . "\r\n\r\n";
-    
-    if (!is_user_logged_in()) {
-        $requester_ip = $_SERVER['REMOTE_ADDR'];
-        if ($requester_ip) {
-            $message .= sprintf(__('This password reset request originated from the IP address %s.', 'zskeleton'), $requester_ip) . "\r\n";
-        }
-    }
-    
-    return $message;
+function zskeleton_custom_retrieve_password_message( $message, $key, $user_login, $user_data ) {
+	$site_name = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
+
+	$message  = sprintf(
+		/* translators: %s: site title. */
+		__( 'Someone has requested a password reset for the following account on %s:', 'zskeleton' ),
+		$site_name
+	) . "\r\n\r\n";
+	$message .= sprintf(
+		/* translators: %s: WordPress username. */
+		__( 'Username: %s', 'zskeleton' ),
+		$user_login
+	) . "\r\n\r\n";
+	$message .= __( 'If this was a mistake, ignore this email and nothing will happen.', 'zskeleton' ) . "\r\n\r\n";
+	$message .= __( 'To reset your password, visit the following address:', 'zskeleton' ) . "\r\n\r\n";
+	$message .= home_url( '/reset-password/?key=' . $key . '&login=' . rawurlencode( $user_login ) ) . "\r\n\r\n";
+
+	if ( ! is_user_logged_in() && ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
+		$requester_ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+		$message     .= sprintf(
+			/* translators: %s: IP address. */
+			__( 'This password reset request originated from the IP address %s.', 'zskeleton' ),
+			$requester_ip
+		) . "\r\n";
+	}
+
+	return $message;
 }
 add_filter('retrieve_password_message', 'zskeleton_custom_retrieve_password_message', 10, 4);
 
 /**
  * Customize password reset email subject
  */
-function zskeleton_custom_retrieve_password_title($title, $user_login, $user_data) {
-    return __('[ZSkeleton] Password Reset', 'zskeleton');
+function zskeleton_custom_retrieve_password_title( $title, $user_login, $user_data ) {
+	$site = zskeleton_get_site_title_for_mail();
+	$label = __( 'Password Reset', 'zskeleton' );
+	return '' !== $site ? '[' . $site . '] ' . $label : $label;
 }
 add_filter('retrieve_password_title', 'zskeleton_custom_retrieve_password_title', 10, 3);
 
 /**
  * Customize new user notification email content for users
  */
-function zskeleton_custom_new_user_notification_email($wp_new_user_notification_email, $user, $blogname) {
-    $key = get_password_reset_key($user);
-    if (is_wp_error($key)) {
-        return $wp_new_user_notification_email;
-    }
-    
-    $message = sprintf(__('Welcome to ZSkeleton!', 'zskeleton')) . "\r\n\r\n";
-    $message .= sprintf(__('Your ZSkeleton account has been created successfully.', 'zskeleton')) . "\r\n\r\n";
-    $message .= sprintf(__('Username: %s', 'zskeleton'), $user->user_login) . "\r\n\r\n";
-    $message .= __('To set your password, visit the following address:', 'zskeleton') . "\r\n\r\n";
-    $message .= home_url('/reset-password/?key=' . $key . '&login=' . rawurlencode($user->user_login)) . "\r\n\r\n";
-    $message .= home_url('/login/') . "\r\n\r\n";
-    $message .= __('Thank you for joining ZSkeleton!', 'zskeleton');
-    
-    $wp_new_user_notification_email['message'] = $message;
-    $wp_new_user_notification_email['subject'] = __('[ZSkeleton] Welcome - Login Details', 'zskeleton');
-    
-    return $wp_new_user_notification_email;
+function zskeleton_custom_new_user_notification_email( $wp_new_user_notification_email, $user, $blogname ) {
+	$key = get_password_reset_key( $user );
+	if ( is_wp_error( $key ) ) {
+		return $wp_new_user_notification_email;
+	}
+
+	$site = wp_specialchars_decode( (string) $blogname, ENT_QUOTES );
+
+	$message  = sprintf(
+		/* translators: %s: site title. */
+		__( 'Welcome to %s!', 'zskeleton' ),
+		$site
+	) . "\r\n\r\n";
+	$message .= sprintf(
+		/* translators: %s: site title. */
+		__( 'Your account on %s has been created successfully.', 'zskeleton' ),
+		$site
+	) . "\r\n\r\n";
+	$message .= sprintf(
+		/* translators: %s: WordPress username. */
+		__( 'Username: %s', 'zskeleton' ),
+		$user->user_login
+	) . "\r\n\r\n";
+	$message .= __( 'To set your password, visit the following address:', 'zskeleton' ) . "\r\n\r\n";
+	$message .= home_url( '/reset-password/?key=' . $key . '&login=' . rawurlencode( $user->user_login ) ) . "\r\n\r\n";
+	$message .= home_url( '/login/' ) . "\r\n\r\n";
+	$message .= sprintf(
+		/* translators: %s: site title. */
+		__( 'Thank you for joining %s!', 'zskeleton' ),
+		$site
+	);
+
+	$wp_new_user_notification_email['message'] = $message;
+	$site_mail                                   = zskeleton_get_site_title_for_mail();
+	$wp_new_user_notification_email['subject']   = '' !== $site_mail
+		? sprintf(
+			/* translators: 1: site title (subject prefix), 2: fixed phrase. */
+			__( '[%1$s] %2$s', 'zskeleton' ),
+			$site_mail,
+			__( 'Welcome — login details', 'zskeleton' )
+		)
+		: __( 'Welcome — login details', 'zskeleton' );
+
+	return $wp_new_user_notification_email;
 }
 add_filter('wp_new_user_notification_email', 'zskeleton_custom_new_user_notification_email', 10, 3);
 
 /**
  * Customize new user notification email content for admin
  */
-function zskeleton_custom_new_user_notification_email_admin($wp_new_user_notification_email_admin, $user, $blogname) {
-    $message = sprintf(__('New user registration on your ZSkeleton site %s:', 'zskeleton'), $blogname) . "\r\n\r\n";
-    $message .= sprintf(__('Username: %s', 'zskeleton'), $user->user_login) . "\r\n\r\n";
-    $message .= sprintf(__('Email: %s', 'zskeleton'), $user->user_email) . "\r\n\r\n";
-    $message .= __('This user has successfully registered for ZSkeleton membership.', 'zskeleton');
-    
-    $wp_new_user_notification_email_admin['message'] = $message;
-    $wp_new_user_notification_email_admin['subject'] = __('[ZSkeleton] New User Registration', 'zskeleton');
-    
-    return $wp_new_user_notification_email_admin;
+function zskeleton_custom_new_user_notification_email_admin( $wp_new_user_notification_email_admin, $user, $blogname ) {
+	$site = wp_specialchars_decode( (string) $blogname, ENT_QUOTES );
+
+	$message  = sprintf(
+		/* translators: %s: site title. */
+		__( 'New user registration on %s:', 'zskeleton' ),
+		$site
+	) . "\r\n\r\n";
+	$message .= sprintf(
+		/* translators: %s: WordPress username. */
+		__( 'Username: %s', 'zskeleton' ),
+		$user->user_login
+	) . "\r\n\r\n";
+	$message .= sprintf(
+		/* translators: %s: user email address. */
+		__( 'Email: %s', 'zskeleton' ),
+		$user->user_email
+	) . "\r\n\r\n";
+	$message .= sprintf(
+		/* translators: %s: site title. */
+		__( 'This user has successfully registered on %s.', 'zskeleton' ),
+		$site
+	);
+
+	$wp_new_user_notification_email_admin['message'] = $message;
+	$site_mail                                         = zskeleton_get_site_title_for_mail();
+	$wp_new_user_notification_email_admin['subject']   = '' !== $site_mail
+		? sprintf(
+			/* translators: 1: site title (subject prefix), 2: fixed phrase. */
+			__( '[%1$s] %2$s', 'zskeleton' ),
+			$site_mail,
+			__( 'New user registration', 'zskeleton' )
+		)
+		: __( 'New user registration', 'zskeleton' );
+
+	return $wp_new_user_notification_email_admin;
 }
 add_filter('wp_new_user_notification_email_admin', 'zskeleton_custom_new_user_notification_email_admin', 10, 3);
 
 /**
- * Force all WordPress emails to use ZSkeleton in the subject line
+ * Normalize bracketed email subjects to use the site title instead of WordPress (or other) product names.
+ *
+ * @param array|string $args wp_mail arguments array or subject string.
+ * @return array|string
  */
-function zskeleton_force_email_subject($args) {
-    // Check if this is an array (wp_mail format) or string
-    if (is_array($args) && isset($args['subject'])) {
-        $subject = $args['subject'];
-        // Only modify if it's a WordPress system email (contains site name or common patterns)
-        if (strpos($subject, '[') !== false && strpos($subject, ']') !== false) {
-            // Extract the content after the brackets
-            preg_match('/\[([^\]]+)\]\s*(.+)/', $subject, $matches);
-            if (isset($matches[2])) {
-                // Replace with ZSkeleton and keep the rest of the subject
-                $args['subject'] = '[ZSkeleton] ' . trim($matches[2]);
-            }
-        }
-        return $args;
-    } elseif (is_string($args)) {
-        // Handle direct subject string
-        $subject = $args;
-        if (strpos($subject, '[') !== false && strpos($subject, ']') !== false) {
-            preg_match('/\[([^\]]+)\]\s*(.+)/', $subject, $matches);
-            if (isset($matches[2])) {
-                $subject = '[ZSkeleton] ' . trim($matches[2]);
-            }
-        }
-        return $subject;
-    }
-    
-    return $args;
+function zskeleton_force_email_subject( $args ) {
+	$site = zskeleton_get_site_title_for_mail();
+	if ( '' === $site ) {
+		return $args;
+	}
+
+	if ( is_array( $args ) && isset( $args['subject'] ) ) {
+		$subject = (string) $args['subject'];
+		if ( strpos( $subject, '[' ) !== false && strpos( $subject, ']' ) !== false ) {
+			if ( preg_match( '/\[([^\]]+)\]\s*(.+)/', $subject, $matches ) && isset( $matches[2] ) ) {
+				$args['subject'] = '[' . $site . '] ' . trim( $matches[2] );
+			}
+		}
+		return $args;
+	}
+
+	if ( is_string( $args ) ) {
+		$subject = $args;
+		if ( strpos( $subject, '[' ) !== false && strpos( $subject, ']' ) !== false ) {
+			if ( preg_match( '/\[([^\]]+)\]\s*(.+)/', $subject, $matches ) && isset( $matches[2] ) ) {
+				return '[' . $site . '] ' . trim( $matches[2] );
+			}
+		}
+		return $args;
+	}
+
+	return $args;
 }
-add_filter('wp_mail', 'zskeleton_force_email_subject');
+add_filter( 'wp_mail', 'zskeleton_force_email_subject' );
 
 /**
  * Check if current user is an ZSkeleton member
