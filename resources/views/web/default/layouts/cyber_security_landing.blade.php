@@ -442,7 +442,7 @@
         .csl-footer-note {
             text-align: center;
             padding: 32px 20px;
-            color: var(--csl-muted);
+            color: #041428;;
             font-size: 13px;
             border-top: 1px solid var(--csl-border);
         }
