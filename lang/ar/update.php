@@ -2015,6 +2015,7 @@ return [
 'new_form_were_successfully_created' => 'تم إنشاء النموذج بنجاح',
 'form_were_successfully_updated' => 'تم تحديث النموذج بنجاح',
 'form_were_successfully_deleted' => 'تم حذف النموذج بنجاح',
+'form_were_successfully_duplicated' => 'تم نسخ النموذج بنجاح',
 'form_field_were_successfully_deleted' => 'تم حذف الحقل بنجاح',
 'form_field_option_were_successfully_deleted' => 'تم حذف خيار الحقل بنجاح',
 'edit_form' => 'تعديل النموذج',

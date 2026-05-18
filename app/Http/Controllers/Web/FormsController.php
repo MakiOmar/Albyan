@@ -44,7 +44,7 @@ class FormsController extends Controller
         return $this->getLandingFormByConfig('landing');
     }
 
-    private function renderLandingPage(Request $request, string $configKey, string $viewName)
+    public function renderLandingPage(Request $request, string $configKey, string $viewName, array $extraData = [])
     {
         $form = $this->getLandingFormByConfig($configKey);
         if (empty($form)) {
@@ -52,12 +52,12 @@ class FormsController extends Controller
         }
 
         $user = auth()->user();
-        $data = [
+        $data = array_merge([
             'pageTitle' => $form->title,
             'pageRobot' => getPageRobotNoIndex(),
             'form' => $form,
             'landingConfigKey' => $configKey,
-        ];
+        ], $extraData);
 
         if (!empty($form->start_date) && $form->start_date > time()) {
             return view('web.default.forms.not_start', $data);
@@ -95,7 +95,7 @@ class FormsController extends Controller
         return view($viewName, $data);
     }
 
-    private function storeLandingSubmission(Request $request, string $configKey, string $thankYouPath)
+    public function storeLandingSubmission(Request $request, string $configKey, string $thankYouPath)
     {
         $form = $this->getLandingFormByConfig($configKey);
         if (empty($form)) {

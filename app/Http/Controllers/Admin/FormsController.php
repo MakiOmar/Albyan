@@ -8,8 +8,13 @@ use App\Models\FormRoleUserGroup;
 use App\Models\FormSubmission;
 use App\Models\Group;
 use App\Models\Role;
+use App\Models\FormField;
+use App\Models\FormFieldOption;
+use App\Models\Translation\FormFieldOptionTranslation;
+use App\Models\Translation\FormFieldTranslation;
 use App\Models\Translation\FormTranslation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FormsController extends Controller
 {
@@ -217,6 +222,130 @@ class FormsController extends Controller
         ];
 
         return redirect(getAdminPanelUrl("/forms/{$form->id}/edit"))->with(['toast' => $toastData]);
+    }
+
+    public function duplicate($id)
+    {
+        $this->authorize("admin_forms_create");
+
+        $form = Form::query()->where('id', $id)
+            ->with([
+                'rolesAndUersAndGroups',
+                'fields' => function ($query) {
+                    $query->orderBy('order', 'asc');
+                    $query->with([
+                        'options' => function ($query) {
+                            $query->orderBy('order', 'asc');
+                        }
+                    ]);
+                }
+            ])->firstOrFail();
+
+        $newForm = DB::transaction(function () use ($form) {
+            $newForm = Form::query()->create([
+                'url' => $this->makeUniqueUrl($form->url),
+                'cover' => $form->cover,
+                'image' => $form->image,
+                'enable_login' => $form->enable_login,
+                'enable_resubmission' => $form->enable_resubmission,
+                'enable_welcome_message' => $form->enable_welcome_message,
+                'enable_tank_you_message' => $form->enable_tank_you_message,
+                'welcome_message_image' => $form->welcome_message_image,
+                'tank_you_message_image' => $form->tank_you_message_image,
+                'start_date' => $form->start_date,
+                'end_date' => $form->end_date,
+                'enable' => false,
+                'created_at' => time(),
+            ]);
+
+            $formTranslations = FormTranslation::query()->where('form_id', $form->id)->get();
+
+            foreach ($formTranslations as $translation) {
+                FormTranslation::query()->create([
+                    'form_id' => $newForm->id,
+                    'locale' => $translation->locale,
+                    'title' => $translation->title . ' ' . trans('public.copy'),
+                    'heading_title' => $translation->heading_title,
+                    'description' => $translation->description,
+                    'welcome_message_title' => $translation->welcome_message_title,
+                    'welcome_message_description' => $translation->welcome_message_description,
+                    'tank_you_message_title' => $translation->tank_you_message_title,
+                    'tank_you_message_description' => $translation->tank_you_message_description,
+                ]);
+            }
+
+            foreach ($form->rolesAndUersAndGroups as $roleUserGroup) {
+                FormRoleUserGroup::query()->create([
+                    'form_id' => $newForm->id,
+                    'role_id' => $roleUserGroup->role_id,
+                    'user_id' => $roleUserGroup->user_id,
+                    'group_id' => $roleUserGroup->group_id,
+                ]);
+            }
+
+            foreach ($form->fields as $field) {
+                $newField = FormField::query()->create([
+                    'form_id' => $newForm->id,
+                    'type' => $field->type,
+                    'order' => $field->order,
+                    'required' => $field->required,
+                ]);
+
+                $fieldTranslations = FormFieldTranslation::query()
+                    ->where('form_field_id', $field->id)
+                    ->get();
+
+                foreach ($fieldTranslations as $fieldTranslation) {
+                    FormFieldTranslation::query()->create([
+                        'form_field_id' => $newField->id,
+                        'locale' => $fieldTranslation->locale,
+                        'title' => $fieldTranslation->title,
+                    ]);
+                }
+
+                foreach ($field->options as $option) {
+                    $newOption = FormFieldOption::query()->create([
+                        'form_field_id' => $newField->id,
+                        'order' => $option->order,
+                    ]);
+
+                    $optionTranslations = FormFieldOptionTranslation::query()
+                        ->where('form_field_option_id', $option->id)
+                        ->get();
+
+                    foreach ($optionTranslations as $optionTranslation) {
+                        FormFieldOptionTranslation::query()->create([
+                            'form_field_option_id' => $newOption->id,
+                            'locale' => $optionTranslation->locale,
+                            'title' => $optionTranslation->title,
+                        ]);
+                    }
+                }
+            }
+
+            return $newForm;
+        });
+
+        $toastData = [
+            'title' => trans('public.request_success'),
+            'msg' => trans('update.form_were_successfully_duplicated'),
+            'status' => 'success'
+        ];
+
+        return redirect(getAdminPanelUrl("/forms/{$newForm->id}/edit"))->with(['toast' => $toastData]);
+    }
+
+    private function makeUniqueUrl(string $baseUrl): string
+    {
+        $url = $baseUrl . '-copy';
+        $counter = 1;
+
+        while (Form::query()->where('url', $url)->exists()) {
+            $counter++;
+            $url = $baseUrl . '-copy-' . $counter;
+        }
+
+        return $url;
     }
 
     public function delete($id)

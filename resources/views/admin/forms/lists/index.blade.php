@@ -70,6 +70,13 @@
                                                     </a>
                                                 @endcan
 
+                                                @can('admin_forms_create')
+                                                    <a href="{{ getAdminPanelUrl() }}/forms/{{ $form->id }}/duplicate"
+                                                       class="btn-transparent btn-sm text-primary" data-toggle="tooltip" data-placement="top" title="{{ trans('public.duplicate') }}">
+                                                        <i class="fa fa-copy"></i>
+                                                    </a>
+                                                @endcan
+
                                                 @can('admin_forms_edit')
                                                     <a href="{{ getAdminPanelUrl() }}/forms/{{ $form->id }}/edit"
                                                        class="btn-transparent btn-sm text-primary" data-toggle="tooltip" data-placement="top" title="{{ trans('admin/main.edit') }}">

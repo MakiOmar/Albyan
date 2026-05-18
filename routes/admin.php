@@ -1170,6 +1170,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::post('/store', 'FormsController@store');
             Route::get('/{id}/edit', 'FormsController@edit');
             Route::post('/{id}/update', 'FormsController@update');
+            Route::get('/{id}/duplicate', 'FormsController@duplicate');
             Route::get('/{id}/delete', 'FormsController@delete');
 
             Route::group(['prefix' => '{form_id}/fields'], function () {

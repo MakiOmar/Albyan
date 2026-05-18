@@ -2016,6 +2016,7 @@ return [
 "new_form_were_successfully_created" => "The form successfully created",
 "form_were_successfully_updated" => "The form successfully updated",
 "form_were_successfully_deleted" => "The form successfully deleted",
+"form_were_successfully_duplicated" => "The form was successfully duplicated",
 "form_field_were_successfully_deleted" => "The input successfully deleted",
 "form_field_option_were_successfully_deleted" => "The input option successfully deleted",
 "edit_form" => "Edit Form",

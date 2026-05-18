@@ -468,6 +468,10 @@ Route::group([
     Route::get('/landing/cyber-security', 'FormsController@cyberSecurityLanding');
     Route::post('/landing/cyber-security/store', 'FormsController@cyberSecurityLandingStore');
 
+    /* Diploma courses landing (DIPLOMA_LANDING_FORM_ID) */
+    Route::get('/landing/diplomas', 'DiplomaLandingController@show');
+    Route::post('/landing/diplomas/store', 'DiplomaLandingController@store');
+
     Route::get('/our-instructors', 'InstructorsCustomController@index');
     Route::get('/Reviews', function () {
         $cacheKey = 'google_reviews';
