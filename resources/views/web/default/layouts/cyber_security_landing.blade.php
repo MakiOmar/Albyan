@@ -462,7 +462,7 @@
                 @endif
             </a>
             <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                <a href="#register" class="csl-btn csl-btn-primary">سجل الآن</a>
+                <a href="#register" class="csl-btn csl-btn-primary">سجل الحين</a>
                 @if(!empty($cslWhatsappDigits))
                     <a href="https://wa.me/{{ $cslWhatsappDigits }}" target="_blank" rel="noopener" class="csl-btn csl-btn-whatsapp">واتساب</a>
                 @endif
@@ -473,7 +473,7 @@
     @yield('content')
 
     <div class="csl-sticky-cta">
-        <a href="#register" class="csl-btn csl-btn-primary">سجل الآن</a>
+        <a href="#register" class="csl-btn csl-btn-primary">سجل الحين</a>
         @if(!empty($cslWhatsappDigits))
             <a href="https://wa.me/{{ $cslWhatsappDigits }}" target="_blank" rel="noopener" class="csl-btn csl-btn-whatsapp">واتساب</a>
         @endif
