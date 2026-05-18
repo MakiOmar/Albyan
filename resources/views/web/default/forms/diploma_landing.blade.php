@@ -153,19 +153,29 @@
             }
         })();
         document.addEventListener('DOMContentLoaded', function () {
-            var isRtl = document.documentElement.getAttribute('dir') === 'rtl';
-            if (document.querySelector('.dl-certificates-swiper')) {
-                new Swiper('.dl-certificates-swiper', {
-                    rtl: isRtl,
+            function initCertificatesGallerySwiper() {
+                if (!document.querySelector('.dl-certificates-gallery .mySwiper')) {
+                    return;
+                }
+                new Swiper('.dl-certificates-gallery .mySwiper', {
+                    rtl: document.documentElement.getAttribute('dir') === 'rtl',
                     slidesPerView: 1,
                     spaceBetween: 10,
-                    pagination: { el: '.dl-gallery .swiper-pagination', clickable: true },
+                    pagination: {
+                        el: '.dl-certificates-gallery .swiper-pagination',
+                        clickable: true,
+                    },
                     breakpoints: {
                         640: { slidesPerView: 1, spaceBetween: 10 },
                         768: { slidesPerView: 2, spaceBetween: 20 },
                         1024: { slidesPerView: 3, spaceBetween: 30 }
                     }
                 });
+            }
+            if (window.lazyCSSLoader && typeof window.lazyCSSLoader.onVendorCssReady === 'function') {
+                window.lazyCSSLoader.onVendorCssReady('swiper', initCertificatesGallerySwiper);
+            } else {
+                initCertificatesGallerySwiper();
             }
         });
     </script>

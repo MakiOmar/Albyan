@@ -103,22 +103,21 @@
             margin: 0 auto;
             box-shadow: 0 12px 40px rgba(0,0,0,0.15);
         }
-        .albyan-gallery.dl-gallery {
+        .albyan-gallery {
             max-width: 1200px;
-            height: 440px;
             margin: auto;
             padding: 20px;
             overflow: hidden;
             position: relative;
         }
-        .albyan-gallery.dl-gallery .swiper-slide img {
+        .albyan-gallery .swiper-slide img {
             width: 100%;
             height: auto;
             border-radius: 10px;
             cursor: pointer;
             transition: transform 0.2s ease-in-out;
         }
-        .albyan-gallery.dl-gallery .swiper-slide img:hover { transform: scale(1.05); }
+        .albyan-gallery .swiper-slide img:hover { transform: scale(1.05); }
     </style>
     @if(!empty($heroSectionData) && !empty($heroSectionData['is_video_background']))
         @php
