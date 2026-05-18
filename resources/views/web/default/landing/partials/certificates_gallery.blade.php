@@ -28,27 +28,27 @@
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
                     <a href="/store/1/certs/333.jpg" data-lightbox="dl-certificates-gallery">
-                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/store/1/certs/333.jpg" alt="{{ trans('site.about_certificates_promo_title') }}" width="200" height="150" loading="lazy">
+                        <img src="/store/1/certs/333.jpg" alt="{{ trans('site.about_certificates_promo_title') }}" width="200" height="150" loading="lazy">
                     </a>
                 </div>
                 <div class="swiper-slide">
                     <a href="/store/1/certs/dsgdsfd898.jpg" data-lightbox="dl-certificates-gallery">
-                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/store/1/certs/dsgdsfd898.jpg" alt="{{ trans('site.about_certificates_promo_title') }}" width="200" height="150" loading="lazy">
+                        <img src="/store/1/certs/dsgdsfd898.jpg" alt="{{ trans('site.about_certificates_promo_title') }}" width="200" height="150" loading="lazy">
                     </a>
                 </div>
                 <div class="swiper-slide">
                     <a href="/store/1/certs/1copy.jpg" data-lightbox="dl-certificates-gallery">
-                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/store/1/certs/1copy.jpg" alt="{{ trans('site.about_certificates_promo_title') }}" width="200" height="150" loading="lazy">
+                        <img src="/store/1/certs/1copy.jpg" alt="{{ trans('site.about_certificates_promo_title') }}" width="200" height="150" loading="lazy">
                     </a>
                 </div>
                 <div class="swiper-slide">
                     <a href="/store/1/certs/fsfsdflkl.jpg" data-lightbox="dl-certificates-gallery">
-                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/store/1/certs/fsfsdflkl.jpg" alt="{{ trans('site.about_certificates_promo_title') }}" width="200" height="150" loading="lazy">
+                        <img src="/store/1/certs/fsfsdflkl.jpg" alt="{{ trans('site.about_certificates_promo_title') }}" width="200" height="150" loading="lazy">
                     </a>
                 </div>
                 <div class="swiper-slide">
                     <a href="/store/1/certs/foi87.png" data-lightbox="dl-certificates-gallery">
-                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/store/1/certs/foi87.png" alt="{{ trans('site.about_certificates_promo_title') }}" width="200" height="150" loading="lazy">
+                        <img src="/store/1/certs/foi87.png" alt="{{ trans('site.about_certificates_promo_title') }}" width="200" height="150" loading="lazy">
                     </a>
                 </div>
             </div>

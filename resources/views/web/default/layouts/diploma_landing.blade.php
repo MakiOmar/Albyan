@@ -118,6 +118,36 @@
             transition: transform 0.2s ease-in-out;
         }
         .albyan-gallery .swiper-slide img:hover { transform: scale(1.05); }
+        .albyan-gallery .swiper-pagination {
+            display: flex !important;
+            flex-wrap: wrap;
+            justify-content: center !important;
+            align-items: center;
+            column-gap: 14px;
+            width: 100% !important;
+            left: 0 !important;
+            right: 0 !important;
+            margin-inline: auto !important;
+            text-align: center !important;
+            position: relative;
+            margin-top: 16px;
+        }
+        .albyan-gallery .swiper-pagination .swiper-pagination-bullet {
+            margin: 0 !important;
+        }
+        .dl-certificates-gallery .swiper {
+            width: 100%;
+            height: 100%;
+        }
+        .dl-certificates-gallery .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .dl-certificates-gallery .swiper-slide a {
+            display: block;
+            width: 100%;
+        }
     </style>
     @if(!empty($heroSectionData) && !empty($heroSectionData['is_video_background']))
         @php

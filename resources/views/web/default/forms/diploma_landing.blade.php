@@ -69,7 +69,35 @@
 @endpush
 
 @push('scripts_bottom')
+    <script src="/assets/default/vendors/swiper/swiper-bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+    <script>
+        window.initDiplomaCertificatesSwiper = function () {
+            var el = document.querySelector('.dl-certificates-gallery .mySwiper');
+            if (!el || typeof Swiper === 'undefined' || el.swiper) {
+                return !!el && !!el.swiper;
+            }
+            return new Swiper(el, {
+                rtl: document.documentElement.getAttribute('dir') === 'rtl',
+                slidesPerView: 1,
+                spaceBetween: 10,
+                pagination: {
+                    el: '.dl-certificates-gallery .swiper-pagination',
+                    clickable: true,
+                },
+                breakpoints: {
+                    640: { slidesPerView: 1, spaceBetween: 10 },
+                    768: { slidesPerView: 2, spaceBetween: 20 },
+                    1024: { slidesPerView: 3, spaceBetween: 30 }
+                }
+            });
+        };
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', window.initDiplomaCertificatesSwiper);
+        } else {
+            window.initDiplomaCertificatesSwiper();
+        }
+    </script>
     <script>
         (function (reviewToggleLabels) {
             window.toggleText = function (button) {
@@ -92,6 +120,9 @@
             ];
             var started = false;
             function afterHomeLibs() {
+                if (typeof window.initDiplomaCertificatesSwiper === 'function') {
+                    window.initDiplomaCertificatesSwiper();
+                }
                 requestAnimationFrame(function () {
                     requestAnimationFrame(function () {
                         document.querySelectorAll('.swiper-slide').forEach(function (slide) {
@@ -152,32 +183,6 @@
                 window.setTimeout(startCarouselLibs, 3200);
             }
         })();
-        document.addEventListener('DOMContentLoaded', function () {
-            function initCertificatesGallerySwiper() {
-                if (!document.querySelector('.dl-certificates-gallery .mySwiper')) {
-                    return;
-                }
-                new Swiper('.dl-certificates-gallery .mySwiper', {
-                    rtl: document.documentElement.getAttribute('dir') === 'rtl',
-                    slidesPerView: 1,
-                    spaceBetween: 10,
-                    pagination: {
-                        el: '.dl-certificates-gallery .swiper-pagination',
-                        clickable: true,
-                    },
-                    breakpoints: {
-                        640: { slidesPerView: 1, spaceBetween: 10 },
-                        768: { slidesPerView: 2, spaceBetween: 20 },
-                        1024: { slidesPerView: 3, spaceBetween: 30 }
-                    }
-                });
-            }
-            if (window.lazyCSSLoader && typeof window.lazyCSSLoader.onVendorCssReady === 'function') {
-                window.lazyCSSLoader.onVendorCssReady('swiper', initCertificatesGallerySwiper);
-            } else {
-                initCertificatesGallerySwiper();
-            }
-        });
     </script>
     <script src="/assets/default/js/admin/form_submissions_details.min.js"></script>
     <script src="/assets/default/vendors/daterangepicker/daterangepicker.min.js"></script>
