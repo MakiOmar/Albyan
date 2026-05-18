@@ -147,7 +147,7 @@
             <h2 class="csl-section-title text-center">الرسوم والأقساط</h2>
             <div class="csl-pricing-card">
                 <p class="mb-1">رسوم الدبلومة كاملة</p>
-                <div class="csl-price">35,000 <span class="font-20">درهم</span></div>
+                <div class="csl-price">40,000 <span class="font-20">درهم</span></div>
                 <p class="mt-4 mb-3 font-weight-bold">تشمل الرسوم:</p>
                 <ul class="list-unstyled text-right mb-4">
                     <li class="mb-2">✓ الدراسة الأكاديمية</li>

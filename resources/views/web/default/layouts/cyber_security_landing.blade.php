@@ -456,7 +456,7 @@
         <div class="csl-topbar-inner">
             <a href="/" class="csl-logo">
                 @if(!empty($generalSettings['logo']))
-                    <img src="{{ $generalSettings['logo'] }}" alt="{{ $generalSettings['site_name'] ?? '' }}">
+                    <img src="/store/1/Logos/Untitled-1.png6523.png" alt="{{ $generalSettings['site_name'] ?? '' }}">
                 @else
                     <span class="font-weight-bold text-white">{{ $generalSettings['site_name'] ?? '' }}</span>
                 @endif
