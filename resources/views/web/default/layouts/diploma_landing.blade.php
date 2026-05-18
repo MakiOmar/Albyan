@@ -1,4 +1,4 @@
-{{-- Full-page diploma landing: home sections + lead form (no site navbar/footer) --}}
+{{-- Full-page diploma landing: homepage sections + lead form (no site navbar/footer) --}}
 @php
     $isRtl = web_layout_is_rtl($generalSettings ?? null);
     $dlWhatsapp = $diplomaLandingWhatsapp ?? config('diploma_landing.whatsapp_number');
@@ -16,10 +16,37 @@
         <link rel="stylesheet" href="/assets/default/css/rtl-app.css">
     @endif
     <link rel="stylesheet" href="/assets/default/vendors/swiper/swiper-bundle.min.css">
+    <link rel="stylesheet" href="/assets/default/vendors/owl-carousel2/owl.carousel.min.css">
     @include('web.default.includes.landing_google_cairo_font')
     @stack('styles_top')
     <style>
-        body.dl-page { margin: 0; background: #f8fafb; color: #1a2b3c; }
+        body.dl-page { margin: 0; }
+        .slider-heading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: absolute;
+            z-index: 999;
+            background-color: #ffffffa6;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 4.25rem;
+        }
+        @media screen and (max-width: 480px) {
+            .slider-heading {
+                font-size: 16px;
+                padding: 10px;
+                min-height: 3.5rem;
+            }
+        }
+        .category-courses-home-section {
+            margin-bottom: 90px;
+        }
+        .diploma-landing-course-actions .btn { min-width: 120px; }
         .dl-topbar {
             position: sticky;
             top: 0;
@@ -52,9 +79,7 @@
             text-decoration: none !important;
             border: none;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .dl-btn:hover { transform: translateY(-1px); text-decoration: none !important; }
         .dl-btn-primary {
             background: linear-gradient(135deg, #01477d, #023a66);
             color: #fff !important;
@@ -63,33 +88,12 @@
             background: #25d366;
             color: #fff !important;
         }
-        .dl-btn-call {
-            background: #fff;
-            color: #01477d !important;
-            border: 2px solid #01477d;
-        }
-        .dl-section { padding: 56px 0; }
-        .dl-section-alt { background: #fff; }
-        .dl-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .diploma-landing-course-card {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            overflow: hidden;
-            height: 100%;
-        }
-        .diploma-landing-course-card .webinar-card { box-shadow: none; margin: 0; }
-        .diploma-landing-course-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            padding: 0 12px 16px;
-        }
-        .diploma-landing-course-actions .dl-btn { flex: 1; min-width: 120px; font-size: 13px; padding: 8px 14px; }
         .dl-form-section {
             background: linear-gradient(180deg, #01477d 0%, #023a66 100%);
             color: #fff;
+            padding: 56px 0;
         }
+        .dl-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         .dl-form-wrap {
             background: #fff;
             color: #1a2b3c;
@@ -101,9 +105,9 @@
         }
         .albyan-gallery.dl-gallery {
             max-width: 1200px;
-            height: 380px;
+            height: 440px;
             margin: auto;
-            padding: 20px 0;
+            padding: 20px;
             overflow: hidden;
             position: relative;
         }
@@ -114,8 +118,16 @@
             cursor: pointer;
             transition: transform 0.2s ease-in-out;
         }
-        .albyan-gallery.dl-gallery .swiper-slide img:hover { transform: scale(1.03); }
+        .albyan-gallery.dl-gallery .swiper-slide img:hover { transform: scale(1.05); }
     </style>
+    @if(!empty($heroSectionData) && !empty($heroSectionData['is_video_background']))
+        @php
+            $__homeHeroPoster = trim((string) ($heroSectionData['hero_video_poster'] ?? ''));
+        @endphp
+        @if($__homeHeroPoster !== '')
+            <link rel="preload" as="image" href="{{ $__homeHeroPoster }}" fetchpriority="high">
+        @endif
+    @endif
     @include('web.default.includes.gtm_head')
 </head>
 <body class="dl-page landing-google-cairo {{ $isRtl ? 'rtl' : '' }}">
@@ -149,7 +161,11 @@
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <script>window.turnstileSiteKey = @json(turnstile_site_key());</script>
 @endif
+<script src="/assets/default/js/app.min.js"></script>
+<script src="/assets/default/js/image-lazy-loader.js" defer></script>
 <script src="/assets/default/vendors/feather-icons/dist/feather.min.js"></script>
+<script src="/assets/default/vendors/sweetalert2/dist/sweetalert2.min.js"></script>
+<script src="/assets/default/vendors/toast/jquery.toast.min.js"></script>
 <script>if (typeof feather !== 'undefined') { feather.replace(); }</script>
 @stack('scripts_bottom')
 </body>

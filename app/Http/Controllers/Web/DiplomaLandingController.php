@@ -31,8 +31,12 @@ class DiplomaLandingController extends Controller
     {
         $webinars = $this->resolveLandingWebinars();
 
+        $siteGeneralSettings = getGeneralSettings();
+        $heroSection = (!empty($siteGeneralSettings['hero_section2']) and $siteGeneralSettings['hero_section2'] == "1") ? "2" : "1";
+
         return [
-            'boxVideoOrImage' => getHomeVideoOrImageBoxSettings(),
+            'heroSection' => $heroSection,
+            'heroSectionData' => getHomeHeroSettings($heroSection),
             'webinars' => $webinars,
             'category' => $this->resolveLandingCategory(),
             'testimonials' => Testimonial::where('status', 'active')->get(),

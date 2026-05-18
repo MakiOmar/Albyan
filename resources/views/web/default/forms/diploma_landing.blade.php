@@ -2,7 +2,7 @@
 
 @section('content')
 
-    @include('web.default.landing.partials.video_section')
+    @include('web.default.landing.partials.hero_section')
 
     @include('web.default.landing.partials.courses_grid')
 
@@ -11,7 +11,7 @@
     @include('web.default.landing.partials.google_reviews')
 
     {{-- Lead generation form --}}
-    <section class="dl-section dl-form-section" id="dl-register">
+    <section class="dl-form-section" id="dl-register">
         <div class="dl-container">
             <h2 class="text-center text-white font-28 font-weight-bold mb-2">{{ $form->title }}</h2>
             <p class="text-center mb-4" style="opacity: 0.85;">املأ النموذج وسيتواصل معك فريق القبول في أقرب وقت</p>
@@ -47,12 +47,12 @@
                 @endphp
                 <div class="mt-4 d-flex flex-column gap-2">
                     @if(!empty($dlWaDigits))
-                        <a href="https://wa.me/{{ $dlWaDigits }}" target="_blank" rel="noopener" class="dl-btn dl-btn-whatsapp w-100">
+                        <a href="https://wa.me/{{ $dlWaDigits }}" target="_blank" rel="noopener" class="btn btn-success w-100">
                             <i class="fab fa-whatsapp"></i> {{ trans('update.contact_on_whatsapp') }}
                         </a>
                     @endif
                     @if(!empty($dlCall))
-                        <a href="tel:{{ $dlCall }}" class="dl-btn dl-btn-call w-100">
+                        <a href="tel:{{ $dlCall }}" class="btn btn-outline-primary w-100">
                             <i data-feather="phone" width="16" height="16"></i> {{ trans('update.call_us') }}
                         </a>
                     @endif
@@ -69,29 +69,8 @@
 @endpush
 
 @push('scripts_bottom')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
     <script>
-        (function () {
-            function applyDeferredSectionBackgrounds() {
-                document.querySelectorAll('.js-deferred-section-bg[data-deferred-bg]').forEach(function (el) {
-                    var url = el.getAttribute('data-deferred-bg');
-                    if (!url) return;
-                    el.style.backgroundImage = 'url(' + JSON.stringify(url) + ')';
-                    el.removeAttribute('data-deferred-bg');
-                });
-            }
-            var unlocked = false;
-            function unlock() {
-                if (unlocked) return;
-                unlocked = true;
-                ['pointerdown', 'touchstart', 'keydown', 'wheel'].forEach(function (ev) {
-                    document.removeEventListener(ev, unlock, true);
-                });
-                applyDeferredSectionBackgrounds();
-            }
-            ['pointerdown', 'touchstart', 'keydown', 'wheel'].forEach(function (ev) {
-                document.addEventListener(ev, unlock, { capture: true, passive: true });
-            });
-        })();
         (function (reviewToggleLabels) {
             window.toggleText = function (button) {
                 var hiddenText = button.previousElementSibling;
@@ -104,11 +83,75 @@
                 }
             };
         })(@json(['more' => trans('site.show_more_ellipsis'), 'less' => trans('site.show_less_ellipsis')]));
-    </script>
-    <script src="/assets/default/vendors/swiper/swiper-bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
-    <script src="/assets/default/js/parts/home.min.js"></script>
-    <script>
+        (function () {
+            var carouselUrls = [
+                '/assets/default/vendors/swiper/swiper-bundle.min.js',
+                '/assets/default/vendors/owl-carousel2/owl.carousel.min.js',
+                '/assets/default/vendors/parallax/parallax.min.js',
+                '/assets/default/js/parts/home.min.js'
+            ];
+            var started = false;
+            function afterHomeLibs() {
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        document.querySelectorAll('.swiper-slide').forEach(function (slide) {
+                            slide.addEventListener('click', function () {
+                                var showMoreBtn = this.querySelector('.show-more-btn');
+                                if (showMoreBtn) {
+                                    showMoreBtn.click();
+                                }
+                            });
+                        });
+                        if (typeof feather !== 'undefined') {
+                            feather.replace();
+                        }
+                    });
+                });
+            }
+            function loadScriptChain(index) {
+                if (index >= carouselUrls.length) {
+                    afterHomeLibs();
+                    return;
+                }
+                var sc = document.createElement('script');
+                sc.src = carouselUrls[index];
+                sc.async = false;
+                sc.onload = function () { loadScriptChain(index + 1); };
+                sc.onerror = function () { loadScriptChain(index + 1); };
+                document.body.appendChild(sc);
+            }
+            function startCarouselLibs() {
+                if (started) return;
+                started = true;
+                var loader = window.lazyCSSLoader;
+                var runChain = function () { loadScriptChain(0); };
+                if (loader && typeof loader.loadMultipleCSS === 'function') {
+                    loader.loadMultipleCSS(['swiper', 'owl-carousel']).then(runChain).catch(runChain);
+                } else {
+                    runChain();
+                }
+            }
+            var probe = document.querySelector('.swiper-container, .owl-carousel');
+            if (!probe) return;
+            if ('IntersectionObserver' in window) {
+                var io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (e) {
+                        if (e.isIntersecting) {
+                            io.disconnect();
+                            startCarouselLibs();
+                        }
+                    });
+                }, { rootMargin: '280px 0px', threshold: 0.01 });
+                io.observe(probe);
+            } else {
+                startCarouselLibs();
+            }
+            if (window.requestIdleCallback) {
+                window.requestIdleCallback(function () { startCarouselLibs(); }, { timeout: 3500 });
+            } else {
+                window.setTimeout(startCarouselLibs, 3200);
+            }
+        })();
         document.addEventListener('DOMContentLoaded', function () {
             var isRtl = document.documentElement.getAttribute('dir') === 'rtl';
             if (document.querySelector('.dl-certificates-swiper')) {
