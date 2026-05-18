@@ -245,14 +245,14 @@ function zskeleton_sanitize_contact_field( $value ) {
  * as ZSkeleton → General. If an option is empty, legacy theme mod zskeleton_contact_{key} is used
  * for any network (older Customizer / imports).
  *
- * @param string $key phone|phone_secondary|whatsapp|email|address|facebook|twitter|linkedin|youtube|instagram|github|snapchat|tiktok.
+ * @param string $key phone|phone_secondary|whatsapp|email|membership_email|media_email|address|facebook|twitter|linkedin|youtube|instagram|github|snapchat|tiktok.
  * @return string
  */
 function zskeleton_get_contact( $key ) {
 	$key = sanitize_key( $key );
 
 	$social_map  = zskeleton_get_social_profile_options_map();
-	$contact_ids = array( 'phone', 'phone_secondary', 'whatsapp', 'email', 'address' );
+	$contact_ids = array( 'phone', 'phone_secondary', 'whatsapp', 'email', 'membership_email', 'media_email', 'address' );
 	$allow       = array_merge( $contact_ids, array_keys( $social_map ) );
 
 	if ( ! in_array( $key, $allow, true ) ) {
@@ -288,6 +288,14 @@ function zskeleton_get_contact( $key ) {
 				if ( '' === trim( $val ) ) {
 					$val = (string) get_theme_mod( 'zskeleton_contact_email', '' );
 				}
+				break;
+			case 'membership_email':
+				$stored = get_option( 'zskeleton_membership_email', false );
+				$val    = ( false === $stored ) ? 'membership@zskeleton.org' : (string) $stored;
+				break;
+			case 'media_email':
+				$stored = get_option( 'zskeleton_media_email', false );
+				$val    = ( false === $stored ) ? 'media@zskeleton.org' : (string) $stored;
 				break;
 			case 'whatsapp':
 				$val = (string) get_theme_mod( 'zskeleton_contact_whatsapp', '' );

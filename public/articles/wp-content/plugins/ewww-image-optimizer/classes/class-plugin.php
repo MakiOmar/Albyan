@@ -22,105 +22,112 @@ final class Plugin extends Base {
 	/**
 	 * The one and only true EWWW\Plugin
 	 *
-	 * @var object|EWWW\Plugin $instance
+	 * @var object|Plugin $instance
 	 */
 	private static $instance;
 
 	/**
 	 * Async Key Verify object.
 	 *
-	 * @var object|EWWW\Async_Key_Verify $async_key_verify
+	 * @var object|Async_Key_Verify $async_key_verify
 	 */
 	public $async_key_verify;
 
 	/**
 	 * Async Scan object.
 	 *
-	 * @var object|EWWW\Async_Scan $async_scan
+	 * @var object|Async_Scan $async_scan
 	 */
 	public $async_scan;
 
 	/**
 	 * Async Test Optimize object.
 	 *
-	 * @var object|EWWW\Async_Test_Optimize $async_test_optimize
+	 * @var object|Async_Test_Optimize $async_test_optimize
 	 */
 	public $async_test_optimize;
 
 	/**
 	 * Async Test Request object.
 	 *
-	 * @var object|EWWW\Async_Test_Request $async_test_request
+	 * @var object|Async_Test_Request $async_test_request
 	 */
 	public $async_test_request;
 
 	/**
 	 * Background Attachment Update object.
 	 *
-	 * @var object|EWWW\Background_Process_Attachment_Update $background_attachment_update
+	 * @var object|Background_Process_Attachment_Update $background_attachment_update
 	 */
 	public $background_attachment_update;
 
 	/**
 	 * Background Process Flag object.
 	 *
-	 * @var object|EWWW\Background_Process_Flag $background_flag
+	 * @var object|Background_Process_Flag $background_flag
 	 */
 	public $background_flag;
 
 	/**
 	 * Background Process Image object.
 	 *
-	 * @var object|EWWW\Background_Process_Image $background_image
+	 * @var object|Background_Process_Image $background_image
 	 */
 	public $background_image;
 
 	/**
 	 * Background Process Media object.
 	 *
-	 * @var object|EWWW\Background_Process_Media $background_media
+	 * @var object|Background_Process_Media $background_media
 	 */
 	public $background_media;
 
 	/**
 	 * Background Process Ngg object.
 	 *
-	 * @var object|EWWW\Background_Process_Ngg $background_ngg
+	 * @var object|Background_Process_Ngg $background_ngg
 	 */
 	public $background_ngg;
 
 	/**
 	 * Background Process Ngg2 object.
 	 *
-	 * @var object|EWWW\Background_Process_Ngg2 $background_ngg2
+	 * @var object|Background_Process_Ngg2 $background_ngg2
 	 */
 	public $background_ngg2;
 
 	/**
+	 * Image Detective object.
+	 *
+	 * @var object|Image_Detective $image_detective
+	 */
+	public $image_detective;
+
+	/**
 	 * Helpscout Beacon object.
 	 *
-	 * @var object|EWWW\HS_Beacon $hs_beacon
+	 * @var object|HS_Beacon $hs_beacon
 	 */
 	public $hs_beacon;
 
 	/**
 	 * EWWW\Local object for handling local optimization tools/functions.
 	 *
-	 * @var object|EWWW\Local $local
+	 * @var object|Local $local
 	 */
 	public $local;
 
 	/**
 	 * EWWW\Admin_Notices object for handling notifications.
 	 *
-	 * @var object|EWWW\Admin_Notices $notices
+	 * @var object|Admin_Notices $notices
 	 */
 	public $notices;
 
 	/**
 	 * EWWW\Tracking object for anonymous usage tracking.
 	 *
-	 * @var object|EWWW\Tracking $tracking
+	 * @var object|Tracking $tracking
 	 */
 	public $tracking;
 
@@ -202,6 +209,9 @@ final class Plugin extends Base {
 			if ( ! isset( $wpdb->ewwwio_queue ) ) {
 				$wpdb->ewwwio_queue = $wpdb->prefix . 'ewwwio_queue';
 			}
+			if ( ! isset( $wpdb->ewwwio_pages ) ) {
+				$wpdb->ewwwio_pages = $wpdb->prefix . 'ewwwio_pages';
+			}
 
 			self::$instance = new Plugin( true );
 			self::$instance->debug_message( '<b>' . __METHOD__ . '()</b>' );
@@ -276,12 +286,16 @@ final class Plugin extends Base {
 		$this->async_requires();
 		// EWWW_Image class for working with queued images and image records from the database.
 		require_once EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'classes/class-ewww-image.php';
+		// Page_Settings trait for working with page-specific settings and rules.
+		require_once EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'classes/trait-page-settings.php';
 		// EWWWW\Local class for optimization tool installation/validation.
 		require_once EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'classes/class-local.php';
 		// EWWW\Admin_Notices class for managing admin notices.
 		require_once EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'classes/class-admin-notices.php';
 		// EWWW\Backup class for managing image backups.
 		require_once EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'classes/class-backup.php';
+		// EWWW\Image_Detective class for scaling/LCP detection.
+		require_once EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'classes/class-image-detective.php';
 		// EWWW\HS_Beacon class for integrated help/docs.
 		require_once EWWW_IMAGE_OPTIMIZER_PLUGIN_PATH . 'classes/class-hs-beacon.php';
 		// EWWW\Tracking class for reporting anonymous site data.
@@ -337,9 +351,10 @@ final class Plugin extends Base {
 	 * Setup mandatory child classes.
 	 */
 	private function load_children() {
-		self::$instance->local    = new Local();
-		self::$instance->notices  = new Admin_Notices();
-		self::$instance->tracking = new Tracking();
+		self::$instance->image_detective = new Image_Detective();
+		self::$instance->local           = new Local();
+		self::$instance->notices         = new Admin_Notices();
+		self::$instance->tracking        = new Tracking();
 	}
 
 	/**
@@ -667,7 +682,7 @@ final class Plugin extends Base {
 		// Using sanitize_text_field instead of textarea on purpose.
 		register_setting( 'ewww_image_optimizer_options', 'ewww_image_optimizer_ll_all_things', 'sanitize_text_field' );
 		register_setting( 'ewww_image_optimizer_options', 'ewww_image_optimizer_ll_exclude', array( $this, 'exclude_paths_sanitize' ) );
-		register_setting( 'ewww_image_optimizer_options', 'ewww_image_optimizer_resize_detection', 'boolval' );
+		register_setting( 'ewww_image_optimizer_options', 'ewww_image_optimizer_image_detective', 'boolval' );
 		register_setting( 'ewww_image_optimizer_options', 'ewww_image_optimizer_maxmediawidth', 'intval' );
 		register_setting( 'ewww_image_optimizer_options', 'ewww_image_optimizer_maxmediaheight', 'intval' );
 		register_setting( 'ewww_image_optimizer_options', 'ewww_image_optimizer_resize_existing', 'boolval' );
@@ -697,55 +712,117 @@ final class Plugin extends Base {
 	public function set_defaults() {
 		$this->debug_message( '<b>' . __METHOD__ . '()</b>' );
 		// Set defaults for all options that need to be autoloaded.
-		\add_option( 'ewww_image_optimizer_background_optimization', false );
-		\add_option( 'ewww_image_optimizer_noauto', false ); // Disables auto-opt.
-		\add_option( 'ewww_image_optimizer_auto', false ); // Scheduled opt (I know, poor naming).
-		\add_option( 'ewww_image_optimizer_ludicrous_mode', false );
-		\add_option( 'ewww_image_optimizer_jpg_only_mode', false );
-		\add_option( 'ewww_image_optimizer_disable_editor', false );
-		\add_option( 'ewww_image_optimizer_debug', false );
-		\add_option( 'ewww_image_optimizer_test_mode', false );
-		\add_option( 'ewww_image_optimizer_metadata_remove', true );
-		\add_option( 'ewww_image_optimizer_maxmediawidth', 2560 );
-		\add_option( 'ewww_image_optimizer_maxmediaheight', 2560 );
-		\add_option( 'ewww_image_optimizer_cloud_key', false );
-		\add_option( 'ewww_image_optimizer_jpg_level', '10' );
-		\add_option( 'ewww_image_optimizer_png_level', '10' );
-		\add_option( 'ewww_image_optimizer_gif_level', '10' );
-		\add_option( 'ewww_image_optimizer_pdf_level', '0' );
-		\add_option( 'ewww_image_optimizer_svg_level', '0' );
-		\add_option( 'ewww_image_optimizer_webp_level', '0' );
-		\add_option( 'ewww_image_optimizer_webp_conversion_method', 'local' );
-		\add_option( 'ewww_image_optimizer_webp', false );
-		\add_option( 'ewww_image_optimizer_jpg_quality', '' );
-		\add_option( 'ewww_image_optimizer_webp_quality', '' );
-		\add_option( 'ewww_image_optimizer_backup_files', '' );
-		\add_option( 'ewww_image_optimizer_resize_existing', true );
-		\add_option( 'ewww_image_optimizer_exactdn', false );
-		\add_option( 'ewww_image_optimizer_exactdn_plan_id', 0 );
-		\add_option( 'exactdn_all_the_things', true );
-		\add_option( 'exactdn_hidpi', false );
-		\add_option( 'exactdn_exclude', '' );
-		\add_option( 'exactdn_sub_folder', false );
-		\add_option( 'exactdn_prevent_db_queries', true );
-		\add_option( 'exactdn_asset_domains', '' );
-		\add_option( 'ewww_image_optimizer_lazy_load', false );
-		\add_option( 'ewww_image_optimizer_add_missing_dims', false );
-		\add_option( 'ewww_image_optimizer_use_siip', false );
-		\add_option( 'ewww_image_optimizer_use_lqip', false );
-		\add_option( 'ewww_image_optimizer_use_dcip', false );
-		\add_option( 'ewww_image_optimizer_ll_external_bg', false );
-		\add_option( 'ewww_image_optimizer_ll_exclude', '' );
-		\add_option( 'ewww_image_optimizer_ll_all_things', '' );
-		\add_option( 'ewww_image_optimizer_disable_pngout', true );
-		\add_option( 'ewww_image_optimizer_disable_svgcleaner', true );
-		\add_option( 'ewww_image_optimizer_optipng_level', 2 );
-		\add_option( 'ewww_image_optimizer_pngout_level', 2 );
-		\add_option( 'ewww_image_optimizer_webp_for_cdn', false );
-		\add_option( 'ewww_image_optimizer_force_gif2webp', false );
-		\add_option( 'ewww_image_optimizer_picture_webp', false );
-		\add_option( 'ewww_image_optimizer_webp_rewrite_exclude', '' );
-		\add_option( 'ewww_image_optimizer_webp_naming_mode', 'append' );
+		\add_option( 'ewww_image_optimizer_background_optimization', false, '', true );
+		\add_option( 'ewww_image_optimizer_noauto', false, '', true ); // Disables auto-opt.
+		\add_option( 'ewww_image_optimizer_auto', false, '', true ); // Scheduled opt (I know, poor naming).
+		\add_option( 'ewww_image_optimizer_ludicrous_mode', false, '', true );
+		\add_option( 'ewww_image_optimizer_jpg_only_mode', false, '', true );
+		\add_option( 'ewww_image_optimizer_disable_editor', false, '', true );
+		\add_option( 'ewww_image_optimizer_debug', false, '', true );
+		\add_option( 'ewww_image_optimizer_test_mode', false, '', true );
+		\add_option( 'ewww_image_optimizer_metadata_remove', true, '', true );
+		\add_option( 'ewww_image_optimizer_image_detective', false, '', true );
+		\add_option( 'ewww_image_optimizer_maxmediawidth', 2560, '', true );
+		\add_option( 'ewww_image_optimizer_maxmediaheight', 2560, '', true );
+		\add_option( 'ewww_image_optimizer_cloud_key', false, '', true );
+		\add_option( 'ewww_image_optimizer_jpg_level', '10', '', true );
+		\add_option( 'ewww_image_optimizer_png_level', '10', '', true );
+		\add_option( 'ewww_image_optimizer_gif_level', '10', '', true );
+		\add_option( 'ewww_image_optimizer_pdf_level', '0', '', true );
+		\add_option( 'ewww_image_optimizer_svg_level', '0', '', true );
+		\add_option( 'ewww_image_optimizer_webp_level', '0', '', true );
+		\add_option( 'ewww_image_optimizer_webp_conversion_method', 'local', '', true );
+		\add_option( 'ewww_image_optimizer_webp', false, '', true );
+		\add_option( 'ewww_image_optimizer_jpg_quality', '', '', true );
+		\add_option( 'ewww_image_optimizer_webp_quality', '', '', true );
+		\add_option( 'ewww_image_optimizer_backup_files', '', '', true );
+		\add_option( 'ewww_image_optimizer_resize_existing', true, '', true );
+		\add_option( 'ewww_image_optimizer_exactdn', false, '', true );
+		\add_option( 'ewww_image_optimizer_exactdn_plan_id', 0, '', true );
+		\add_option( 'ewww_image_optimizer_exactdn_asset_domains', '', '', true );
+		\add_option( 'exactdn_all_the_things', true, '', true );
+		\add_option( 'exactdn_hidpi', false, '', true );
+		\add_option( 'exactdn_exclude', '', '', true );
+		\add_option( 'exactdn_sub_folder', false, '', true );
+		\add_option( 'exactdn_prevent_db_queries', true, '', true );
+		\add_option( 'ewww_image_optimizer_lazy_load', false, '', true );
+		\add_option( 'ewww_image_optimizer_add_missing_dims', false, '', true );
+		\add_option( 'ewww_image_optimizer_use_siip', false, '', true );
+		\add_option( 'ewww_image_optimizer_use_lqip', false, '', true );
+		\add_option( 'ewww_image_optimizer_use_dcip', false, '', true );
+		\add_option( 'ewww_image_optimizer_ll_external_bg', false, '', true );
+		\add_option( 'ewww_image_optimizer_ll_exclude', '', '', true );
+		\add_option( 'ewww_image_optimizer_ll_all_things', '', '', true );
+		\add_option( 'ewww_image_optimizer_ll_autoscale', true, '', true );
+		\add_option( 'ewww_image_optimizer_ll_manual_page_settings', false, '', true );
+		\add_option( 'ewww_image_optimizer_disable_pngout', true, '', true );
+		\add_option( 'ewww_image_optimizer_disable_svgcleaner', true, '', true );
+		\add_option( 'ewww_image_optimizer_optipng_level', 2, '', true );
+		\add_option( 'ewww_image_optimizer_pngout_level', 2, '', true );
+		\add_option( 'ewww_image_optimizer_webp_for_cdn', false, '', true );
+		\add_option( 'ewww_image_optimizer_force_gif2webp', false, '', true );
+		\add_option( 'ewww_image_optimizer_picture_webp', false, '', true );
+		\add_option( 'ewww_image_optimizer_webp_rewrite_exclude', '', '', true );
+		\add_option( 'ewww_image_optimizer_webp_naming_mode', 'append', '', true );
+		\add_option( 'ewww_image_optimizer_allow_tracking', '', '', true );
+
+		// Then make sure they are all actually autoloaded.
+		$autoload_options = array(
+			'ewww_image_optimizer_background_optimization' => true,
+			'ewww_image_optimizer_noauto'                  => true,
+			'ewww_image_optimizer_auto'                    => true,
+			'ewww_image_optimizer_ludicrous_mode'          => true,
+			'ewww_image_optimizer_jpg_only_mode'           => true,
+			'ewww_image_optimizer_disable_editor'          => true,
+			'ewww_image_optimizer_debug'                   => true,
+			'ewww_image_optimizer_test_mode'               => true,
+			'ewww_image_optimizer_metadata_remove'         => true,
+			'ewww_image_optimizer_image_detective'         => true,
+			'ewww_image_optimizer_maxmediawidth'           => true,
+			'ewww_image_optimizer_maxmediaheight'          => true,
+			'ewww_image_optimizer_cloud_key'               => true,
+			'ewww_image_optimizer_jpg_level'               => true,
+			'ewww_image_optimizer_png_level'               => true,
+			'ewww_image_optimizer_gif_level'               => true,
+			'ewww_image_optimizer_pdf_level'               => true,
+			'ewww_image_optimizer_svg_level'               => true,
+			'ewww_image_optimizer_webp_level'              => true,
+			'ewww_image_optimizer_webp_conversion_method'  => true,
+			'ewww_image_optimizer_webp'                    => true,
+			'ewww_image_optimizer_jpg_quality'             => true,
+			'ewww_image_optimizer_webp_quality'            => true,
+			'ewww_image_optimizer_backup_files'            => true,
+			'ewww_image_optimizer_resize_existing'         => true,
+			'ewww_image_optimizer_exactdn'                 => true,
+			'ewww_image_optimizer_exactdn_plan_id'         => true,
+			'ewww_image_optimizer_exactdn_asset_domains'   => true,
+			'exactdn_all_the_things'                       => true,
+			'exactdn_hidpi'                                => true,
+			'exactdn_exclude'                              => true,
+			'exactdn_sub_folder'                           => true,
+			'exactdn_prevent_db_queries'                   => true,
+			'ewww_image_optimizer_lazy_load'               => true,
+			'ewww_image_optimizer_add_missing_dims'        => true,
+			'ewww_image_optimizer_use_siip'                => true,
+			'ewww_image_optimizer_use_lqip'                => true,
+			'ewww_image_optimizer_use_dcip'                => true,
+			'ewww_image_optimizer_ll_external_bg'          => true,
+			'ewww_image_optimizer_ll_exclude'              => true,
+			'ewww_image_optimizer_ll_all_things'           => true,
+			'ewww_image_optimizer_ll_autoscale'            => true,
+			'ewww_image_optimizer_ll_manual_page_settings' => true,
+			'ewww_image_optimizer_disable_pngout'          => true,
+			'ewww_image_optimizer_disable_svgcleaner'      => true,
+			'ewww_image_optimizer_optipng_level'           => true,
+			'ewww_image_optimizer_pngout_level'            => true,
+			'ewww_image_optimizer_webp_for_cdn'            => true,
+			'ewww_image_optimizer_force_gif2webp'          => true,
+			'ewww_image_optimizer_picture_webp'            => true,
+			'ewww_image_optimizer_webp_rewrite_exclude'    => true,
+			'ewww_image_optimizer_webp_naming_mode'        => true,
+			'ewww_image_optimizer_allow_tracking'          => true,
+		);
+		wp_set_option_autoload_values( $autoload_options );
 
 		// Set network defaults.
 		\add_site_option( 'ewww_image_optimizer_background_optimization', false );

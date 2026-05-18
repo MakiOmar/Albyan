@@ -72,17 +72,25 @@ $zskeleton_sidebar_mship = function_exists( 'zskeleton_is_memberships_feature_en
         <h3 class="widget-title"><?php _e('Search Resources', 'zskeleton'); ?></h3>
         <?php get_search_form(); ?>
         
+        <?php if ( function_exists( 'zskeleton_sidebar_has_browse_links' ) && zskeleton_sidebar_has_browse_links() ) : ?>
         <div class="search-categories">
             <h4><?php _e('Browse by Page', 'zskeleton'); ?></h4>
             <ul class="category-links">
-                <li><a href="<?php echo esc_url(zskeleton_get_page_url('about')); ?>"><?php _e('About', 'zskeleton'); ?></a></li>
-                <li><a href="<?php echo esc_url(zskeleton_get_page_url('faqs')); ?>"><?php _e('FAQs', 'zskeleton'); ?></a></li>
-                <?php if ( $zskeleton_sidebar_mship ) : ?>
-                <li><a href="<?php echo esc_url(zskeleton_get_page_url('memberships')); ?>"><?php _e('Memberships', 'zskeleton'); ?></a></li>
+                <?php if ( zskeleton_sidebar_browse_link_enabled( 'about' ) ) : ?>
+                <li><a href="<?php echo esc_url( zskeleton_get_page_url( 'about' ) ); ?>"><?php _e( 'About', 'zskeleton' ); ?></a></li>
                 <?php endif; ?>
-                <li><a href="<?php echo esc_url(zskeleton_get_page_url('contact')); ?>"><?php _e('Contact', 'zskeleton'); ?></a></li>
+                <?php if ( zskeleton_sidebar_browse_link_enabled( 'faqs' ) ) : ?>
+                <li><a href="<?php echo esc_url( zskeleton_get_page_url( 'faqs' ) ); ?>"><?php _e( 'FAQs', 'zskeleton' ); ?></a></li>
+                <?php endif; ?>
+                <?php if ( $zskeleton_sidebar_mship && zskeleton_sidebar_browse_link_enabled( 'memberships' ) ) : ?>
+                <li><a href="<?php echo esc_url( zskeleton_get_page_url( 'memberships' ) ); ?>"><?php _e( 'Memberships', 'zskeleton' ); ?></a></li>
+                <?php endif; ?>
+                <?php if ( zskeleton_sidebar_browse_link_enabled( 'contact' ) ) : ?>
+                <li><a href="<?php echo esc_url( function_exists( 'zskeleton_get_theme_contact_page_url' ) ? zskeleton_get_theme_contact_page_url() : zskeleton_get_page_url( 'contact' ) ); ?>"><?php _e( 'Contact', 'zskeleton' ); ?></a></li>
+                <?php endif; ?>
             </ul>
         </div>
+        <?php endif; ?>
     </section>
     
     <!-- Recent Content Widget -->
@@ -133,7 +141,7 @@ $zskeleton_sidebar_mship = function_exists( 'zskeleton_is_memberships_feature_en
         ?>
         
         <div class="view-all">
-            <a href="<?php echo esc_url(home_url('/blog')); ?>" class="btn btn-secondary btn-small">
+            <a href="<?php echo esc_url( function_exists( 'zskeleton_get_theme_blog_listing_url' ) ? zskeleton_get_theme_blog_listing_url() : zskeleton_get_page_url( 'blog' ) ); ?>" class="btn btn-secondary btn-small">
                 <?php _e('View All Posts', 'zskeleton'); ?>
             </a>
         </div>
@@ -143,22 +151,30 @@ $zskeleton_sidebar_mship = function_exists( 'zskeleton_is_memberships_feature_en
     <section class="widget contact-widget formal-card">
         <h3 class="widget-title"><?php _e('Get in Touch', 'zskeleton'); ?></h3>
         <p><?php _e('Have questions about membership or your account?', 'zskeleton'); ?></p>
-        
+
+        <?php
+        $zskeleton_sidebar_membership_email = function_exists( 'zskeleton_get_contact' ) ? sanitize_email( (string) zskeleton_get_contact( 'membership_email' ) ) : sanitize_email( (string) get_option( 'zskeleton_membership_email', '' ) );
+        $zskeleton_sidebar_media_email      = function_exists( 'zskeleton_get_contact' ) ? sanitize_email( (string) zskeleton_get_contact( 'media_email' ) ) : sanitize_email( (string) get_option( 'zskeleton_media_email', '' ) );
+        ?>
         <div class="contact-links">
-            <a href="<?php echo esc_url(get_permalink(get_page_by_path('contact'))); ?>" class="contact-link">
+            <a href="<?php echo esc_url( function_exists( 'zskeleton_get_theme_contact_page_url' ) ? zskeleton_get_theme_contact_page_url() : zskeleton_get_page_url( 'contact' ) ); ?>" class="contact-link">
                 <span class="contact-icon">✉️</span>
                 <span class="contact-text"><?php _e('Contact Us', 'zskeleton'); ?></span>
             </a>
-            
-            <a href="mailto:membership@zskeleton.org" class="contact-link">
+
+            <?php if ( '' !== $zskeleton_sidebar_membership_email ) : ?>
+            <a href="<?php echo esc_url( 'mailto:' . $zskeleton_sidebar_membership_email ); ?>" class="contact-link">
                 <span class="contact-icon">👥</span>
                 <span class="contact-text"><?php _e('Membership Inquiries', 'zskeleton'); ?></span>
             </a>
-            
-            <a href="mailto:media@zskeleton.org" class="contact-link">
+            <?php endif; ?>
+
+            <?php if ( '' !== $zskeleton_sidebar_media_email ) : ?>
+            <a href="<?php echo esc_url( 'mailto:' . $zskeleton_sidebar_media_email ); ?>" class="contact-link">
                 <span class="contact-icon">📰</span>
                 <span class="contact-text"><?php _e('Media & Press', 'zskeleton'); ?></span>
             </a>
+            <?php endif; ?>
         </div>
     </section>
     

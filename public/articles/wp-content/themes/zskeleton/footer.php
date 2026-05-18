@@ -209,16 +209,22 @@
                                 <strong><?php _e('Partnerships:', 'zskeleton'); ?></strong><br>
                                 <a href="mailto:partnerships@zskeleton.org">partnerships@zskeleton.org</a>
                             </p>
-                            <?php if ( function_exists( 'zskeleton_is_memberships_feature_enabled' ) && zskeleton_is_memberships_feature_enabled() ) : ?>
+                            <?php
+                            $zskeleton_footer_membership_email = function_exists( 'zskeleton_get_contact' ) ? sanitize_email( (string) zskeleton_get_contact( 'membership_email' ) ) : sanitize_email( (string) get_option( 'zskeleton_membership_email', '' ) );
+                            $zskeleton_footer_media_email      = function_exists( 'zskeleton_get_contact' ) ? sanitize_email( (string) zskeleton_get_contact( 'media_email' ) ) : sanitize_email( (string) get_option( 'zskeleton_media_email', '' ) );
+                            ?>
+                            <?php if ( function_exists( 'zskeleton_is_memberships_feature_enabled' ) && zskeleton_is_memberships_feature_enabled() && '' !== $zskeleton_footer_membership_email ) : ?>
                             <p>
                                 <strong><?php _e('Membership Support:', 'zskeleton'); ?></strong><br>
-                                <a href="mailto:membership@zskeleton.org">membership@zskeleton.org</a>
+                                <a href="<?php echo esc_url( 'mailto:' . $zskeleton_footer_membership_email ); ?>"><?php echo esc_html( $zskeleton_footer_membership_email ); ?></a>
                             </p>
                             <?php endif; ?>
+                            <?php if ( '' !== $zskeleton_footer_media_email ) : ?>
                             <p>
                                 <strong><?php _e('Press:', 'zskeleton'); ?></strong><br>
-                                <a href="mailto:media@zskeleton.org">media@zskeleton.org</a>
+                                <a href="<?php echo esc_url( 'mailto:' . $zskeleton_footer_media_email ); ?>"><?php echo esc_html( $zskeleton_footer_media_email ); ?></a>
                             </p>
+                            <?php endif; ?>
                         </div>
                     <?php endif; ?>
                 </div>

@@ -75,8 +75,8 @@ class Picture_Webp extends Page_Parser {
 		/**
 		 * Allow pre-empting <picture> WebP by page.
 		 *
-		 * @param bool Whether to parse the page for images to rewrite for WebP, default true.
-		 * @param string The URI/path of the page.
+		 * @param bool true Whether to parse the page for images to rewrite for WebP, default true.
+		 * @param string $this->request_uri The URI/path of the page.
 		 */
 		if ( ! \apply_filters( 'eio_do_picture_webp', true, $this->request_uri ) ) {
 			return;
@@ -538,7 +538,7 @@ class Picture_Webp extends Page_Parser {
 	}
 
 	/**
-	 * Checks if the path is a valid WebP image, on-disk or forced.
+	 * Checks if the path has a valid WebP image copy, on-disk or forced.
 	 *
 	 * @param string $image The image URL.
 	 * @return bool True if the file exists or matches a forced path, false otherwise.
@@ -567,6 +567,9 @@ class Picture_Webp extends Page_Parser {
 			return false;
 		}
 		if ( $extension && 'webp' === $extension ) {
+			return false;
+		}
+		if ( $extension && 'avif' === $extension ) {
 			return false;
 		}
 		if ( \apply_filters( 'ewww_image_optimizer_skip_webp_rewrite', false, $image ) ) {

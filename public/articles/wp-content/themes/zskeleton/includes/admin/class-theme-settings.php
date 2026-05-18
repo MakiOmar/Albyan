@@ -1352,6 +1352,46 @@ class ZSkeleton_Theme_Settings {
 
         register_setting(
             self::OPTION_GROUP,
+            'zskeleton_membership_email',
+            array(
+                'sanitize_callback' => array( $this, 'sanitize_membership_email_setting' ),
+            )
+        );
+        add_settings_field(
+            'zskeleton_membership_email',
+            __( 'Membership email', 'zskeleton' ),
+            array( $this, 'email_field_callback' ),
+            'zskeleton-contact-social-settings',
+            'zskeleton_contact_social_settings',
+            array(
+                'id'          => 'zskeleton_membership_email',
+                'default'     => 'membership@zskeleton.org',
+                'description' => __( 'Membership and account inquiries (sidebar, footer).', 'zskeleton' ),
+            )
+        );
+
+        register_setting(
+            self::OPTION_GROUP,
+            'zskeleton_media_email',
+            array(
+                'sanitize_callback' => array( $this, 'sanitize_media_email_setting' ),
+            )
+        );
+        add_settings_field(
+            'zskeleton_media_email',
+            __( 'Media & press email', 'zskeleton' ),
+            array( $this, 'email_field_callback' ),
+            'zskeleton-contact-social-settings',
+            'zskeleton_contact_social_settings',
+            array(
+                'id'          => 'zskeleton_media_email',
+                'default'     => 'media@zskeleton.org',
+                'description' => __( 'Press and media contact (sidebar, footer).', 'zskeleton' ),
+            )
+        );
+
+        register_setting(
+            self::OPTION_GROUP,
             'zskeleton_contact_phone',
             array(
                 'sanitize_callback' => array( $this, 'sanitize_phone_setting' ),
@@ -1928,6 +1968,51 @@ class ZSkeleton_Theme_Settings {
             'zskeleton_blog_listing_intro',
             __('Blog listing page', 'zskeleton'),
             array($this, 'blog_listing_hub_intro_callback'),
+            'zskeleton-content-settings',
+            'zskeleton_content_settings'
+        );
+
+        register_setting(
+            self::OPTION_GROUP,
+            'zskeleton_theme_blog_listing_page_id',
+            array(
+                'sanitize_callback' => array( $this, 'sanitize_optional_page_id_setting' ),
+                'default'           => 0,
+            )
+        );
+        add_settings_field(
+            'zskeleton_theme_blog_listing_page_id',
+            __( 'Blog listing page (theme links)', 'zskeleton' ),
+            array( $this, 'page_select_field_callback' ),
+            'zskeleton-content-settings',
+            'zskeleton_content_settings',
+            array(
+                'id'          => 'zskeleton_theme_blog_listing_page_id',
+                'none_label'  => __( '— Use main Blog link (Posts page, /blog/, or theme mapping)', 'zskeleton' ),
+                'description' => __( 'Optional page for the sidebar “View All Posts” button. When unset, uses the main Blog link (Reading → Posts page, /blog/, or theme mapping).', 'zskeleton' ),
+            )
+        );
+
+        $sidebar_browse_link_options = array(
+            'zskeleton_sidebar_browse_show_about'        => __( 'About', 'zskeleton' ),
+            'zskeleton_sidebar_browse_show_faqs'         => __( 'FAQs', 'zskeleton' ),
+            'zskeleton_sidebar_browse_show_memberships'  => __( 'Memberships', 'zskeleton' ),
+            'zskeleton_sidebar_browse_show_contact'      => __( 'Contact', 'zskeleton' ),
+        );
+        foreach ( $sidebar_browse_link_options as $option_name => $label ) {
+            register_setting(
+                self::OPTION_GROUP,
+                $option_name,
+                array(
+                    'sanitize_callback' => array( $this, 'sanitize_on_off_checkbox' ),
+                    'default'           => '1',
+                )
+            );
+        }
+        add_settings_field(
+            'zskeleton_sidebar_browse_links',
+            __( 'Sidebar “Browse by Page” links', 'zskeleton' ),
+            array( $this, 'sidebar_browse_links_field_callback' ),
             'zskeleton-content-settings',
             'zskeleton_content_settings'
         );
@@ -3449,6 +3534,33 @@ class ZSkeleton_Theme_Settings {
         );
     }
 
+    /**
+     * Checkboxes for sidebar “Browse by Page” quick links.
+     *
+     * @return void
+     */
+    public function sidebar_browse_links_field_callback() {
+        $links = array(
+            'zskeleton_sidebar_browse_show_about'       => __( 'About', 'zskeleton' ),
+            'zskeleton_sidebar_browse_show_faqs'        => __( 'FAQs', 'zskeleton' ),
+            'zskeleton_sidebar_browse_show_memberships' => __( 'Memberships', 'zskeleton' ),
+            'zskeleton_sidebar_browse_show_contact'     => __( 'Contact', 'zskeleton' ),
+        );
+        echo '<fieldset class="zskeleton-sidebar-browse-links">';
+        foreach ( $links as $option_name => $label ) {
+            $value = get_option( $option_name, '1' );
+            printf( '<input type="hidden" name="%s" value="0" />', esc_attr( $option_name ) );
+            printf(
+                '<label style="display:block;margin-bottom:8px;"><input type="checkbox" id="%1$s" name="%1$s" value="1" %2$s /> %3$s</label>',
+                esc_attr( $option_name ),
+                checked( $value, '1', false ),
+                esc_html( $label )
+            );
+        }
+        echo '</fieldset>';
+        echo '<p class="description">' . esc_html__( 'Choose which pages appear under “Browse by Page” in the sidebar. Memberships still requires the memberships feature to be enabled.', 'zskeleton' ) . '</p>';
+    }
+
     public function radio_field_callback($args) {
         $value = get_option($args['id'], $args['default']);
         echo '<fieldset>';
@@ -3887,23 +3999,55 @@ class ZSkeleton_Theme_Settings {
      * @param mixed $value Raw value.
      * @return string Sanitized email (or existing value if invalid).
      */
-    public function sanitize_contact_email_setting($value) {
-        $raw = sanitize_text_field((string) $value);
+    public function sanitize_contact_email_setting( $value ) {
+        return $this->sanitize_theme_email_option( $value, 'zskeleton_contact_email', 'invalid_contact_email', __( 'Please enter a valid Contact Email.', 'zskeleton' ) );
+    }
 
-        if ('' === $raw) {
+    /**
+     * Sanitize membership email option.
+     *
+     * @param mixed $value Raw value.
+     * @return string
+     */
+    public function sanitize_membership_email_setting( $value ) {
+        return $this->sanitize_theme_email_option( $value, 'zskeleton_membership_email', 'invalid_membership_email', __( 'Please enter a valid Membership email.', 'zskeleton' ) );
+    }
+
+    /**
+     * Sanitize media & press email option.
+     *
+     * @param mixed $value Raw value.
+     * @return string
+     */
+    public function sanitize_media_email_setting( $value ) {
+        return $this->sanitize_theme_email_option( $value, 'zskeleton_media_email', 'invalid_media_email', __( 'Please enter a valid Media & press email.', 'zskeleton' ) );
+    }
+
+    /**
+     * Sanitize a theme email wp_option; keep the previous value when invalid.
+     *
+     * @param mixed  $value        Raw value.
+     * @param string $option_name  Option key.
+     * @param string $error_code   Settings error code.
+     * @param string $error_message User-facing error message.
+     * @return string
+     */
+    private function sanitize_theme_email_option( $value, $option_name, $error_code, $error_message ) {
+        $raw = sanitize_text_field( (string) $value );
+
+        if ( '' === $raw ) {
             return '';
         }
 
-        if (!filter_var($raw, FILTER_VALIDATE_EMAIL)) {
+        if ( ! filter_var( $raw, FILTER_VALIDATE_EMAIL ) ) {
             add_settings_error(
                 self::OPTION_GROUP,
-                'invalid_contact_email',
-                esc_html__('Please enter a valid Contact Email.', 'zskeleton'),
+                $error_code,
+                esc_html( $error_message ),
                 'error'
             );
 
-            // Keep previous valid value to avoid persisting invalid data.
-            return (string) get_option('zskeleton_contact_email', '');
+            return (string) get_option( $option_name, '' );
         }
 
         return $raw;
@@ -4104,6 +4248,8 @@ class ZSkeleton_Theme_Settings {
             'zskeleton_google_font_arabic' => 'Cairo:wght@400;500;600;700',
             'zskeleton_google_font_default' => 'Inter:wght@400;500;600;700',
             'zskeleton_contact_email' => 'info@zskeleton.org',
+            'zskeleton_membership_email' => 'membership@zskeleton.org',
+            'zskeleton_media_email' => 'media@zskeleton.org',
             'zskeleton_contact_phone' => '',
             'zskeleton_contact_phone_secondary' => '',
             'zskeleton_footer_widget_areas_count' => '4',
@@ -4120,6 +4266,11 @@ class ZSkeleton_Theme_Settings {
             'zskeleton_map_address' => '',
             'zskeleton_map_zoom' => '14',
             'zskeleton_theme_contact_page_id' => 0,
+            'zskeleton_theme_blog_listing_page_id' => 0,
+            'zskeleton_sidebar_browse_show_about' => '1',
+            'zskeleton_sidebar_browse_show_faqs' => '1',
+            'zskeleton_sidebar_browse_show_memberships' => '1',
+            'zskeleton_sidebar_browse_show_contact' => '1',
             'zskeleton_hero_title' => 'ZSkeleton',
             'zskeleton_hero_subtitle' => 'Launch your next WordPress project faster with reusable templates and core features.',
             'zskeleton_newsletter_title' => 'Stay Updated with ZSkeleton',

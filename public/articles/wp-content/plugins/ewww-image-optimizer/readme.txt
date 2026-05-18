@@ -3,7 +3,7 @@ Contributors: nosilver4u
 Donate link: https://ewww.io/donate/
 Tags: compress, convert, webp, resize, lazy load
 Tested up to: 7.0
-Stable tag: 8.5.0
+Stable tag: 8.6.0
 License: GPLv3
 
 Comprehensive image optimization that doesn't require a rocket science degree. Optimize images automatically for Faster Sites and Happy Visitors.
@@ -21,6 +21,7 @@ Are you frustrated by a slow website? Do over-sized images make you say “ewww�
 * Lossless JPG, PNG, GIF, and SVG image optimization (8% average savings)
 * WebP conversion compatible with all web hosts (60% average savings)
 * Optimize images from [any plugin](https://docs.ewww.io/article/84-plugin-compatibility)
+* Image Detective to help you identify improperly scaled images and better optimize LCP images
 * Resize images at upload or in bulk
 * Lazy Load with auto-scaling for responsive images–uses properly-sized placeholders to prevent layout shift (CLS)
 * Sharpen thumbnail images for better quality
@@ -169,6 +170,19 @@ That's not a question, but since I made it up, I'll answer it. See this resource
 
 * Feature requests can be viewed and submitted on our [feedback portal](https://feedback.ewww.io/b/features)
 * If you would like to help translate this plugin in your language, [join the team](https://translate.wordpress.org/projects/wp-plugins/ewww-image-optimizer/)
+
+= 8.6.0 =
+*Release Date - May 14, 2026*
+
+* added: LCP image detection helper, along with improved UI for Resize Detection which has been renamed to Image Detective
+* added: ability to exclude LCP image from Lazy Load
+* added: filters for plugins that offload media to cloud storage to integrate with S3 detection for JS/Picture WebP and Lazy Load, props @alessandrocarrera
+* changed: Lazy Load and Easy IO scaling thresholds reduced for improved auto-scaling
+* fixed: performance regression when Lazy Load checks parent elements for skip-lazy exceptions
+* fixed: new uploads checked twice for optimization when Image Regenerate & Select Crop plugin is active
+* fixed: incorrect WebP URLs shown in Media Library when naming mode is empty, usually when media is offloaded
+* fixed: some front-end options not autoloaded
+* fixed: AVIF images rewritten in Force WebP mode
 
 = 8.5.0 =
 *Release Date - April 1, 2026*

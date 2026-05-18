@@ -28,6 +28,7 @@ function ewww_image_optimizer_display_tools() {
 	}
 	$queue_count  = ewwwio()->background_media->count_queue();
 	$queue_count += ewwwio()->background_image->count_queue();
+	$nonce        = '';
 	if ( $queue_count ) {
 		$nonce = wp_create_nonce( 'ewww_image_optimizer_clear_queue' );
 	}
@@ -462,8 +463,8 @@ function ewww_image_optimizer_bulk_footer_output() {
 			$hs_debug = str_replace( array( "'", '<br>', '<b>', '</b>', '=>' ), array( "\'", '\n', '**', '**', '=' ), EWWW\Base::$debug_data );
 		}
 		?>
-<script type="text/javascript">!function(e,t,n){function a(){var e=t.getElementsByTagName("script")[0],n=t.createElement("script");n.type="text/javascript",n.async=!0,n.src="https://beacon-v2.helpscout.net",e.parentNode.insertBefore(n,e)}if(e.Beacon=n=function(t,n,a){e.Beacon.readyQueue.push({method:t,options:n,data:a})},n.readyQueue=[],"complete"===t.readyState)return a();e.attachEvent?e.attachEvent("onload",a):e.addEventListener("load",a,!1)}(window,document,window.Beacon||function(){});</script>
-<script type="text/javascript">
+<script>!function(e,t,n){function a(){var e=t.getElementsByTagName("script")[0],n=t.createElement("script");n.type="text/javascript",n.async=!0,n.src="https://beacon-v2.helpscout.net",e.parentNode.insertBefore(n,e)}if(e.Beacon=n=function(t,n,a){e.Beacon.readyQueue.push({method:t,options:n,data:a})},n.readyQueue=[],"complete"===t.readyState)return a();e.attachEvent?e.attachEvent("onload",a):e.addEventListener("load",a,!1)}(window,document,window.Beacon||function(){});</script>
+<script>
 	window.Beacon('init', 'aa9c3d3b-d4bc-4e9b-b6cb-f11c9f69da87');
 	Beacon( 'prefill', {
 		email: '<?php echo esc_js( $help_email ); ?>',
@@ -528,7 +529,7 @@ function ewww_image_optimizer_bulk_controls() {
 	<form id="ewww-bulk-controls" class="ewww-bulk-form" style="display: none;">
 		<?php ewww_image_optimizer_bulk_background_option(); ?>
 		<?php ewww_image_optimizer_bulk_scan_only_option( $scan_args ); ?>
-		<?php ewww_image_optimizer_bulk_aux_folders_option( $scan_args ); ?>
+		<?php ewww_image_optimizer_bulk_aux_folders_option(); ?>
 		<?php ewww_image_optimizer_bulk_force_reopt_option(); ?>
 		<?php ewww_image_optimizer_bulk_variant_option(); ?>
 		<?php ewww_image_optimizer_bulk_webp_only_option(); ?>
@@ -765,12 +766,13 @@ function ewww_image_optimizer_count_images_to_optimize( $gallery = 'media' ) {
 	$attachment_query = '';
 	$started          = microtime( true ); // Retrieve the time when the counting starts.
 	$max_query        = (int) apply_filters( 'ewww_image_optimizer_count_optimized_queries', 4000 );
+	$max_query_length = 15000;
 	/**
 	 * Set a maximum for a query, 1k less than WPE's 16k limit, just to be safe.
 	 *
-	 * @param int 15000 The maximum query length.
+	 * @param int $max_query_length The maximum query length.
 	 */
-	$max_query_length       = apply_filters( 'ewww_image_optimizer_max_query_length', 15000 );
+	$max_query_length       = apply_filters( 'ewww_image_optimizer_max_query_length', $max_query_length );
 	$attachment_query_count = 0;
 	switch ( $gallery ) {
 		case 'media':
@@ -929,7 +931,7 @@ function ewww_image_optimizer_bulk_script( $hook ) {
 	) {
 		$ids = sanitize_text_field( wp_unslash( $_REQUEST['ids'] ) );
 		if ( is_numeric( $ids ) ) {
-			$ids[] = (int) $ids;
+			$ids = array( (int) $ids );
 		} else {
 			$ids = explode( ',', $ids );
 			array_walk( $ids, 'intval' );
@@ -1320,12 +1322,13 @@ function ewww_image_optimizer_fetch_metadata_batch( $attachment_ids ) {
 	$attachments_meta = array();
 	$attachments_in   = '';
 	$attachments      = array();
+	$max_query_length = 15000;
 	/**
 	 * Set a maximum for a query, 1k less than WPE's 16k limit, just to be safe.
 	 *
-	 * @param int 15000 The maximum query length.
+	 * @param int $max_query_length The maximum query length.
 	 */
-	$max_query_length = apply_filters( 'ewww_image_optimizer_max_query_length', 15000 );
+	$max_query_length = apply_filters( 'ewww_image_optimizer_max_query_length', $max_query_length );
 	foreach ( $attachment_ids as $attachment_id ) {
 		$attachments_in .= (int) $attachment_id . ',';
 		if ( strlen( $attachments_in ) > $max_query_length - 20 ) {
@@ -1475,7 +1478,7 @@ function ewww_image_optimizer_bulk_scan_init( $hook = '' ) {
 		$ids = sanitize_text_field( wp_unslash( $_REQUEST['ids'] ) );
 		ewwwio_debug_message( "validating requested ids: $ids" );
 		if ( is_numeric( $ids ) ) {
-			$ids[] = (int) $_REQUEST['ids'];
+			$ids = array( (int) $_REQUEST['ids'] );
 		} else {
 			$ids = explode( ',', $ids );
 			array_walk( $ids, 'intval' );
@@ -1741,7 +1744,7 @@ function ewww_image_optimizer_media_scan( $hook = '' ) {
 					$s3_uploads = \S3_Uploads\Plugin::get_instance();
 					remove_filter( 'upload_dir', array( $s3_uploads, 'filter_upload_dir' ) );
 				}
-				if ( ewww_image_optimizer_stream_wrapped( $file_path ) || 0 === strpos( $file_path, 'http' ) ) {
+				if ( ewww_image_optimizer_stream_wrapped( $file_path ) || str_starts_with( $file_path, 'http' ) ) {
 					$file_path = get_attached_file( $selected_id, true );
 				}
 				if ( class_exists( 'S3_Uploads', false ) && method_exists( 'S3_Uploads', 'filter_upload_dir' ) ) {
@@ -2513,11 +2516,11 @@ function ewww_image_optimizer_bulk_loop( $hook = '', $delay = 0 ) {
 					$meta        = ewww_image_optimizer_update_scaled_metadata( $meta, $image->attachment_id );
 					$scaled_file = ewww_image_optimizer_scaled_filename( $image->file );
 					if ( ewwwio_is_file( $scaled_file ) ) {
+						global $wpdb;
 						if ( ! empty( $ewww_image->id ) && ! ewww_image_optimizer_get_option( 'ewww_image_optimizer_include_originals' ) ) {
 							ewww_image_optimizer_delete_pending_image( $ewww_image->id );
 						} elseif ( ! empty( $ewww_image->id ) ) {
 							$add_to_total = 1;
-							global $wpdb;
 							$wpdb->update(
 								$wpdb->ewwwio_images,
 								array(
@@ -2746,10 +2749,12 @@ function ewww_image_optimizer_bulk_update_meta() {
 		die( wp_json_encode( array( 'error' => esc_html__( 'Access token has expired, please reload the page.', 'ewww-image-optimizer' ) ) ) );
 	}
 	if ( empty( $_REQUEST['attachment_id'] ) ) {
+		ewwwio_ob_clean();
 		die( wp_json_encode( array( 'success' => 0 ) ) );
 	}
 	$attachment_id = (int) $_REQUEST['attachment_id'];
 	ewww_image_optimizer_post_optimize_attachment( $attachment_id );
+	ewwwio_ob_clean();
 	die( wp_json_encode( array( 'success' => 1 ) ) );
 }
 
@@ -2782,7 +2787,7 @@ function ewww_image_optimizer_post_optimize_attachment( $attachment_id ) {
 	add_filter( 'wp_get_missing_image_subsizes', 'ewww_image_optimizer_no_missing_sizes' );
 	wp_update_attachment_metadata( $attachment_id, $meta );
 	do_action( 'ewww_image_optimizer_after_optimize_attachment', $attachment_id, $meta );
-	add_filter( 'wp_get_missing_image_subsizes', 'ewww_image_optimizer_no_missing_sizes' );
+	remove_filter( 'wp_get_missing_image_subsizes', 'ewww_image_optimizer_no_missing_sizes' );
 }
 
 /**

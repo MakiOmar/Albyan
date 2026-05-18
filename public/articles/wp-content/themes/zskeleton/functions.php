@@ -24,6 +24,7 @@ require_once ZSkeleton_THEME_DIR . '/includes/theme-colors.php';
 require_once ZSkeleton_THEME_DIR . '/includes/mobile-bottom-nav.php';
 require_once ZSkeleton_THEME_DIR . '/includes/blog-hub.php';
 require_once ZSkeleton_THEME_DIR . '/includes/blog-hub-featured-meta.php';
+require_once ZSkeleton_THEME_DIR . '/includes/post-redirect.php';
 require_once ZSkeleton_THEME_DIR . '/includes/taxonomy-term-listing.php';
 require_once ZSkeleton_THEME_DIR . '/includes/blocks/blog-hub-blocks.php';
 require_once ZSkeleton_THEME_DIR . '/includes/blocks/block-type-metadata-min-assets.php';
@@ -2510,6 +2511,24 @@ function zskeleton_get_faq_cta_contact_url() {
     return zskeleton_get_theme_contact_page_url();
 }
 
+/**
+ * Permalink for the theme blog listing page (ZSkeleton Settings → Content), or the main Blog URL.
+ *
+ * Used for the sidebar “View All Posts” link and anywhere a blog index URL should respect settings.
+ *
+ * @return string
+ */
+function zskeleton_get_theme_blog_listing_url() {
+    $page_id = (int) get_option( 'zskeleton_theme_blog_listing_page_id', 0 );
+    if ( $page_id > 0 && 'publish' === get_post_status( $page_id ) ) {
+        $url = get_permalink( $page_id );
+        if ( is_string( $url ) && '' !== $url ) {
+            return $url;
+        }
+    }
+    return zskeleton_get_page_url( 'blog' );
+}
+
 // Common pages (login, register, blog, etc.) are created via includes/common-pages.php: Appearance → ZSkeleton Settings → Content → “Create & sync common pages”, or once when switching to this theme (see zskeleton_common_pages_auto_installed).
 
 /**
@@ -4254,6 +4273,53 @@ function zskeleton_is_blog_listing_public_view(): bool {
  */
 function zskeleton_posts_home_show_sidebar(): bool {
 	return '1' === (string) get_option( 'zskeleton_posts_home_show_sidebar', '0' );
+}
+
+/**
+ * Option names for sidebar “Browse by Page” links (key => option name).
+ *
+ * @return array<string, string>
+ */
+function zskeleton_sidebar_browse_link_options(): array {
+	return array(
+		'about'        => 'zskeleton_sidebar_browse_show_about',
+		'faqs'         => 'zskeleton_sidebar_browse_show_faqs',
+		'memberships'  => 'zskeleton_sidebar_browse_show_memberships',
+		'contact'      => 'zskeleton_sidebar_browse_show_contact',
+	);
+}
+
+/**
+ * Whether a sidebar “Browse by Page” link is enabled in theme settings.
+ *
+ * @param string $link about|faqs|memberships|contact.
+ * @return bool
+ */
+function zskeleton_sidebar_browse_link_enabled( string $link ): bool {
+	$options = zskeleton_sidebar_browse_link_options();
+	if ( ! isset( $options[ $link ] ) ) {
+		return false;
+	}
+	return '1' === (string) get_option( $options[ $link ], '1' );
+}
+
+/**
+ * Whether any sidebar “Browse by Page” link should render.
+ *
+ * @return bool
+ */
+function zskeleton_sidebar_has_browse_links(): bool {
+	foreach ( array_keys( zskeleton_sidebar_browse_link_options() ) as $link ) {
+		if ( 'memberships' === $link ) {
+			if ( ! function_exists( 'zskeleton_is_memberships_feature_enabled' ) || ! zskeleton_is_memberships_feature_enabled() ) {
+				continue;
+			}
+		}
+		if ( zskeleton_sidebar_browse_link_enabled( $link ) ) {
+			return true;
+		}
+	}
+	return false;
 }
 
 /**
