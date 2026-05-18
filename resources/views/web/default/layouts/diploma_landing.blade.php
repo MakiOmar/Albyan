@@ -152,6 +152,5 @@
 <script src="/assets/default/vendors/feather-icons/dist/feather.min.js"></script>
 <script>if (typeof feather !== 'undefined') { feather.replace(); }</script>
 @stack('scripts_bottom')
-@include('web.default.includes.gtm_body')
 </body>
 </html>
