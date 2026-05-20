@@ -12,8 +12,7 @@
     {{-- Hero --}}
     <section class="csl-hero" id="top">
         <div class="csl-container">
-            <span class="csl-badge">Qualifi البريطانية · معتمدة محليًا وعالميًا</span>
-            <p class="csl-hero-lead mb-3" style="max-width:100%;">ابدأ دبلوم احترافي لمدة سنتين يمنحك مؤهل أعلى من الثانوية من الصفر للاحتراف.</p>
+            <p class="csl-hero-lead mb-3 font-weight-bold" style="max-width:100%;">ابدأ دبلوم احترافي لمدة سنتين يمنحك مؤهل أعلى من الثانوية من الصفر للاحتراف.</p>
             <h1>الحين عندك فرصة تدخل واحد من أقوى وأكثر المجالات المطلوبة بالإمارات والخليج.</h1>
             <p class="csl-hero-subtitle">دبلومة الأمن السيبراني المعتمدة من Qualifi البريطانية</p>
             <div class="csl-highlights">
@@ -146,16 +145,16 @@
             <div class="csl-pricing-card">
                 <p class="mb-1">رسوم الدبلومة كاملة</p>
                 <div class="csl-price">40,000 <span class="font-20">درهم</span></div>
-                <p class="mt-3 mb-4 text-right">يمكنك بدء الدبلومة بدفعة أولى <strong>10,000 درهم</strong>، ومتاح التقسيط عبر تابي أو تمارا بقيمة <strong>2,500 درهم</strong> للدفعة الأولى، أما المبلغ المتبقي فيتم تقسيطه على فترة الدراسة أو عبر تابي وتمارا.</p>
+                <p class="mt-3 mb-4 text-left">يمكنك بدء الدبلومة بدفعة أولى <strong>10,000 درهم</strong>، ومتاح التقسيط عبر تابي أو تمارا بقيمة <strong>2,500 درهم</strong> للدفعة الأولى، أما المبلغ المتبقي فيتم تقسيطه على فترة الدراسة أو عبر تابي وتمارا.</p>
                 <p class="mt-4 mb-3 font-weight-bold">الرسوم تشمل:</p>
-                <ul class="list-unstyled text-right mb-4">
+                <ul class="list-unstyled text-left mb-4">
                     <li class="mb-2">✔️ الدراسة الأكاديمية</li>
                     <li class="mb-2">✔️ التدريب العملي</li>
                     <li class="mb-2">✔️ مشروع التخرج</li>
                     <li class="mb-2">✔️ الشهادة المعتمدة</li>
                 </ul>
                 <p class="font-weight-bold mb-2">خيارات الدفع:</p>
-                <ul class="list-unstyled text-right mb-0">
+                <ul class="list-unstyled text-left mb-0">
                     <li class="mb-2">• التقسيط عبر Tabby</li>
                     <li class="mb-2">• التقسيط عبر Tamara</li>
                 </ul>
