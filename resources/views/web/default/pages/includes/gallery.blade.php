@@ -1,6 +1,6 @@
-{{-- Gallery heading: locale from session / language switcher --}}
-<strong class="w-100 d-block mt-4" style="text-align:center;font-weight:bold;font-size: 35px;">{{ trans('site.graduation_celebration_title') }}</strong>
-<!-- Swiper Carousel -->
+{{-- Graduation gallery: semantic h2 + descriptive alt text --}}
+<section class="col-12 about-graduation-gallery-section" aria-labelledby="{{ $galleryHeadingId ?? 'graduation-gallery-heading' }}">
+<h2 id="{{ $galleryHeadingId ?? 'graduation-gallery-heading' }}" class="w-100 d-block mt-4 text-center section-title-bg p-2">{{ trans('site.graduation_celebration_title') }}</h2>
 <div class="albyan-gallery">
     <div class="swiper mySwiper">
         <div class="swiper-wrapper">
@@ -18,3 +18,4 @@
         <div class="swiper-pagination"></div>
     </div>
 </div>
+</section>

@@ -113,6 +113,11 @@ return [
     'rate_us_on_google' => 'Valóranos en Google',
     'show_more_ellipsis' => '... Ver más',
     'show_less_ellipsis' => '... Cerrar',
-    'gallery_slide_alt' => 'Imagen de la galería :num',
+    'gallery_slide_alt' => 'Ceremonia de graduación de la Academia Al Bayan en Dubái — foto :num',
     'about_certificates_promo_title' => 'Obtenga cuatro certificados del Instituto Albyan y una tarjeta de membresía',
+    'about_breadcrumb_title' => 'Sobre la Academia Al Bayan',
+    'about_certificate_alt' => 'Certificado acreditado de la Academia Al Bayan — :num',
+    'about_whatsapp_cta_link' => 'Contáctenos por WhatsApp para elegir el programa adecuado',
+    'about_browse_programs' => 'Ver programas de formación',
+    'about_cta_heading' => 'Comience su trayectoria profesional',
 ];

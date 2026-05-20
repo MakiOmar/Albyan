@@ -104,6 +104,11 @@ return [
     'rate_us_on_google' => 'قيمنا على جوجل',
     'show_more_ellipsis' => '... عرض المزيد',
     'show_less_ellipsis' => '... إغلاق',
-    'gallery_slide_alt' => 'صورة المعرض رقم :num',
+    'gallery_slide_alt' => 'حفل تخرج أكاديمية البيان في دبي — صورة :num',
     'about_certificates_promo_title' => 'تحصل على أربع شهادات من معهد البيان وبطاقة عضوية',
+    'about_breadcrumb_title' => 'عن أكاديمية البيان',
+    'about_certificate_alt' => 'شهادة معتمدة من أكاديمية البيان — :num',
+    'about_whatsapp_cta_link' => 'تواصل عبر واتساب لاختيار البرنامج المناسب',
+    'about_browse_programs' => 'استعرض البرامج التدريبية',
+    'about_cta_heading' => 'ابدأ رحلتك المهنية',
 ];

@@ -8,7 +8,7 @@
     @include('web.default.includes.metas')
     {{-- robots meta tag is controlled by `resources/views/web/default/includes/metas.blade.php` --}}
     <meta name="theme" content="{{ str_replace('web.', '', getTemplate()) }}">
-    <title>{{ $pageTitle ?? '' }}{{ !empty($generalSettings['site_name']) ? (' | '.$generalSettings['site_name']) : '' }}</title>
+    <title>@if(!empty($pageTitleFull)){{ $pageTitle ?? '' }}@else{{ $pageTitle ?? '' }}{{ !empty($generalSettings['site_name']) ? (' | '.$generalSettings['site_name']) : '' }}@endif</title>
 
     {{-- Preconnect only for origins this layout actually requests (avoids Lighthouse "unused preconnect"). Page-specific CDNs: push in that view (e.g. cdnjs on about/reviews). --}}
 

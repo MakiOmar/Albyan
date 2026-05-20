@@ -114,6 +114,11 @@ return [
     'rate_us_on_google' => 'Rate us on Google',
     'show_more_ellipsis' => '... View more',
     'show_less_ellipsis' => '... Close',
-    'gallery_slide_alt' => 'Gallery image :num',
+    'gallery_slide_alt' => 'Al Bayan Academy graduation ceremony in Dubai — photo :num',
     'about_certificates_promo_title' => 'Receive four certificates from Albyan Institute and a membership card',
+    'about_breadcrumb_title' => 'About Al Bayan Academy',
+    'about_certificate_alt' => 'Accredited certificate from Al Bayan Academy — :num',
+    'about_whatsapp_cta_link' => 'Contact us on WhatsApp to choose the right program',
+    'about_browse_programs' => 'Browse training programs',
+    'about_cta_heading' => 'Start your professional journey',
 ];

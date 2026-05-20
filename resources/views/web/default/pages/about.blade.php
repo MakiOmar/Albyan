@@ -3,6 +3,20 @@
 @push('styles_top')
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <style>
+    .about-page-content .about-page-list,
+    .about-page-content .about-page-features,
+    .about-page-content .about-page-values {
+        padding-right: 1.25rem;
+        line-height: 1.8;
+    }
+    .about-page-content .about-page-list li,
+    .about-page-content .about-page-features li,
+    .about-page-content .about-page-values li {
+        margin-bottom: 0.75rem;
+    }
+    .about-page-contact-links a {
+        font-weight: 500;
+    }
     /* Styling for the Albyan Gallery */
     .albyan-gallery {
         max-width: 1200px;
@@ -17,122 +31,59 @@
         width: 100%;
         height: auto;
         border-radius: 10px;
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out;
     }
-    .albyan-gallery .swiper-slide img {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-            cursor: pointer; /* Makes images clickable */
-            transition: transform 0.2s ease-in-out;
-        }
 
-        .albyan-gallery .swiper-slide img:hover {
-            transform: scale(1.05);
-        }
+    .albyan-gallery .swiper-slide img:hover {
+        transform: scale(1.05);
+    }
 </style>
-</head>
-<!-- Lightbox2 CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
-
 @endpush
 
+@push('scripts_top')
+    @include('web.default.pages.includes.about_page_schema')
+@endpush
 
 @section('content')
 <div class="container">
+    <nav class="mt-3 mb-2" aria-label="breadcrumb">
+        <ol class="breadcrumb p-0 m-0 bg-transparent">
+            <li class="breadcrumb-item font-12"><a href="{{ url('/') }}">{{ !empty($generalSettings['site_name']) ? $generalSettings['site_name'] : trans('navbar.home') }}</a></li>
+            <li class="breadcrumb-item font-12 active" aria-current="page">{{ trans('site.about_breadcrumb_title') }}</li>
+        </ol>
+    </nav>
 
+    <main id="about-page" class="row">
+        @include('web.default.pages.includes.about_page_content')
 
-<div class="row">
-    @include('web.default.pages.includes.gallery')
-    @include('web.default.pages.includes.about_text')
-    {{-- Promo line: translated for language switcher --}}
-    <h1 class="text-center w-100 mt-2 mb-2">{{ trans('site.about_certificates_promo_title') }}</h1>
-    <!-- Swiper Carousel -->
-    <div class="albyan-gallery" style="height: 320px">
-         <svg width="74" style="position: absolute;bottom: -10px; left: 0;z-index:20" height="74" viewBox="0 0 74 74" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g clip-path="url(#clip0_139_666)">
-                        <path d="M52.0528 46.2972C38.8966 37.4613 37.7712 34.6734 41.1082 19.181C41.1595 18.9423 41.1261 18.6932 41.0136 18.4765C40.9012 18.2598 40.7168 18.089 40.4921 17.9936C40.2674 17.8981 40.0164 17.8839 39.7824 17.9534C39.5483 18.0229 39.3458 18.1718 39.2097 18.3744C30.3753 31.5313 27.5873 32.6567 12.0935 29.3209C11.855 29.2695 11.6059 29.3027 11.3893 29.415C11.1726 29.5274 11.0019 29.7117 10.9065 29.9363C10.811 30.1609 10.7969 30.4117 10.8665 30.6457C10.936 30.8796 11.085 31.0819 11.2876 31.2179C24.4449 40.0533 25.571 42.8398 22.2334 58.3337C22.1823 58.5723 22.2159 58.8212 22.3284 59.0377C22.4409 59.2543 22.6253 59.4249 22.8499 59.5203C23.0744 59.6157 23.3252 59.6299 23.5591 59.5606C23.7931 59.4912 23.9956 59.3426 24.1319 59.1403C32.9669 45.9818 35.7542 44.858 51.2469 48.1942C51.4855 48.2457 51.7345 48.2124 51.9512 48.1001C52.1678 47.9878 52.3385 47.8034 52.434 47.5788C52.5294 47.3542 52.5435 47.1034 52.474 46.8695C52.4044 46.6355 52.2555 46.4332 52.0528 46.2972Z" fill="#EA433A" fill-opacity="0.8"/>
-                        <path d="M55.4696 35.298C55.245 35.2024 55.0606 35.0317 54.9482 34.815C54.8357 34.5983 54.8023 34.3493 54.8534 34.1106C56.0297 28.6518 55.7117 27.8641 51.0755 24.7515C50.8729 24.6153 50.724 24.4128 50.6545 24.1788C50.585 23.9448 50.5992 23.6938 50.6947 23.4692C50.7902 23.2445 50.9609 23.06 51.1776 22.9476C51.3943 22.8352 51.6434 22.8017 51.882 22.853C57.342 24.0288 58.129 23.7105 61.2411 19.075C61.3773 18.8724 61.5798 18.7235 61.8139 18.654C62.0479 18.5845 62.2988 18.5987 62.5235 18.6942C62.7482 18.7897 62.9327 18.9604 63.0451 19.1771C63.1575 19.3938 63.191 19.6429 63.1397 19.8816C61.9637 25.3396 62.281 26.1271 66.9176 29.2407C67.1202 29.3769 67.2691 29.5794 67.3386 29.8134C67.4081 30.0474 67.3939 30.2984 67.2984 30.5231C67.2029 30.7478 67.0322 30.9322 66.8155 31.0446C66.5988 31.1571 66.3497 31.1905 66.1111 31.1392C60.6522 29.963 59.8645 30.281 56.752 34.9172C56.6157 35.1197 56.4132 35.2685 56.1792 35.338C55.9452 35.4075 55.6943 35.3933 55.4696 35.298ZM55.5007 25.5109C56.2031 26.1251 56.751 26.896 57.1004 27.7611C57.4497 28.6263 57.5906 29.5615 57.5117 30.4911C58.1261 29.7889 58.897 29.2411 59.7623 28.892C60.6275 28.5428 61.5627 28.4021 62.4924 28.4813C61.7903 27.8669 61.2425 27.096 60.8931 26.2309C60.5438 25.3658 60.4028 24.4307 60.4814 23.5011C59.8668 24.203 59.0958 24.7507 58.2307 25.0998C57.3655 25.4489 56.4303 25.5898 55.5007 25.5109Z" fill="#EA433A" fill-opacity="0.8"/>
-                        </g>
-                        <defs>
-                        <clipPath id="clip0_139_666">
-                        <rect width="56" height="56" fill="white" transform="translate(21.897) rotate(23.0177)"/>
-                        </clipPath>
-                        </defs>
-                </svg>
+        @include('web.default.pages.includes.gallery', ['galleryHeadingId' => 'about-graduation-gallery-heading'])
 
-                <svg width="74" style="position: absolute;top: 50px; right: 0;z-index:20" height="74" viewBox="0 0 74 74" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g clip-path="url(#clip0_139_666)">
-                        <path d="M52.0528 46.2972C38.8966 37.4613 37.7712 34.6734 41.1082 19.181C41.1595 18.9423 41.1261 18.6932 41.0136 18.4765C40.9012 18.2598 40.7168 18.089 40.4921 17.9936C40.2674 17.8981 40.0164 17.8839 39.7824 17.9534C39.5483 18.0229 39.3458 18.1718 39.2097 18.3744C30.3753 31.5313 27.5873 32.6567 12.0935 29.3209C11.855 29.2695 11.6059 29.3027 11.3893 29.415C11.1726 29.5274 11.0019 29.7117 10.9065 29.9363C10.811 30.1609 10.7969 30.4117 10.8665 30.6457C10.936 30.8796 11.085 31.0819 11.2876 31.2179C24.4449 40.0533 25.571 42.8398 22.2334 58.3337C22.1823 58.5723 22.2159 58.8212 22.3284 59.0377C22.4409 59.2543 22.6253 59.4249 22.8499 59.5203C23.0744 59.6157 23.3252 59.6299 23.5591 59.5606C23.7931 59.4912 23.9956 59.3426 24.1319 59.1403C32.9669 45.9818 35.7542 44.858 51.2469 48.1942C51.4855 48.2457 51.7345 48.2124 51.9512 48.1001C52.1678 47.9878 52.3385 47.8034 52.434 47.5788C52.5294 47.3542 52.5435 47.1034 52.474 46.8695C52.4044 46.6355 52.2555 46.4332 52.0528 46.2972Z" fill="#EA433A" fill-opacity="0.8"/>
-                        <path d="M55.4696 35.298C55.245 35.2024 55.0606 35.0317 54.9482 34.815C54.8357 34.5983 54.8023 34.3493 54.8534 34.1106C56.0297 28.6518 55.7117 27.8641 51.0755 24.7515C50.8729 24.6153 50.724 24.4128 50.6545 24.1788C50.585 23.9448 50.5992 23.6938 50.6947 23.4692C50.7902 23.2445 50.9609 23.06 51.1776 22.9476C51.3943 22.8352 51.6434 22.8017 51.882 22.853C57.342 24.0288 58.129 23.7105 61.2411 19.075C61.3773 18.8724 61.5798 18.7235 61.8139 18.654C62.0479 18.5845 62.2988 18.5987 62.5235 18.6942C62.7482 18.7897 62.9327 18.9604 63.0451 19.1771C63.1575 19.3938 63.191 19.6429 63.1397 19.8816C61.9637 25.3396 62.281 26.1271 66.9176 29.2407C67.1202 29.3769 67.2691 29.5794 67.3386 29.8134C67.4081 30.0474 67.3939 30.2984 67.2984 30.5231C67.2029 30.7478 67.0322 30.9322 66.8155 31.0446C66.5988 31.1571 66.3497 31.1905 66.1111 31.1392C60.6522 29.963 59.8645 30.281 56.752 34.9172C56.6157 35.1197 56.4132 35.2685 56.1792 35.338C55.9452 35.4075 55.6943 35.3933 55.4696 35.298ZM55.5007 25.5109C56.2031 26.1251 56.751 26.896 57.1004 27.7611C57.4497 28.6263 57.5906 29.5615 57.5117 30.4911C58.1261 29.7889 58.897 29.2411 59.7623 28.892C60.6275 28.5428 61.5627 28.4021 62.4924 28.4813C61.7903 27.8669 61.2425 27.096 60.8931 26.2309C60.5438 25.3658 60.4028 24.4307 60.4814 23.5011C59.8668 24.203 59.0958 24.7507 58.2307 25.0998C57.3655 25.4489 56.4303 25.5898 55.5007 25.5109Z" fill="#EA433A" fill-opacity="0.8"/>
-                        </g>
-                        <defs>
-                        <clipPath id="clip0_139_666">
-                        <rect width="56" height="56" fill="white" transform="translate(21.897) rotate(23.0177)"/>
-                        </clipPath>
-                        </defs>
-                </svg>
-        <div class="swiper mySwiper">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide">
-                    <a href="/store/1/certs/333.jpg" data-lightbox="gallery">
-                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/store/1/certs/333.jpg" alt="Certificate 1" width="200" height="150">
-                    </a>
-                </div>
-                <div class="swiper-slide">
-                    <a href="/store/1/certs/dsgdsfd898.jpg" data-lightbox="gallery">
-                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/store/1/certs/dsgdsfd898.jpg" alt="Certificate 2" width="200" height="150">
-                    </a>
-                </div>
-                <div class="swiper-slide">
-                    <a href="/store/1/certs/1copy.jpg" data-lightbox="gallery">
-                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/store/1/certs/1copy.jpg" alt="Certificate 3" width="200" height="150">
-                    </a>
-                </div>
-                <div class="swiper-slide">
-                    <a href="/store/1/certs/fsfsdflkl.jpg" data-lightbox="gallery">
-                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/store/1/certs/fsfsdflkl.jpg" alt="Certificate 4" width="200" height="150">
-                    </a>
-                </div>
-                <div class="swiper-slide">
-                    <a href="store/1/certs/foi87.png" data-lightbox="gallery">
-                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="store/1/certs/foi87.png" alt="Certificate 5" width="200" height="150">
-                    </a>
-                </div>
-            </div>
-
-            <!-- Pagination -->
-            <div class="swiper-pagination"></div>
-        </div>
-    </div>
+        @include('web.default.pages.includes.about_certificates_gallery')
+    </main>
 </div>
-
-</div>
-
 @endsection
 
 @push('scripts_bottom')
-    <!-- Lightbox2 JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
-
-    <script>
-        var leafletApiPath = '{{ getLeafletApiPath() }}';
-    </script>
-    <script src="/assets/default/js/parts/contact.min.js"></script>
-    <script src="/assets/default/vendors/swiper/swiper-bundle.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            function initAboutGallerySwiper() {
-                new Swiper(".albyan-gallery .mySwiper", {
+<script>
+    var leafletApiPath = '{{ getLeafletApiPath() }}';
+</script>
+<script src="/assets/default/js/parts/contact.min.js"></script>
+<script src="/assets/default/vendors/swiper/swiper-bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function initAboutGallerySwiper() {
+            document.querySelectorAll(".albyan-gallery .mySwiper").forEach(function (el) {
+                var root = el.closest(".albyan-gallery");
+                new Swiper(el, {
                     rtl: document.documentElement.getAttribute("dir") === "rtl",
                     slidesPerView: 1,
                     spaceBetween: 10,
                     pagination: {
-                        el: ".albyan-gallery .swiper-pagination",
+                        el: root ? root.querySelector(".swiper-pagination") : ".swiper-pagination",
                         clickable: true,
-                    },
-                    navigation: {
-                        nextEl: ".albyan-gallery .swiper-button-next",
-                        prevEl: ".albyan-gallery .swiper-button-prev",
                     },
                     breakpoints: {
                         640: { slidesPerView: 1, spaceBetween: 10 },
@@ -140,12 +91,13 @@
                         1024: { slidesPerView: 3, spaceBetween: 30 }
                     }
                 });
-            }
-            if (window.lazyCSSLoader && typeof window.lazyCSSLoader.onVendorCssReady === 'function') {
-                window.lazyCSSLoader.onVendorCssReady('swiper', initAboutGallerySwiper);
-            } else {
-                initAboutGallerySwiper();
-            }
-        });
-    </script>
+            });
+        }
+        if (window.lazyCSSLoader && typeof window.lazyCSSLoader.onVendorCssReady === 'function') {
+            window.lazyCSSLoader.onVendorCssReady('swiper', initAboutGallerySwiper);
+        } else {
+            initAboutGallerySwiper();
+        }
+    });
+</script>
 @endpush

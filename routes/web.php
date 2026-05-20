@@ -494,9 +494,7 @@ Route::group([
         return view('web.default.pages.reviews', compact(  'testimonials', 'rating_reviews'));
     });
 
-    Route::get('/about', function () {
-        return view('web.default.pages.about');
-    });
+    Route::get('/about', 'AboutController@index');
     Route::post('/certificates/search', [WebinarCertificateController::class, 'search'])->name('certificates.search');
 
     // Must be last in this group so real routes (and admin routes registered separately) match first.
@@ -543,9 +541,7 @@ Route::group([
         Route::get('/{id}/profile', 'UserController@profile');
     });
 
-    Route::get('/about', function () {
-        return view('web.default.pages.about');
-    });
+    Route::get('/about', 'AboutController@index');
 
     // Crawlers sometimes request sitemaps under /{locale}/ — redirect to canonical root URLs
     Route::redirect('sitemap-index.xml', '/sitemap_index.xml', 301);
