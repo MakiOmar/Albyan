@@ -1640,6 +1640,42 @@ function getCustomCssAndJs($key = null)
 }
 
 /**
+ * Wrap raw page CSS in <style> unless it already contains <style> or <link> tags.
+ */
+function renderPageCustomStyles(?string $styles): string
+{
+    $styles = trim((string) $styles);
+
+    if ($styles === '') {
+        return '';
+    }
+
+    if (preg_match('/<\s*(style|link)\b/i', $styles)) {
+        return $styles;
+    }
+
+    return '<style>' . $styles . '</style>';
+}
+
+/**
+ * Wrap raw page JS in <script> unless it already contains <script> tags.
+ */
+function renderPageCustomScripts(?string $scripts): string
+{
+    $scripts = trim((string) $scripts);
+
+    if ($scripts === '') {
+        return '';
+    }
+
+    if (preg_match('/<\s*script\b/i', $scripts)) {
+        return $scripts;
+    }
+
+    return '<script>' . $scripts . '</script>';
+}
+
+/**
  * @return array
  */
 function getOfflineBankSettings($key = null)

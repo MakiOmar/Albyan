@@ -2,7 +2,7 @@
 
 @if(!empty($page->styles))
     @push('styles_top')
-        {!! $page->styles !!}
+        {!! renderPageCustomStyles($page->styles) !!}
     @endpush
 @endif
 
@@ -14,7 +14,7 @@
 
 @if(!empty($page->scripts))
     @push('scripts_bottom')
-        {!! $page->scripts !!}
+        {!! renderPageCustomScripts($page->scripts) !!}
     @endpush
 @endif
 
