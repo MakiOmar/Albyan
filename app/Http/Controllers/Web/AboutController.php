@@ -21,6 +21,17 @@ class AboutController extends Controller
         $phoneLinks = $this->parseContactLinks($contactSettings['phones'] ?? '', 'tel');
         $emailLinks = $this->parseContactLinks($contactSettings['emails'] ?? '', 'mailto');
 
+        if (empty($phoneLinks)) {
+            $phoneLinks = [
+                ['label' => '971043931889+', 'href' => 'tel:+97143931889'],
+            ];
+        }
+        if (empty($emailLinks)) {
+            $emailLinks = [
+                ['label' => 'info@albyan.institute', 'href' => 'mailto:info@albyan.institute'],
+            ];
+        }
+
         $schemaSameAs = [];
         foreach (getSocials() as $social) {
             if (!empty($social['link'])) {
@@ -32,7 +43,7 @@ class AboutController extends Controller
         $schemaEmails = array_map(fn ($item) => $item['label'], $emailLinks);
 
         return view('web.default.pages.about', [
-            'pageTitle' => 'عن أكاديمية البيان | تدريب مهني معتمد في دبي والإمارات',
+            'pageTitle' => 'عن أكاديمية البيان| تدريب مهني معتمد في دبي والإمارات',
             'pageTitleFull' => true,
             'pageDescription' => 'تعرف على أكاديمية البيان، رائد التدريب المهني واللغات في دبي، نتميز بتقديم برامج عملية، شهادات معتمدة، ومسارات تعليمية مصممة خصيصاً لـ ترقية مهاراتك اليوم.',
             'pageRobot' => getPageRobot('about'),

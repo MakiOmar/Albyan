@@ -1,16 +1,26 @@
 {{-- About page main copy (Arabic) — semantic sections for SEO --}}
 @php
     $classesUrl = url('/classes');
-    $contactUrl = url('/contact');
+    $aboutPhoneDisplay = '971043931889+';
+    $aboutPhoneHref = 'tel:+97143931889';
+    $aboutEmail = 'info@albyan.institute';
+
+    if (!empty($phoneLinks)) {
+        $aboutPhoneDisplay = $phoneLinks[0]['label'];
+        $aboutPhoneHref = $phoneLinks[0]['href'];
+    }
+    if (!empty($emailLinks)) {
+        $aboutEmail = $emailLinks[0]['label'];
+    }
 @endphp
 
 <article class="about-page-content contact-us-about col-12 py-4">
     <header>
         <h1 class="section-title-bg p-2 text-center mb-4">عن أكاديمية البيان</h1>
-        <p class="text-center mb-4">مرحباً بكم في أكاديمية البيان، وجهتكم الأولى للتعليم المهني واكتساب المهارات العملية في دبي ودولة الإمارات العربية المتحدة.</p>
+        <p class="text-center mb-4">مرحباً بكم في أكاديمية البيان، وجهتكم الاولى للتعليم المهني واكتساب المهارات العملية في دبي ودولة الإمارات العربية المتحدة.</p>
     </header>
 
-    <p>في أكاديمية البيان لا نؤمن بفكرة "احضر الدورة و احصل على الشهادة"، لأن هذا وحده لا يكفي، ما يهمنا هو أن يخرج المتدرب بمهارات يستخدمها في عمله في دراسته، أو في مشروعه، لـ هذا نبني كل برنامج على أساس تطبيقي بالمقام الأول، و نحرص أن يعرف المتدرب من اليوم الأول ما الذي سيتعلمه وإلى أين سيوصله.</p>
+    <p>في أكاديمية البيان لا نؤمن بفكرة "احضر الدورة و احصل على الشهادة"، لأن هذا وحده لا يكفي، ما يهمنا هو أن يخرج المتدرب بمهارات يستخدمها في عمله في دراسته، أو في مشروعه، لـ هذا نبني كل برنامج على اساس تطبيقي بالمقام الاول، و نحرص أن يعرف المتدرب من اليوم الأول ما الذي سيتعلمه وإلى أين سيوصله.</p>
 
     <section class="about-page-section" aria-labelledby="about-vision-heading">
         <h2 id="about-vision-heading" class="section-title-bg p-2 mt-4 mb-3">رؤيتنا</h2>
@@ -29,27 +39,27 @@
 
     <section class="about-page-section" aria-labelledby="about-programs-heading">
         <h2 id="about-programs-heading" class="section-title-bg p-2 mt-4 mb-3">ماذا نقدم في أكاديمية البيان؟</h2>
-        <p>نقدم مجموعة من البرامج التدريبية المصممة بعناية لتلبية احتياجات الأفراد والمهنيين، وتشمل:</p>
+        <p>في أكاديمية البيان نقدم مجموعة متنوعة من البرامج التدريبية المصممة لتلبية احتياجات الأفراد و المهنيين والمؤسسات، وتشمل:</p>
         <ul class="about-page-list list-unstyled">
             <li class="mb-3">
-                <h3 class="h5 font-weight-bold">دورات اللغات</h3>
-                <p class="mb-0">برامج تطوير اللغة الإنجليزية وغيرها من اللغات، مع التركيز على المحادثة، الاستخدام العملي، الدراسة، والعمل.</p>
+                <h3 class="h5 font-weight-bold d-inline">دورات اللغات:</h3>
+                <span> برامج متخصصة لتطوير اللغة الإنجليزية وغيرها، مع التركيز على المحادثة و الاستخدام العملي في بيئتي العمل و الدراسة.</span>
             </li>
             <li class="mb-3">
-                <h3 class="h5 font-weight-bold">الدورات الإدارية والمهنية</h3>
-                <p class="mb-0">برامج تساعد الموظفين والباحثين عن عمل على تطوير مهارات الإدارة، القيادة، خدمة العملاء، التواصل، وإدارة الوقت.</p>
+                <h3 class="h5 font-weight-bold d-inline">الدورات الإدارية و المهنية:</h3>
+                <span> برامج تساعد الموظفين والباحثين عن عمل تطوير مهاراتهم في القيادة والإدارة وخدمة العملاء والتواصل الفعال وإدارة الوقت.</span>
             </li>
             <li class="mb-3">
-                <h3 class="h5 font-weight-bold">دورات المحاسبة والمالية</h3>
-                <p class="mb-0">تدريب عملي يساعد المتدربين على فهم الأساسيات المالية والمحاسبية واستخدامها في بيئة العمل.</p>
+                <h3 class="h5 font-weight-bold d-inline">دورات المحاسبة و المالية:</h3>
+                <span> تدريب عملى يُمكن المتدربين من استيعاب الأسس المالية و المحاسبية وتوظيفها بكفاءة في بيئة العمل.</span>
             </li>
             <li class="mb-3">
-                <h3 class="h5 font-weight-bold">دورات التسويق والتجارة الإلكترونية</h3>
-                <p class="mb-0">برامج مصممة لمواكبة احتياجات السوق الرقمي، وتساعد المتدربين على فهم التسويق، البيع، وإدارة الأنشطة الرقمية.</p>
+                <h3 class="h5 font-weight-bold d-inline">دورات التسويق والتجارة الإلكترونية:</h3>
+                <span> برامج تواكب متطلبات السوق الرقمي وتُزوّد المتدربين بالمهارات اللازمة لفهم التسويق والبيع وإدارة الأنشطة الرقمية.</span>
             </li>
             <li class="mb-3">
-                <h3 class="h5 font-weight-bold">برامج التدريب المؤسسي</h3>
-                <p class="mb-0">حلول تدريب للشركات والفرق التي ترغب في تطوير مهارات موظفيها ورفع كفاءة الأداء.</p>
+                <h3 class="h5 font-weight-bold d-inline">برامج التدريب المؤسسي:</h3>
+                <span> حلول تدريبية مخصصة للشركات والفرق، تهدف إلى تطوير كفاءة الموظفين ورفع مستوى الأداء بصورة مستدامة.</span>
             </li>
         </ul>
         <p class="mb-0">
@@ -66,7 +76,7 @@
             </div>
             <div class="col-6 col-md-3 mb-3">
                 <dt class="font-weight-bold d-block" style="font-size: 1.25rem; color: var(--primary, #01477d);">اعتمادات</dt>
-                <dd class="mb-0">محلية ودولية</dd>
+                <dd class="mb-0">محلية KHDA ودولية</dd>
             </div>
             <div class="col-6 col-md-3 mb-3">
                 <dt class="font-weight-bold d-block" style="font-size: 1.25rem; color: var(--primary, #01477d);">حفل تخرج</dt>
@@ -84,28 +94,28 @@
         <p class="font-weight-bold">لأننا لا نقدم تدريبًا تقليديًا…</p>
         <ul class="about-page-features list-unstyled">
             <li class="mb-3">
-                <h3 class="h5 font-weight-bold">تعلم عملي وليس نظريًا فقط</h3>
-                <p class="mb-0">نركز على المهارات التي يمكن استخدامها في العمل، الدراسة، والحياة اليومية.</p>
+                <h3 class="h5 font-weight-bold d-inline">تعلم عملي وليس نظريًا فقط:</h3>
+                <span> نركز على المهارات التي يمكن استخدامها في العمل، الدراسة، والحياة اليومية.</span>
             </li>
             <li class="mb-3">
-                <h3 class="h5 font-weight-bold">مرونة في التعلم</h3>
-                <p class="mb-0">يمكنك الالتحاق ببرامج حضورية أو أونلاين حسب ما يناسب وقتك وهدفك.</p>
+                <h3 class="h5 font-weight-bold d-inline">مرونة في التعلم:</h3>
+                <span> يمكنك الالتحاق ببرامج حضورية أو أونلاين حسب ما يناسب وقتك وهدفك.</span>
             </li>
             <li class="mb-3">
-                <h3 class="h5 font-weight-bold">شهادة تعزز مسارك</h3>
-                <p class="mb-0">نساعدك على الحصول على شهادة تدريبية تدعم سيرتك الذاتية وتوثق رحلتك التعليمية.</p>
+                <h3 class="h5 font-weight-bold d-inline">شهادة تعزز مسارك:</h3>
+                <span> نساعدك على الحصول على شهادة تدريبية تدعم سيرتك الذاتية وتوثق رحلتك التعليمية.</span>
             </li>
             <li class="mb-3">
-                <h3 class="h5 font-weight-bold">دعم مباشر وسهل</h3>
-                <p class="mb-0">فريقنا يساعدك في اختيار البرنامج المناسب والتسجيل والمتابعة، مع إمكانية التواصل المباشر عبر واتساب.</p>
+                <h3 class="h5 font-weight-bold d-inline">دعم مباشر وسهل:</h3>
+                <span> فريقنا يساعدك في اختيار البرنامج المناسب والتسجيل والمتابعة، مع إمكانية التواصل المباشر عبر واتساب.</span>
             </li>
             <li class="mb-3">
-                <h3 class="h5 font-weight-bold">تجربة تعليمية منظمة وواضحة</h3>
-                <p class="mb-0">نعمل على تقديم تجربة تدريبية منظمة، واضحة، ومبنية على الثقة والجودة.</p>
+                <h3 class="h5 font-weight-bold d-inline">تجربة تعليمية منظمة وواضحة:</h3>
+                <span> نعمل على تقديم تجربة تدريبية منظمة، واضحة، ومبنية على الثقة والجودة.</span>
             </li>
             <li class="mb-3">
-                <h3 class="h5 font-weight-bold">قيمة مناسبة مقابل ما تتعلمه</h3>
-                <p class="mb-0">نقدم برامج تساعدك على تحقيق استفادة حقيقية دون تعقيد أو تكلفة مبالغ فيها.</p>
+                <h3 class="h5 font-weight-bold d-inline">قيمة مناسبة مقابل ما تتعلمه:</h3>
+                <span> نقدم برامج تساعدك على تحقيق استفادة حقيقية دون تعقيد أو تكلفة مبالغ فيها.</span>
             </li>
         </ul>
     </section>
@@ -114,23 +124,23 @@
         <h2 id="about-values-heading" class="section-title-bg p-2 mt-4 mb-3">قيم أكاديمية البيان</h2>
         <ul class="about-page-values list-unstyled">
             <li class="mb-3">
-                <h3 class="h5 font-weight-bold">الوضوح</h3>
+                <h3 class="h5 font-weight-bold mb-1">الوضوح</h3>
                 <p class="mb-0">نشرح للمتدرب البرنامج، الهدف، والمخرجات قبل التسجيل.</p>
             </li>
             <li class="mb-3">
-                <h3 class="h5 font-weight-bold">الثقة والالتزام</h3>
+                <h3 class="h5 font-weight-bold mb-1">الثقة والالتزام</h3>
                 <p class="mb-0">نلتزم بتقديم تجربة تدريبية قائمة على الثقة والالتزام.</p>
             </li>
             <li class="mb-3">
-                <h3 class="h5 font-weight-bold">المرونة</h3>
+                <h3 class="h5 font-weight-bold mb-1">المرونة</h3>
                 <p class="mb-0">نوفر حلولًا تناسب الطالب، الموظف، وصاحب العمل.</p>
             </li>
             <li class="mb-3">
-                <h3 class="h5 font-weight-bold">الجودة العملية</h3>
+                <h3 class="h5 font-weight-bold mb-1">الجودة العملية</h3>
                 <p class="mb-0">نركز على التدريب الذي يساعد المتدرب في الواقع، وليس فقط في القاعة.</p>
             </li>
             <li class="mb-3">
-                <h3 class="h5 font-weight-bold">الاهتمام بالمتدرب</h3>
+                <h3 class="h5 font-weight-bold mb-1">الاهتمام بالمتدرب</h3>
                 <p class="mb-0">نساعد كل متدرب على اختيار المسار الأقرب لهدفه.</p>
             </li>
         </ul>
@@ -154,29 +164,18 @@
 
     <section class="about-page-section" aria-labelledby="about-contact-heading">
         <h2 id="about-contact-heading" class="section-title-bg p-2 mt-4 mb-3">تواصل مع أكاديمية البيان</h2>
-        <p>نحن هنا للإجابة على جميع استفساراتكم ومساعدتكم في اختيار البرنامج التدريبي الأنسب لكم. يمكنكم أيضاً زيارة <a href="{{ $contactUrl }}">{{ trans('site.contact_page_title') }}</a>.</p>
+        <p>نحن هنا للإجابة على جميع استفساراتكم ومساعدتكم في اختيار البرنامج التدريبي الأنسب لكم.</p>
         <ul class="list-unstyled about-page-contact-links">
-            @if(!empty($whatsappLink))
-                <li class="mb-2">
-                    <i class="fab fa-whatsapp" aria-hidden="true"></i>
-                    <strong>واتساب:</strong>
-                    <a href="{{ $whatsappLink }}" target="_blank" rel="noopener">{{ trans('site.about_whatsapp_cta_link') }}</a>
-                </li>
-            @endif
-            @foreach($phoneLinks ?? [] as $phone)
-                <li class="mb-2">
-                    <i data-feather="phone" width="18" height="18" aria-hidden="true"></i>
-                    <strong>الهاتف:</strong>
-                    <a href="{{ $phone['href'] }}">{{ $phone['label'] }}</a>
-                </li>
-            @endforeach
-            @foreach($emailLinks ?? [] as $email)
-                <li class="mb-2">
-                    <i data-feather="mail" width="18" height="18" aria-hidden="true"></i>
-                    <strong>البريد الإلكتروني:</strong>
-                    <a href="{{ $email['href'] }}">{{ $email['label'] }}</a>
-                </li>
-            @endforeach
+            <li class="mb-2">
+                <i data-feather="phone" width="18" height="18" aria-hidden="true"></i>
+                <strong>الهاتف:</strong>
+                <a href="{{ $aboutPhoneHref }}">{{ $aboutPhoneDisplay }}</a>
+            </li>
+            <li class="mb-2">
+                <i data-feather="mail" width="18" height="18" aria-hidden="true"></i>
+                <strong>البريد الإلكتروني:</strong>
+                <a href="mailto:{{ $aboutEmail }}">{{ $aboutEmail }}</a>
+            </li>
         </ul>
     </section>
 </article>
