@@ -1,5 +1,29 @@
 @extends(getTemplate().'.layouts.app')
 
+@if(!empty($page->styles))
+    @push('styles_top')
+        {!! $page->styles !!}
+    @endpush
+@endif
+
+@if(!empty($page->head_content))
+    @push('head_content')
+        {!! $page->head_content !!}
+    @endpush
+@endif
+
+@if(!empty($page->scripts))
+    @push('scripts_bottom')
+        {!! $page->scripts !!}
+    @endpush
+@endif
+
+@if(!empty($page->footer_content))
+    @push('footer_content')
+        {!! $page->footer_content !!}
+    @endpush
+@endif
+
 @section('content')
     <section class="cart-banner position-relative text-center">
         <div class="container h-100">
@@ -15,7 +39,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="post-show mt-30">
-                    {!! nl2br($page->content) !!}
+                    {!! $page->content !!}
                 </div>
             </div>
         </div>

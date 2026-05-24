@@ -47,6 +47,10 @@ class PagesController extends Controller
             'title' => 'required',
             'seo_description' => 'nullable|string|max:255',
             'content' => 'required',
+            'styles' => 'nullable|string',
+            'scripts' => 'nullable|string',
+            'head_content' => 'nullable|string',
+            'footer_content' => 'nullable|string',
         ]);
 
         $data = $request->all();
@@ -73,6 +77,10 @@ class PagesController extends Controller
             'title' => $data['title'],
             'seo_description' => $data['seo_description'] ?? null,
             'content' => $data['content'],
+            'styles' => $data['styles'] ?? null,
+            'scripts' => $data['scripts'] ?? null,
+            'head_content' => $data['head_content'] ?? null,
+            'footer_content' => $data['footer_content'] ?? null,
         ]);
 
         return redirect(getAdminPanelUrl().'/pages');
@@ -109,6 +117,10 @@ class PagesController extends Controller
             'title' => 'required',
             'seo_description' => 'nullable|string|max:255',
             'content' => 'required',
+            'styles' => 'nullable|string',
+            'scripts' => 'nullable|string',
+            'head_content' => 'nullable|string',
+            'footer_content' => 'nullable|string',
         ]);
 
         $data = $request->all();
@@ -135,6 +147,10 @@ class PagesController extends Controller
             'title' => $data['title'],
             'seo_description' => $data['seo_description'] ?? null,
             'content' => $data['content'],
+            'styles' => $data['styles'] ?? null,
+            'scripts' => $data['scripts'] ?? null,
+            'head_content' => $data['head_content'] ?? null,
+            'footer_content' => $data['footer_content'] ?? null,
         ]);
 
         removeContentLocale();

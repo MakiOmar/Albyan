@@ -1,5 +1,13 @@
 @extends('admin.layouts.app')
 
+@php
+    $pageContent = !empty($page) ? $page->content : old('content');
+    $contentEditorMode = old('content_editor_mode', 'visual');
+    if ($contentEditorMode !== 'html' && !empty($pageContent) && preg_match('/<(header|main|section|svg|footer|nav|article|aside|script|style)[\s>]|<\!--/i', $pageContent)) {
+        $contentEditorMode = 'html';
+    }
+@endphp
+
 @push('styles_top')
     <link rel="stylesheet" href="/assets/vendors/summernote/summernote-bs4.min.css">
 @endpush
@@ -100,13 +108,83 @@
                                 </div>
 
                                 <div class="form-group mt-15">
-                                    <label class="input-label">{{ trans('admin/main.content') }}</label>
-                                    <textarea id="summernote" name="content" class="summernote form-control @error('content')  is-invalid @enderror">{!! !empty($page) ? $page->content : old('content')  !!}</textarea>
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap mb-2">
+                                        <label class="input-label mb-0">{{ trans('admin/main.content') }}</label>
+                                        <label class="custom-switch pl-0 mb-0">
+                                            <span class="custom-switch-description mb-0 mr-2">{{ trans('admin/main.page_content_editor_visual') }}</span>
+                                            <input type="checkbox" id="js-page-content-editor-toggle" class="custom-switch-input" {{ $contentEditorMode === 'html' ? 'checked' : '' }} />
+                                            <span class="custom-switch-indicator"></span>
+                                            <span class="custom-switch-description mb-0 ml-2">{{ trans('admin/main.page_content_editor_html') }}</span>
+                                        </label>
+                                    </div>
+                                    <input type="hidden" name="content_editor_mode" id="js-page-content-editor-mode" value="{{ $contentEditorMode }}" />
+                                    <p class="text-muted text-small mb-2 js-page-editor-hint-visual {{ $contentEditorMode === 'html' ? 'd-none' : '' }}">{{ trans('admin/main.page_content_visual_hint') }}</p>
+                                    <p class="text-muted text-small mb-2 js-page-editor-hint-html {{ $contentEditorMode === 'html' ? '' : 'd-none' }}">{{ trans('admin/main.page_content_html_hint') }}</p>
+                                    <textarea id="js-page-content" name="content" rows="24" class="form-control @error('content') is-invalid @enderror {{ $contentEditorMode === 'html' ? 'font-monospace' : '' }}" spellcheck="false">{!! $pageContent !!}</textarea>
                                     @error('content')
-                                    <div class="invalid-feedback">
+                                    <div class="invalid-feedback d-block">
                                         {{ $message }}
                                     </div>
                                     @enderror
+                                </div>
+
+                                {{-- Per-page custom assets (styles, scripts, head & footer markup) --}}
+                                <div class="form-group mt-20">
+                                    <label class="input-label d-block">{{ trans('admin/main.page_custom_assets') }}</label>
+                                    <p class="text-muted text-small mb-3">{{ trans('admin/main.page_custom_assets_hint') }}</p>
+
+                                    <ul class="nav nav-pills" id="pageCustomAssetsTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="page-styles-tab" data-toggle="tab" href="#page-styles" role="tab" aria-controls="page-styles" aria-selected="true">{{ trans('admin/main.page_styles') }}</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="page-scripts-tab" data-toggle="tab" href="#page-scripts" role="tab" aria-controls="page-scripts" aria-selected="false">{{ trans('admin/main.page_scripts') }}</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="page-head-tab" data-toggle="tab" href="#page-head" role="tab" aria-controls="page-head" aria-selected="false">{{ trans('admin/main.page_head_content') }}</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="page-footer-tab" data-toggle="tab" href="#page-footer" role="tab" aria-controls="page-footer" aria-selected="false">{{ trans('admin/main.page_footer_content') }}</a>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content border rounded p-3 mt-2" id="pageCustomAssetsTabContent">
+                                        <div class="tab-pane fade show active" id="page-styles" role="tabpanel" aria-labelledby="page-styles-tab">
+                                            <label class="input-label">{{ trans('admin/main.page_styles') }}</label>
+                                            <textarea name="styles" class="form-control font-monospace @error('styles') is-invalid @enderror" rows="8" placeholder="{{ trans('admin/main.page_styles_placeholder') }}">{{ !empty($page) ? $page->styles : old('styles') }}</textarea>
+                                            <div class="text-muted text-small mt-1">{{ trans('admin/main.page_styles_hint') }}</div>
+                                            @error('styles')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="tab-pane fade" id="page-scripts" role="tabpanel" aria-labelledby="page-scripts-tab">
+                                            <label class="input-label">{{ trans('admin/main.page_scripts') }}</label>
+                                            <textarea name="scripts" class="form-control font-monospace @error('scripts') is-invalid @enderror" rows="8" placeholder="{{ trans('admin/main.page_scripts_placeholder') }}">{{ !empty($page) ? $page->scripts : old('scripts') }}</textarea>
+                                            <div class="text-muted text-small mt-1">{{ trans('admin/main.page_scripts_hint') }}</div>
+                                            @error('scripts')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="tab-pane fade" id="page-head" role="tabpanel" aria-labelledby="page-head-tab">
+                                            <label class="input-label">{{ trans('admin/main.page_head_content') }}</label>
+                                            <textarea name="head_content" class="form-control font-monospace @error('head_content') is-invalid @enderror" rows="8" placeholder="{{ trans('admin/main.page_head_content_placeholder') }}">{{ !empty($page) ? $page->head_content : old('head_content') }}</textarea>
+                                            <div class="text-muted text-small mt-1">{{ trans('admin/main.page_head_content_hint') }}</div>
+                                            @error('head_content')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        <div class="tab-pane fade" id="page-footer" role="tabpanel" aria-labelledby="page-footer-tab">
+                                            <label class="input-label">{{ trans('admin/main.page_footer_content') }}</label>
+                                            <textarea name="footer_content" class="form-control font-monospace @error('footer_content') is-invalid @enderror" rows="8" placeholder="{{ trans('admin/main.page_footer_content_placeholder') }}">{{ !empty($page) ? $page->footer_content : old('footer_content') }}</textarea>
+                                            <div class="text-muted text-small mt-1">{{ trans('admin/main.page_footer_content_hint') }}</div>
+                                            @error('footer_content')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="form-group custom-switches-stacked">
@@ -145,4 +223,102 @@
 
 @push('scripts_bottom')
     <script src="/assets/vendors/summernote/summernote-bs4.min.js"></script>
+    <script>
+        (function ($) {
+            "use strict";
+
+            var $textarea = $('#js-page-content');
+            var $modeInput = $('#js-page-content-editor-mode');
+            var $toggle = $('#js-page-content-editor-toggle');
+            var summernoteActive = false;
+            var initialMode = @json($contentEditorMode);
+
+            function isHtmlMode() {
+                return $toggle.is(':checked');
+            }
+
+            function updateHints(htmlMode) {
+                $('.js-page-editor-hint-visual').toggleClass('d-none', htmlMode);
+                $('.js-page-editor-hint-html').toggleClass('d-none', !htmlMode);
+            }
+
+            function initSummernote() {
+                if (summernoteActive || !jQuery().summernote || typeof window.makeSummernote !== 'function') {
+                    return;
+                }
+
+                window.makeSummernote($textarea, 400);
+                summernoteActive = true;
+            }
+
+            function destroySummernote() {
+                if (!summernoteActive) {
+                    return;
+                }
+
+                var code = $textarea.summernote('code');
+                $textarea.summernote('destroy');
+                $textarea.val(code);
+                summernoteActive = false;
+            }
+
+            function setEditorMode(htmlMode) {
+                if (htmlMode) {
+                    if (summernoteActive) {
+                        destroySummernote();
+                    }
+
+                    $textarea.addClass('font-monospace');
+                    $modeInput.val('html');
+                    $toggle.prop('checked', true);
+                } else {
+                    var code = $textarea.val();
+                    $textarea.removeClass('font-monospace');
+                    initSummernote();
+
+                    if (summernoteActive && code) {
+                        $textarea.summernote('code', code);
+                    }
+
+                    $modeInput.val('visual');
+                    $toggle.prop('checked', false);
+                }
+
+                updateHints(htmlMode);
+            }
+
+            $toggle.on('change', function () {
+                if (isHtmlMode()) {
+                    setEditorMode(true);
+                    return;
+                }
+
+                Swal.fire({
+                    title: @json(trans('admin/main.page_content_switch_to_visual_title')),
+                    text: @json(trans('admin/main.page_content_switch_to_visual_warning')),
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: @json(trans('admin/main.page_content_switch_to_visual_confirm')),
+                    cancelButtonText: @json(trans('public.cancel')),
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        setEditorMode(false);
+                    } else {
+                        $toggle.prop('checked', true);
+                    }
+                });
+            });
+
+            $('form').on('submit', function () {
+                if (summernoteActive) {
+                    $textarea.val($textarea.summernote('code'));
+                    destroySummernote();
+                }
+
+                $modeInput.val(isHtmlMode() ? 'html' : 'visual');
+            });
+
+            setEditorMode(initialMode === 'html');
+        })(jQuery);
+    </script>
 @endpush

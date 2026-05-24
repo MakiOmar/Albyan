@@ -29,6 +29,7 @@
 
     @stack('styles_top')
     @stack('scripts_top')
+    @stack('head_content')
 
     <style>
         {!! !empty(getCustomCssAndJs('css')) ? getCustomCssAndJs('css') : '' !!}
@@ -653,6 +654,7 @@
 {{-- Lazy CSS before page scripts: Swiper/Owl CSS load on interaction; onVendorCssReady queues init until then --}}
 <script src="/assets/default/js/lazy-css-loader.js"></script>
 @stack('scripts_bottom')
+@stack('footer_content')
 
 <script src="/assets/default/js/image-lazy-loader.js" defer></script>
 <script src="/assets/default/js/parts/main.min.js" defer></script>

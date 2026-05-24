@@ -15,7 +15,7 @@ class Page extends Model implements TranslatableContract
     protected $dateFormat = 'U';
     protected $guarded = ['id'];
 
-    public $translatedAttributes = ['title', 'seo_description', 'content'];
+    public $translatedAttributes = ['title', 'seo_description', 'content', 'styles', 'scripts', 'head_content', 'footer_content'];
 
     public function getTitleAttribute()
     {
@@ -30,5 +30,25 @@ class Page extends Model implements TranslatableContract
     public function getContentAttribute()
     {
         return getTranslateAttributeValue($this, 'content');
+    }
+
+    public function getStylesAttribute()
+    {
+        return getTranslateAttributeValue($this, 'styles');
+    }
+
+    public function getScriptsAttribute()
+    {
+        return getTranslateAttributeValue($this, 'scripts');
+    }
+
+    public function getHeadContentAttribute()
+    {
+        return getTranslateAttributeValue($this, 'head_content');
+    }
+
+    public function getFooterContentAttribute()
+    {
+        return getTranslateAttributeValue($this, 'footer_content');
     }
 }
