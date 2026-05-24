@@ -3,7 +3,7 @@
     $classesUrl = url('/classes');
     $aboutPhoneDisplay = '971043931889+';
     $aboutPhoneHref = 'tel:+97143931889';
-    $aboutEmail = 'info@albyan.institute';
+    $aboutEmail = getSiteContactEmail() ?? '';
 
     if (!empty($phoneLinks)) {
         $aboutPhoneDisplay = $phoneLinks[0]['label'];
@@ -171,11 +171,13 @@
                 <strong>الهاتف:</strong>
                 <a href="{{ $aboutPhoneHref }}">{{ $aboutPhoneDisplay }}</a>
             </li>
-            <li class="mb-2">
-                <i data-feather="mail" width="18" height="18" aria-hidden="true"></i>
-                <strong>البريد الإلكتروني:</strong>
-                <a href="mailto:{{ $aboutEmail }}">{{ $aboutEmail }}</a>
-            </li>
+            @if(!empty($aboutEmail))
+                <li class="mb-2">
+                    <i data-feather="mail" width="18" height="18" aria-hidden="true"></i>
+                    <strong>البريد الإلكتروني:</strong>
+                    <a href="mailto:{{ $aboutEmail }}">{{ $aboutEmail }}</a>
+                </li>
+            @endif
         </ul>
     </section>
 </article>

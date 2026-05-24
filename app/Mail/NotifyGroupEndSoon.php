@@ -21,7 +21,12 @@ class NotifyGroupEndSoon extends Mailable
 
     public function build()
     {
-        return $this->from('info@albyaninstitute.com', 'معهد البيان')
+        $generalSettings = getGeneralSettings();
+
+        return $this->from(
+            !empty($generalSettings['site_email']) ? $generalSettings['site_email'] : env('MAIL_FROM_ADDRESS'),
+            !empty($generalSettings['site_name']) ? $generalSettings['site_name'] : env('MAIL_FROM_NAME')
+        )
                 ->subject('تنبيه: مجموعة اقتربت على الانتهاء')
                 ->view('emails.notify_group_end_soon')
                 ->with([

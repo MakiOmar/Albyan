@@ -27,9 +27,12 @@ class AboutController extends Controller
             ];
         }
         if (empty($emailLinks)) {
-            $emailLinks = [
-                ['label' => 'info@albyan.institute', 'href' => 'mailto:info@albyan.institute'],
-            ];
+            $defaultEmail = getSiteContactEmail();
+            if (!empty($defaultEmail)) {
+                $emailLinks = [
+                    ['label' => $defaultEmail, 'href' => 'mailto:' . $defaultEmail],
+                ];
+            }
         }
 
         $schemaSameAs = [];

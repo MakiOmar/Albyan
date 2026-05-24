@@ -1766,6 +1766,27 @@ function getContactPageSettings($key = null)
 }
 
 /**
+ * Primary public contact email: contact page setting, then platform site_email.
+ */
+function getSiteContactEmail(): ?string
+{
+    $rawEmails = trim((string) (getContactPageSettings('emails') ?? ''));
+    if ($rawEmails !== '') {
+        $first = trim(preg_split('/[,;\n]+/', $rawEmails)[0] ?? '');
+        if ($first !== '' && filter_var($first, FILTER_VALIDATE_EMAIL)) {
+            return $first;
+        }
+    }
+
+    $siteEmail = trim((string) (getGeneralSettings('site_email') ?? ''));
+    if ($siteEmail !== '' && filter_var($siteEmail, FILTER_VALIDATE_EMAIL)) {
+        return $siteEmail;
+    }
+
+    return null;
+}
+
+/**
  * @param $key
  * @return array
  */
