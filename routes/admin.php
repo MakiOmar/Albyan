@@ -827,6 +827,9 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/', 'PagesController@index');
             Route::get('/create', 'PagesController@create');
             Route::post('/store', 'PagesController@store');
+            Route::get('/tools/search-replace', 'PagesController@searchReplace');
+            Route::post('/tools/search-replace/preview', 'PagesController@searchReplacePreview');
+            Route::post('/tools/search-replace/apply', 'PagesController@searchReplaceApply');
             Route::get('/{id}/edit', 'PagesController@edit');
             Route::post('/{id}/update', 'PagesController@update');
             Route::get('/{id}/delete', 'PagesController@delete');

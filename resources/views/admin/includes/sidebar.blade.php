@@ -965,6 +965,13 @@
                                 <a class="nav-link" href="{{ getAdminPanelUrl() }}/pages/create">{{ trans('admin/main.new_page') }}</a>
                             </li>
                         @endcan()
+
+                        @can('admin_pages_edit')
+                            <li class="menu-header">{{ trans('admin/main.tools') }}</li>
+                            <li class="{{ (request()->is(getAdminPanelUrl('/pages/tools/search-replace', false))) ? 'active' : '' }}">
+                                <a class="nav-link" href="{{ getAdminPanelUrl() }}/pages/tools/search-replace">{{ trans('admin/main.page_tools_search_replace') }}</a>
+                            </li>
+                        @endcan
                     </ul>
                 </li>
             @endcan
