@@ -18,6 +18,7 @@ return [
     'footer_nav_contact' => 'Contáctenos',
     'footer_nav_certificate_validation' => 'Validación de certificados',
     'footer_nav_terms' => 'Términos y políticas',
+    'footer_nav_privacy_policy' => 'Política de privacidad',
     'footer_nav_about' => 'Sobre nosotros',
     'footer_nav_faqs' => 'Preguntas frecuentes sobre la Academia Al-Bayan',
     'footer_nav_why_choose_us' => '¿Por qué la Academia Al-Bayan?',

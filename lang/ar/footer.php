@@ -18,6 +18,7 @@ return [
     'footer_nav_contact' => 'اتصل بنا',
     'footer_nav_certificate_validation' => 'التحقق من صحة الشهادة',
     'footer_nav_terms' => 'الشروط والقواعد',
+    'footer_nav_privacy_policy' => 'سياسة الخصوصية',
     'footer_nav_about' => 'معلومات عنا',
     'footer_nav_faqs' => 'الأسئلة الشائعة عن أكاديمية البيان',
     'footer_nav_why_choose_us' => 'لماذا أكاديمية البيان؟',
