@@ -95,6 +95,9 @@
                     <li class="pb-2"><a href="/certificate_validation">{{ trans('footer.footer_nav_certificate_validation') }}</a></li>
                     <li class="pb-2"><a href="/pages/privacy-policy">{{ trans('footer.footer_nav_terms') }}</a></li>
                     <li class="pb-2"><a href="/about">{{ trans('footer.footer_nav_about') }}</a></li>
+                    <li class="pb-2"><a href="/faqs">{{ trans('footer.footer_nav_faqs') }}</a></li>
+                    <li class="pb-2"><a href="/why-choose-us">{{ trans('footer.footer_nav_why_choose_us') }}</a></li>
+                    <li class="pb-2"><a href="/how-it-works">{{ trans('footer.footer_nav_how_it_works') }}</a></li>
                 </ul>
             </div>
 
