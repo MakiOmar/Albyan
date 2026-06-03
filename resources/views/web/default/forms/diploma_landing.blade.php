@@ -47,7 +47,7 @@
                 @endphp
                 <div class="mt-4 d-flex flex-column gap-2">
                     @if(!empty($dlWaDigits))
-                        <a href="https://wa.me/{{ $dlWaDigits }}" target="_blank" rel="noopener" class="btn btn-success w-100">
+                        <a href="https://wa.me/{{ $dlWaDigits }}" target="_blank" rel="noopener" class="btn dl-whatsapp-btn w-100">
                             <i class="fab fa-whatsapp"></i> {{ trans('update.contact_on_whatsapp') }}
                         </a>
                     @endif

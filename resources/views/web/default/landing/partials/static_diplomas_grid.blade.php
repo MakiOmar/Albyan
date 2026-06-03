@@ -141,7 +141,7 @@
                                         </a>
                                     @endif
                                     @if(!empty($waDigits))
-                                        <a href="https://wa.me/{{ $waDigits }}?text={{ $waMessage }}" target="_blank" rel="noopener" class="btn btn-success btn-sm">
+                                        <a href="https://wa.me/{{ $waDigits }}?text={{ $waMessage }}" target="_blank" rel="noopener" class="btn dl-whatsapp-btn btn-sm">
                                             <i class="fab fa-whatsapp"></i>
                                             {{ trans('public.whatsapp') }}
                                         </a>

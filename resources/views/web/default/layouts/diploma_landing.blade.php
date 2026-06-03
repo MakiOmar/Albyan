@@ -84,8 +84,16 @@
             background: linear-gradient(135deg, #01477d, #023a66);
             color: #fff !important;
         }
-        .dl-btn-whatsapp {
-            background: #25d366;
+        .dl-btn-whatsapp,
+        .dl-whatsapp-btn {
+            background: #128C7E !important;
+            border-color: #128C7E !important;
+            color: #fff !important;
+        }
+        .dl-btn-whatsapp:hover,
+        .dl-whatsapp-btn:hover {
+            background: #0f7569 !important;
+            border-color: #0f7569 !important;
             color: #fff !important;
         }
         .dl-form-section {
