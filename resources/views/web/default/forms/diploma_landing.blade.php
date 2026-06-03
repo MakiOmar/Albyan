@@ -4,7 +4,7 @@
 
     @include('web.default.landing.partials.hero_section')
 
-    @include('web.default.landing.partials.courses_grid')
+    @include('web.default.landing.partials.static_diplomas_grid')
 
     @include('web.default.landing.partials.certificates_gallery')
 
