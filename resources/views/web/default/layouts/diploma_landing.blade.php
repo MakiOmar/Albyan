@@ -156,6 +156,25 @@
             display: block;
             width: 100%;
         }
+        .testimonials-container .show-more-btn {
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0;
+            margin-top: 8px;
+            font-weight: 700;
+            color: var(--primary) !important;
+            cursor: pointer;
+            appearance: none;
+        }
+        .testimonials-container .show-more-btn:hover,
+        .testimonials-container .show-more-btn:focus {
+            background: none !important;
+            border: none !important;
+            color: var(--primary) !important;
+            outline: none;
+            text-decoration: underline;
+        }
     </style>
     @if(!empty($heroSectionData) && !empty($heroSectionData['is_video_background']))
         @php

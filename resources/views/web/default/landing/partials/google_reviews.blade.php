@@ -54,7 +54,7 @@
                                         {!! e($visibleText) !!}
                                         @if(!empty($hiddenText))
                                             <span class="hidden-text d-none">{!! e($hiddenText) !!}</span>
-                                            <button type="button" class="show-more-btn text-blue" onclick="toggleText(this)">{{ trans('site.show_more_ellipsis') }}</button>
+                                            <button type="button" class="show-more-btn" onclick="toggleText(this)">{{ trans('site.show_more_ellipsis') }}</button>
                                         @endif
                                     </p>
                                     <div class="bottom-gradient"></div>
