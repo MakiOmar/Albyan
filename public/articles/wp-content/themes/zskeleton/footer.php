@@ -21,7 +21,7 @@
                 $zskeleton_nl_title = get_option('zskeleton_newsletter_title', '');
                 $zskeleton_nl_desc  = get_option('zskeleton_newsletter_description', '');
                 ?>
-                <h2><?php echo esc_html('' !== trim((string) $zskeleton_nl_title) ? $zskeleton_nl_title : __('Stay Updated with ZSkeleton Research', 'zskeleton')); ?></h2>
+                <h2><?php echo esc_html( '' !== trim( (string) $zskeleton_nl_title ) ? $zskeleton_nl_title : zskeleton_sprintf_site_name( __( 'Stay Updated with %s', 'zskeleton' ) ) ); ?></h2>
                 <p><?php echo esc_html('' !== trim((string) $zskeleton_nl_desc) ? $zskeleton_nl_desc : __('Join our community. Get exclusive insights, updates, and practical resources delivered to your inbox.', 'zskeleton')); ?></p>
                 
                 <form class="newsletter-form" id="newsletter-form">
@@ -249,18 +249,11 @@
                         <?php endif; ?>
                     </div>
                     <div class="footer-bottom-column footer-bottom-column--2">
-                        <?php if ( is_active_sidebar( 'footer-bottom-2' ) ) : ?>
-                            <?php dynamic_sidebar( 'footer-bottom-2' ); ?>
-                        <?php else : ?>
-                            <!-- Default: legal links when right column has no widgets -->
-                            <div class="footer-legal">
-                                <ul class="legal-links">
-                                    <li><a href="<?php echo esc_url( get_privacy_policy_url() ); ?>"><?php esc_html_e( 'Privacy Policy', 'zskeleton' ); ?></a></li>
-                                    <li><a href="<?php echo esc_url( zskeleton_get_page_url( 'terms-conditions' ) ); ?>"><?php esc_html_e( 'Terms & Conditions', 'zskeleton' ); ?></a></li>
-                                    <li><a href="<?php echo esc_url( zskeleton_get_page_url( 'faqs' ) ); ?>"><?php esc_html_e( 'FAQs', 'zskeleton' ); ?></a></li>
-                                </ul>
-                            </div>
-                        <?php endif; ?>
+                        <?php
+                        if ( is_active_sidebar( 'footer-bottom-2' ) ) {
+                            dynamic_sidebar( 'footer-bottom-2' );
+                        }
+                        ?>
                     </div>
                 </div>
             </div>

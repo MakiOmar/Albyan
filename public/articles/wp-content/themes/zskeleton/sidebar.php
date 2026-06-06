@@ -39,7 +39,7 @@ $zskeleton_sidebar_mship = function_exists( 'zskeleton_is_memberships_feature_en
                 </div>
             <?php else : ?>
                 <div class="membership-inactive">
-                    <p><?php _e('Unlock exclusive ZSkeleton content with a membership.', 'zskeleton'); ?></p>
+                    <p><?php echo esc_html( zskeleton_sprintf_site_name( __( 'Unlock exclusive %s content with a membership.', 'zskeleton' ) ) ); ?></p>
                     <a href="<?php echo esc_url( zskeleton_get_page_url( 'memberships' ) ); ?>" class="btn btn-primary">
                         <?php _e('Join Now', 'zskeleton'); ?>
                     </a>
@@ -51,8 +51,8 @@ $zskeleton_sidebar_mship = function_exists( 'zskeleton_is_memberships_feature_en
         
         <!-- Join Membership Widget -->
         <section class="widget join-widget formal-card">
-            <h3 class="widget-title"><?php _e('Join ZSkeleton', 'zskeleton'); ?></h3>
-            <p><?php _e('Become a member of ZSkeleton and access exclusive content and resources.', 'zskeleton'); ?></p>
+            <h3 class="widget-title"><?php echo esc_html( zskeleton_sprintf_site_name( __( 'Join %s', 'zskeleton' ) ) ); ?></h3>
+            <p><?php echo esc_html( zskeleton_sprintf_site_name( __( 'Become a member of %s and access exclusive content and resources.', 'zskeleton' ) ) ); ?></p>
             
             <div class="join-actions">
                 <a href="<?php echo esc_url( zskeleton_get_page_url( 'memberships' ) ); ?>" class="btn btn-primary">

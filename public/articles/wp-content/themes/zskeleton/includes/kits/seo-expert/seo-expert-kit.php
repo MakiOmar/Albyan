@@ -9,8 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once __DIR__ . '/class-seo-expert-defaults.php';
 require_once __DIR__ . '/class-seo-expert-meta.php';
+require_once __DIR__ . '/class-seo-expert-defaults.php';
+require_once __DIR__ . '/section-headings.php';
 require_once __DIR__ . '/seo-expert-icons.php';
 
 /**
@@ -218,6 +219,29 @@ function zskeleton_seo_expert_print_json_ld( $post_id ) {
 }
 
 /**
+ * Whether the related articles block is enabled for this SEO Expert page.
+ *
+ * @param int $landing_page_id SEO Expert page ID.
+ * @return bool
+ */
+function zskeleton_seo_expert_blog_links_enabled( $landing_page_id ) {
+	$landing_page_id = (int) $landing_page_id;
+	if ( $landing_page_id < 1 ) {
+		return false;
+	}
+
+	$enabled = '1' === zskeleton_seo_expert_get( $landing_page_id, 'blog_links_enabled', '1' );
+
+	/**
+	 * Filter whether related posts are shown on the SEO Expert template.
+	 *
+	 * @param bool $enabled         Stored setting (default on).
+	 * @param int  $landing_page_id Page ID.
+	 */
+	return (bool) apply_filters( 'zskeleton_seo_expert_blog_links_enabled', $enabled, $landing_page_id );
+}
+
+/**
  * Published posts for the “related articles” section (recent or hand-picked IDs).
  *
  * @param int $landing_page_id SEO Expert page ID.
@@ -226,6 +250,10 @@ function zskeleton_seo_expert_print_json_ld( $post_id ) {
 function zskeleton_seo_expert_get_related_blog_posts( $landing_page_id ) {
 	$landing_page_id = (int) $landing_page_id;
 	if ( $landing_page_id < 1 ) {
+		return array();
+	}
+
+	if ( ! zskeleton_seo_expert_blog_links_enabled( $landing_page_id ) ) {
 		return array();
 	}
 

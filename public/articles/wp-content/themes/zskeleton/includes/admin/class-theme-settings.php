@@ -168,6 +168,17 @@ class ZSkeleton_Theme_Settings {
         );
         set_transient('settings_errors', get_settings_errors(), 30);
 
+        if ( function_exists( 'zskeleton_clear_yoast_sitemap_cache' ) ) {
+            $sitemap_options = array(
+                'zskeleton_sitemap_post_types',
+                'zskeleton_sitemap_taxonomies',
+                'zskeleton_sitemap_include_empty_terms',
+            );
+            if ( array_intersect( $sitemap_options, $option_names ) ) {
+                zskeleton_clear_yoast_sitemap_cache();
+            }
+        }
+
         wp_safe_redirect(add_query_arg('settings-updated', 'true', $redirect));
         exit;
     }
@@ -1946,6 +1957,8 @@ class ZSkeleton_Theme_Settings {
             'zskeleton_content_settings'
         );
 
+        $this->register_sitemap_settings();
+
         // Archive Page Size
         register_setting(self::OPTION_GROUP, 'zskeleton_archive_posts_per_page');
         add_settings_field(
@@ -3157,6 +3170,137 @@ class ZSkeleton_Theme_Settings {
 
     public function homepage_settings_callback() {
         echo '<p>' . __('Customize your homepage layout and content.', 'zskeleton') . '</p>';
+    }
+
+    /**
+     * XML sitemap: post types, taxonomies, empty terms (Yoast + core).
+     *
+     * @return void
+     */
+    private function register_sitemap_settings() {
+        register_setting(
+            self::OPTION_GROUP,
+            'zskeleton_sitemap_post_types',
+            array(
+                'sanitize_callback' => array( $this, 'sanitize_sitemap_slug_list_setting' ),
+                'default'           => false,
+            )
+        );
+        register_setting(
+            self::OPTION_GROUP,
+            'zskeleton_sitemap_taxonomies',
+            array(
+                'sanitize_callback' => array( $this, 'sanitize_sitemap_slug_list_setting' ),
+                'default'           => false,
+            )
+        );
+        register_setting(
+            self::OPTION_GROUP,
+            'zskeleton_sitemap_include_empty_terms',
+            array(
+                'sanitize_callback' => array( $this, 'sanitize_on_off_checkbox' ),
+                'default'           => '1',
+            )
+        );
+
+        add_settings_field(
+            'zskeleton_sitemap_intro',
+            __( 'XML sitemap', 'zskeleton' ),
+            array( $this, 'sitemap_settings_intro_callback' ),
+            'zskeleton-content-settings',
+            'zskeleton_content_settings'
+        );
+
+        add_settings_field(
+            'zskeleton_sitemap_post_types',
+            __( 'Post types in sitemap', 'zskeleton' ),
+            array( $this, 'sitemap_post_types_field_callback' ),
+            'zskeleton-content-settings',
+            'zskeleton_content_settings'
+        );
+
+        add_settings_field(
+            'zskeleton_sitemap_taxonomies',
+            __( 'Taxonomies in sitemap', 'zskeleton' ),
+            array( $this, 'sitemap_taxonomies_field_callback' ),
+            'zskeleton-content-settings',
+            'zskeleton_content_settings'
+        );
+
+        add_settings_field(
+            'zskeleton_sitemap_include_empty_terms',
+            __( 'Empty categories / terms', 'zskeleton' ),
+            array( $this, 'checkbox_field_callback' ),
+            'zskeleton-content-settings',
+            'zskeleton_content_settings',
+            array(
+                'id'          => 'zskeleton_sitemap_include_empty_terms',
+                'default'     => '1',
+                'description' => __( 'Include taxonomy terms that have no posts (Yoast hides them by default, which often leaves only “Uncategorized”).', 'zskeleton' ),
+            )
+        );
+    }
+
+    /**
+     * @param mixed $value Raw value.
+     * @return string[]
+     */
+    public function sanitize_sitemap_slug_list_setting( $value ) {
+        return function_exists( 'zskeleton_sanitize_sitemap_slug_list' )
+            ? zskeleton_sanitize_sitemap_slug_list( $value )
+            : array();
+    }
+
+    /**
+     * @return void
+     */
+    public function sitemap_settings_intro_callback() {
+        echo '<p class="description">' . esc_html__( 'Controls what appears in the XML sitemap (Yoast SEO or WordPress core). Login, register, and password pages are always excluded. Save settings to refresh the sitemap cache.', 'zskeleton' ) . '</p>';
+        if ( function_exists( 'zskeleton_clear_yoast_sitemap_cache' ) && class_exists( 'WPSEO_Sitemaps_Router' ) ) {
+            $index = esc_url( home_url( WPSEO_Sitemaps_Router::get_base_url( 'sitemap_index.xml' ) ) );
+            echo '<p class="description"><a href="' . esc_url( $index ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'View sitemap index', 'zskeleton' ) . '</a></p>';
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function sitemap_post_types_field_callback() {
+        $this->render_sitemap_slug_checkboxes( 'zskeleton_sitemap_post_types', zskeleton_get_sitemap_selectable_post_types(), zskeleton_get_sitemap_enabled_post_types() );
+    }
+
+    /**
+     * @return void
+     */
+    public function sitemap_taxonomies_field_callback() {
+        $this->render_sitemap_slug_checkboxes( 'zskeleton_sitemap_taxonomies', zskeleton_get_sitemap_selectable_taxonomies(), zskeleton_get_sitemap_enabled_taxonomies() );
+    }
+
+    /**
+     * @param string               $option_name Option key.
+     * @param array<string,string> $choices     slug => label.
+     * @param string[]             $enabled     Currently enabled slugs.
+     * @return void
+     */
+    private function render_sitemap_slug_checkboxes( $option_name, $choices, $enabled ) {
+        if ( empty( $choices ) ) {
+            echo '<p class="description">' . esc_html__( 'No public items found.', 'zskeleton' ) . '</p>';
+            return;
+        }
+        echo '<fieldset class="zskeleton-sitemap-slug-checkboxes">';
+        printf( '<input type="hidden" name="%1$s[]" value="" />', esc_attr( $option_name ) );
+        foreach ( $choices as $slug => $label ) {
+            $checked = in_array( $slug, $enabled, true );
+            printf(
+                '<label style="display:block;margin-bottom:8px;"><input type="checkbox" name="%1$s[]" value="%2$s" %3$s /> %4$s <code>%2$s</code></label>',
+                esc_attr( $option_name ),
+                esc_attr( $slug ),
+                checked( $checked, true, false ),
+                esc_html( $label )
+            );
+        }
+        echo '</fieldset>';
+        echo '<p class="description">' . esc_html__( 'Unchecked types are omitted from the sitemap. Yoast may still require each type to be “shown in search results” under SEO → Search Appearance.', 'zskeleton' ) . '</p>';
     }
 
     public function content_settings_callback() {

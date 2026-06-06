@@ -28,7 +28,8 @@ $ratings  = zskeleton_get_repeater( $post_id, 'seo_ratings' );
 $why_us   = zskeleton_get_repeater( $post_id, 'seo_why_us' );
 $method   = zskeleton_get_repeater( $post_id, 'seo_methodology' );
 $tools    = zskeleton_get_repeater( $post_id, 'seo_tools' );
-$blog_posts = function_exists( 'zskeleton_seo_expert_get_related_blog_posts' )
+$blog_links_enabled = function_exists( 'zskeleton_seo_expert_blog_links_enabled' ) && zskeleton_seo_expert_blog_links_enabled( $post_id );
+$blog_posts         = $blog_links_enabled && function_exists( 'zskeleton_seo_expert_get_related_blog_posts' )
 	? zskeleton_seo_expert_get_related_blog_posts( $post_id )
 	: array();
 
@@ -57,13 +58,13 @@ $zskeleton_template_part_args = array(
 	'rows'            => $stats,
 	'container_class' => $c,
 	'class_prefix'    => 'seo-expert',
-	'aria_label'      => 'أرقام مختصرة',
+	'aria_label'      => function_exists( 'zskeleton_seo_expert_get_section_heading' ) ? zskeleton_seo_expert_get_section_heading( $post_id, 'heading_stats_aria' ) : 'أرقام مختصرة',
 );
 get_template_part( 'template-parts/marketing/section-stat-strip' );
 
 if ( ! empty( $ratings ) ) :
 	?>
-	<section class="seo-expert-ratings" aria-label="<?php echo esc_attr( 'تقييمات' ); ?>">
+	<section class="seo-expert-ratings" aria-label="<?php echo esc_attr( function_exists( 'zskeleton_seo_expert_get_section_heading' ) ? zskeleton_seo_expert_get_section_heading( $post_id, 'heading_ratings_aria' ) : 'تقييمات' ); ?>">
 		<div class="<?php echo esc_attr( $c ); ?>">
 			<div class="seo-expert-ratings__grid">
 				<?php foreach ( $ratings as $r ) : ?>
@@ -100,7 +101,7 @@ if ( $intro !== '' ) :
 					<div class="seo-expert-trust-card">
 						<?php if ( '' !== $years ) : ?>
 							<p class="seo-expert-trust-card__figure"><span class="seo-expert-trust-card__num"><?php echo esc_html( $years ); ?></span><span class="seo-expert-trust-card__plus" aria-hidden="true">+</span></p>
-							<p class="seo-expert-trust-card__label"><?php echo esc_html( 'سنوات خبرة' ); ?></p>
+							<p class="seo-expert-trust-card__label"><?php echo esc_html( function_exists( 'zskeleton_seo_expert_get_section_heading' ) ? zskeleton_seo_expert_get_section_heading( $post_id, 'intro_trust_years_label' ) : 'سنوات خبرة' ); ?></p>
 						<?php endif; ?>
 						<?php if ( '' !== $name ) : ?>
 							<p class="seo-expert-trust-card__name"><?php echo esc_html( $name ); ?></p>
@@ -118,10 +119,8 @@ endif;
 <section class="seo-expert-section seo-expert-section--brand-tint" id="seo-expert-why">
 	<div class="<?php echo esc_attr( $c ); ?>">
 		<?php
-		if ( function_exists( 'zskeleton_seo_expert_section_heading' ) ) {
-			zskeleton_seo_expert_section_heading( 'لماذا تختارنا؟', 'target' );
-		} else {
-			echo '<h2 class="seo-expert-section__title">' . esc_html( 'لماذا تختارنا؟' ) . '</h2>';
+		if ( function_exists( 'zskeleton_seo_expert_render_section_heading' ) ) {
+			zskeleton_seo_expert_render_section_heading( $post_id, 'heading_why_us' );
 		}
 		?>
 		<ol class="seo-expert-why-list">
@@ -155,10 +154,8 @@ endif;
 <section class="seo-expert-section seo-expert-section--alt seo-expert-section--mesh" id="seo-expert-services">
 	<div class="<?php echo esc_attr( $c ); ?>">
 		<?php
-		if ( function_exists( 'zskeleton_seo_expert_section_heading' ) ) {
-			zskeleton_seo_expert_section_heading( 'خدماتنا', 'briefcase' );
-		} else {
-			echo '<h2 class="seo-expert-section__title">' . esc_html( 'خدماتنا' ) . '</h2>';
+		if ( function_exists( 'zskeleton_seo_expert_render_section_heading' ) ) {
+			zskeleton_seo_expert_render_section_heading( $post_id, 'heading_services' );
 		}
 		?>
 		<div class="seo-expert-services-grid">
@@ -188,15 +185,13 @@ endif;
 	</div>
 </section>
 
-<section class="seo-expert-section seo-expert-section--pair seo-expert-section--mesh" id="seo-expert-process" aria-label="<?php echo esc_attr( 'المنهجية والأدوات' ); ?>">
+<section class="seo-expert-section seo-expert-section--pair seo-expert-section--mesh" id="seo-expert-process" aria-label="<?php echo esc_attr( function_exists( 'zskeleton_seo_expert_get_section_heading' ) ? zskeleton_seo_expert_get_section_heading( $post_id, 'heading_process_aria' ) : 'المنهجية والأدوات' ); ?>">
 	<div class="<?php echo esc_attr( $c ); ?>">
 		<div class="seo-expert-pair-layout">
 			<div class="seo-expert-pair-layout__col seo-expert-pair-layout__col--method" id="seo-expert-method">
 				<?php
-				if ( function_exists( 'zskeleton_seo_expert_section_heading' ) ) {
-					zskeleton_seo_expert_section_heading( 'كيف نعمل؟', 'route' );
-				} else {
-					echo '<h2 class="seo-expert-section__title">' . esc_html( 'كيف نعمل؟' ) . '</h2>';
+				if ( function_exists( 'zskeleton_seo_expert_render_section_heading' ) ) {
+					zskeleton_seo_expert_render_section_heading( $post_id, 'heading_methodology' );
 				}
 				?>
 				<ol class="seo-expert-steps">
@@ -222,10 +217,8 @@ endif;
 			</div>
 			<div class="seo-expert-pair-layout__col seo-expert-pair-layout__col--tools" id="seo-expert-tools">
 				<?php
-				if ( function_exists( 'zskeleton_seo_expert_section_heading' ) ) {
-					zskeleton_seo_expert_section_heading( 'أدوات وتقنيات', 'wrench' );
-				} else {
-					echo '<h2 class="seo-expert-section__title">' . esc_html( 'أدوات وتقنيات' ) . '</h2>';
+				if ( function_exists( 'zskeleton_seo_expert_render_section_heading' ) ) {
+					zskeleton_seo_expert_render_section_heading( $post_id, 'heading_tools' );
 				}
 				?>
 				<ul class="seo-expert-tools">
@@ -260,24 +253,32 @@ endif;
 
 <?php
 $blocks = array(
-	'prose_arabic_market'   => 'لماذا تحتاج خبيراً يفهم السوق العربي؟',
-	'prose_results_steps'   => 'كيف نحقق نتائج في البحث؟',
-	'prose_success_factors' => 'عوامل نجاح الحملة',
-	'prose_how_to_choose'   => 'كيف تختار خبير سيو؟',
-);
-$block_icons = array(
-	'prose_arabic_market'   => 'globe',
-	'prose_results_steps'   => 'chart',
-	'prose_success_factors' => 'target',
-	'prose_how_to_choose'   => 'help',
+	array(
+		'body_key'    => 'prose_arabic_market',
+		'heading_key' => 'heading_arabic_market',
+	),
+	array(
+		'body_key'    => 'prose_results_steps',
+		'heading_key' => 'heading_results_steps',
+	),
+	array(
+		'body_key'    => 'prose_success_factors',
+		'heading_key' => 'heading_success_factors',
+	),
+	array(
+		'body_key'    => 'prose_how_to_choose',
+		'heading_key' => 'heading_how_to_choose',
+	),
 );
 $block_i = 0;
-foreach ( $blocks as $meta_key => $heading ) {
-	$body = zskeleton_seo_expert_get( $post_id, $meta_key );
+foreach ( $blocks as $block ) {
+	$meta_key    = $block['body_key'];
+	$heading_key = $block['heading_key'];
+	$body        = zskeleton_seo_expert_get( $post_id, $meta_key );
 	if ( '' === $body ) {
 		continue;
 	}
-	$icon_key = isset( $block_icons[ $meta_key ] ) ? $block_icons[ $meta_key ] : 'sparkles';
+	$icon_key = function_exists( 'zskeleton_seo_expert_section_heading_icon' ) ? zskeleton_seo_expert_section_heading_icon( $heading_key ) : 'sparkles';
 	$sec_mod  = ( 0 === $block_i % 2 ) ? ' seo-expert-section--mesh' : ' seo-expert-section--brand-tint';
 	$flip     = ( 0 === $block_i % 2 ) ? ' seo-expert-prose-split--flip' : '';
 	$side_img = absint( get_post_meta( $post_id, ZSkeleton_Seo_Expert_Meta::meta_key( $meta_key . '_side_image_id' ), true ) );
@@ -287,10 +288,8 @@ foreach ( $blocks as $meta_key => $heading ) {
 	<section class="seo-expert-section<?php echo esc_attr( $sec_mod ); ?>">
 		<div class="<?php echo esc_attr( $c ); ?>">
 			<?php
-			if ( function_exists( 'zskeleton_seo_expert_section_heading' ) ) {
-				zskeleton_seo_expert_section_heading( $heading, $icon_key );
-			} else {
-				echo '<h2 class="seo-expert-section__title">' . esc_html( $heading ) . '</h2>';
+			if ( function_exists( 'zskeleton_seo_expert_render_section_heading' ) ) {
+				zskeleton_seo_expert_render_section_heading( $post_id, $heading_key );
 			}
 			?>
 			<?php if ( $has_side ) : ?>
@@ -335,10 +334,8 @@ if ( $price !== '' ) :
 	<section class="seo-expert-section seo-expert-section--alt seo-expert-section--mesh" id="seo-expert-pricing">
 		<div class="<?php echo esc_attr( $c ); ?>">
 			<?php
-			if ( function_exists( 'zskeleton_seo_expert_section_heading' ) ) {
-				zskeleton_seo_expert_section_heading( 'الأسعار', 'currency' );
-			} else {
-				echo '<h2 class="seo-expert-section__title">' . esc_html( 'الأسعار' ) . '</h2>';
+			if ( function_exists( 'zskeleton_seo_expert_render_section_heading' ) ) {
+				zskeleton_seo_expert_render_section_heading( $post_id, 'heading_pricing' );
 			}
 			?>
 			<div class="seo-expert-pricing-layout<?php echo $has_pricing_img ? ' seo-expert-pricing-layout--has-image' : ''; ?>">
@@ -381,7 +378,7 @@ if ( ! empty( $seo_expert_home_plans ) ) :
 				null,
 				array(
 					'plans'   => $seo_expert_home_plans,
-					'heading' => __( 'Choose Your Membership', 'zskeleton' ),
+					'heading' => function_exists( 'zskeleton_seo_expert_get_section_heading' ) ? zskeleton_seo_expert_get_section_heading( $post_id, 'heading_memberships' ) : __( 'Choose Your Membership', 'zskeleton' ),
 				)
 			);
 			?>
@@ -394,10 +391,8 @@ endif;
 <section class="seo-expert-section seo-expert-section--brand-tint" id="seo-expert-faq">
 	<div class="<?php echo esc_attr( $c ); ?>">
 		<?php
-		if ( function_exists( 'zskeleton_seo_expert_section_heading' ) ) {
-			zskeleton_seo_expert_section_heading( 'أسئلة شائعة', 'help' );
-		} else {
-			echo '<h2 class="seo-expert-section__title">' . esc_html( 'أسئلة شائعة' ) . '</h2>';
+		if ( function_exists( 'zskeleton_seo_expert_render_section_heading' ) ) {
+			zskeleton_seo_expert_render_section_heading( $post_id, 'heading_faq' );
 		}
 		?>
 		<div class="faq-list-simple seo-expert-faq-list" role="list">
@@ -437,7 +432,7 @@ endif;
 <?php
 $closing = zskeleton_seo_expert_get( $post_id, 'prose_closing_cta' );
 $zskeleton_template_part_args = array(
-	'heading'          => sprintf( 'ابدأ مع %s', $name ),
+	'heading'          => function_exists( 'zskeleton_seo_expert_get_cta_band_heading' ) ? zskeleton_seo_expert_get_cta_band_heading( $post_id, $name ) : sprintf( 'ابدأ مع %s', $name ),
 	'body'             => $closing,
 	'button_label'     => $primary,
 	'button_url'       => $cta_primary_url,
@@ -533,14 +528,12 @@ $brand             = zskeleton_seo_expert_get( $post_id, 'brand_or_team_name' );
 	</div>
 </section>
 
-<?php if ( ! empty( $blog_posts ) ) : ?>
+<?php if ( $blog_links_enabled && ! empty( $blog_posts ) ) : ?>
 	<section class="seo-expert-section seo-expert-section--alt seo-expert-section--mesh" id="seo-expert-bloglinks">
 		<div class="<?php echo esc_attr( $c ); ?>">
 			<?php
-			if ( function_exists( 'zskeleton_seo_expert_section_heading' ) ) {
-				zskeleton_seo_expert_section_heading( 'مقالات ذات صلة', 'book' );
-			} else {
-				echo '<h2 class="seo-expert-section__title">' . esc_html( 'مقالات ذات صلة' ) . '</h2>';
+			if ( function_exists( 'zskeleton_seo_expert_render_section_heading' ) ) {
+				zskeleton_seo_expert_render_section_heading( $post_id, 'heading_blog_links' );
 			}
 			?>
 			<div class="seo-expert-bloglinks" role="list">

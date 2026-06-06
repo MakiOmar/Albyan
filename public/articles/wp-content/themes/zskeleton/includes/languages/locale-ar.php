@@ -47,7 +47,7 @@ function zskeleton_get_arabic_gettext_map() {
         'A flexible WordPress base theme for membership-driven websites.' => 'قالب ووردبريس مرن لمواقع العضوية والمحتوى.',
 
         // Footer & newsletter.
-        'Stay Updated with ZSkeleton Research' => 'ابقَ على اطلاع مع أبحاث ZSkeleton',
+        'Stay Updated with %s' => 'ابقَ على اطلاع مع %s',
         'Join our community. Get exclusive insights, updates, and practical resources delivered to your inbox.' => 'انضم إلى مجتمعنا. احصل على رؤى حصرية وتحديثات وموارد عملية في بريدك.',
         'Enter your professional email' => 'أدخل بريدك المهني',
         'Join Community' => 'انضم للمجتمع',
@@ -224,7 +224,7 @@ function zskeleton_get_arabic_gettext_map() {
         'https://example.com' => 'https://example.com',
         'Comment Submission Blocked' => 'تم حظر إرسال التعليق',
         'Members Only' => 'للأعضاء فقط',
-        'Find answers to common questions about ZSkeleton membership, services, and resources.' => 'اعثر على إجابات لأسئلة شائعة حول عضوية ZSkeleton والخدمات والموارد.',
+        'Find answers to common questions about %s membership, services, and resources.' => 'اعثر على إجابات لأسئلة شائعة حول عضوية %s والخدمات والموارد.',
         'Enter your email address and we will send you a link to reset your password' => 'أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور',
 
         'Company website' => 'موقع الشركة',
@@ -298,8 +298,18 @@ function zskeleton_get_arabic_gettext_map() {
         'Plans script not loaded. Refresh the page.' => 'لم يتم تحميل سكربت الخطط. حدّث الصفحة.',
         'Error deleting plan' => 'خطأ أثناء حذف الخطة',
 
+        // Membership / sidebar (site name via %s).
+        'Unlock exclusive %s content with a membership.' => 'افتح محتوى %s الحصري مع العضوية.',
+        'Join %s' => 'انضم إلى %s',
+        'Become a member of %s and access exclusive content and resources.' => 'كن عضواً في %s واحصل على محتوى وموارد حصرية.',
+        '%s Member' => 'عضو %s',
+        'Welcome to %s!' => 'مرحباً بك في %s!',
+        'New to %s? Check out our' => 'جديد على %s؟ اطلع على',
+        'This content is available exclusively to %s members. To access our comprehensive library, reports, and professional resources, please consider joining our membership.' => 'هذا المحتوى متاح حصرياً لأعضاء %s. للوصول إلى مكتبتنا وتقاريرنا ومواردنا المهنية، فكّر في الانضمام إلى عضويتنا.',
+        'This content is available exclusively to %s members. Join our membership to access our comprehensive library and professional resources.' => 'هذا المحتوى متاح حصرياً لأعضاء %s. انضم إلى عضويتنا للوصول إلى مكتبتنا الشاملة ومواردنا المهنية.',
+
         // Default restriction message (admin option + access control).
-        'This content is available exclusively to ZSkeleton members. Join our membership to access comprehensive resources and professional content.' => 'هذا المحتوى متاح حصرياً لأعضاء ZSkeleton. انضم إلى عضويتنا للوصول إلى الموارد الشاملة والمحتوى المهني.',
+        'This content is available exclusively to %s members. Join our membership to access comprehensive resources and professional content.' => 'هذا المحتوى متاح حصرياً لأعضاء %s. انضم إلى عضويتنا للوصول إلى الموارد الشاملة والمحتوى المهني.',
     );
 }
 
