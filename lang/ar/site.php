@@ -55,7 +55,7 @@ return [
     'popular_posts' => 'المنشورات الرائجة',
     'recent_posts' => 'المنشورات الاخيرة',
     // contact
-    'contact_us' => 'تواصل معنا',
+    'contact_us' => 'تواصل مع أكاديمية البيان',
     'our_address' => 'العنوان',
     'phone_number' => 'رقم الهاتف',
     'send_your_message_directly' => 'ارسال رسالة',
@@ -84,7 +84,7 @@ return [
     'login_page_title' => 'تسجيل دخول',
     'register_page_title' => 'تسجيل',
     'about_page_title' => 'عنا',
-    'contact_page_title' => 'تواصل معنا',
+    'contact_page_title' => 'تواصل مع أكاديمية البيان',
     'certificate_validation_page_title' => 'صلاحية الشهادة',
     'certificate_validation' => 'صلاحية الشهادة',
     'certificate_validation_hint' => 'للتحقق من صلاحية الشهادة ادخل كود الشهادة واضغط علي تحقق.',
