@@ -49,6 +49,8 @@ class CategoryController extends Controller
         $this->validate($request, [
             'title' => 'required|min:3|max:128',
             'slug' => 'nullable|max:255|unique:categories,slug',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string|max:500',
         ]);
 
         $data = $request->all();
@@ -70,6 +72,8 @@ class CategoryController extends Controller
             'locale' => mb_strtolower($data['locale']),
         ], [
             'title' => $data['title'],
+            'seo_title' => $data['seo_title'] ?? null,
+            'seo_description' => $data['seo_description'] ?? null,
         ]);
 
         $hasSubCategories = (!empty($request->get('has_sub')) and $request->get('has_sub') == 'on');
@@ -112,6 +116,8 @@ class CategoryController extends Controller
         $this->validate($request, [
             'title' => 'required|min:3|max:255',
             'slug' => 'nullable|max:255|unique:categories,slug,' . $category->id,
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string|max:500',
         ]);
 
         $data = $request->all();
@@ -127,6 +133,8 @@ class CategoryController extends Controller
             'locale' => mb_strtolower($data['locale']),
         ], [
             'title' => $data['title'],
+            'seo_title' => $data['seo_title'] ?? null,
+            'seo_description' => $data['seo_description'] ?? null,
         ]);
 
         $hasSubCategories = (!empty($request->get('has_sub')) and $request->get('has_sub') == 'on');

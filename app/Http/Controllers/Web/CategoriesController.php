@@ -85,8 +85,12 @@ class CategoriesController extends Controller
                     ->paginate(6);
 
                 $seoSettings = getSeoMetas('categories');
-                $pageTitle = !empty($seoSettings['title']) ? $seoSettings['title'] : trans('site.categories_page_title');
-                $pageDescription = !empty($seoSettings['description']) ? $seoSettings['description'] : trans('site.categories_page_title');
+                $pageTitle = !empty($category->seo_title)
+                    ? $category->seo_title
+                    : (!empty($seoSettings['title']) ? $seoSettings['title'] : $category->title);
+                $pageDescription = !empty($category->seo_description)
+                    ? $category->seo_description
+                    : (!empty($seoSettings['description']) ? $seoSettings['description'] : $category->title);
                 $pageRobot = getPageRobot('categories');
 
                 $data = [

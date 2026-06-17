@@ -86,6 +86,34 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label>{{ trans('admin/main.seo_title') }}</label>
+                                    <input type="text" name="seo_title"
+                                           class="form-control @error('seo_title') is-invalid @enderror"
+                                           value="{{ !empty($category) ? $category->seo_title : old('seo_title') }}"
+                                           placeholder="{{ trans('admin/main.seo_title_placeholder') }}"/>
+                                    <div class="text-muted text-small mt-1">{{ trans('admin/main.seo_title_hint') }}</div>
+                                    @error('seo_title')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label>{{ trans('admin/main.seo_description') }}</label>
+                                    <textarea name="seo_description"
+                                              class="form-control @error('seo_description') is-invalid @enderror"
+                                              rows="4"
+                                              placeholder="{{ trans('admin/main.seo_description_placeholder') }}">{{ !empty($category) ? $category->seo_description : old('seo_description') }}</textarea>
+                                    <div class="text-muted text-small mt-1">{{ trans('admin/main.seo_description_hint') }}</div>
+                                    @error('seo_description')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
                                     <label class="input-label">{{ trans('admin/main.icon') }}</label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">

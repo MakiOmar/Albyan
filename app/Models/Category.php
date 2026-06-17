@@ -20,11 +20,21 @@ class Category extends Model implements TranslatableContract
 
     static $cacheKey = 'categories';
 
-    public $translatedAttributes = ['title'];
+    public $translatedAttributes = ['title', 'seo_title', 'seo_description'];
 
     public function getTitleAttribute()
     {
         return getTranslateAttributeValue($this, 'title');
+    }
+
+    public function getSeoTitleAttribute()
+    {
+        return getTranslateAttributeValue($this, 'seo_title');
+    }
+
+    public function getSeoDescriptionAttribute()
+    {
+        return getTranslateAttributeValue($this, 'seo_description');
     }
 
     /**
