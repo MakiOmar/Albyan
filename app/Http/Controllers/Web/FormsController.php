@@ -169,6 +169,16 @@ class FormsController extends Controller
         return $this->storeLandingSubmission($request, 'cyber_security_landing', '/landing/cyber-security?tanks=1');
     }
 
+    public function businessAdminLanding(Request $request)
+    {
+        return $this->renderLandingPage($request, 'business_admin_landing', 'web.default.forms.business_admin_landing');
+    }
+
+    public function businessAdminLandingStore(Request $request)
+    {
+        return $this->storeLandingSubmission($request, 'business_admin_landing', '/landing/business-admin?tanks=1');
+    }
+
     public function index(Request $request, $url)
     {
         $form = Form::query()->where('url', $url)

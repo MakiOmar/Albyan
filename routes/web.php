@@ -468,6 +468,10 @@ Route::group([
     Route::get('/landing/cyber-security', 'FormsController@cyberSecurityLanding');
     Route::post('/landing/cyber-security/store', 'FormsController@cyberSecurityLandingStore');
 
+    /* Business Administration Diploma landing (BUSINESS_ADMIN_LANDING_FORM_ID) */
+    Route::get('/landing/business-admin', 'FormsController@businessAdminLanding');
+    Route::post('/landing/business-admin/store', 'FormsController@businessAdminLandingStore');
+
     /* Diploma courses landing (DIPLOMA_LANDING_FORM_ID) */
     Route::get('/landing/diplomas', 'DiplomaLandingController@show');
     Route::post('/landing/diplomas/store', 'DiplomaLandingController@store');
