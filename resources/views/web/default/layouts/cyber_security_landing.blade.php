@@ -1,15 +1,19 @@
 {{-- Full-page landing layout: Cyber Security Diploma (RTL, no site navbar/footer) --}}
 @php
     $isRtl = web_layout_is_rtl($generalSettings ?? null);
-    $cslWhatsapp = config('cyber_security_landing.whatsapp_number');
+    $cslConfigKey = $landingConfigKey ?? 'cyber_security_landing';
+    $cslWhatsapp = config("{$cslConfigKey}.whatsapp_number");
     $cslWhatsappDigits = !empty($cslWhatsapp) ? preg_replace('/\D/', '', $cslWhatsapp) : '';
+    $cslDefaultTitle = $cslConfigKey === 'business_admin_landing'
+        ? 'دبلومة إدارة الأعمال'
+        : 'دبلومة الأمن السيبراني';
 @endphp
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}" dir="{{ $isRtl ? 'rtl' : 'ltr' }}">
 <head>
     @include('web.default.includes.metas')
     <meta name="theme" content="{{ str_replace('web.', '', getTemplate()) }}">
-    <title>{{ $pageTitle ?? 'دبلومة الأمن السيبراني' }}{{ !empty($generalSettings['site_name']) ? (' | '.$generalSettings['site_name']) : '' }}</title>
+    <title>{{ $pageTitle ?? $cslDefaultTitle }}{{ !empty($generalSettings['site_name']) ? (' | '.$generalSettings['site_name']) : '' }}</title>
     <link rel="stylesheet" href="/assets/default/css/app.css">
     @if($isRtl)
         <link rel="stylesheet" href="/assets/default/css/rtl-app.css">
