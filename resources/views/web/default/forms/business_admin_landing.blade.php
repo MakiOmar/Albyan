@@ -9,42 +9,25 @@
 
 @section('content')
 
-    {{-- Hero --}}
-    <section class="csl-hero" id="top">
+    {{-- Hero + registration form --}}
+    <section class="csl-hero csl-hero-with-form" id="top">
         <div class="csl-container">
-            <p class="csl-hero-lead mb-3 font-weight-bold" style="max-width:100%;">راتب أعلى؟ ترقية أقرب؟ مستقبل مهني أقوى؟</p>
-            <h1>ابدأ من هنا.</h1>
-            <p class="csl-hero-subtitle">مع دبلومة إدارة الأعمال المعتمدة من Qualifi البريطانية</p>
-            <div class="csl-highlights">
-                <div class="csl-highlight-item">مدة الدراسة سنتين</div>
-                <div class="csl-highlight-item">إمكانية الدراسة المكثفة خلال 6 شهور</div>
-                <div class="csl-highlight-item">شهادة معتمدة محلياً وعالمياً</div>
-                <div class="csl-highlight-item">24 مادة احترافية تغطي أهم مجالات الإدارة الحديثة</div>
-                <div class="csl-highlight-item">مناسبة للموظفين ورواد الأعمال والطامحين للتطوير المهني</div>
-                <div class="csl-highlight-item">متوفر التقسيط عبر تابي وتمارا</div>
-                <div class="csl-highlight-item">دراسة وفق معايير أكاديمية بريطانية معتمدة</div>
-            </div>
-            <p class="csl-hero-lead">اليوم المؤسسات تبحث عن الكفاءات القادرة على التخطيط وإدارة فرق العمل وتحليل المخاطر وتحسين الأداء المؤسسي.</p>
-            <p class="csl-hero-lead mb-2">ومن خلال هالدبلومة بتكتسب مهارات عملية تساعدك على تطوير أدائك المهني وتعزيز فرصك الوظيفية.</p>
-            <p class="font-14 mb-2" style="color: var(--csl-white);">شو بتتعلم خلال هالدبلومة؟</p>
-            <div class="csl-tech-tags">
-                <span class="csl-tech-tag">إدارة الأعمال</span>
-                <span class="csl-tech-tag">التسويق</span>
-                <span class="csl-tech-tag">إدارة المخاطر</span>
-                <span class="csl-tech-tag">KPI</span>
-                <span class="csl-tech-tag">إدارة الوقت</span>
-                <span class="csl-tech-tag">الابتكار</span>
-                <span class="csl-tech-tag">المسؤولية المجتمعية</span>
-                <span class="csl-tech-tag">صياغة العقود</span>
-                <span class="csl-tech-tag">خدمة المتعاملين</span>
-            </div>
-            <div class="mt-4 d-flex flex-wrap gap-2">
-                <a href="#register" class="csl-btn csl-btn-primary">سجل الحين</a>
-                @if(!empty($cslWhatsappDigits))
-                    <a href="https://wa.me/{{ $cslWhatsappDigits }}" target="_blank" rel="noopener" class="csl-btn csl-btn-whatsapp">
-                        تواصل مباشرة عبر الواتساب
-                    </a>
-                @endif
+            <div class="csl-hero-grid">
+                <div class="csl-hero-content">
+                    <h1>احصل على دبلومة إدارة الأعمال البريطانية المعتمدة من Qualifi</h1>
+                    <p class="csl-hero-lead">طوّر مهاراتك القيادية والإدارية واحصل على شهادة معتمدة محليًا ودوليًا تساعدك على تعزيز فرص الترقية والتقدم المهني.</p>
+                    <div class="csl-highlights">
+                        <div class="csl-highlight-item">شهادة بريطانية معتمدة محلياً ودولياً</div>
+                        <div class="csl-highlight-item">متاح أونلاين أو حضوري</div>
+                        <div class="csl-highlight-item">دبلومة سنتين مع إمكانية الدراسة المكثفة خلال 6 أشهر</div>
+                        <div class="csl-highlight-item">ابدأ الآن بدفعة أولى 10,000 درهم وتقسيط عبر تابي وتمارا بدفعة أولى 2,500 درهم فقط</div>
+                        <div class="csl-highlight-item">24 مادة احترافية تغطي أهم مجالات الإدارة الحديثة</div>
+                        <div class="csl-highlight-item">مناسبة للموظفين، ورواد الأعمال، وأصحاب المشاريع، وكل من يطمح إلى التطوير المهني</div>
+                    </div>
+                </div>
+                <div class="csl-hero-form-col" id="register">
+                    @include('web.default.forms.partials.business_admin_landing_form')
+                </div>
             </div>
         </div>
     </section>
@@ -172,6 +155,9 @@
                 <h3 class="mb-2">مشروع التخرج العملي</h3>
                 <p class="mb-0 text-white-50">مشروع تطبيقي متكامل يساعد الدارس على توظيف المهارات والمعارف التي اكتسبها خلال البرنامج في بيئة عمل تحاكي الواقع العملي، بما يعزز فهمه للممارسات الإدارية الحديثة والتحديات المؤسسية المختلفة.</p>
             </div>
+            <div class="csl-section-cta">
+                <a href="#register" class="csl-btn csl-btn-primary">سجل الآن</a>
+            </div>
         </div>
     </section>
 
@@ -181,6 +167,9 @@
             <h2 class="csl-section-title">ليش تختار هالدبلومة؟</h2>
             <p class="mb-3">من خلال البرنامج ستتمكن من تطوير فهمك للمفاهيم الإدارية الحديثة، وتعزيز مهاراتك في التخطيط والتنظيم وإدارة فرق العمل وتحليل المخاطر وقياس الأداء وتحسين الإنتاجية داخل المؤسسات.</p>
             <p class="mb-0">كما يساعدك البرنامج على تطوير مهاراتك المهنية بما يتناسب مع متطلبات بيئات العمل الحديثة وفرص الترقية بالمؤسسات.</p>
+            <div class="csl-section-cta">
+                <a href="#register" class="csl-btn csl-btn-primary">سجل الآن</a>
+            </div>
         </div>
     </section>
 
@@ -197,6 +186,9 @@
                 <div class="csl-highlight-item">الراغبين في تطوير مهاراتهم الإدارية</div>
                 <div class="csl-highlight-item">الباحثين عن شهادة معتمدة محلياً وعالمياً</div>
                 <div class="csl-highlight-item">الطامحين لفهم أعمق لإدارة الأعمال الحديثة</div>
+            </div>
+            <div class="csl-section-cta">
+                <a href="#register" class="csl-btn csl-btn-primary">سجل الآن</a>
             </div>
         </div>
     </section>
@@ -222,6 +214,9 @@
                     <li class="mb-2">• التقسيط عبر Tamara</li>
                 </ul>
             </div>
+            <div class="csl-section-cta">
+                <a href="#register" class="csl-btn csl-btn-primary">سجل الآن</a>
+            </div>
         </div>
     </section>
 
@@ -234,6 +229,9 @@
                 <blockquote class="csl-testimonial">الدبلومة ساعدتني على تطوير مهاراتي في التخطيط وإدارة العمل بشكل أفضل.</blockquote>
                 <blockquote class="csl-testimonial">من أكثر الأمور اللي استفدت منها تنوع المحاور وربطها بواقع العمل والمؤسسات.</blockquote>
             </div>
+            <div class="csl-section-cta">
+                <a href="#register" class="csl-btn csl-btn-primary">سجل الآن</a>
+            </div>
         </div>
     </section>
 
@@ -244,6 +242,15 @@
             <div class="csl-faq" id="cslFaqAccordion">
                 @php
                     $faqs = [
+                        [
+                            'q' => 'ما هي Qualifi؟',
+                            'a' => 'Qualifi هي جهة بريطانية مانحة للمؤهلات (Awarding Organisation) معترف بها ومنظمة في المملكة المتحدة، وتقدم مؤهلات ودبلومات مهنية وأكاديمية وفق معايير جودة دولية.',
+                        ],
+                        [
+                            'q' => 'لماذا تُعد مؤهلات Qualifi مميزة؟',
+                            'a' => '<ul class="mb-0 pr-3"><li>جهة بريطانية معترف بها.</li><li>مناهج حديثة مرتبطة باحتياجات سوق العمل.</li><li>شهادات ذات قيمة مهنية وأكاديمية دولية.</li><li>إمكانية استكمال المسار الأكاديمي في العديد من الجامعات والمؤسسات التعليمية الشريكة.</li><li>تركيز على المهارات العملية والتطبيقية المطلوبة للتطور الوظيفي</li></ul>',
+                            'html' => true,
+                        ],
                         [
                             'q' => 'هل أحتاج خبرة مسبقة؟',
                             'a' => 'لا، الدبلومة مناسبة للراغبين في تطوير مهاراتهم الإدارية والمهنية، سواء كانوا في بداية مسيرتهم المهنية أو لديهم خبرة سابقة، لأننا نبدأ من الصفر إلى الاحتراف.',
@@ -283,56 +290,19 @@
                             </button>
                         </div>
                         <div id="cslFaq{{ $index }}" class="collapse" aria-labelledby="cslFaqHead{{ $index }}" data-parent="#cslFaqAccordion">
-                            <div class="card-body">{{ $faq['a'] }}</div>
+                            <div class="card-body">
+                                @if(!empty($faq['html']))
+                                    {!! $faq['a'] !!}
+                                @else
+                                    {{ $faq['a'] }}
+                                @endif
+                            </div>
                         </div>
                     </div>
                 @endforeach
             </div>
-        </div>
-    </section>
-
-    {{-- Registration form --}}
-    <section class="csl-section csl-form-section" id="register">
-        <div class="csl-container">
-            <h2 class="csl-section-title text-center text-white mb-2">احجز الآن وأضمن مستقبلك المهني</h2>
-            <p class="text-center mb-4" style="color: var(--csl-muted);">املأ النموذج وسيتواصل معك فريق القبول في أقرب وقت</p>
-
-            <div class="csl-form-wrap">
-                @if(!empty($form->heading_title))
-                    <h3 class="font-24 mb-2">{{ $form->heading_title }}</h3>
-                @endif
-                @if(!empty($form->description))
-                    <div class="font-14 text-gray mb-3">{!! $form->description !!}</div>
-                @endif
-
-                @if(!empty($form->end_date))
-                    <div class="alert alert-warning font-12 mb-3">
-                        {{ trans('update.this_form_will_be_expired_on_date',['date' => dateTimeFormat($form->end_date, 'j M Y')]) }}
-                    </div>
-                @endif
-
-                <form action="{{ url('/landing/business-admin/store') }}" method="post">
-                    {{ csrf_field() }}
-                    @include('web.default.forms.handle_field', ['fields' => $form->fields])
-                    @include('web.default.includes.turnstile_widget')
-                    <div class="d-flex flex-column flex-sm-row align-items-stretch gap-2 mt-4">
-                        <button type="button" class="js-clear-form btn btn-outline-secondary flex-fill">{{ trans('update.clear_form') }}</button>
-                        <button type="submit" class="btn btn-primary flex-fill font-weight-bold">سجل الحين</button>
-                    </div>
-                </form>
-
-                <div class="mt-4 d-flex flex-column gap-2">
-                    @if(!empty($cslWhatsappDigits))
-                        <a href="https://wa.me/{{ $cslWhatsappDigits }}" target="_blank" rel="noopener" class="csl-btn csl-btn-whatsapp w-100">
-                            تواصل مباشرة عبر الواتساب
-                        </a>
-                    @endif
-                    @if(!empty($cslCall))
-                        <a href="tel:{{ $cslCall }}" class="csl-btn csl-btn-outline w-100" style="color:#01477d !important;border-color:#01477d;">
-                            {{ trans('update.call_us') }}
-                        </a>
-                    @endif
-                </div>
+            <div class="csl-section-cta">
+                <a href="#register" class="csl-btn csl-btn-primary">سجل الآن</a>
             </div>
         </div>
     </section>
@@ -345,6 +315,40 @@
 
 @push('styles_top')
     <link rel="stylesheet" href="/assets/default/vendors/daterangepicker/daterangepicker.min.css">
+    <style>
+        .csl-hero-with-form .csl-hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+            gap: 36px;
+            align-items: start;
+        }
+        .csl-hero-with-form .csl-hero-content h1 {
+            margin-bottom: 20px;
+        }
+        .csl-hero-form-col .csl-form-wrap {
+            max-width: none;
+            margin: 0;
+            padding: 28px;
+        }
+        .csl-hero-form-title {
+            font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+            font-weight: 800;
+            color: var(--csl-blue);
+            line-height: 1.5;
+        }
+        .csl-section-cta {
+            margin-top: 36px;
+            text-align: center;
+        }
+        @media (max-width: 991px) {
+            .csl-hero-with-form .csl-hero-grid {
+                grid-template-columns: 1fr;
+            }
+            .csl-hero-form-col {
+                order: 2;
+            }
+        }
+    </style>
 @endpush
 
 @push('scripts_bottom')
