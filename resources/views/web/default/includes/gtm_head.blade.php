@@ -1,5 +1,11 @@
 @php
-    $gtmEnabled = config('services.gtm.enabled') && !empty(config('services.gtm.container_id'));
+    // GTM is intentionally limited to the homepage for now (HomeController@index / "/").
+    $gtmCurrentAction = optional(request()->route())->getActionName();
+    $gtmIsHomepage = $gtmCurrentAction === 'App\Http\Controllers\Web\HomeController@index' || request()->is('/');
+
+    $gtmEnabled = $gtmIsHomepage
+        && config('services.gtm.enabled')
+        && !empty(config('services.gtm.container_id'));
     $gtmId = config('services.gtm.container_id');
     $gtmStrategy = config('services.gtm.load_strategy', 'idle');
     $gtmIdleTimeout = max(0, (int) config('services.gtm.idle_timeout_ms', 2500));
@@ -62,4 +68,31 @@
             })(window, document);
         </script>
     @endif
+
+    {{-- Ensure gtag() exists for the delayed-navigation helper below (queues into the same dataLayer GTM uses). --}}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        if (typeof window.gtag !== 'function') {
+            window.gtag = function () { window.dataLayer.push(arguments); };
+        }
+    </script>
+
+    <!-- Google tag (gtag.js) event - delayed navigation helper -->
+    <script>
+        // Helper function to delay opening a URL until a gtag event is sent.
+        // Call it in response to an action that should navigate to a URL.
+        function gtagSendEvent(url) {
+            var callback = function () {
+                if (typeof url === 'string') {
+                    window.location = url;
+                }
+            };
+            gtag('event', 'ads_conversion___1', {
+                'event_callback': callback,
+                'event_timeout': 2000,
+                // <event_parameters>
+            });
+            return false;
+        }
+    </script>
 @endif
