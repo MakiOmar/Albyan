@@ -15,7 +15,7 @@ get_header(); ?>
         <header class="page-header">
             <h1 class="page-title"><?php _e('Frequently Asked Questions', 'zskeleton'); ?></h1>
             <p class="page-description">
-                <?php _e('Find answers to common questions about ZSkeleton membership, services, and resources.', 'zskeleton'); ?>
+                <?php echo esc_html( zskeleton_sprintf_site_name( __( 'Find answers to common questions about %s membership, services, and resources.', 'zskeleton' ) ) ); ?>
             </p>
         </header>
 

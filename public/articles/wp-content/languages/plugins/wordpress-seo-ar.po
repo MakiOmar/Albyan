@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Yoast SEO &#8211; Advanced SEO with real-time guidance and built-in AI - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-04-15 07:51:58+0000\n"
+"PO-Revision-Date: 2026-06-02 14:11:32+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -10,6 +10,97 @@ msgstr ""
 "X-Generator: GlotPress/4.0.3\n"
 "Language: ar\n"
 "Project-Id-Version: Plugins - Yoast SEO &#8211; Advanced SEO with real-time guidance and built-in AI - Stable (latest release)\n"
+
+#: src/myyoast-client/user-interface/myyoast-client-integration.php:76
+msgid "Every 90 days"
+msgstr "كل 90 يوم"
+
+#: src/abilities/user-interface/ability-categories-integration.php:44
+msgid "SEO analysis capabilities provided by Yoast SEO."
+msgstr "صلاحيات تحليل تحسين محركات البحث (SEO) المقدمة من Yoast SEO."
+
+#: src/abilities/user-interface/abilities-integration.php:252
+msgid "A human-readable label for the score."
+msgstr "تسمية يمكن قراءتها بشريًا للنتيجة."
+
+#: src/abilities/user-interface/abilities-integration.php:248
+msgid "The score slug."
+msgstr "الاسم اللطيف للنتيجة."
+
+#: src/abilities/user-interface/abilities-integration.php:243
+msgid "The post title."
+msgstr "عنوان المقالة."
+
+#: src/abilities/user-interface/abilities-integration.php:194
+msgid "The number of recently modified posts to retrieve scores for. Defaults to 10."
+msgstr "عدد المقالات المعدّلة حديثًا التي يتم جلب النتائج لها. القيمة الافتراضية هي 10."
+
+#: src/abilities/user-interface/abilities-integration.php:167
+msgid "Get the inclusive language scores for the most recently modified posts."
+msgstr "الحصول على نتائج اللغة الشاملة لأحدث المقالات المعدّلة."
+
+#: src/abilities/user-interface/abilities-integration.php:166
+msgid "Get Inclusive Language Scores"
+msgstr "الحصول على نتائج اللغة الشاملة"
+
+#: src/abilities/user-interface/abilities-integration.php:148
+msgid "Get the readability scores for the most recently modified posts."
+msgstr "الحصول على نتائج قابلية القراءة لأحدث المقالات المعدّلة."
+
+#: src/abilities/user-interface/abilities-integration.php:147
+msgid "Get Readability Scores"
+msgstr "الحصول على نتائج قابلية القراءة"
+
+#: src/abilities/user-interface/abilities-integration.php:129
+msgid "Get the SEO scores for the most recently modified posts."
+msgstr "الحصول على نتائج تحسين محركات البحث (SEO) لأحدث المقالات المعدّلة."
+
+#: src/abilities/user-interface/abilities-integration.php:128
+msgid "Get SEO Scores"
+msgstr "الحصول على نتائج تحسين محركات البحث (SEO)"
+
+#: src/abilities/user-interface/abilities-integration.php:121
+msgid "The focus keyphrase for the post, or null if not set."
+msgstr "عبارة التركيز المفتاحية للمقالة، أو فارغة إذا لم تُضبط."
+
+#: src/task-list/domain/exceptions/complete-sample-page-task-exception.php:17
+msgid "Failed to delete the Sample Page."
+msgstr "فشل حذف صفحة عينة."
+
+#. translators: %1$s expands to <p>, %2$s expands to </p>, %3$s expands to <p>,
+#. %4$s expands to </p>, %5$s expands to <strong>, %6$s expands to </strong>,
+#. %7$s expands to <strong> and %8$s expands to </strong>.
+#: src/task-list/application/tasks/improve-default-meta-descriptions.php:111
+msgid "%1$sDefault meta descriptions don't always highlight what makes your page unique. Write your own to improve clarity and drive more clicks.%2$s%3$sShort on time? In %5$sYoast SEO Premium%6$s, use %7$sAI Generate%8$s to create tailored meta descriptions in seconds.%4$s"
+msgstr "%1$sالأوصاف التعريفية الافتراضية لا تبرز دائمًا ما يجعل صفحتك فريدة. اكتب وصفك الخاص لتحسين الوضوح وجذب المزيد من النقرات.%2$s%3$sوقتك ضيق؟ في %5$sYoast SEO Premium%6$s، استخدم %7$sالتوليد بالذكاء الاصطناعي%8$s لإنشاء أوصاف تعريفية مخصصة في ثوانٍ.%4$s"
+
+#. translators: %1$s expands to the post type label this task is about
+#: src/task-list/application/tasks/improve-default-meta-descriptions.php:108
+msgid "Improve default meta descriptions of your recent content: %1$s"
+msgstr "تحسين الأوصاف التعريفية الافتراضية لمحتواك الحديث: %1$s"
+
+#: src/task-list/application/tasks/delete-sample-page.php:124
+msgid "Remove the \"Sample Page\""
+msgstr "إزالة \"صفحة عينة\""
+
+#: src/task-list/application/tasks/child-tasks/improve-content-seo-child.php:37
+msgid "Improve SEO"
+msgstr "تحسين ت.م.ب (SEO)"
+
+#: src/task-list/application/tasks/child-tasks/improve-content-readability-child.php:37
+msgid "Improve readability"
+msgstr "تحسين قابلية القراءة"
+
+#: src/plugins-tab/application/plugins-list-handler.php:71
+msgctxt "plugin status"
+msgid "Yoast"
+msgid_plural "Yoast"
+msgstr[0] "Yoast"
+msgstr[1] "Yoast"
+msgstr[2] "Yoast"
+msgstr[3] "Yoast"
+msgstr[4] "Yoast"
+msgstr[5] "Yoast"
 
 #. translators: %s expands to the post type name this task is about
 #: src/task-list/application/tasks/set-search-appearance-templates.php:134
@@ -22,7 +113,7 @@ msgstr "العناوين والأوصاف العامة تجعل نتائجك غ�
 #. expands to a closing strong tag and closing p tag
 #: src/task-list/application/tasks/improve-content-seo.php:113
 msgid "%1$sBy aligning your content with search intent and focus keyphrases, you make it easier for people and AI systems to find your website, improving your organic visibility. Use the recommendations in the SEO analysis to strengthen your technical performance and ranking potential.%2$s%3$sPro tip%5$s: Use %6$sAI Generate%7$s to quickly generate high quality meta descriptions and keyphrase-rich headers that rank well.%4$s"
-msgstr "%1$sمن خلال مواءمة المحتوى الخاص بك مع نية البحث والعبارات المفتاحية الرئيسية، تسهل على الأشخاص وأنظمة الذكاء الاصطناعي العثور على موقع الويب الخاص بك، مما يحسن ظهورك العضوي. استخدم التوصيات في تحليل تحسين محركات البحث لتعزيز أدائك الفني وإمكانات الترتيب.%2$s%3$sنصيحة احترافية%5$s: استخدم %6$sتوليد الذكاء الاصطناعي%7$s لإنشاء أوصاف تعريفية عالية الجودة وترويسات غنية بالعبارات المفتاحية تحقق ترتيبًا جيدًا بسرعة.%4$s"
+msgstr "%1$sمن خلال مواءمة المحتوى الخاص بك مع نية البحث والعبارات التركيز المفتاحية، تسهل على الأشخاص وأنظمة الذكاء الاصطناعي العثور على موقع الويب الخاص بك، مما يحسن ظهورك العضوي. استخدم التوصيات في تحليل تحسين محركات البحث لتعزيز أدائك الفني وإمكانات الترتيب.%2$s%3$sنصيحة احترافية%5$s: استخدم %6$sتوليد الذكاء الاصطناعي%7$s لإنشاء أوصاف تعريفية عالية الجودة وترويسات غنية بالعبارات المفتاحية تحقق ترتيبًا جيدًا بسرعة.%4$s"
 
 #. translators: %1$s expands to the post type label this task is about
 #: src/task-list/application/tasks/improve-content-seo.php:110
@@ -154,20 +245,20 @@ msgid "Complete the first time configuration"
 msgstr "أكمل تكوين المرة الأولى"
 
 #: src/presenters/admin/sidebar-presenter.php:115
-#: js/dist/ai-content-planner.js:60 js/dist/block-editor.js:60
+#: js/dist/ai-content-planner.js:60 js/dist/block-editor.js:124
 #: js/dist/general-page.js:5 js/dist/new-settings.js:5 js/dist/support.js:5
 msgid "Less friction. Faster publishing."
 msgstr "جهد أقل. نشر أسرع."
 
 #: src/presenters/admin/sidebar-presenter.php:115
-#: js/dist/ai-content-planner.js:60 js/dist/block-editor.js:60
+#: js/dist/ai-content-planner.js:60 js/dist/block-editor.js:124
 #: js/dist/general-page.js:5 js/dist/new-settings.js:5 js/dist/support.js:5
 msgid "Less friction. Smarter optimization."
 msgstr "جهد أقل. تحسين أذكى."
 
 #: src/presenters/admin/sidebar-presenter.php:92 js/dist/ai-consent.js:2
 #: js/dist/ai-content-planner.js:190 js/dist/ai-generator.js:2
-#: js/dist/block-editor.js:190 js/dist/classic-editor.js:2
+#: js/dist/block-editor.js:254 js/dist/classic-editor.js:2
 #: js/dist/editor-modules.js:116 js/dist/externals-components.js:127
 #: js/dist/general-page.js:5 js/dist/integrations-page.js:28
 #: js/dist/new-settings.js:5 js/dist/redirects.js:2 js/dist/support.js:5
@@ -176,7 +267,7 @@ msgstr "حسّن الصفحات للعديد من الكلمات المفتاح�
 
 #: src/presenters/admin/sidebar-presenter.php:91 js/dist/ai-consent.js:2
 #: js/dist/ai-content-planner.js:190 js/dist/ai-generator.js:2
-#: js/dist/block-editor.js:190 js/dist/classic-editor.js:2
+#: js/dist/block-editor.js:254 js/dist/classic-editor.js:2
 #: js/dist/editor-modules.js:116 js/dist/externals-components.js:127
 #: js/dist/general-page.js:5 js/dist/integrations-page.js:28
 #: js/dist/new-settings.js:5 js/dist/redirects.js:2 js/dist/support.js:5
@@ -185,7 +276,7 @@ msgstr "أدر عمليات إعادة التوجيه بسهولة ودون ال
 
 #: src/presenters/admin/sidebar-presenter.php:90 js/dist/ai-consent.js:2
 #: js/dist/ai-content-planner.js:190 js/dist/ai-generator.js:2
-#: js/dist/block-editor.js:190 js/dist/classic-editor.js:2
+#: js/dist/block-editor.js:254 js/dist/classic-editor.js:2
 #: js/dist/editor-modules.js:116 js/dist/externals-components.js:127
 #: js/dist/general-page.js:5 js/dist/integrations-page.js:28
 #: js/dist/new-settings.js:5 js/dist/redirects.js:2 js/dist/support.js:5
@@ -194,7 +285,7 @@ msgstr "طبّق اقتراحات الذكاء الاصطناعي لتحسين �
 
 #: src/presenters/admin/sidebar-presenter.php:89 js/dist/ai-consent.js:2
 #: js/dist/ai-content-planner.js:190 js/dist/ai-generator.js:2
-#: js/dist/block-editor.js:190 js/dist/classic-editor.js:2
+#: js/dist/block-editor.js:254 js/dist/classic-editor.js:2
 #: js/dist/editor-modules.js:116 js/dist/externals-components.js:127
 #: js/dist/general-page.js:5 js/dist/integrations-page.js:28
 #: js/dist/new-settings.js:5 js/dist/redirects.js:2 js/dist/support.js:5
@@ -203,7 +294,7 @@ msgstr "أنشئ عناوين ت.م.ب (SEO) وبيانات تعريفية مُ�
 
 #: src/presenters/admin/sidebar-presenter.php:86 js/dist/ai-consent.js:2
 #: js/dist/ai-content-planner.js:190 js/dist/ai-generator.js:2
-#: js/dist/block-editor.js:190 js/dist/classic-editor.js:2
+#: js/dist/block-editor.js:254 js/dist/classic-editor.js:2
 #: js/dist/editor-modules.js:116 js/dist/externals-components.js:127
 #: js/dist/general-page.js:5 js/dist/integrations-page.js:28
 #: js/dist/new-settings.js:5 js/dist/redirects.js:2 js/dist/support.js:5
@@ -212,7 +303,7 @@ msgstr "تلقي توجيهات واضحة لت.م.ب (SEO) وقابلية ال�
 
 #: src/presenters/admin/sidebar-presenter.php:85 js/dist/ai-consent.js:2
 #: js/dist/ai-content-planner.js:190 js/dist/ai-generator.js:2
-#: js/dist/block-editor.js:190 js/dist/classic-editor.js:2
+#: js/dist/block-editor.js:254 js/dist/classic-editor.js:2
 #: js/dist/editor-modules.js:116 js/dist/externals-components.js:127
 #: js/dist/general-page.js:5 js/dist/integrations-page.js:28
 #: js/dist/new-settings.js:5 js/dist/redirects.js:2 js/dist/support.js:5
@@ -221,7 +312,7 @@ msgstr "أنشئ عناوين ت.م.ب (SEO) وبيانات تعريفية مُ�
 
 #: src/presenters/admin/sidebar-presenter.php:84 js/dist/ai-consent.js:2
 #: js/dist/ai-content-planner.js:190 js/dist/ai-generator.js:2
-#: js/dist/block-editor.js:190 js/dist/classic-editor.js:2
+#: js/dist/block-editor.js:254 js/dist/classic-editor.js:2
 #: js/dist/editor-modules.js:116 js/dist/externals-components.js:127
 #: js/dist/general-page.js:5 js/dist/integrations-page.js:28
 #: js/dist/new-settings.js:5 js/dist/redirects.js:2 js/dist/support.js:5
@@ -230,7 +321,7 @@ msgstr "تأكد من أن محركات البحث تعرض النسخة الص�
 
 #: src/presenters/admin/sidebar-presenter.php:83 js/dist/ai-consent.js:2
 #: js/dist/ai-content-planner.js:190 js/dist/ai-generator.js:2
-#: js/dist/block-editor.js:190 js/dist/classic-editor.js:2
+#: js/dist/block-editor.js:254 js/dist/classic-editor.js:2
 #: js/dist/editor-modules.js:116 js/dist/externals-components.js:127
 #: js/dist/general-page.js:5 js/dist/integrations-page.js:28
 #: js/dist/new-settings.js:5 js/dist/redirects.js:2 js/dist/support.js:5
@@ -238,25 +329,25 @@ msgid "Add product details to help your listings stand out"
 msgstr "أضف تفاصيل المنتج لمساعدة قوائمك على التميّز"
 
 #: src/presenters/admin/sidebar-presenter.php:77
-#: js/dist/ai-content-planner.js:60 js/dist/block-editor.js:60
+#: js/dist/ai-content-planner.js:60 js/dist/block-editor.js:124
 #: js/dist/general-page.js:5 js/dist/new-settings.js:5 js/dist/support.js:5
 msgid "Optimize your site faster, smarter, and with more confidence."
 msgstr "حسّن موقعك بشكل أسرع وأذكى وبثقة أكبر."
 
 #: src/presenters/admin/sidebar-presenter.php:77
-#: js/dist/ai-content-planner.js:60 js/dist/block-editor.js:60
+#: js/dist/ai-content-planner.js:60 js/dist/block-editor.js:124
 #: js/dist/general-page.js:5 js/dist/new-settings.js:5 js/dist/support.js:5
 msgid "Help ready-to-buy shoppers and search engines find your product."
 msgstr "ساعد المتسوقين المستعدين للشراء ومحركات البحث في العثور على منتجك."
 
 #: src/presenters/admin/sidebar-presenter.php:72
-#: js/dist/ai-content-planner.js:60 js/dist/block-editor.js:60
+#: js/dist/ai-content-planner.js:60 js/dist/block-editor.js:124
 #: js/dist/general-page.js:5 js/dist/new-settings.js:5 js/dist/support.js:5
 msgid "Spend less time on SEO tasks!"
 msgstr "اقض وقتًا أقل في مهام ت.م.ب (SEO)!"
 
 #: src/presenters/admin/sidebar-presenter.php:72
-#: js/dist/ai-content-planner.js:60 js/dist/block-editor.js:60
+#: js/dist/ai-content-planner.js:60 js/dist/block-editor.js:124
 #: js/dist/general-page.js:5 js/dist/new-settings.js:5 js/dist/support.js:5
 msgid "Grow your store's visibility!"
 msgstr "اعمل على زيادة ظهور متجرك!"
@@ -320,7 +411,7 @@ msgid "Google Docs add-on (1 seat)"
 msgstr "ملحق مستندات جوجل (مقعد واحد)"
 
 #: src/presenters/admin/sidebar-presenter.php:104
-#: js/dist/ai-content-planner.js:62 js/dist/block-editor.js:62
+#: js/dist/ai-content-planner.js:62 js/dist/block-editor.js:126
 #: js/dist/general-page.js:7 js/dist/new-settings.js:7 js/dist/support.js:7
 msgid "Buy now for 30% off"
 msgstr "اشترِ الآن واحصل على خصم 30٪"
@@ -333,12 +424,12 @@ msgstr "اشترِ الآن واحصل على خصم 30٪"
 msgid "An existing llms.txt file wasn't created by Yoast or has been edited manually. Yoast won't overwrite it. %1$sDelete it manually%2$s or turn off this feature."
 msgstr "ملف ‎llms.txt‎ الحالي لم يتم إنشاؤه بواسطة Yoast أو تم تعديله يدويًا. لن يقوم Yoast بالكتابة فوقه. %1$sاحذفه يدويًا%2$s أو قم بإيقاف تشغيل هذه المميزة."
 
-#: inc/class-wpseo-admin-bar-menu.php:610
+#: inc/class-wpseo-admin-bar-menu.php:632
 #: src/plans/user-interface/upgrade-sidebar-menu-integration.php:130
 msgid "30% off - BF Sale"
 msgstr "خصم 30% - تخفيضات BF"
 
-#: inc/class-wpseo-admin-bar-menu.php:607
+#: inc/class-wpseo-admin-bar-menu.php:629
 #: src/plans/user-interface/upgrade-sidebar-menu-integration.php:127
 msgid "Upgrade"
 msgstr "تحديث"
@@ -359,7 +450,7 @@ msgid "Get 30% off now!"
 msgstr "احصل على خصم 30٪ الآن!"
 
 #: src/presenters/admin/sidebar-presenter.php:122
-#: js/dist/ai-content-planner.js:62 js/dist/block-editor.js:62
+#: js/dist/ai-content-planner.js:62 js/dist/block-editor.js:126
 #: js/dist/general-page.js:7 js/dist/new-settings.js:7 js/dist/support.js:7
 msgid "30-day money back guarantee"
 msgstr "ضمان استرداد الأموال خلال 30 يومًا"
@@ -368,7 +459,7 @@ msgstr "ضمان استرداد الأموال خلال 30 يومًا"
 #. expands to "Yoast SEO Premium".
 #: src/presenters/admin/sidebar-presenter.php:66
 #: js/dist/ai-content-planner.js:61 js/dist/ai-content-planner.js:62
-#: js/dist/block-editor.js:61 js/dist/block-editor.js:62
+#: js/dist/block-editor.js:125 js/dist/block-editor.js:126
 #: js/dist/general-page.js:6 js/dist/general-page.js:7
 #: js/dist/new-settings.js:6 js/dist/new-settings.js:7 js/dist/support.js:6
 #: js/dist/support.js:7
@@ -380,14 +471,14 @@ msgid "Not all needed fields are present."
 msgstr "ليست كل الحقول المطلوبة موجودة."
 
 #: admin/class-premium-upsell-admin-block.php:163
-#: js/dist/ai-content-planner.js:190 js/dist/block-editor.js:190
+#: js/dist/ai-content-planner.js:190 js/dist/block-editor.js:254
 #: js/dist/general-page.js:5 js/dist/new-settings.js:5 js/dist/support.js:5
 msgid "Boost visibility for your products, from 10 or 10,000+"
 msgstr "تعزيز ظهور منتجاتك من 10 أو 10000+"
 
 #: admin/class-premium-upsell-admin-block.php:159 js/dist/ai-consent.js:2
 #: js/dist/ai-content-planner.js:190 js/dist/ai-generator.js:2
-#: js/dist/block-editor.js:190 js/dist/classic-editor.js:2
+#: js/dist/block-editor.js:254 js/dist/classic-editor.js:2
 #: js/dist/editor-modules.js:116 js/dist/externals-components.js:127
 #: js/dist/general-page.js:5 js/dist/integrations-page.js:28
 #: js/dist/new-settings.js:5 js/dist/redirects.js:2 js/dist/support.js:5
@@ -396,7 +487,7 @@ msgstr "الوصول إلى المساعدة الودية عندما تحتاج 
 
 #: admin/class-premium-upsell-admin-block.php:158 js/dist/ai-consent.js:2
 #: js/dist/ai-content-planner.js:190 js/dist/ai-generator.js:2
-#: js/dist/block-editor.js:190 js/dist/classic-editor.js:2
+#: js/dist/block-editor.js:254 js/dist/classic-editor.js:2
 #: js/dist/editor-modules.js:116 js/dist/externals-components.js:127
 #: js/dist/general-page.js:5 js/dist/integrations-page.js:28
 #: js/dist/new-settings.js:5 js/dist/redirects.js:2 js/dist/support.js:5
@@ -405,7 +496,7 @@ msgstr "إدارة الروابط الداخلية وإعادة التوجيه،
 
 #: admin/class-premium-upsell-admin-block.php:157 js/dist/ai-consent.js:2
 #: js/dist/ai-content-planner.js:190 js/dist/ai-generator.js:2
-#: js/dist/block-editor.js:190 js/dist/classic-editor.js:2
+#: js/dist/block-editor.js:254 js/dist/classic-editor.js:2
 #: js/dist/editor-modules.js:116 js/dist/externals-components.js:127
 #: js/dist/general-page.js:5 js/dist/integrations-page.js:28
 #: js/dist/new-settings.js:5 js/dist/redirects.js:2 js/dist/support.js:5
@@ -414,7 +505,7 @@ msgstr "ت.م.ب المحلية بسهولة. يظهر في نتائج خرائ�
 
 #: admin/class-premium-upsell-admin-block.php:156 js/dist/ai-consent.js:2
 #: js/dist/ai-content-planner.js:190 js/dist/ai-generator.js:2
-#: js/dist/block-editor.js:190 js/dist/classic-editor.js:2
+#: js/dist/block-editor.js:254 js/dist/classic-editor.js:2
 #: js/dist/editor-modules.js:116 js/dist/externals-components.js:127
 #: js/dist/general-page.js:5 js/dist/integrations-page.js:28
 #: js/dist/new-settings.js:5 js/dist/redirects.js:2 js/dist/support.js:5
@@ -423,7 +514,7 @@ msgstr "مصمم ليتم العثور عليه من قِبل محركات ال�
 
 #: admin/class-premium-upsell-admin-block.php:155 js/dist/ai-consent.js:2
 #: js/dist/ai-content-planner.js:190 js/dist/ai-generator.js:2
-#: js/dist/block-editor.js:190 js/dist/classic-editor.js:2
+#: js/dist/block-editor.js:254 js/dist/classic-editor.js:2
 #: js/dist/editor-modules.js:116 js/dist/externals-components.js:127
 #: js/dist/general-page.js:5 js/dist/integrations-page.js:28
 #: js/dist/new-settings.js:5 js/dist/redirects.js:2 js/dist/support.js:5
@@ -432,15 +523,15 @@ msgstr "اجعل مقالاتك مرئية، وتظهر في أخبار جوجل
 
 #: admin/class-premium-upsell-admin-block.php:154 js/dist/ai-consent.js:2
 #: js/dist/ai-content-planner.js:190 js/dist/ai-generator.js:2
-#: js/dist/block-editor.js:190 js/dist/classic-editor.js:2
+#: js/dist/block-editor.js:254 js/dist/classic-editor.js:2
 #: js/dist/editor-modules.js:116 js/dist/externals-components.js:127
 #: js/dist/general-page.js:5 js/dist/integrations-page.js:28
 #: js/dist/new-settings.js:5 js/dist/redirects.js:2 js/dist/support.js:5
 msgid "Generate SEO optimized metadata in seconds with AI"
 msgstr "توليد بيانات وصفية مُحسّنة لت.م.ب في ثوانٍ باستخدام الذكاء الاصطناعي"
 
-#: src/ai-consent/user-interface/ai-consent-integration.php:121
-#: src/ai/consent/user-interface/ai-consent-integration.php:123
+#: src/ai-consent/user-interface/ai-consent-integration.php:122
+#: src/ai/consent/user-interface/ai-consent-integration.php:124
 msgid "AI features"
 msgstr "ميزات الذكاء الاصطناعي"
 
@@ -519,7 +610,7 @@ msgid "%s is unable to create database tables"
 msgstr "%s غير قادر على إنشاء جداول قاعدة البيانات"
 
 #: src/presenters/admin/sidebar-presenter.php:107
-#: js/dist/ai-content-planner.js:60 js/dist/block-editor.js:60
+#: js/dist/ai-content-planner.js:60 js/dist/block-editor.js:124
 #: js/dist/general-page.js:5 js/dist/new-settings.js:5 js/dist/support.js:5
 msgid "Buy now"
 msgstr "اشتري الآن"
@@ -759,7 +850,8 @@ msgstr "%1$s / %2$s: أهم العبارات الرئيسية"
 msgid "The post type %s could not be indexed because it does not meet indexing requirements."
 msgstr "تعذر فهرسة نوع المقالة %s لأنها لا تفي بمتطلبات الفهرسة."
 
-#: src/integrations/academy-integration.php:111 js/dist/academy.js:2
+#: inc/class-wpseo-admin-bar-menu.php:593
+#: src/integrations/academy-integration.php:110 js/dist/academy.js:2
 msgid "Academy"
 msgstr "الأكاديمية"
 
@@ -809,36 +901,36 @@ msgstr "يحتمل أن يكون غير شامل"
 msgid "Finish your %s"
 msgstr "قم بإنهاء %s"
 
-#: inc/class-wpseo-admin-bar-menu.php:567
+#: inc/class-wpseo-admin-bar-menu.php:568
 msgid "WordPress.org support forums"
 msgstr "منتدى دعم WordPress.org"
 
-#: inc/class-wpseo-admin-bar-menu.php:562
+#: inc/class-wpseo-admin-bar-menu.php:563
 msgid "Yoast Premium support"
 msgstr "دعم Yoast البريميوم"
 
-#: inc/class-wpseo-admin-bar-menu.php:557
+#: inc/class-wpseo-admin-bar-menu.php:558
 msgid "Yoast.com help section"
 msgstr "قسم المساعدة Yoast.com"
 
-#: inc/class-wpseo-admin-bar-menu.php:542
+#: inc/class-wpseo-admin-bar-menu.php:543
 msgid "Help"
 msgstr "مساعدة"
 
-#: inc/class-wpseo-admin-bar-menu.php:523
+#: inc/class-wpseo-admin-bar-menu.php:524
 msgid "Write better content"
 msgstr "اكتب محتوى أفضل"
 
-#: inc/class-wpseo-admin-bar-menu.php:518
+#: inc/class-wpseo-admin-bar-menu.php:519
 msgid "Improve your blog post"
 msgstr "تحسين مقالة مدونتك"
 
-#: inc/class-wpseo-admin-bar-menu.php:513
-#: inc/class-wpseo-admin-bar-menu.php:572
+#: inc/class-wpseo-admin-bar-menu.php:514
+#: inc/class-wpseo-admin-bar-menu.php:573
 msgid "Learn more SEO"
 msgstr "تعلم المزيد عن تحسين محركات البحث SEO"
 
-#: inc/class-wpseo-admin-bar-menu.php:468
+#: inc/class-wpseo-admin-bar-menu.php:469
 msgid "SEO Tools"
 msgstr "أدوات SEO"
 
@@ -875,49 +967,49 @@ msgstr "تعذر فهرسة المقالة %s لأنها لا تفي بمتطل�
 
 #. translators: %1$d is the number of records that were removed. %2$s is the
 #. site url.
-#: src/commands/cleanup-command.php:183
+#: src/commands/cleanup-command.php:184
 msgid "Cleaned up %1$d record from %2$s."
 msgid_plural "Cleaned up %1$d records from %2$s."
 msgstr[0] "تم تنظيف سجل %1$d من %2$s."
 msgstr[1] "تم تنظيف سجل %1$d من %2$s."
-msgstr[2] "تم تنظيف سجلات %1$d من %2$s."
-msgstr[3] "تم تنظيف سجلات %1$d من %2$s."
-msgstr[4] "تم تنظيف سجل %1$d من %2$s."
-msgstr[5] "تم تنظيف سجل %1$d من %2$s."
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
 
 #. translators: %1$s is the site url of the site that is cleaned up. %2$s is
 #. the name of the cleanup task that is currently running.
-#: src/commands/cleanup-command.php:159
+#: src/commands/cleanup-command.php:160
 msgid "Cleaning up %1$s [%2$s]"
 msgstr "تنظيف%1$s [%2$s]"
 
 #. translators: %1$s is the site url of the site that is skipped. %2$s is Yoast
 #. SEO.
-#: src/commands/cleanup-command.php:146
+#: src/commands/cleanup-command.php:147
 msgid "Skipping %1$s. %2$s is not active on this site."
 msgstr "تخطي %1$s. %2$s غير نشط على هذا الموقع."
 
 #. translators: %1$d is the number of records that are removed.
-#: src/commands/cleanup-command.php:97
+#: src/commands/cleanup-command.php:98
 msgid "Cleaned up %1$d record."
 msgid_plural "Cleaned up %1$d records."
 msgstr[0] "تم تنظيف سجل %1$d."
 msgstr[1] "تم تنظيف سجل %1$d."
-msgstr[2] "تم تنظيف سجلات %1$d."
-msgstr[3] "تم تنظيف سجلات %1$d."
-msgstr[4] "تم تنظيف سجل %1$d."
-msgstr[5] "تم تنظيف سجل %1$d."
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
 
-#: src/commands/cleanup-command.php:84
+#: src/commands/cleanup-command.php:85
 msgid "The value for 'batch-size' must be a positive integer higher than equal to 1."
 msgstr "يجب أن تكون قيمة \"حجم الدُفعة\" عددًا صحيحًا موجبًا أعلى من يساوي 1."
 
-#: src/commands/cleanup-command.php:81
+#: src/commands/cleanup-command.php:82
 msgid "The value for 'interval' must be a positive integer."
 msgstr "يجب أن تكون قيمة \"الفاصل الزمني\" عددًا صحيحًا موجبًا."
 
 #: src/presenters/admin/sidebar-presenter.php:21
-#: js/dist/ai-content-planner.js:62 js/dist/block-editor.js:62
+#: js/dist/ai-content-planner.js:62 js/dist/block-editor.js:126
 #: js/dist/block-editor.js:531 js/dist/classic-editor.js:231
 #: js/dist/editor-modules.js:111 js/dist/externals-components.js:118
 #: js/dist/general-page.js:7 js/dist/new-settings.js:7 js/dist/support.js:7
@@ -926,7 +1018,7 @@ msgstr "الجمعة السوداء - خصم 30٪"
 
 #: admin/views/class-yoast-feature-toggles.php:206
 #: js/dist/ai-content-planner.js:228 js/dist/ai-content-planner.js:285
-#: js/dist/block-editor.js:228 js/dist/block-editor.js:285
+#: js/dist/block-editor.js:67 js/dist/block-editor.js:124
 #: js/dist/general-page.js:12 js/dist/general-page.js:24
 #: js/dist/integrations-page.js:3 js/dist/integrations-page.js:6
 #: js/dist/integrations-page.js:18 js/dist/integrations-page.js:28
@@ -952,7 +1044,7 @@ msgstr "افتح المحرر"
 
 #. translators: %1$s expands to Yoast SEO, %2$s expands to the name of the
 #. class that could not be found.
-#: src/loader.php:258
+#: src/loader.php:267
 msgid "%1$s attempted to load the class %2$s but it could not be found."
 msgstr "حاول %1$s تحميل class (الفئة) %2$s ولكن تعذر العثور عليها."
 
@@ -1091,7 +1183,7 @@ msgstr "برامج نصية إيموجي Emoji"
 
 #: src/integrations/admin/crawl-settings-integration.php:142
 msgid "Generator tag"
-msgstr "مولد وسم "
+msgstr "مولد وسم"
 
 #: src/integrations/admin/crawl-settings-integration.php:141
 msgid "oEmbed links"
@@ -1115,7 +1207,7 @@ msgstr "خلاصات (feeds) Atom/RDF"
 
 #: src/integrations/admin/crawl-settings-integration.php:133
 msgid "Search results feeds"
-msgstr "خلاصات (feeds) نتائج البحث "
+msgstr "خلاصات (feeds) نتائج البحث"
 
 #: src/integrations/admin/crawl-settings-integration.php:132
 msgid "Custom taxonomy feeds"
@@ -1147,7 +1239,7 @@ msgstr "خلاصة (Feed) العالمية"
 
 #: src/integrations/admin/crawl-settings-integration.php:127
 msgid "Post comments feeds"
-msgstr " خلاصة Feed تعليقات المقالة "
+msgstr "خلاصة Feed تعليقات المقالة"
 
 #. translators: %1$s opens the link to the Yoast.com article about Crawl
 #. settings, %2$s closes the link,
@@ -1436,7 +1528,7 @@ msgstr "احصل على اقتراحات ربط داخلية ذات صلة - أ�
 #: admin/views/class-yoast-feature-toggles.php:121 js/dist/new-settings.js:31
 #: js/dist/new-settings.js:526
 msgid "Link suggestions"
-msgstr "اقتراحات الرابط"
+msgstr "إقتراحات الرابط"
 
 #: admin/views/class-yoast-feature-toggles.php:115
 msgid "Find out how Insights can help you improve your content."
@@ -1450,7 +1542,7 @@ msgstr "ابحث عن البيانات ذات الصلة حول المحتوى �
 #: js/dist/block-editor.js:588 js/dist/classic-editor.js:231
 #: js/dist/new-settings.js:31 js/dist/new-settings.js:526
 msgid "Insights"
-msgstr "الرؤى"
+msgstr "رؤى"
 
 #. translators: %1$s expands to an opening anchor tag for a link leading to the
 #. Premium installation page, %2$s expands to a closing anchor tag.
@@ -1591,7 +1683,7 @@ msgstr "وقت القراءة المُقدّر"
 msgid "Written by"
 msgstr "كُتب بواسطة"
 
-#: inc/class-wpseo-admin-bar-menu.php:439
+#: inc/class-wpseo-admin-bar-menu.php:440
 msgid "Google Rich Results Test"
 msgstr "نتائج اختبار Google Rich"
 
@@ -1976,13 +2068,13 @@ msgstr "المتصفح الذي تستخدمه حاليًا قديم للأسف.
 #. translators: %1$s expands to Yoast SEO academy
 #. translators: %1$s expands to "Yoast SEO academy".
 #: src/presenters/admin/sidebar-presenter.php:154
-#: js/dist/ai-content-planner.js:118 js/dist/block-editor.js:118
+#: js/dist/ai-content-planner.js:118 js/dist/block-editor.js:182
 #: js/dist/general-page.js:3 js/dist/new-settings.js:3 js/dist/support.js:3
 msgid "Check out %1$s"
 msgstr "إتمام الطلب %1$s"
 
 #: src/presenters/admin/sidebar-presenter.php:147
-#: js/dist/ai-content-planner.js:117 js/dist/block-editor.js:117
+#: js/dist/ai-content-planner.js:117 js/dist/block-editor.js:181
 #: js/dist/general-page.js:2 js/dist/new-settings.js:2 js/dist/support.js:2
 msgid "We have both free and premium online courses to learn everything you need to know about SEO."
 msgstr "لدينا دورات مجانية ودورات مميزة أيضًا عبر الإنترنت لتعلّم كل ما تحتاج معرفته حول SEO."
@@ -1990,13 +2082,13 @@ msgstr "لدينا دورات مجانية ودورات مميزة أيضًا ع
 #. translators: %1$s expands to Yoast SEO academy, which is a clickable link.
 #. translators: %1$s expands to "Yoast SEO" academy, which is a clickable link.
 #: src/presenters/admin/sidebar-presenter.php:145
-#: js/dist/ai-content-planner.js:117 js/dist/block-editor.js:117
+#: js/dist/ai-content-planner.js:117 js/dist/block-editor.js:181
 #: js/dist/general-page.js:2 js/dist/new-settings.js:2 js/dist/support.js:2
 msgid "Want to learn SEO from Team Yoast? Check out our %1$s!"
 msgstr "تريد أن تتعلم عن SEO من فريق عمل Yoast؟ تحقق من %1$s!"
 
 #: src/presenters/admin/sidebar-presenter.php:137
-#: js/dist/ai-content-planner.js:117 js/dist/block-editor.js:117
+#: js/dist/ai-content-planner.js:117 js/dist/block-editor.js:181
 #: js/dist/general-page.js:2 js/dist/new-settings.js:2 js/dist/support.js:2
 msgid "Learn SEO"
 msgstr "تعلم SEO"
@@ -2305,7 +2397,7 @@ msgstr "لم يتم تعيين تركيز العبارة الرئيسية."
 msgid "Get %s"
 msgstr "احصل على %s"
 
-#: inc/class-wpseo-admin-bar-menu.php:935
+#: inc/class-wpseo-admin-bar-menu.php:962
 msgid "There is a new notification."
 msgid_plural "There are new notifications."
 msgstr[0] "هناك إشعار جديد."
@@ -2381,11 +2473,11 @@ msgstr "%1$s مكونات البيانات المنظمة"
 msgid "Time needed:"
 msgstr "الوقت اللازم:"
 
-#: inc/class-wpseo-admin-bar-menu.php:434
+#: inc/class-wpseo-admin-bar-menu.php:435
 msgid "Check links to this URL"
 msgstr "تحقق من الروابط إلى عنوان URL هذا"
 
-#: inc/class-wpseo-admin-bar-menu.php:505
+#: inc/class-wpseo-admin-bar-menu.php:506
 msgid "How to"
 msgstr "كيف"
 
@@ -2881,8 +2973,8 @@ msgstr "ضع علامة على أهم %1$s كـ \"محتوى أساسي\" لتح
 #: js/dist/ai-content-planner.js:119 js/dist/ai-content-planner.js:228
 #: js/dist/ai-content-planner.js:276 js/dist/ai-generator.js:2
 #: js/dist/ai-generator.js:61 js/dist/ai-generator.js:276
-#: js/dist/block-editor.js:71 js/dist/block-editor.js:119
-#: js/dist/block-editor.js:228 js/dist/block-editor.js:276
+#: js/dist/block-editor.js:67 js/dist/block-editor.js:115
+#: js/dist/block-editor.js:135 js/dist/block-editor.js:183
 #: js/dist/block-editor.js:573 js/dist/block-editor.js:574
 #: js/dist/classic-editor.js:2 js/dist/editor-modules.js:116
 #: js/dist/editor-modules.js:383 js/dist/externals-components.js:21
@@ -2975,7 +3067,7 @@ msgid "Cornerstone content"
 msgstr "محتوى أساسي"
 
 #: src/presenters/admin/sidebar-presenter.php:127
-#: js/dist/ai-content-planner.js:62 js/dist/block-editor.js:62
+#: js/dist/ai-content-planner.js:62 js/dist/block-editor.js:126
 #: js/dist/general-page.js:7 js/dist/new-settings.js:7 js/dist/support.js:7
 msgid "24/7 support"
 msgstr "دعم على مدار الساعة 24/7"
@@ -3173,7 +3265,7 @@ msgid "Get Premium"
 msgstr "الحصول على إصدار Premium"
 
 #: admin/views/partial-notifications-warnings.php:20
-#: inc/class-wpseo-admin-bar-menu.php:395 js/dist/general-page.js:32
+#: inc/class-wpseo-admin-bar-menu.php:396 js/dist/general-page.js:32
 msgid "Notifications"
 msgstr "الإشعارات"
 
@@ -3190,7 +3282,7 @@ msgid "Make primary"
 msgstr "إعطاء الأولوية"
 
 #. translators: Hidden accessibility text; %s: number of notifications.
-#: admin/menu/class-admin-menu.php:118 inc/class-wpseo-admin-bar-menu.php:910
+#: admin/menu/class-admin-menu.php:118 inc/class-wpseo-admin-bar-menu.php:937
 #: js/dist/general-page.js:66
 msgid "%s notification"
 msgid_plural "%s notifications"
@@ -3392,20 +3484,20 @@ msgstr "تثبيت الإضافية %1$s غير مكتمل. الرجاء الر�
 msgid "The Standard PHP Library (SPL) extension seem to be unavailable. Please ask your web host to enable it."
 msgstr "يبدو أن امتداد مكتبة PHP القياسية (SPL) غير متاحة. يرجى مطالبة مضيف الويب الخاص بك لتمكينها."
 
-#: inc/class-wpseo-admin-bar-menu.php:679
-#: inc/class-wpseo-admin-bar-menu.php:732
+#: inc/class-wpseo-admin-bar-menu.php:701
+#: inc/class-wpseo-admin-bar-menu.php:759
 msgid "SEO Settings"
 msgstr "إعدادات SEO"
 
-#: inc/class-wpseo-admin-bar-menu.php:449
+#: inc/class-wpseo-admin-bar-menu.php:450
 msgid "Google Page Speed Test"
 msgstr "اختبار سرعة صفحة Google"
 
-#: inc/class-wpseo-admin-bar-menu.php:444
+#: inc/class-wpseo-admin-bar-menu.php:445
 msgid "Facebook Debugger"
 msgstr "مصحح Facebook"
 
-#: inc/class-wpseo-admin-bar-menu.php:425
+#: inc/class-wpseo-admin-bar-menu.php:426
 msgid "Analyze this page"
 msgstr "تحليل هذه الصفحة"
 
@@ -3818,7 +3910,7 @@ msgstr "تم تحديث الإعدادات."
 
 #: admin/views/tool-bulk-editor.php:111 inc/class-wpseo-replace-vars.php:1471
 #: js/dist/ai-content-planner.js:272 js/dist/ai-content-planner.js:273
-#: js/dist/block-editor.js:272 js/dist/block-editor.js:273
+#: js/dist/block-editor.js:111 js/dist/block-editor.js:112
 #: js/dist/externals-redux.js:1
 msgid "Title"
 msgstr "العنوان"
@@ -3894,10 +3986,10 @@ msgstr "نظرة عامة على المقالات %s"
 #: js/dist/ai-generator.js:37 js/dist/ai-generator.js:55
 #: js/dist/ai-generator.js:61 js/dist/ai-generator.js:272
 #: js/dist/ai-generator.js:274 js/dist/ai-generator.js:276
-#: js/dist/block-editor.js:4 js/dist/block-editor.js:243
-#: js/dist/block-editor.js:259 js/dist/block-editor.js:271
-#: js/dist/block-editor.js:274 js/dist/block-editor.js:276
-#: js/dist/block-editor.js:284 js/dist/editor-modules.js:116
+#: js/dist/block-editor.js:4 js/dist/block-editor.js:82
+#: js/dist/block-editor.js:98 js/dist/block-editor.js:110
+#: js/dist/block-editor.js:113 js/dist/block-editor.js:115
+#: js/dist/block-editor.js:123 js/dist/editor-modules.js:116
 #: js/dist/editor-modules.js:120 js/dist/editor-modules.js:135
 #: js/dist/editor-modules.js:151 js/dist/editor-modules.js:169
 #: js/dist/editor-modules.js:379 js/dist/editor-modules.js:381
@@ -4015,8 +4107,8 @@ msgid "Warning: even though you can set the meta robots setting here, the entire
 msgstr "تحذير: على الرغم من أنه يمكنك تعيين إعدادات روبوتات Meta هنا، فإنه تم تحديد خيار عدم الفهرسة لكافة للموقع في إعدادات الخصوصية الخاصة بالموقع كله، لذلك لن يكون لهذه الإعدادات أي تأثير."
 
 #: admin/metabox/class-metabox.php:173 js/dist/ai-content-planner.js:272
-#: js/dist/ai-content-planner.js:273 js/dist/block-editor.js:272
-#: js/dist/block-editor.js:273
+#: js/dist/ai-content-planner.js:273 js/dist/block-editor.js:111
+#: js/dist/block-editor.js:112
 #: js/dist/externals/replacementVariableEditor.js:71
 #: js/dist/externals/searchMetadataPreviews.js:102 js/dist/new-settings.js:21
 #: js/dist/new-settings.js:27 js/dist/new-settings.js:34
@@ -4178,7 +4270,7 @@ msgstr "الشبكات الاجتماعية"
 
 #: admin/metabox/class-metabox.php:423
 #: admin/taxonomy/class-taxonomy-metabox.php:141
-#: inc/class-wpseo-admin-bar-menu.php:763
+#: inc/class-wpseo-admin-bar-menu.php:790
 #: src/services/health-check/report-builder.php:168
 msgid "SEO"
 msgstr "SEO"

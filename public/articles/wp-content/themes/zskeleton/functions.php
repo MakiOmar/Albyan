@@ -260,7 +260,7 @@ function zskeleton_add_seo_meta() {
         if ($site_description) {
             $title .= ' - ' . $site_description;
         }
-        $description = $site_description ?: 'ZSkeleton - A reusable WordPress base theme for content and membership websites.';
+        $description = $site_description ?: $site_name;
         $keywords = 'WordPress theme, membership, FAQs, website';
         $canonical_url = $site_url;
         
@@ -902,6 +902,9 @@ function zskeleton_generate_sitemap() {
     ));
     
     foreach ($posts as $post) {
+        if ( function_exists( 'zskeleton_is_sitemap_excluded_page' ) && zskeleton_is_sitemap_excluded_page( $post ) ) {
+            continue;
+        }
         echo '<url>' . "\n";
         echo '<loc>' . esc_url(get_permalink($post->ID)) . '</loc>' . "\n";
         echo '<lastmod>' . date('c', strtotime($post->post_modified)) . '</lastmod>' . "\n";
@@ -917,6 +920,9 @@ function zskeleton_generate_sitemap() {
     ));
     
     foreach ($pages as $page) {
+        if ( function_exists( 'zskeleton_is_sitemap_excluded_page' ) && zskeleton_is_sitemap_excluded_page( $page ) ) {
+            continue;
+        }
         echo '<url>' . "\n";
         echo '<loc>' . esc_url(get_permalink($page->ID)) . '</loc>' . "\n";
         echo '<lastmod>' . date('c', strtotime($page->post_modified)) . '</lastmod>' . "\n";
@@ -2045,6 +2051,7 @@ require_once ZSkeleton_THEME_DIR . '/includes/extensions/form-kit/form-kit.php';
 require_once ZSkeleton_THEME_DIR . '/includes/contact-form-kit.php';
 require_once ZSkeleton_THEME_DIR . '/includes/contact-page-layout.php';
 require_once ZSkeleton_THEME_DIR . '/includes/common-pages.php';
+require_once ZSkeleton_THEME_DIR . '/includes/sitemap-exclusions.php';
 require_once ZSkeleton_THEME_DIR . '/includes/upload-mime-types.php';
 require_once ZSkeleton_THEME_DIR . '/includes/google-map.php';
 require_once ZSkeleton_THEME_DIR . '/includes/class-widget-google-map.php';
@@ -3397,7 +3404,7 @@ function zskeleton_comment_callback($comment, $args, $depth) {
                     <?php echo get_avatar($comment, 60); ?>
                     <span class="fn"><?php echo get_comment_author_link(); ?></span>
                     <?php if ( class_exists( 'ZSkeleton_User_Profile_Fields' ) && ZSkeleton_User_Profile_Fields::user_has_active_membership( get_comment( get_comment_ID() )->user_id ) ) : ?>
-                        <span class="member-badge"><?php esc_html_e('ZSkeleton Member', 'zskeleton'); ?></span>
+                        <span class="member-badge"><?php echo esc_html( zskeleton_sprintf_site_name( __( '%s Member', 'zskeleton' ) ) ); ?></span>
                     <?php endif; ?>
                 </div>
                 <div class="comment-metadata">
@@ -3506,7 +3513,7 @@ add_filter('registration_redirect', 'zskeleton_custom_registration_redirect', 10
 function zskeleton_show_auth_messages() {
     if (isset($_GET['registered']) && $_GET['registered'] === 'success') {
         echo '<div class="auth-success-notice">';
-        echo '<p><strong>' . esc_html__('Welcome to ZSkeleton!', 'zskeleton') . '</strong> ' . esc_html__('Your account has been created successfully. You are now logged in and can access all member benefits.', 'zskeleton') . '</p>';
+        echo '<p><strong>' . esc_html( zskeleton_sprintf_site_name( __( 'Welcome to %s!', 'zskeleton' ) ) ) . '</strong> ' . esc_html__( 'Your account has been created successfully. You are now logged in and can access all member benefits.', 'zskeleton' ) . '</p>';
         echo '</div>';
     }
     
@@ -3645,6 +3652,41 @@ add_action('wp_head', 'zskeleton_auth_styles');
 function zskeleton_get_site_title_for_mail() {
 	$name = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
 	return sanitize_text_field( $name );
+}
+
+/**
+ * Public site name for user-facing copy (Settings → General → Site title).
+ *
+ * @return string
+ */
+function zskeleton_get_public_site_name() {
+	static $cached = null;
+	if ( null !== $cached ) {
+		return $cached;
+	}
+	$cached = trim( wp_specialchars_decode( (string) get_bloginfo( 'name' ), ENT_QUOTES ) );
+	return $cached;
+}
+
+/**
+ * Fill a translatable string with {@see zskeleton_get_public_site_name()} as %s.
+ *
+ * @param string $format gettext string with one %s placeholder for the site name.
+ * @return string
+ */
+function zskeleton_sprintf_site_name( $format ) {
+	return sprintf( $format, zskeleton_get_public_site_name() );
+}
+
+/**
+ * Default membership restriction message (site name interpolated).
+ *
+ * @return string
+ */
+function zskeleton_get_default_restriction_message() {
+	return zskeleton_sprintf_site_name(
+		__( 'This content is available exclusively to %s members. Join our membership to access comprehensive resources and professional content.', 'zskeleton' )
+	);
 }
 
 /**

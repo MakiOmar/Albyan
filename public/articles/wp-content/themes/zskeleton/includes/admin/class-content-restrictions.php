@@ -56,7 +56,7 @@ class ZSkeleton_Content_Restrictions {
             array(
                 'type'              => 'string',
                 'sanitize_callback' => 'wp_kses_post',
-                'default'           => __('This content is available exclusively to ZSkeleton members. Join our membership to access comprehensive resources and professional content.', 'zskeleton'),
+                'default'           => '',
             )
         );
         register_setting('zskeleton_restriction_settings', 'zskeleton_excerpt_length');
@@ -399,10 +399,10 @@ class ZSkeleton_Content_Restrictions {
                                     <th scope="row"><?php _e('Default Restriction Message', 'zskeleton'); ?></th>
                                     <td>
                                         <?php
-                                        $def_msg = get_option(
-                                            'zskeleton_restriction_message',
-                                            __('This content is available exclusively to ZSkeleton members. Join our membership to access comprehensive resources and professional content.', 'zskeleton')
-                                        );
+                                        $def_msg = get_option( 'zskeleton_restriction_message', '' );
+                                        if ( '' === trim( (string) $def_msg ) && function_exists( 'zskeleton_get_default_restriction_message' ) ) {
+                                            $def_msg = zskeleton_get_default_restriction_message();
+                                        }
                                         if (function_exists('zskeleton_render_meta_wysiwyg')) {
                                             zskeleton_render_meta_wysiwyg(
                                                 'zskeleton_restriction_message_ed',

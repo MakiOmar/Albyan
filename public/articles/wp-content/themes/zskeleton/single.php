@@ -114,7 +114,7 @@ get_header(); ?>
 								<div class="member-access-notice">
 									<div class="icon">🔒</div>
 									<h3><?php _e( 'Member Access Required', 'zskeleton' ); ?></h3>
-									<p><?php _e( 'This content is available exclusively to ZSkeleton members. To access our comprehensive library, reports, and professional resources, please consider joining our membership.', 'zskeleton' ); ?></p>
+									<p><?php echo esc_html( zskeleton_sprintf_site_name( __( 'This content is available exclusively to %s members. To access our comprehensive library, reports, and professional resources, please consider joining our membership.', 'zskeleton' ) ) ); ?></p>
 									
 									<div class="member-access-actions">
 										<?php if ( function_exists( 'zskeleton_is_memberships_feature_enabled' ) && zskeleton_is_memberships_feature_enabled() ) : ?>
@@ -130,7 +130,7 @@ get_header(); ?>
 									</div>
 									
 									<div class="free-content-notice">
-										<p><small><?php _e( 'New to ZSkeleton? Check out our', 'zskeleton' ); ?> <a href="<?php echo esc_url( home_url( '/blog' ) ); ?>"><?php _e( 'free articles', 'zskeleton' ); ?></a> <?php _e( 'to get started.', 'zskeleton' ); ?></small></p>
+										<p><small><?php echo esc_html( zskeleton_sprintf_site_name( __( 'New to %s? Check out our', 'zskeleton' ) ) ); ?> <a href="<?php echo esc_url( home_url( '/blog' ) ); ?>"><?php esc_html_e( 'free articles', 'zskeleton' ); ?></a> <?php esc_html_e( 'to get started.', 'zskeleton' ); ?></small></p>
 									</div>
 								</div>
 							<?php endif; ?>

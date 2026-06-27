@@ -25,7 +25,14 @@ function zskeleton_seo_expert_load_default_data() {
 	} else {
 		$data = array();
 	}
-	return is_array( $data ) ? $data : array();
+	if ( ! is_array( $data ) ) {
+		$data = array();
+	}
+	if ( function_exists( 'zskeleton_seo_expert_section_heading_defaults' ) ) {
+		$scalars = isset( $data['scalars'] ) && is_array( $data['scalars'] ) ? $data['scalars'] : array();
+		$data['scalars'] = array_merge( zskeleton_seo_expert_section_heading_defaults(), $scalars );
+	}
+	return $data;
 }
 
 /**

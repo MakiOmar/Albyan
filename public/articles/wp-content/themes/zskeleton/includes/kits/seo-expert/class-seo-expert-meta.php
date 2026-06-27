@@ -115,6 +115,12 @@ class ZSkeleton_Seo_Expert_Meta {
 			'ai_lead_why_p2'          => array( 'label' => __( 'Contact / AI lead — “why” paragraph 2 (HTML)', 'zskeleton' ), 'type' => 'textarea' ),
 			'ai_lead_form_heading'    => array( 'label' => __( 'Contact / AI lead — form card title', 'zskeleton' ), 'type' => 'text' ),
 			'ai_lead_case_study_url'  => array( 'label' => __( 'Contact / AI lead — case study URL (optional; overrides %%CASE_STUDY_URL%% default)', 'zskeleton' ), 'type' => 'text' ),
+			'blog_links_enabled'      => array(
+				'label'       => __( 'Related articles section', 'zskeleton' ),
+				'type'        => 'checkbox',
+				'default'     => '1',
+				'description' => __( 'Turn off to hide related posts on the front end (no blog query is run).', 'zskeleton' ),
+			),
 			'blog_links_mode'         => array(
 				'label'   => __( 'Related articles — source', 'zskeleton' ),
 				'type'    => 'select',
@@ -232,6 +238,27 @@ class ZSkeleton_Seo_Expert_Meta {
 			'normal',
 			'high'
 		);
+		add_meta_box(
+			'zskeleton-seo-expert-headings',
+			__( 'SEO Expert — section headings', 'zskeleton' ),
+			array( $this, 'render_headings_box' ),
+			'page',
+			'normal',
+			'default'
+		);
+	}
+
+	/**
+	 * All scalar fields saved on SEO Expert pages (profile + section headings).
+	 *
+	 * @return array<string,array<string,mixed>>
+	 */
+	private static function get_all_scalar_field_config() {
+		$fields = self::get_profile_field_config();
+		if ( function_exists( 'zskeleton_seo_expert_section_heading_field_config' ) ) {
+			$fields = array_merge( $fields, zskeleton_seo_expert_section_heading_field_config() );
+		}
+		return $fields;
 	}
 
 	/**
@@ -304,6 +331,12 @@ class ZSkeleton_Seo_Expert_Meta {
 			} elseif ( 'textarea' === $type ) {
 				$rows = ( 0 === strpos( $key, 'ai_lead_' ) ) ? 8 : 4;
 				echo '<textarea class="widefat" rows="' . (int) $rows . '" id="' . esc_attr( $id ) . '" name="' . esc_attr( $mk ) . '">' . esc_textarea( $val ) . '</textarea>';
+			} elseif ( 'checkbox' === $type ) {
+				$default_on = isset( $conf['default'] ) && '1' === (string) $conf['default'];
+				$is_on      = ( '' === trim( $val ) && $default_on ) || '1' === (string) $val;
+				echo '<label for="' . esc_attr( $id ) . '">';
+				echo '<input type="checkbox" id="' . esc_attr( $id ) . '" name="' . esc_attr( $mk ) . '" value="1"' . checked( $is_on, true, false ) . ' />';
+				echo ' ' . esc_html__( 'Show on the page', 'zskeleton' ) . '</label>';
 			} else {
 				echo '<input type="text" class="widefat" id="' . esc_attr( $id ) . '" name="' . esc_attr( $mk ) . '" value="' . esc_attr( $val ) . '" />';
 			}
@@ -368,6 +401,45 @@ class ZSkeleton_Seo_Expert_Meta {
 	}
 
 	/**
+	 * Section H2 titles and related labels (editable without touching template code).
+	 *
+	 * @param WP_Post $post Post.
+	 */
+	public function render_headings_box( $post ) {
+		if ( 'page' !== $post->post_type ) {
+			return;
+		}
+
+		$tpl = (string) get_page_template_slug( $post );
+		if ( 'page-seo-expert.php' !== $tpl ) {
+			echo '<p class="description">' . esc_html__( 'Switch this page to the “SEO Expert” template to edit section headings.', 'zskeleton' ) . '</p>';
+			return;
+		}
+
+		if ( ! function_exists( 'zskeleton_seo_expert_section_heading_field_config' ) ) {
+			echo '<p class="description">' . esc_html__( 'Section headings module is not loaded.', 'zskeleton' ) . '</p>';
+			return;
+		}
+
+		echo '<p class="description">' . esc_html__( 'H2 titles and accessibility labels shown on the SEO Expert landing page. Leave a field empty to use the built-in Arabic default. CTA band: use %%EXPERT_NAME%% for the expert display name.', 'zskeleton' ) . '</p>';
+		echo '<div class="zskeleton-seo-expert-fields">';
+
+		$fields = zskeleton_seo_expert_section_heading_field_config();
+		foreach ( $fields as $key => $conf ) {
+			$mk  = self::meta_key( $key );
+			$val = get_post_meta( $post->ID, $mk, true );
+			$val = is_string( $val ) ? $val : '';
+			$id  = 'zskeleton_seo_' . $key;
+			$lab = $conf['label'];
+			echo '<div class="zskeleton-seo-field"><label for="' . esc_attr( $id ) . '"><strong>' . esc_html( $lab ) . '</strong></label>';
+			echo '<input type="text" class="widefat" id="' . esc_attr( $id ) . '" name="' . esc_attr( $mk ) . '" value="' . esc_attr( $val ) . '" />';
+			echo '</div>';
+		}
+
+		echo '</div>';
+	}
+
+	/**
 	 * @param int     $post_id Post ID.
 	 * @param WP_Post $post    Post.
 	 */
@@ -390,11 +462,16 @@ class ZSkeleton_Seo_Expert_Meta {
 			return;
 		}
 
-		$field_config = self::get_profile_field_config();
+		$field_config = self::get_all_scalar_field_config();
 
 		foreach ( array_keys( $field_config ) as $key ) {
 			$conf = $field_config[ $key ];
 			$mk   = self::meta_key( $key );
+			if ( 'blog_links_enabled' === $key ) {
+				$enabled = isset( $_POST[ $mk ] ) && '1' === sanitize_text_field( wp_unslash( $_POST[ $mk ] ) );
+				update_post_meta( $post_id, $mk, $enabled ? '1' : '0' );
+				continue;
+			}
 			if ( 'blog_links_mode' === $key ) {
 				if ( ! isset( $_POST[ $mk ] ) ) {
 					continue;

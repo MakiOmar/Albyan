@@ -36,6 +36,7 @@ return array(
 		'ai_lead_why_p2'           => 'نوظّف فقط أفضل 1% من المتقدمين الذين اختبرنا مهاراتهم، وتدريبهم الصارم يشمل دوراتنا على مستوى جامعي. لدينا أنظمة متقدمة وأدوات مدعومة بالذكاء الاصطناعي لضمان أعلى جودة في عملنا—بما في ذلك التميز في <span class="seo-ar-text-highlight">التسويق الرقمي</span>.',
 		'ai_lead_form_heading'     => 'احصل على حساب مجاني ومراجعة استراتيجية للمنافسين الآن',
 		'ai_lead_case_study_url'   => '',
+		'blog_links_enabled'       => '1',
 		'blog_links_mode'          => 'recent',
 		'blog_links_recent_count'  => '4',
 		'blog_links_post_ids'      => '',

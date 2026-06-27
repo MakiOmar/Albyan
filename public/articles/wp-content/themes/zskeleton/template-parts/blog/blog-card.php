@@ -62,7 +62,7 @@ if ( is_array( $terms ) && ! empty( $terms ) ) {
 	<?php if ( $has_access ) : ?>
 		<p><?php echo esc_html( wp_trim_words( get_the_excerpt( $post ), 22 ) ); ?></p>
 	<?php else : ?>
-		<p><?php esc_html_e( 'This content is available exclusively to ZSkeleton members. Join our membership to access our comprehensive library and professional resources.', 'zskeleton' ); ?></p>
+		<p><?php echo esc_html( zskeleton_sprintf_site_name( __( 'This content is available exclusively to %s members. Join our membership to access our comprehensive library and professional resources.', 'zskeleton' ) ) ); ?></p>
 	<?php endif; ?>
 
 	<div class="card-meta">

@@ -15,7 +15,7 @@ $zskeleton_faqs_page_id = (int) get_queried_object_id();
 zskeleton_the_page_title_bar(
     array(
         'title'    => __('Frequently Asked Questions', 'zskeleton'),
-        'subtitle' => __('Find answers to common questions about ZSkeleton membership, services, and resources.', 'zskeleton'),
+        'subtitle' => zskeleton_sprintf_site_name( __( 'Find answers to common questions about %s membership, services, and resources.', 'zskeleton' ) ),
     )
 );
 ?>
