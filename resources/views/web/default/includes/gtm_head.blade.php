@@ -1,11 +1,5 @@
 @php
-    // GTM is intentionally limited to the homepage for now (HomeController@index / "/").
-    $gtmCurrentAction = optional(request()->route())->getActionName();
-    $gtmIsHomepage = $gtmCurrentAction === 'App\Http\Controllers\Web\HomeController@index' || request()->is('/');
-
-    $gtmEnabled = $gtmIsHomepage
-        && config('services.gtm.enabled')
-        && !empty(config('services.gtm.container_id'));
+    $gtmEnabled = config('services.gtm.enabled') && !empty(config('services.gtm.container_id'));
     $gtmId = config('services.gtm.container_id');
     $gtmStrategy = config('services.gtm.load_strategy', 'idle');
     $gtmIdleTimeout = max(0, (int) config('services.gtm.idle_timeout_ms', 2500));

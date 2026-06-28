@@ -1,11 +1,5 @@
 @php
-    // Keep the noscript fallback aligned with gtm_head: homepage only for now.
-    $gtmCurrentAction = optional(request()->route())->getActionName();
-    $gtmIsHomepage = $gtmCurrentAction === 'App\Http\Controllers\Web\HomeController@index' || request()->is('/');
-
-    $gtmEnabled = $gtmIsHomepage
-        && config('services.gtm.enabled')
-        && !empty(config('services.gtm.container_id'));
+    $gtmEnabled = config('services.gtm.enabled') && !empty(config('services.gtm.container_id'));
     $gtmId = config('services.gtm.container_id');
 @endphp
 @if($gtmEnabled)
