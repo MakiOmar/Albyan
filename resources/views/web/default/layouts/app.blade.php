@@ -581,6 +581,7 @@
     @if(!isset($appHeader))
         @include('web.default.includes.top_nav')
         @include('web.default.includes.navbar')
+        @include('web.default.includes.category_sub_nav')
     @endif
 
     @if(!empty($justMobileApp))

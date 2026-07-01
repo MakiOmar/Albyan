@@ -49,6 +49,29 @@
 
 
 @section('content')
+    @php
+        $breadcrumbCategory = $course->category ?? null;
+        if (!empty($breadcrumbCategory) && !empty($breadcrumbCategory->parent_id) && !empty($breadcrumbCategory->category)) {
+            $breadcrumbCategory = $breadcrumbCategory->category;
+        }
+    @endphp
+
+    <section class="container course-breadcrumbs">
+        <nav aria-label="breadcrumb" class="mt-20">
+            <ol class="breadcrumb p-0 m-0 bg-transparent">
+                <li class="breadcrumb-item">
+                    <a href="/">{{ trans('home.home_title') }}</a>
+                </li>
+                @if(!empty($breadcrumbCategory))
+                    <li class="breadcrumb-item">
+                        <a href="{{ $breadcrumbCategory->getUrl() }}">{{ $breadcrumbCategory->title }}</a>
+                    </li>
+                @endif
+                <li class="breadcrumb-item active font-weight-bold" aria-current="page">{{ $course->title }}</li>
+            </ol>
+        </nav>
+    </section>
+
     {{--
     <section class="course-cover-container {{ empty($activeSpecialOffer) ? 'not-active-special-offer' : '' }}">
         <img src="{{ $course->getImageCover() }}" class="img-cover course-cover-img" alt="{{ $course->title }}"/>
