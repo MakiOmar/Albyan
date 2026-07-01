@@ -19,83 +19,137 @@
         $categorySubNavRtl = web_layout_is_rtl($generalSettings ?? null);
     @endphp
 
-    @push('styles_top')
-        <style>
-            #categorySubNav.category-sub-nav {
-                background: #f8fafc;
-                border-bottom: 1px solid #e2e8f0;
-            }
-            #categorySubNav .category-sub-nav-bar {
-                display: flex !important;
-                flex-direction: row !important;
-                flex-wrap: nowrap !important;
-                align-items: center !important;
-                gap: 8px;
-                padding: 10px 0;
-                min-height: 52px;
-            }
+    {{-- Styles must be inline here — @push('styles_top') does NOT work because this include runs in <body> after <head> is already rendered --}}
+    <style>
+        #categorySubNav.category-sub-nav {
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            z-index: 490;
+        }
+        #categorySubNav .category-sub-nav-bar {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            gap: 8px;
+            padding: 10px 0;
+            min-height: 52px;
+        }
+        #categorySubNav .category-sub-nav-scroll {
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        #categorySubNav .category-sub-nav-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        #categorySubNav .category-sub-nav-track {
+            display: inline-flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center;
+            gap: 6px;
+            min-width: min-content;
+        }
+        #categorySubNav .category-sub-nav-item {
+            flex: 0 0 auto;
+        }
+        #categorySubNav .category-sub-nav-link {
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e3a5f;
+            background: transparent;
+            white-space: nowrap !important;
+            line-height: 1;
+            text-decoration: none;
+        }
+        #categorySubNav .category-sub-nav-link:hover {
+            color: #01477d;
+            background: rgba(1, 71, 125, 0.07);
+            text-decoration: none;
+        }
+        #categorySubNav .category-sub-nav-link.active {
+            color: #01477d;
+            background: #ffffff;
+            box-shadow: 0 1px 4px rgba(1, 71, 125, 0.12);
+        }
+        #categorySubNav .category-sub-nav-link span {
+            white-space: nowrap !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #categorySubNav .category-sub-nav-icon {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+        #categorySubNav .category-sub-nav-btn {
+            flex: 0 0 36px;
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border: 1px solid #d8e0ea;
+            border-radius: 50%;
+            background: #fff;
+            color: #01477d;
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        #categorySubNav .category-sub-nav-btn svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.5;
+            pointer-events: none;
+        }
+        #categorySubNav .category-sub-nav-btn:hover:not(:disabled) {
+            background: #01477d;
+            border-color: #01477d;
+            color: #fff;
+        }
+        #categorySubNav .category-sub-nav-btn:disabled {
+            opacity: 0.35;
+            cursor: default;
+        }
+        @media (max-width: 991px) {
             #categorySubNav .category-sub-nav-scroll {
-                flex: 1 1 auto;
-                min-width: 0;
-                overflow-x: auto;
-                overflow-y: hidden;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-            }
-            #categorySubNav .category-sub-nav-scroll::-webkit-scrollbar {
-                display: none;
-            }
-            #categorySubNav .category-sub-nav-track {
-                display: inline-flex !important;
-                flex-direction: row !important;
-                flex-wrap: nowrap !important;
-                align-items: center;
-                gap: 6px;
+                scroll-snap-type: x mandatory;
             }
             #categorySubNav .category-sub-nav-item {
-                flex: 0 0 auto;
+                flex: 0 0 calc(50% - 3px);
+                max-width: calc(50% - 3px);
+                scroll-snap-align: start;
             }
-            #categorySubNav .category-sub-nav-link,
-            #categorySubNav .category-sub-nav-link span {
-                display: inline-flex;
-                align-items: center;
-                white-space: nowrap !important;
-                text-decoration: none;
+            #categorySubNav .category-sub-nav-link {
+                width: 100%;
+                justify-content: center;
+                font-size: 11px;
+                padding: 8px 6px;
             }
             #categorySubNav .category-sub-nav-btn {
-                flex: 0 0 36px;
-                width: 36px;
-                height: 36px;
-                padding: 0;
-                border: 1px solid #d8e0ea;
-                border-radius: 50%;
-                background: #fff;
-                color: #01477d;
-                display: inline-flex !important;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                -webkit-appearance: none;
-                appearance: none;
+                flex: 0 0 32px;
+                width: 32px;
+                height: 32px;
             }
-            @media (max-width: 991px) {
-                #categorySubNav .category-sub-nav-item {
-                    flex: 0 0 calc(50% - 3px);
-                    max-width: calc(50% - 3px);
-                }
-                #categorySubNav .category-sub-nav-link {
-                    width: 100%;
-                    justify-content: center;
-                    font-size: 11px;
-                }
-                #categorySubNav .category-sub-nav-btn {
-                    flex: 0 0 32px;
-                    width: 32px;
-                    height: 32px;
-                }
-            }
-        </style>
-    @endpush
+        }
+    </style>
 
     <nav id="categorySubNav" class="category-sub-nav" aria-label="{{ trans('categories.categories') }}">
         <div class="{{ (!empty($isPanel) and $isPanel) ? 'container-fluid' : 'container' }}">
