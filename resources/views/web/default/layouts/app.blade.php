@@ -271,7 +271,8 @@
             top: 10px;
             left: 10px;
             }
-            .swiper-wrapper{
+            .home-sections-swiper .swiper-wrapper,
+            .home-sections .swiper-wrapper {
             min-height: 300px;
             }
             /* If swiper-bundle.css is late/missing, keep horizontal sliders in a row (Swiper adds widths on init) */

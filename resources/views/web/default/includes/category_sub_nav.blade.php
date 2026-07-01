@@ -1,6 +1,7 @@
 {{-- Top-level category sub-navigation (swiper carousel) below the main navbar --}}
 @if(!empty($categories) && count($categories))
     @php
+        $categorySubNavRtl = web_layout_is_rtl($generalSettings ?? null);
         $activeTopCategorySlug = null;
 
         if (!empty($category)) {
@@ -19,9 +20,9 @@
 
     <nav id="categorySubNav" class="category-sub-nav" aria-label="{{ trans('categories.categories') }}">
         <div class="{{ (!empty($isPanel) and $isPanel) ? 'container-fluid' : 'container' }}">
-            <div class="category-sub-nav-inner position-relative">
-                <button type="button" class="category-sub-nav-arrow category-sub-nav-prev" aria-label="{{ trans('webinars.previous') }}">
-                    <i data-feather="chevron-left" width="18" height="18"></i>
+            <div class="category-sub-nav-inner">
+                <button type="button" class="category-sub-nav-arrow category-sub-nav-prev is-disabled" aria-label="{{ trans('webinars.previous') }}">
+                    <i data-feather="{{ $categorySubNavRtl ? 'chevron-right' : 'chevron-left' }}" width="18" height="18"></i>
                 </button>
 
                 <div class="swiper-container category-sub-nav-swiper">
@@ -31,7 +32,7 @@
                                 <a href="{{ $topCategory->getUrl() }}"
                                    class="category-sub-nav-link {{ $activeTopCategorySlug === $topCategory->slug ? 'active' : '' }}">
                                     @if(!empty($topCategory->icon))
-                                        <img src="{{ $topCategory->icon }}" class="category-sub-nav-icon" alt="" width="20" height="20">
+                                        <img src="{{ $topCategory->icon }}" class="category-sub-nav-icon" alt="" width="22" height="22">
                                     @endif
                                     <span>{{ $topCategory->title }}</span>
                                 </a>
@@ -41,7 +42,7 @@
                 </div>
 
                 <button type="button" class="category-sub-nav-arrow category-sub-nav-next" aria-label="{{ trans('webinars.next') }}">
-                    <i data-feather="chevron-right" width="18" height="18"></i>
+                    <i data-feather="{{ $categorySubNavRtl ? 'chevron-left' : 'chevron-right' }}" width="18" height="18"></i>
                 </button>
             </div>
         </div>
@@ -58,7 +59,11 @@
                 }
 
                 function initCategorySubNavSwiper() {
-                    var el = document.querySelector('.category-sub-nav-swiper');
+                    var root = document.getElementById('categorySubNav');
+                    var el = root ? root.querySelector('.category-sub-nav-swiper') : null;
+                    var prevBtn = root ? root.querySelector('.category-sub-nav-prev') : null;
+                    var nextBtn = root ? root.querySelector('.category-sub-nav-next') : null;
+
                     if (!el || !el.querySelector('.swiper-slide') || typeof Swiper === 'undefined') {
                         return;
                     }
@@ -70,28 +75,53 @@
                     var swiper = new Swiper(el, {
                         rtl: pageDirIsRtl(),
                         slidesPerView: 2,
+                        slidesPerGroup: 2,
                         spaceBetween: 8,
-                        freeMode: true,
                         watchOverflow: true,
-                        navigation: {
-                            nextEl: '.category-sub-nav-next',
-                            prevEl: '.category-sub-nav-prev',
-                        },
                         breakpoints: {
                             768: {
                                 slidesPerView: 4,
+                                slidesPerGroup: 1,
                                 spaceBetween: 10,
                             },
                             992: {
                                 slidesPerView: 6,
+                                slidesPerGroup: 1,
                                 spaceBetween: 12,
                             },
                         },
                     });
 
+                    function updateArrows() {
+                        if (!prevBtn || !nextBtn) {
+                            return;
+                        }
+
+                        var noOverflow = swiper.isBeginning && swiper.isEnd;
+                        prevBtn.classList.toggle('is-disabled', swiper.isBeginning || noOverflow);
+                        nextBtn.classList.toggle('is-disabled', swiper.isEnd || noOverflow);
+                    }
+
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', function () {
+                            swiper.slidePrev();
+                        });
+                    }
+
+                    if (nextBtn) {
+                        nextBtn.addEventListener('click', function () {
+                            swiper.slideNext();
+                        });
+                    }
+
+                    swiper.on('slideChange', updateArrows);
+                    swiper.on('resize', updateArrows);
+                    updateArrows();
+
                     requestAnimationFrame(function () {
                         try {
                             swiper.update();
+                            updateArrows();
                         } catch (e) { /* ignore */ }
                     });
                 }
