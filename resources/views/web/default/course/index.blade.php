@@ -54,10 +54,41 @@
         if (!empty($breadcrumbCategory) && !empty($breadcrumbCategory->parent_id) && !empty($breadcrumbCategory->category)) {
             $breadcrumbCategory = $breadcrumbCategory->category;
         }
+        $courseBreadcrumbRtl = web_layout_is_rtl($generalSettings ?? null);
     @endphp
 
+    <style>
+        .course-breadcrumbs .breadcrumb {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 0;
+            margin-bottom: 0;
+        }
+        .course-breadcrumbs .breadcrumb-item {
+            display: inline-flex;
+            align-items: center;
+            float: none;
+        }
+        .course-breadcrumbs .breadcrumb-item + .breadcrumb-item::before {
+            float: none !important;
+            display: inline-block !important;
+            position: static;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            color: #818894;
+            content: "\203A" !important;
+            background: none;
+        }
+        @if($courseBreadcrumbRtl)
+        .course-breadcrumbs .breadcrumb-item + .breadcrumb-item::before {
+            content: "\2039" !important;
+        }
+        @endif
+    </style>
+
     <section class="container course-breadcrumbs">
-        <nav aria-label="breadcrumb" class="mt-20">
+        <nav aria-label="breadcrumb" class="mt-20" dir="{{ $courseBreadcrumbRtl ? 'rtl' : 'ltr' }}">
             <ol class="breadcrumb p-0 m-0 bg-transparent">
                 <li class="breadcrumb-item">
                     <a href="/">{{ trans('home.home_title') }}</a>

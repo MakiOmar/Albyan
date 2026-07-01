@@ -167,7 +167,18 @@
 }
 
 .course-breadcrumbs {
+    .breadcrumb {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 0;
+        margin-bottom: 0;
+    }
+
     .breadcrumb-item {
+        display: inline-flex;
+        align-items: center;
+        float: none;
         font-size: 13px;
 
         a {
@@ -178,8 +189,24 @@
             color: $dark-blue;
         }
 
-        + .breadcrumb-item::before {
-            color: $gray;
+        + .breadcrumb-item {
+            padding-left: 0;
+            padding-right: 0;
+
+            &::before {
+                float: none !important;
+                display: inline-block !important;
+                position: static;
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                color: $gray;
+                content: "\203A" !important; /* › */
+                background: none;
+            }
         }
     }
+}
+
+body.rtl .course-breadcrumbs .breadcrumb-item + .breadcrumb-item::before {
+    content: "\2039" !important; /* ‹ */
 }
