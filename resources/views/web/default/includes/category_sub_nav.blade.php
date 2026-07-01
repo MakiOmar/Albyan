@@ -19,7 +19,7 @@
         $categorySubNavRtl = web_layout_is_rtl($generalSettings ?? null);
     @endphp
 
-    {{-- Styles must be inline here — @push('styles_top') does NOT work because this include runs in <body> after <head> is already rendered --}}
+    {{-- Inline styles: include runs in <body> after <head>, so @push('styles_top') never applies --}}
     <style>
         #categorySubNav.category-sub-nav {
             background: #f8fafc;
@@ -33,46 +33,46 @@
             align-items: center !important;
             gap: 8px;
             padding: 10px 0;
-            min-height: 52px;
         }
         #categorySubNav .category-sub-nav-scroll {
             flex: 1 1 auto;
             min-width: 0;
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: stretch;
+            gap: 6px;
             overflow-x: auto;
-            overflow-y: hidden;
+            overflow-y: visible;
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
             -ms-overflow-style: none;
+            padding: 2px 0;
         }
         #categorySubNav .category-sub-nav-scroll::-webkit-scrollbar {
             display: none;
         }
-        #categorySubNav .category-sub-nav-track {
-            display: inline-flex !important;
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
-            align-items: center;
-            gap: 6px;
-            min-width: min-content;
-        }
         #categorySubNav .category-sub-nav-item {
             flex: 0 0 auto;
+            min-width: 0;
         }
         #categorySubNav .category-sub-nav-link {
-            display: inline-flex !important;
+            display: flex !important;
             align-items: center;
             justify-content: center;
-            gap: 7px;
-            padding: 8px 14px;
+            gap: 6px;
+            height: 100%;
+            min-height: 44px;
+            padding: 10px 14px;
             border-radius: 6px;
             font-size: 13px;
             font-weight: 600;
             color: #1e3a5f;
             background: transparent;
             white-space: nowrap !important;
-            line-height: 1;
+            line-height: 1.4;
             text-decoration: none;
+            box-sizing: border-box;
         }
         #categorySubNav .category-sub-nav-link:hover {
             color: #01477d;
@@ -88,6 +88,7 @@
             white-space: nowrap !important;
             overflow: hidden;
             text-overflow: ellipsis;
+            line-height: 1.4;
         }
         #categorySubNav .category-sub-nav-icon {
             width: 20px;
@@ -110,6 +111,7 @@
             cursor: pointer;
             -webkit-appearance: none;
             appearance: none;
+            flex-shrink: 0;
         }
         #categorySubNav .category-sub-nav-btn svg {
             width: 16px;
@@ -129,19 +131,29 @@
             cursor: default;
         }
         @media (max-width: 991px) {
+            #categorySubNav .category-sub-nav-bar {
+                gap: 6px;
+                padding: 8px 0;
+            }
             #categorySubNav .category-sub-nav-scroll {
                 scroll-snap-type: x mandatory;
+                gap: 8px;
             }
             #categorySubNav .category-sub-nav-item {
-                flex: 0 0 calc(50% - 3px);
-                max-width: calc(50% - 3px);
+                flex: 0 0 calc((100% - 8px) / 2);
+                width: calc((100% - 8px) / 2);
                 scroll-snap-align: start;
+                scroll-snap-stop: always;
             }
             #categorySubNav .category-sub-nav-link {
                 width: 100%;
-                justify-content: center;
+                min-height: 48px;
+                padding: 10px 6px;
                 font-size: 11px;
-                padding: 8px 6px;
+            }
+            #categorySubNav .category-sub-nav-icon {
+                width: 18px;
+                height: 18px;
             }
             #categorySubNav .category-sub-nav-btn {
                 flex: 0 0 32px;
@@ -162,21 +174,19 @@
                     @endif
                 </button>
 
-                <div class="category-sub-nav-scroll" tabindex="0">
-                    <div class="category-sub-nav-track">
-                        @foreach($categories as $topCategory)
-                            <div class="category-sub-nav-item">
-                                <a href="{{ $topCategory->getUrl() }}"
-                                   class="category-sub-nav-link {{ $activeTopCategorySlug === $topCategory->slug ? 'active' : '' }}"
-                                   title="{{ $topCategory->title }}">
-                                    @if(!empty($topCategory->icon))
-                                        <img src="{{ $topCategory->icon }}" class="category-sub-nav-icon" alt="" width="20" height="20">
-                                    @endif
-                                    <span>{{ $topCategory->title }}</span>
-                                </a>
-                            </div>
-                        @endforeach
-                    </div>
+                <div class="category-sub-nav-scroll" tabindex="0" @if($categorySubNavRtl) dir="rtl" @endif>
+                    @foreach($categories as $topCategory)
+                        <div class="category-sub-nav-item">
+                            <a href="{{ $topCategory->getUrl() }}"
+                               class="category-sub-nav-link {{ $activeTopCategorySlug === $topCategory->slug ? 'active' : '' }}"
+                               title="{{ $topCategory->title }}">
+                                @if(!empty($topCategory->icon))
+                                    <img src="{{ $topCategory->icon }}" class="category-sub-nav-icon" alt="" width="20" height="20">
+                                @endif
+                                <span>{{ $topCategory->title }}</span>
+                            </a>
+                        </div>
+                    @endforeach
                 </div>
 
                 <button type="button" class="category-sub-nav-btn category-sub-nav-btn--next" aria-label="{{ trans('webinars.next') }}">
@@ -202,37 +212,53 @@
                     }
 
                     var scrollEl = root.querySelector('.category-sub-nav-scroll');
-                    var trackEl = root.querySelector('.category-sub-nav-track');
                     var prevBtn = root.querySelector('.category-sub-nav-btn--prev');
                     var nextBtn = root.querySelector('.category-sub-nav-btn--next');
 
-                    if (!scrollEl || !trackEl || !prevBtn || !nextBtn) {
+                    if (!scrollEl || !prevBtn || !nextBtn) {
                         return;
                     }
 
-                    var items = function () {
-                        return Array.prototype.slice.call(trackEl.querySelectorAll('.category-sub-nav-item'));
-                    };
+                    var isRtl = scrollEl.getAttribute('dir') === 'rtl'
+                        || document.documentElement.getAttribute('dir') === 'rtl';
 
-                    function scrollState() {
-                        var max = scrollEl.scrollWidth - scrollEl.clientWidth;
-                        if (max <= 2) {
-                            return { atStart: true, atEnd: true };
+                    function isMobile() {
+                        return window.matchMedia('(max-width: 991px)').matches;
+                    }
+
+                    function maxScroll() {
+                        return Math.max(0, scrollEl.scrollWidth - scrollEl.clientWidth);
+                    }
+
+                    function normalizedScrollPos() {
+                        var max = maxScroll();
+                        if (max <= 1) {
+                            return 0;
                         }
 
                         var sl = scrollEl.scrollLeft;
-                        var atStart;
-                        var atEnd;
 
-                        if (sl < 0) {
-                            atStart = Math.abs(sl) >= max - 2;
-                            atEnd = Math.abs(sl) <= 2;
-                        } else {
-                            atStart = sl <= 2;
-                            atEnd = sl >= max - 2;
+                        if (isRtl) {
+                            if (sl < 0) {
+                                return Math.min(max, Math.abs(sl));
+                            }
+                            return Math.min(max, Math.max(0, max - sl));
                         }
 
-                        return { atStart: atStart, atEnd: atEnd };
+                        return Math.min(max, Math.max(0, sl));
+                    }
+
+                    function scrollState() {
+                        var max = maxScroll();
+                        if (max <= 1) {
+                            return { atStart: true, atEnd: true };
+                        }
+
+                        var pos = normalizedScrollPos();
+                        return {
+                            atStart: pos <= 2,
+                            atEnd: pos >= max - 2
+                        };
                     }
 
                     function updateButtons() {
@@ -242,44 +268,29 @@
                     }
 
                     function scrollByPage(direction) {
-                        var list = items();
-                        if (!list.length) {
+                        var max = maxScroll();
+                        if (max <= 1) {
                             return;
                         }
 
-                        var containerRect = scrollEl.getBoundingClientRect();
-                        var target = null;
+                        var step = isMobile() ? scrollEl.clientWidth : Math.round(scrollEl.clientWidth * 0.85);
+                        var pos = normalizedScrollPos();
+                        var target;
 
                         if (direction === 'next') {
-                            for (var i = 0; i < list.length; i++) {
-                                var rect = list[i].getBoundingClientRect();
-                                if (rect.right > containerRect.right + 2) {
-                                    target = list[i];
-                                    break;
-                                }
-                            }
-                            if (!target) {
-                                target = list[list.length - 1];
-                            }
+                            target = Math.min(max, pos + step);
                         } else {
-                            for (var j = list.length - 1; j >= 0; j--) {
-                                var prevRect = list[j].getBoundingClientRect();
-                                if (prevRect.left < containerRect.left - 2) {
-                                    target = list[j];
-                                    break;
-                                }
-                            }
-                            if (!target) {
-                                target = list[0];
-                            }
+                            target = Math.max(0, pos - step);
                         }
 
-                        if (target) {
-                            target.scrollIntoView({
-                                behavior: 'smooth',
-                                inline: direction === 'next' ? 'start' : 'end',
-                                block: 'nearest'
-                            });
+                        if (isRtl) {
+                            if (scrollEl.scrollLeft < 0) {
+                                scrollEl.scrollTo({ left: -target, behavior: 'smooth' });
+                            } else {
+                                scrollEl.scrollTo({ left: max - target, behavior: 'smooth' });
+                            }
+                        } else {
+                            scrollEl.scrollTo({ left: target, behavior: 'smooth' });
                         }
                     }
 
@@ -297,8 +308,8 @@
                     var activeLink = root.querySelector('.category-sub-nav-link.active');
                     if (activeLink) {
                         var activeItem = activeLink.closest('.category-sub-nav-item');
-                        if (activeItem) {
-                            activeItem.scrollIntoView({ behavior: 'auto', inline: 'center', block: 'nearest' });
+                        if (activeItem && isMobile()) {
+                            activeItem.scrollIntoView({ behavior: 'auto', inline: 'nearest', block: 'nearest' });
                         }
                     }
 
