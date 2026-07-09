@@ -28,6 +28,7 @@ Route::group([], function () {
 
     Route::get('featured-courses', ['uses' => 'FeatureWebinarController@index']);
     Route::get('categories', ['uses' => 'CategoriesController@index']);
+    Route::get('course-categories/nav', ['uses' => 'CategoriesController@nav']);
     Route::get('categories/{id}/webinars', ['uses' => 'CategoriesController@categoryWebinar']);
     Route::get('trend-categories', ['uses' => 'CategoriesController@trendCategory']);
     Route::get('search', ['uses' => 'SearchController@list']);

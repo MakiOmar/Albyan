@@ -26,6 +26,33 @@ class CategoriesController extends Controller
 
     }
 
+    /**
+     * Top-level course categories for external nav widgets (e.g. WordPress zskeleton sub-nav).
+     */
+    public function nav(Request $request)
+    {
+        if ($request->filled('locale')) {
+            \Illuminate\Support\Facades\App::setLocale($request->get('locale'));
+        }
+
+        $categories = \App\Models\Category::getCategories()
+            ->map(function ($category) {
+                return [
+                    'id' => $category->id,
+                    'title' => $category->title,
+                    'slug' => $category->slug,
+                    'url' => url($category->getUrl()),
+                    'icon' => !empty($category->icon) ? url($category->icon) : null,
+                ];
+            })
+            ->values();
+
+        return apiResponse2(1, 'retrieved', trans('api.public.retrieved'), [
+            'count' => $categories->count(),
+            'categories' => $categories,
+        ]);
+    }
+
     public function trendCategory()
     {
 

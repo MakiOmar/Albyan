@@ -2050,6 +2050,7 @@ require_once ZSkeleton_THEME_DIR . '/includes/wp-login-branding.php';
 require_once ZSkeleton_THEME_DIR . '/includes/extensions/form-kit/form-kit.php';
 require_once ZSkeleton_THEME_DIR . '/includes/contact-form-kit.php';
 require_once ZSkeleton_THEME_DIR . '/includes/contact-page-layout.php';
+require_once ZSkeleton_THEME_DIR . '/includes/lms-category-sub-nav.php';
 require_once ZSkeleton_THEME_DIR . '/includes/common-pages.php';
 require_once ZSkeleton_THEME_DIR . '/includes/sitemap-exclusions.php';
 require_once ZSkeleton_THEME_DIR . '/includes/upload-mime-types.php';
@@ -3110,6 +3111,7 @@ function zskeleton_header_search() {
         </form>
     </div>
     <?php
+    do_action('zskeleton_after_header_search');
 }
 
 /**
