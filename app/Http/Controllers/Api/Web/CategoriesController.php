@@ -31,26 +31,7 @@ class CategoriesController extends Controller
      */
     public function nav(Request $request)
     {
-        if ($request->filled('locale')) {
-            \Illuminate\Support\Facades\App::setLocale($request->get('locale'));
-        }
-
-        $categories = \App\Models\Category::getCategories()
-            ->map(function ($category) {
-                return [
-                    'id' => $category->id,
-                    'title' => $category->title,
-                    'slug' => $category->slug,
-                    'url' => url($category->getUrl()),
-                    'icon' => !empty($category->icon) ? url($category->icon) : null,
-                ];
-            })
-            ->values();
-
-        return apiResponse2(1, 'retrieved', trans('api.public.retrieved'), [
-            'count' => $categories->count(),
-            'categories' => $categories,
-        ]);
+        return app(\App\Http\Controllers\Web\CourseCategoryNavController::class)->index($request);
     }
 
     public function trendCategory()

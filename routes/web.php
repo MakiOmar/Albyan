@@ -38,6 +38,12 @@ Route::get('/sitemap-courses-page-{page}.xml', [SitemapController::class, 'cours
 Route::get('/sitemap-blog-page-{page}.xml', [SitemapController::class, 'blogPaginated'])->where('page', '[0-9]+')->name('sitemap.blog.paginated');
 Route::get('/sitemap-upcoming-courses-page-{page}.xml', [SitemapController::class, 'upcomingCoursesPaginated'])->where('page', '[0-9]+')->name('sitemap.upcoming.paginated');
 
+/*
+| Public JSON for course category sub-nav (WordPress zskeleton, external widgets).
+| No API key required. If you use route caching, run route:clear && route:cache after deploy.
+*/
+Route::get('/course-categories/nav', 'Web\CourseCategoryNavController@index')->name('course-categories.nav');
+
 Route::get('/zoom/{group}', [CourseGroupController::class, 'zoomSession'])->name('course-group.session');
 
 Route::group(['prefix' => 'my_api', 'namespace' => 'Api\Panel', 'middleware' => 'signed', 'as' => 'my_api.web.'], function () {

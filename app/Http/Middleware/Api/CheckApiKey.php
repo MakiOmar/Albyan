@@ -15,6 +15,10 @@ class CheckApiKey
      */
     public function handle($request, Closure $next)
     {
+        // Public read-only feed for WordPress / external category sub-nav widgets.
+        if ($request->is('api/*/course-categories/nav')) {
+            return $next($request);
+        }
 
         if ( !env('API_KEY') || $request->header('x-api-key') !== env('API_KEY')) {
 

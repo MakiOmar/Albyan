@@ -100,7 +100,8 @@ function zskeleton_lms_category_subnav_settings_section_cb() {
         'Fetch top-level course categories from your Rocket LMS installation and show them in a horizontal sub-navigation bar below the header search.',
         'zskeleton'
     ) . '</p>';
-    echo '<p><code>' . esc_html__('GET {api_base}/course-categories/nav', 'zskeleton') . '</code></p>';
+    echo '<p><code>' . esc_html__('GET {site}/course-categories/nav?locale=ar', 'zskeleton') . '</code></p>';
+    echo '<p class="description">' . esc_html__('Recommended LMS site URL: https://albyan.institute (no /api/development). Legacy API base URLs are still supported.', 'zskeleton') . '</p>';
 }
 
 /**
@@ -124,9 +125,9 @@ function zskeleton_lms_api_base_url_field_cb() {
     ?>
     <input type="url" class="regular-text" name="zskeleton_lms_api_base_url" id="zskeleton_lms_api_base_url"
            value="<?php echo esc_attr($value); ?>"
-           placeholder="https://example.com/api/development" />
+           placeholder="https://albyan.institute" />
     <p class="description">
-        <?php esc_html_e('Rocket LMS guest API prefix (no trailing slash). Example: https://yoursite.com/api/development', 'zskeleton'); ?>
+        <?php esc_html_e('LMS site URL (recommended) or API base URL. Examples: https://albyan.institute or https://albyan.institute/api/development', 'zskeleton'); ?>
     </p>
     <?php
 }
@@ -177,24 +178,45 @@ function zskeleton_lms_api_locale() {
 }
 
 /**
+ * Build the category nav JSON endpoint URL.
+ *
+ * Accepts either LMS site root (https://example.com) or legacy API base
+ * (https://example.com/api/development).
+ *
+ * @return string
+ */
+function zskeleton_lms_category_nav_endpoint() {
+    $base = zskeleton_lms_api_base_url();
+    if ('' === $base) {
+        return '';
+    }
+
+    if (false !== strpos($base, '/api/development')) {
+        return $base . '/course-categories/nav';
+    }
+
+    return $base . '/course-categories/nav';
+}
+
+/**
  * Fetch course categories from LMS API (cached).
  *
  * @return array<int, array<string, mixed>>
  */
 function zskeleton_lms_fetch_course_categories() {
-    $api_base = zskeleton_lms_api_base_url();
-    if ('' === $api_base) {
+    $endpoint_base = zskeleton_lms_category_nav_endpoint();
+    if ('' === $endpoint_base) {
         return array();
     }
 
     $locale = zskeleton_lms_api_locale();
-    $cache_key = 'zskeleton_lms_cats_' . md5($api_base . '|' . $locale);
+    $cache_key = 'zskeleton_lms_cats_' . md5($endpoint_base . '|' . $locale);
     $cached = get_transient($cache_key);
     if (is_array($cached)) {
         return $cached;
     }
 
-    $endpoint = $api_base . '/course-categories/nav?locale=' . rawurlencode($locale);
+    $endpoint = $endpoint_base . '?locale=' . rawurlencode($locale);
     $response = wp_remote_get($endpoint, array(
         'timeout' => 12,
         'headers' => array(
