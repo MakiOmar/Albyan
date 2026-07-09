@@ -12,6 +12,13 @@ if (!defined('ABSPATH')) {
 class RLMS_Cat_Subnav_Renderer {
 
     /**
+     * Whether front-end script should load on this request.
+     *
+     * @var bool
+     */
+    private static $script_needed = false;
+
+    /**
      * Register front-end hook.
      */
     public static function init() {
@@ -19,6 +26,8 @@ class RLMS_Cat_Subnav_Renderer {
         if (!empty($hook) && is_string($hook)) {
             add_action($hook, array(__CLASS__, 'render'), 10);
         }
+
+        add_action('wp_footer', array(__CLASS__, 'print_script'), 20);
     }
 
     /**
@@ -122,6 +131,7 @@ class RLMS_Cat_Subnav_Renderer {
         static $assets_printed = false;
         $is_rtl = is_rtl();
         $container_class = apply_filters('rlms_cat_subnav_container_class', 'container');
+        self::$script_needed = true;
         ?>
         <nav id="lmsCategorySubNav" class="lms-category-subnav" aria-label="<?php esc_attr_e('Course categories', 'rocket-lms-category-subnav'); ?>">
             <div class="<?php echo esc_attr($container_class); ?>">
@@ -164,14 +174,14 @@ class RLMS_Cat_Subnav_Renderer {
 
         if (!$assets_printed) {
             $assets_printed = true;
-            self::print_assets();
+            self::print_styles();
         }
     }
 
     /**
-     * Inline CSS and JS (self-contained; no theme dependency).
+     * Inline CSS (self-contained; no theme dependency).
      */
-    public static function print_assets() {
+    public static function print_styles() {
         ?>
         <style id="lms-category-subnav-css">
             #lmsCategorySubNav.lms-category-subnav{background:#f8fafc;border-bottom:1px solid #e2e8f0;z-index:490}
@@ -196,60 +206,121 @@ class RLMS_Cat_Subnav_Renderer {
                 #lmsCategorySubNav .lms-category-subnav-btn{flex:0 0 32px;width:32px;height:32px}
             }
         </style>
+        <?php
+    }
+
+    /**
+     * Front-end navigation script (footer so layout is ready).
+     */
+    public static function print_script() {
+        if (!self::$script_needed) {
+            return;
+        }
+        ?>
         <script id="lms-category-subnav-js">
         (function(){
             function initLmsCategorySubNav(){
                 var root=document.getElementById('lmsCategorySubNav');
-                if(!root){return;}
+                if(!root||root.dataset.rlmsInit==='1'){return;}
+                root.dataset.rlmsInit='1';
+
                 var scrollEl=root.querySelector('.lms-category-subnav-scroll');
                 var prevBtn=root.querySelector('.lms-category-subnav-btn--prev');
                 var nextBtn=root.querySelector('.lms-category-subnav-btn--next');
                 if(!scrollEl||!prevBtn||!nextBtn){return;}
-                var isRtl=scrollEl.getAttribute('dir')==='rtl'||document.documentElement.getAttribute('dir')==='rtl';
+
+                var isRtl=scrollEl.getAttribute('dir')==='rtl'
+                    ||document.documentElement.getAttribute('dir')==='rtl'
+                    ||window.getComputedStyle(scrollEl).direction==='rtl';
+
                 function isMobile(){return window.matchMedia('(max-width:991px)').matches;}
                 function maxScroll(){return Math.max(0,scrollEl.scrollWidth-scrollEl.clientWidth);}
+
                 function normalizedScrollPos(){
                     var max=maxScroll();
                     if(max<=1){return 0;}
                     var sl=scrollEl.scrollLeft;
-                    if(isRtl){
-                        if(sl<0){return Math.min(max,Math.abs(sl));}
-                        return Math.min(max,Math.max(0,max-sl));
-                    }
-                    return Math.min(max,Math.max(0,sl));
+                    if(!isRtl){return Math.min(max,Math.max(0,sl));}
+                    if(sl<0){return Math.min(max,Math.abs(sl));}
+                    if(sl>0){return Math.min(max,Math.max(0,max-sl));}
+                    return 0;
                 }
+
                 function scrollState(){
                     var max=maxScroll();
                     if(max<=1){return{atStart:true,atEnd:true};}
                     var pos=normalizedScrollPos();
                     return{atStart:pos<=2,atEnd:pos>=max-2};
                 }
+
                 function updateButtons(){
                     var state=scrollState();
                     prevBtn.disabled=state.atStart;
                     nextBtn.disabled=state.atEnd;
                 }
+
                 function scrollByPage(direction){
-                    var max=maxScroll();
-                    if(max<=1){return;}
-                    var step=isMobile()?scrollEl.clientWidth:Math.round(scrollEl.clientWidth*0.85);
-                    var pos=normalizedScrollPos();
-                    var target=direction==='next'?Math.min(max,pos+step):Math.max(0,pos-step);
-                    if(isRtl){
-                        if(scrollEl.scrollLeft<0){scrollEl.scrollTo({left:-target,behavior:'smooth'});}
-                        else{scrollEl.scrollTo({left:max-target,behavior:'smooth'});}
+                    if(maxScroll()<=1){return;}
+                    var items=Array.prototype.slice.call(scrollEl.querySelectorAll('.lms-category-subnav-item'));
+                    if(!items.length){return;}
+                    var scrollRect=scrollEl.getBoundingClientRect();
+                    var target=null;
+                    var delta=0;
+                    var tolerance=2;
+                    if(direction==='next'){
+                        if(isRtl){
+                            for(var i=items.length-1;i>=0;i--){
+                                if(items[i].getBoundingClientRect().left<scrollRect.left-tolerance){target=items[i];break;}
+                            }
+                            if(target){delta=target.getBoundingClientRect().left-scrollRect.left;}
+                        }else{
+                            for(var j=0;j<items.length;j++){
+                                if(items[j].getBoundingClientRect().right>scrollRect.right+tolerance){target=items[j];break;}
+                            }
+                            if(target){delta=target.getBoundingClientRect().left-scrollRect.left;}
+                        }
+                    }else if(isRtl){
+                        for(var k=0;k<items.length;k++){
+                            if(items[k].getBoundingClientRect().right>scrollRect.right+tolerance){target=items[k];break;}
+                        }
+                        if(target){delta=target.getBoundingClientRect().right-scrollRect.right;}
                     }else{
-                        scrollEl.scrollTo({left:target,behavior:'smooth'});
+                        for(var m=items.length-1;m>=0;m--){
+                            if(items[m].getBoundingClientRect().left<scrollRect.left-tolerance){target=items[m];break;}
+                        }
+                        if(target){delta=target.getBoundingClientRect().right-scrollRect.right;}
                     }
+                    if(!target||Math.abs(delta)<1){
+                        var step=isMobile()?scrollEl.clientWidth:Math.round(scrollEl.clientWidth*0.85);
+                        var sign=direction==='next'?1:-1;
+                        if(isRtl){sign=-sign;}
+                        delta=sign*step;
+                    }
+                    scrollEl.scrollBy({left:delta,behavior:'smooth'});
                 }
-                prevBtn.addEventListener('click',function(){scrollByPage('prev');});
-                nextBtn.addEventListener('click',function(){scrollByPage('next');});
+
+                prevBtn.addEventListener('click',function(e){
+                    e.preventDefault();
+                    scrollByPage('prev');
+                });
+                nextBtn.addEventListener('click',function(e){
+                    e.preventDefault();
+                    scrollByPage('next');
+                });
+
                 scrollEl.addEventListener('scroll',updateButtons,{passive:true});
                 window.addEventListener('resize',updateButtons);
-                updateButtons();
+                window.addEventListener('load',updateButtons);
+
+                requestAnimationFrame(function(){
+                    requestAnimationFrame(updateButtons);
+                });
             }
-            if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initLmsCategorySubNav);}
-            else{initLmsCategorySubNav();}
+
+            function boot(){initLmsCategorySubNav();}
+            if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',boot);}
+            else{boot();}
+            window.addEventListener('load',boot);
         })();
         </script>
         <?php

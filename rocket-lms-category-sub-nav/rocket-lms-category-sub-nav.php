@@ -16,7 +16,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('RLMS_CAT_SUBNAV_VERSION', '1.0.0');
+define('RLMS_CAT_SUBNAV_VERSION', '1.0.2');
 define('RLMS_CAT_SUBNAV_FILE', __FILE__);
 define('RLMS_CAT_SUBNAV_PATH', plugin_dir_path(__FILE__));
 define('RLMS_CAT_SUBNAV_URL', plugin_dir_url(__FILE__));
