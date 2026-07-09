@@ -13,11 +13,10 @@ class SearchController extends Controller
 {
     public function index(Request $request)
     {
-        $data = [];
+        $search = trim((string) $request->get('search', ''));
+        $data = resolveSearchPageSeoMetas($search);
 
-        $search = $request->get('search', null);
-
-        if (!empty($search) and strlen($search) >= 3) {
+        if ($search !== '' && strlen($search) >= 3) {
             $webinars = Webinar::where('status', 'active')
                 ->where('private', false)
                 ->whereTranslationLike('title', "%$search%")
@@ -45,29 +44,21 @@ class SearchController extends Controller
                 ->with([
                     'webinars' => function ($query) {
                         $query->where('status', 'active');
-                        //dd(getBindedSQL($query));
                     }
                 ])
                 ->get();
 
             $teachers = $users->where('role_name', Role::$teacher);
             $organizations = $users->where('role_name', Role::$organization);
+            $resultCount = count($webinars) + count($teachers) + count($organizations);
 
-            $seoSettings = getSeoMetas('search');
-            $pageTitle = !empty($seoSettings['title']) ? $seoSettings['title'] : trans('site.search_page_title');
-            $pageDescription = !empty($seoSettings['description']) ? $seoSettings['description'] : trans('site.search_page_title');
-            $pageRobot = getPageRobot('search');
-
-            $data = [
-                'pageTitle' => $pageTitle,
-                'pageDescription' => $pageDescription,
-                'pageRobot' => $pageRobot,
-                'resultCount' => count($webinars) + count($teachers) + count($organizations),
+            $data = array_merge($data, resolveSearchPageSeoMetas($search, $resultCount), [
+                'resultCount' => $resultCount,
                 'webinars' => $webinars,
                 'teachers' => $teachers,
                 'organizations' => $organizations,
                 'products' => $products,
-            ];
+            ]);
         }
 
         return view(getTemplate() . '.pages.search', $data);

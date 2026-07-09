@@ -2222,6 +2222,79 @@ function getPageRobotNoIndex()
     return 'NOODP, nofollow, noindex';
 }
 
+/**
+ * Replace search-related placeholders in SEO title/description templates.
+ *
+ * Supported placeholders: {search}, :search, %%search%%, %%searchphrase%%, {count}, :count
+ */
+function applySearchSeoPlaceholders(?string $text, string $search, ?int $resultCount = null): string
+{
+    if ($text === null || $text === '') {
+        return '';
+    }
+
+    $search = trim($search);
+    if ($search === '') {
+        return $text;
+    }
+
+    $replacements = [
+        '{search}' => $search,
+        ':search' => $search,
+        '%%search%%' => $search,
+        '%%searchphrase%%' => $search,
+    ];
+
+    if ($resultCount !== null) {
+        $replacements['{count}'] = (string) $resultCount;
+        $replacements[':count'] = (string) $resultCount;
+        $replacements['%%count%%'] = (string) $resultCount;
+    }
+
+    return str_replace(array_keys($replacements), array_values($replacements), $text);
+}
+
+/**
+ * Resolve search page SEO metas, substituting the query when present.
+ *
+ * @return array{pageTitle: string, pageDescription: string, pageRobot: string}
+ */
+function resolveSearchPageSeoMetas(string $search = '', ?int $resultCount = null): array
+{
+    $search = trim($search);
+    $hasQuery = $search !== '';
+    $seoSettings = getSeoMetas('search');
+
+    if (!is_array($seoSettings)) {
+        $seoSettings = [];
+    }
+
+    $pageTitle = !empty($seoSettings['title']) ? $seoSettings['title'] : trans('site.search_page_title');
+    $pageDescription = !empty($seoSettings['description']) ? $seoSettings['description'] : trans('site.search_page_title');
+
+    if ($hasQuery) {
+        if (!empty($seoSettings['title'])) {
+            $pageTitle = applySearchSeoPlaceholders($seoSettings['title'], $search, $resultCount);
+        } else {
+            $pageTitle = trans('update.search_results_for', ['temp' => $search]);
+        }
+
+        if (!empty($seoSettings['description'])) {
+            $pageDescription = applySearchSeoPlaceholders($seoSettings['description'], $search, $resultCount);
+        } elseif ($resultCount !== null) {
+            $pageDescription = trans('site.result_find', ['count' => $resultCount, 'search' => $search]);
+        } else {
+            $pageDescription = trans('update.search_results_for', ['temp' => $search]);
+        }
+    }
+
+    return [
+        'pageTitle' => $pageTitle,
+        'pageDescription' => $pageDescription,
+        'pageRobot' => getPageRobot('search'),
+    ];
+}
+
 function getDefaultLocale()
 {
     $key = 'site_language';
