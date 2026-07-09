@@ -8,7 +8,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-04-02T05:50:07+00:00\n"
-"PO-Revision-Date: 2026-04-22 18:38:12+0000\n"
+"PO-Revision-Date: 2026-07-09 09:33:57+0000\n"
 "Language: en_US\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: WP-CLI 2.12.0\n"
@@ -2675,16 +2675,20 @@ msgstr "Order"
 msgid "Difficulty"
 msgstr "Difficulty"
 
-#: index.php:28
+#: template-parts/blog/listing-hero.php:28
 #, php-format
 msgid "Search Results for: %s"
 msgstr "Search Results for: %s"
 
-#: index.php:36
+#: template-parts/blog/listing-hero.php:51
+#: template-parts/blog/listing-hero.php:55
+#: template-parts/blog/listing-hero.php:56
 msgid "News & Insights"
 msgstr "News & Insights"
 
-#: index.php:37 page-blog.php:55
+#: template-parts/blog/listing-hero.php:46
+#: template-parts/blog/listing-hero.php:52
+#: template-parts/blog/listing-hero.php:56
 msgid "Read the latest insights, practical guidance, and updates from our community."
 msgstr "Read the latest insights, practical guidance, and updates from our community."
 
@@ -5112,3 +5116,21 @@ msgstr ""
 "\n"
 "Best regards,\n"
 "ZSkeleton Team"
+
+#: functions.php:282
+#, php-format
+msgid "Search Results for: %1$s - %2$s"
+msgstr "Search Results for: %1$s - %2$s"
+
+#: functions.php:288
+#, php-format
+msgid "Search results for \"%1$s\" on %2$s."
+msgstr "Search results for \"%1$s\" on %2$s."
+
+#: template-parts/blog/listing-hero.php:59
+msgid "Search blog posts"
+msgstr "Search blog posts"
+
+#: includes/wp-login-captcha.php
+msgid "Security verification"
+msgstr "Security verification"

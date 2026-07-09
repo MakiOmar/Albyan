@@ -225,6 +225,7 @@
 					showNotice(form, (cfg.i18n && cfg.i18n.pleaseFillRequired) || (cfg.i18n && cfg.i18n.invalid) || '', true);
 					return;
 				}
+				syncIntlTelFields(form);
 				clearFieldErrors(form);
 				var useAjax = form.getAttribute('data-zs-form-ajax') === '1';
 				if (useAjax) {
@@ -263,13 +264,63 @@
 		}
 	}
 
+	function getFormRedirectTarget(form, data) {
+		if (data && data.redirect) {
+			return String(data.redirect);
+		}
+		var attr = form.getAttribute('data-zs-form-redirect');
+		return attr && String(attr).trim() ? String(attr).trim() : '';
+	}
+
+	/**
+	 * Lock or unlock submit controls to prevent duplicate AJAX/native submissions.
+	 *
+	 * @param {HTMLFormElement} form Form element.
+	 * @param {boolean} isSubmitting Whether a submit is in flight.
+	 */
+	function setFormSubmitting(form, isSubmitting) {
+		form.classList.toggle('is-submitting', !!isSubmitting);
+		if (isSubmitting) {
+			form.setAttribute('data-zs-submitting', '1');
+		} else {
+			form.removeAttribute('data-zs-submitting');
+		}
+
+		var buttons = form.querySelectorAll('[data-zs-submit], .zs-form__btn--submit');
+		buttons.forEach(function (btn) {
+			if (isSubmitting) {
+				if (!btn.dataset.zsSubmitLabel) {
+					btn.dataset.zsSubmitLabel = btn.textContent;
+				}
+				btn.disabled = true;
+				btn.setAttribute('aria-busy', 'true');
+				btn.textContent = (cfg.i18n && cfg.i18n.submitting) || 'Submitting…';
+			} else {
+				btn.disabled = false;
+				btn.removeAttribute('aria-busy');
+				if (btn.dataset.zsSubmitLabel) {
+					btn.textContent = btn.dataset.zsSubmitLabel;
+				}
+			}
+		});
+	}
+
+	function isFormSubmitting(form) {
+		return form.getAttribute('data-zs-submitting') === '1';
+	}
+
 	function bindAjaxSubmit(form) {
 		if (form.getAttribute('data-zs-form-ajax') !== '1') {
 			return;
 		}
 		form.addEventListener('submit', function (e) {
 			e.preventDefault();
+			if (isFormSubmitting(form)) {
+				return;
+			}
+			syncIntlTelFields(form);
 			clearFieldErrors(form);
+			setFormSubmitting(form, true);
 			ensureFormKitRecaptcha(form)
 				.then(function () {
 					var fd = new FormData(form);
@@ -288,25 +339,34 @@
 					var j = res.json;
 					if (!j) {
 						showNotice(form, (cfg.i18n && cfg.i18n.genericError) || (cfg.i18n && cfg.i18n.errorShort) || '', true);
+						setFormSubmitting(form, false);
 						return;
 					}
 					if (!j.success) {
 						showNotice(form, (j.data && j.data.message) || (cfg.i18n && cfg.i18n.genericError) || (cfg.i18n && cfg.i18n.errorShort) || '', true);
+						setFormSubmitting(form, false);
 						return;
 					}
 					var data = j.data || {};
 					if (data.saved === false && data.errors) {
 						applyFieldErrors(form, data.errors);
 						showNotice(form, (cfg.i18n && cfg.i18n.invalid) || (cfg.i18n && cfg.i18n.invalidShort) || '', true);
+						setFormSubmitting(form, false);
 						return;
 					}
 					if (data.saved) {
+						var redirect = getFormRedirectTarget(form, data);
+						if (redirect) {
+							window.location.assign(redirect);
+							return;
+						}
 						showNotice(form, data.message || (cfg.i18n && cfg.i18n.successOk) || '', false);
 						form.reset();
 						var wiz = form.getAttribute('data-zs-form-wizard') === '1';
 						if (wiz) {
 							idxReset(form);
 						}
+						setFormSubmitting(form, false);
 					}
 				})
 				.catch(function (err) {
@@ -315,7 +375,27 @@
 						msg = (cfg.i18n && cfg.i18n.recaptchaFailed) || msg;
 					}
 					showNotice(form, msg, true);
+					setFormSubmitting(form, false);
 				});
+		});
+	}
+
+	/**
+	 * Non-AJAX fallback: block a second submit while the first request is in flight.
+	 *
+	 * @param {HTMLFormElement} form Form element.
+	 */
+	function bindNativeSubmitGuard(form) {
+		if (form.getAttribute('data-zs-form-ajax') === '1') {
+			return;
+		}
+		form.addEventListener('submit', function (e) {
+			if (isFormSubmitting(form)) {
+				e.preventDefault();
+				return;
+			}
+			syncIntlTelFields(form);
+			setFormSubmitting(form, true);
 		});
 	}
 
@@ -403,10 +483,26 @@
 		});
 	}
 
+	function bindIntlTelFields(form) {
+		if (typeof window.zskeletonIntlTel === 'undefined' || typeof window.zskeletonIntlTel.init !== 'function') {
+			return;
+		}
+		window.zskeletonIntlTel.init(form);
+	}
+
+	function syncIntlTelFields(form) {
+		if (typeof window.zskeletonIntlTel === 'undefined' || typeof window.zskeletonIntlTel.syncForm !== 'function') {
+			return;
+		}
+		window.zskeletonIntlTel.syncForm(form);
+	}
+
 	function initForm(form) {
 		bindRangeOutput(form);
 		bindMediaFields(form);
+		bindIntlTelFields(form);
 		bindWizardFixed(form);
+		bindNativeSubmitGuard(form);
 		bindAjaxSubmit(form);
 	}
 

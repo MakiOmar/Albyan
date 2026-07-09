@@ -30,6 +30,11 @@ class ZSkeleton_Form_Assets {
 	private static $public_captcha_provider = '';
 
 	/**
+	 * @var bool
+	 */
+	private static $needs_intl_tel = false;
+
+	/**
 	 * Register hooks.
 	 */
 	public static function init() {
@@ -48,6 +53,30 @@ class ZSkeleton_Form_Assets {
 		if ( $definition && self::definition_uses_type( $definition, array( 'media', 'image' ) ) ) {
 			self::$needs_media = true;
 		}
+		if ( $definition && self::definition_uses_intl_tel( $definition ) ) {
+			self::request_intl_tel();
+		}
+	}
+
+	/**
+	 * Mark intl-tel-input assets as required (tel fields with country dial codes).
+	 */
+	public static function request_intl_tel() {
+		self::$needs_intl_tel = true;
+	}
+
+	/**
+	 * @param ZSkeleton_Form_Definition $definition Definition.
+	 * @return bool
+	 */
+	private static function definition_uses_intl_tel( ZSkeleton_Form_Definition $definition ) {
+		foreach ( $definition->get_fields_by_name() as $field ) {
+			$t = isset( $field['type'] ) ? sanitize_key( (string) $field['type'] ) : '';
+			if ( 'tel' === $t && ! empty( $field['intl_tel'] ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -115,6 +144,10 @@ class ZSkeleton_Form_Assets {
 	 * @param string $context Context.
 	 */
 	private static function enqueue_bundle( $context ) {
+		if ( self::$needs_intl_tel ) {
+			self::enqueue_intl_tel_assets();
+		}
+
 		if ( wp_script_is( 'zskeleton-form-kit', 'enqueued' ) || wp_script_is( 'zskeleton-form-kit', 'done' ) ) {
 			return;
 		}
@@ -148,6 +181,7 @@ class ZSkeleton_Form_Assets {
 					'invalidShort'       => __( 'Invalid', 'zskeleton' ),
 					'successOk'          => __( 'OK', 'zskeleton' ),
 					'recaptchaFailed'    => __( 'Security verification failed. Please refresh the page and try again.', 'zskeleton' ),
+					'submitting'         => __( 'Submitting…', 'zskeleton' ),
 					'mediaTitle'         => __( 'Select media', 'zskeleton' ),
 					'mediaButton'        => __( 'Use this file', 'zskeleton' ),
 				),
@@ -166,8 +200,12 @@ class ZSkeleton_Form_Assets {
 	 * @return string[]
 	 */
 	private static function form_kit_script_dependencies( $context ) {
+		$deps = array();
+		if ( self::$needs_intl_tel ) {
+			$deps[] = 'zskeleton-intl-tel-input';
+		}
 		if ( 'admin' === $context ) {
-			$deps = array( 'jquery' );
+			$deps[] = 'jquery';
 			if ( 'cloudflare_turnstile' === self::$public_captcha_provider ) {
 				$deps[] = 'cloudflare-turnstile';
 			} elseif ( 'google_recaptcha' === self::$public_captcha_provider ) {
@@ -176,11 +214,78 @@ class ZSkeleton_Form_Assets {
 			return $deps;
 		}
 		if ( 'cloudflare_turnstile' === self::$public_captcha_provider ) {
-			return array( 'cloudflare-turnstile' );
+			$deps[] = 'cloudflare-turnstile';
+			return $deps;
 		}
 		if ( 'google_recaptcha' === self::$public_captcha_provider ) {
-			return array( 'jquery', 'zskeleton-recaptcha' );
+			$deps[] = 'jquery';
+			$deps[] = 'zskeleton-recaptcha';
+			return $deps;
 		}
-		return array();
+		return $deps;
+	}
+
+	/**
+	 * Shared config for intl-tel-input (public forms + admin preview).
+	 *
+	 * @return array<string, mixed>
+	 */
+	public static function get_intl_tel_config() {
+		$is_arabic = function_exists( 'zskeleton_is_arabic_locale' ) && zskeleton_is_arabic_locale();
+
+		/**
+		 * Filter intl-tel-input runtime options passed to zskeletonIntlTelConfig.
+		 *
+		 * @param array<string, mixed> $config isRtl, isArabic, autoDetect, fallbackCountry, geoUrl.
+		 */
+		return apply_filters(
+			'zskeleton_intl_tel_config',
+			array(
+				'isRtl'           => is_rtl(),
+				'isArabic'        => $is_arabic,
+				'autoDetect'      => true,
+				'fallbackCountry' => $is_arabic ? 'ae' : 'us',
+				'geoUrl'          => 'https://ipapi.co/json/',
+			)
+		);
+	}
+
+	/**
+	 * intl-tel-input styles and initializer for Form Kit tel fields.
+	 */
+	public static function enqueue_intl_tel_assets() {
+		if ( wp_script_is( 'zskeleton-intl-tel-input', 'enqueued' ) || wp_script_is( 'zskeleton-intl-tel-input', 'done' ) ) {
+			return;
+		}
+
+		$use_min  = (bool) get_option( 'zskeleton_use_minified_assets', true );
+		$css_path = ZSkeleton_THEME_DIR . '/assets/vendor/intl-tel-input/css/intlTelInput.css';
+		$js_file  = $use_min && is_readable( ZSkeleton_THEME_DIR . '/assets/js/form-kit-intl-tel.min.js' )
+			? 'form-kit-intl-tel.min.js'
+			: 'form-kit-intl-tel.js';
+		$js_path  = ZSkeleton_THEME_DIR . '/assets/js/' . $js_file;
+
+		if ( is_readable( $css_path ) ) {
+			wp_enqueue_style(
+				'zskeleton-intl-tel-input',
+				ZSkeleton_THEME_URL . '/assets/vendor/intl-tel-input/css/intlTelInput.css',
+				array(),
+				(string) filemtime( $css_path )
+			);
+		}
+		if ( is_readable( $js_path ) ) {
+			wp_enqueue_script(
+				'zskeleton-intl-tel-input',
+				ZSkeleton_THEME_URL . '/assets/js/' . $js_file,
+				array(),
+				(string) filemtime( $js_path ),
+				true
+			);
+			wp_localize_script(
+				'zskeleton-intl-tel-input',
+				'zskeletonIntlTelConfig',
+				self::get_intl_tel_config()
+			);
+		}
 	}
 }

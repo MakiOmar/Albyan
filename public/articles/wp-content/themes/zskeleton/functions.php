@@ -25,6 +25,8 @@ require_once ZSkeleton_THEME_DIR . '/includes/mobile-bottom-nav.php';
 require_once ZSkeleton_THEME_DIR . '/includes/blog-hub.php';
 require_once ZSkeleton_THEME_DIR . '/includes/blog-hub-featured-meta.php';
 require_once ZSkeleton_THEME_DIR . '/includes/post-redirect.php';
+require_once ZSkeleton_THEME_DIR . '/includes/landing-page-template.php';
+require_once ZSkeleton_THEME_DIR . '/includes/page-custom-css.php';
 require_once ZSkeleton_THEME_DIR . '/includes/taxonomy-term-listing.php';
 require_once ZSkeleton_THEME_DIR . '/includes/blocks/blog-hub-blocks.php';
 require_once ZSkeleton_THEME_DIR . '/includes/blocks/block-type-metadata-min-assets.php';
@@ -593,10 +595,10 @@ function zskeleton_breadcrumb_schema() {
     
     $breadcrumbs = array();
     $breadcrumbs[] = array(
-        '@type' => 'ListItem',
+        '@type'    => 'ListItem',
         'position' => 1,
-        'name' => 'Home',
-        'item' => home_url('/')
+        'name'     => __( 'Home', 'zskeleton' ),
+        'item'     => home_url( '/' ),
     );
     
     $position = 2;
@@ -609,34 +611,62 @@ function zskeleton_breadcrumb_schema() {
             'name' => $term->name,
             'item' => get_term_link($term)
         );
-    } elseif (is_singular()) {
+    } elseif ( is_singular( 'post' ) ) {
+        $blog_crumb = zskeleton_get_blog_posts_page_breadcrumb();
+        $breadcrumbs[] = array(
+            '@type'    => 'ListItem',
+            'position' => $position++,
+            'name'     => $blog_crumb['label'],
+            'item'     => $blog_crumb['url'],
+        );
+
+        $category = zskeleton_get_post_primary_category( get_the_ID() );
+        if ( $category instanceof WP_Term ) {
+            $term_link = get_term_link( $category );
+            if ( ! is_wp_error( $term_link ) ) {
+                $breadcrumbs[] = array(
+                    '@type'    => 'ListItem',
+                    'position' => $position++,
+                    'name'     => $category->name,
+                    'item'     => $term_link,
+                );
+            }
+        }
+
+        $breadcrumbs[] = array(
+            '@type'    => 'ListItem',
+            'position' => $position,
+            'name'     => get_the_title(),
+            'item'     => get_permalink(),
+        );
+    } elseif ( is_singular() ) {
         // Add parent pages
         $post = get_post();
         $parents = array();
         $parent = $post->post_parent;
-        
-        while ($parent) {
+
+        while ( $parent ) {
             $parents[] = $parent;
-            $parent = get_post($parent)->post_parent;
+            $parent = get_post( $parent )->post_parent;
         }
-        
-        $parents = array_reverse($parents);
-        foreach ($parents as $parent_id) {
-            $parent_post = get_post($parent_id);
+
+        $parents = array_reverse( $parents );
+        foreach ( $parents as $parent_id ) {
+            $parent_post   = get_post( $parent_id );
             $breadcrumbs[] = array(
-                '@type' => 'ListItem',
+                '@type'    => 'ListItem',
                 'position' => $position++,
-                'name' => $parent_post->post_title,
-                'item' => get_permalink($parent_id)
+                'name'     => $parent_post->post_title,
+                'item'     => get_permalink( $parent_id ),
             );
         }
-        
+
         // Add current page
         $breadcrumbs[] = array(
-            '@type' => 'ListItem',
+            '@type'    => 'ListItem',
             'position' => $position,
-            'name' => get_the_title(),
-            'item' => get_permalink()
+            'name'     => get_the_title(),
+            'item'     => get_permalink(),
         );
     } elseif (is_archive()) {
         $breadcrumbs[] = array(
@@ -702,43 +732,85 @@ function zskeleton_get_page_breadcrumb_items($post_id = null) {
 }
 
 /**
- * Blog breadcrumb markup with SEO-plugin-first strategy and safe fallback.
+ * Blog index crumb: Posts page title when set, otherwise translated "Blog".
  *
- * @param int $post_id Post ID for single post fallback crumbs.
- * @return string HTML.
+ * @return array{label: string, url: string}
  */
-function zskeleton_get_blog_breadcrumbs_html( $post_id = 0 ) {
-    $post_id = (int) $post_id;
-    if ( function_exists( 'yoast_breadcrumb' ) ) {
-        return yoast_breadcrumb( '<nav class="zskeleton-breadcrumbs" aria-label="' . esc_attr__( 'Breadcrumbs', 'zskeleton' ) . '">', '</nav>', false );
-    }
+function zskeleton_get_blog_posts_page_breadcrumb() {
+    $posts_page_id = function_exists( 'zskeleton_get_page_for_posts_id' )
+        ? zskeleton_get_page_for_posts_id()
+        : (int) get_option( 'page_for_posts', 0 );
 
-    if ( function_exists( 'rank_math_the_breadcrumbs' ) ) {
-        ob_start();
-        rank_math_the_breadcrumbs(
-            array(
-                'wrap_before' => '<nav class="zskeleton-breadcrumbs" aria-label="' . esc_attr__( 'Breadcrumbs', 'zskeleton' ) . '">',
-                'wrap_after'  => '</nav>',
-            )
+    if ( $posts_page_id > 0 && 'publish' === get_post_status( $posts_page_id ) ) {
+        return array(
+            'label' => get_the_title( $posts_page_id ),
+            'url'   => get_permalink( $posts_page_id ),
         );
-        return (string) ob_get_clean();
     }
 
-    $items = array(
+    return array(
+        'label' => __( 'Blog', 'zskeleton' ),
+        'url'   => home_url( '/blog/' ),
+    );
+}
+
+/**
+ * Primary category for a post (Yoast primary term when set, otherwise first assigned).
+ *
+ * @param int $post_id Post ID.
+ * @return WP_Term|null
+ */
+function zskeleton_get_post_primary_category( $post_id = 0 ) {
+    $post_id = $post_id > 0 ? (int) $post_id : (int) get_the_ID();
+    if ( $post_id < 1 ) {
+        return null;
+    }
+
+    $terms = get_the_terms( $post_id, 'category' );
+    if ( ! is_array( $terms ) || empty( $terms ) ) {
+        return null;
+    }
+
+    if ( class_exists( 'WPSEO_Primary_Term' ) ) {
+        $primary    = new WPSEO_Primary_Term( 'category', $post_id );
+        $primary_id = (int) $primary->get_primary_term();
+        if ( $primary_id > 0 ) {
+            $primary_term = get_term( $primary_id, 'category' );
+            if ( $primary_term instanceof WP_Term && ! is_wp_error( $primary_term ) ) {
+                return $primary_term;
+            }
+        }
+    }
+
+    return $terms[0];
+}
+
+/**
+ * Breadcrumb items for a single blog post: Home → Blog → Category → post title.
+ *
+ * @param int $post_id Post ID.
+ * @return array<int, array{label: string, url: string, current?: bool}>
+ */
+function zskeleton_get_blog_breadcrumb_items( $post_id = 0 ) {
+    $post_id = (int) $post_id;
+    $items   = array(
         array(
             'label' => __( 'Home', 'zskeleton' ),
             'url'   => home_url( '/' ),
         ),
+        zskeleton_get_blog_posts_page_breadcrumb(),
     );
+
     if ( $post_id > 0 ) {
-        $terms = get_the_terms( $post_id, 'category' );
-        if ( is_array( $terms ) && ! empty( $terms ) ) {
-            $term_link = get_term_link( $terms[0] );
-            $items[] = array(
-                'label' => $terms[0]->name,
+        $category = zskeleton_get_post_primary_category( $post_id );
+        if ( $category instanceof WP_Term ) {
+            $term_link = get_term_link( $category );
+            $items[]   = array(
+                'label' => $category->name,
                 'url'   => ! is_wp_error( $term_link ) ? $term_link : '',
             );
         }
+
         $items[] = array(
             'label'   => get_the_title( $post_id ),
             'url'     => '',
@@ -746,6 +818,16 @@ function zskeleton_get_blog_breadcrumbs_html( $post_id = 0 ) {
         );
     }
 
+    return $items;
+}
+
+/**
+ * Render breadcrumb nav HTML from item arrays.
+ *
+ * @param array<int, array{label: string, url: string, current?: bool}> $items Crumb items.
+ * @return string HTML.
+ */
+function zskeleton_render_breadcrumbs_html( array $items ) {
     $html = '<nav class="zskeleton-breadcrumbs" aria-label="' . esc_attr__( 'Breadcrumbs', 'zskeleton' ) . '"><ol class="zskeleton-breadcrumbs__list">';
     foreach ( $items as $item ) {
         $label = isset( $item['label'] ) ? (string) $item['label'] : '';
@@ -764,6 +846,16 @@ function zskeleton_get_blog_breadcrumbs_html( $post_id = 0 ) {
     $html .= '</ol></nav>';
 
     return $html;
+}
+
+/**
+ * Blog breadcrumb markup for single posts (theme trail with translated Home/Blog).
+ *
+ * @param int $post_id Post ID for single post crumbs.
+ * @return string HTML.
+ */
+function zskeleton_get_blog_breadcrumbs_html( $post_id = 0 ) {
+    return zskeleton_render_breadcrumbs_html( zskeleton_get_blog_breadcrumb_items( (int) $post_id ) );
 }
 
 /**
@@ -2032,6 +2124,7 @@ require_once ZSkeleton_THEME_DIR . '/includes/post-types/class-glossary-terms.ph
 require_once ZSkeleton_THEME_DIR . '/includes/post-types/class-sliders.php';
 require_once ZSkeleton_THEME_DIR . '/includes/post-types/class-services.php';
 require_once ZSkeleton_THEME_DIR . '/includes/admin/class-theme-features-admin.php';
+require_once ZSkeleton_THEME_DIR . '/includes/post-types/class-forms.php';
 require_once ZSkeleton_THEME_DIR . '/includes/slider/class-zskeleton-slider-frontend.php';
 require_once ZSkeleton_THEME_DIR . '/includes/class-taxonomy-landing.php';
 require_once ZSkeleton_THEME_DIR . '/includes/admin/meta-wysiwyg.php';
@@ -2050,7 +2143,6 @@ require_once ZSkeleton_THEME_DIR . '/includes/wp-login-branding.php';
 require_once ZSkeleton_THEME_DIR . '/includes/extensions/form-kit/form-kit.php';
 require_once ZSkeleton_THEME_DIR . '/includes/contact-form-kit.php';
 require_once ZSkeleton_THEME_DIR . '/includes/contact-page-layout.php';
-require_once ZSkeleton_THEME_DIR . '/includes/lms-category-sub-nav.php';
 require_once ZSkeleton_THEME_DIR . '/includes/common-pages.php';
 require_once ZSkeleton_THEME_DIR . '/includes/sitemap-exclusions.php';
 require_once ZSkeleton_THEME_DIR . '/includes/upload-mime-types.php';
@@ -2059,6 +2151,7 @@ require_once ZSkeleton_THEME_DIR . '/includes/class-widget-google-map.php';
 require_once ZSkeleton_THEME_DIR . '/includes/class-widget-social-icons.php';
 require_once ZSkeleton_THEME_DIR . '/includes/class-widget-heading.php';
 require_once ZSkeleton_THEME_DIR . '/includes/class-widget-contact-lines.php';
+require_once ZSkeleton_THEME_DIR . '/includes/class-widget-sidebar.php';
 require_once ZSkeleton_THEME_DIR . '/includes/class-widget-nav-menus.php';
 
 /**
@@ -2690,7 +2783,7 @@ function zskeleton_register_sidebars() {
     register_sidebar(array(
         'name' => __('Primary Sidebar', 'zskeleton'),
         'id' => 'sidebar-1',
-        'description' => __('Main sidebar widget area', 'zskeleton'),
+        'description' => __('Main sidebar. Add and reorder ZSkeleton sidebar widgets under Appearance → Widgets.', 'zskeleton'),
         'before_widget' => '<section id="%1$s" class="widget %2$s formal-card">',
         'after_widget' => '</section>',
         'before_title' => '<h3 class="widget-title">',
@@ -3094,7 +3187,10 @@ function zskeleton_customize_register($wp_customize) {
 add_action('customize_register', 'zskeleton_customize_register');
 
 /**
- * Add search functionality to header
+ * Add search functionality to header.
+ *
+ * Extension point: use {@see 'zskeleton_after_header_search'} to inject markup
+ * below the search block (e.g. sub-navigation) in both header layouts.
  */
 function zskeleton_header_search() {
     ?>
@@ -3111,7 +3207,6 @@ function zskeleton_header_search() {
         </form>
     </div>
     <?php
-    do_action('zskeleton_after_header_search');
 }
 
 /**

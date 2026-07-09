@@ -169,12 +169,43 @@ class ZSkeleton_Form_Handler {
 	 * @return bool True if allowed.
 	 */
 	public static function rate_limit_allow( $form_id ) {
+		$form_id = sanitize_key( (string) $form_id );
+		$ip      = ZSkeleton_Form_Submissions_Repository::get_client_ip();
+		$ip_hash = ZSkeleton_Form_Submissions_Repository::hash_ip( $ip );
+		$key     = 'zs_frl_' . $form_id . '_' . substr( $ip_hash, 0, 16 );
+		$count   = (int) get_transient( $key );
+		$limit   = 10;
+		$window  = 15 * MINUTE_IN_SECONDS;
+
 		/**
-		 * Return false to block submission (e.g. transient rate limit).
+		 * Filter rate limit settings.
 		 *
-		 * @param bool   $allow   Default true.
-		 * @param string $form_id Form id.
+		 * @param array{limit:int,window:int} $settings limit and window seconds.
+		 * @param string                    $form_id  Form id.
 		 */
+		$settings = apply_filters(
+			'zskeleton_form_kit_rate_limit_settings',
+			array(
+				'limit'  => $limit,
+				'window' => $window,
+			),
+			$form_id
+		);
+		$limit  = isset( $settings['limit'] ) ? (int) $settings['limit'] : $limit;
+		$window = isset( $settings['window'] ) ? (int) $settings['window'] : $window;
+
+		if ( $count >= $limit ) {
+			/**
+			 * Return false to block submission (e.g. transient rate limit).
+			 *
+			 * @param bool   $allow   Default true.
+			 * @param string $form_id Form id.
+			 */
+			return (bool) apply_filters( 'zskeleton_form_kit_rate_limit_allow', false, $form_id );
+		}
+
+		set_transient( $key, $count + 1, $window );
+
 		return (bool) apply_filters( 'zskeleton_form_kit_rate_limit_allow', true, $form_id );
 	}
 }

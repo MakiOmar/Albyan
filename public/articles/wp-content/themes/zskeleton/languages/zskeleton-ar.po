@@ -8,7 +8,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-04-02T05:50:07+00:00\n"
-"PO-Revision-Date: 2026-04-22 18:38:13+0000\n"
+"PO-Revision-Date: 2026-07-09 09:33:57+0000\n"
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 "X-Domain: zskeleton\n"
@@ -175,7 +175,7 @@ msgstr "موارد"
 #: includes/common-pages.php:67 page-blog.php:53
 #: template-parts/header-split-top-search.php:279
 msgid "Blog"
-msgstr "مدونة"
+msgstr "المدونة"
 
 #: footer.php:167 footer.php:232
 msgid "Privacy Policy"
@@ -232,7 +232,7 @@ msgstr "الملاحة المتنقلة"
 #: footer.php:272 footer.php:277 functions.php:657 header.php:713
 #: includes/class-walker-nav-menu-split-logo.php:94
 msgid "Home"
-msgstr "بيت"
+msgstr "الرئيسية"
 
 #: footer.php:281 footer.php:286
 msgid "Profile"
@@ -2679,16 +2679,20 @@ msgstr "طلب"
 msgid "Difficulty"
 msgstr "صعوبة"
 
-#: index.php:28
+#: template-parts/blog/listing-hero.php:28
 #, php-format
 msgid "Search Results for: %s"
 msgstr "نتائج البحث عن: %s"
 
-#: index.php:36
+#: template-parts/blog/listing-hero.php:51
+#: template-parts/blog/listing-hero.php:55
+#: template-parts/blog/listing-hero.php:56
 msgid "News & Insights"
 msgstr "أخبار ورؤى"
 
-#: index.php:37 page-blog.php:55
+#: template-parts/blog/listing-hero.php:46
+#: template-parts/blog/listing-hero.php:52
+#: template-parts/blog/listing-hero.php:56
 msgid "Read the latest insights, practical guidance, and updates from our community."
 msgstr "اقرأ أحدث الأفكار والإرشادات العملية والتحديثات من مجتمعنا."
 
@@ -5116,3 +5120,21 @@ msgstr ""
 "\n"
 "Best regards,\n"
 "ZSkeleton Team"
+
+#: functions.php:282
+#, php-format
+msgid "Search Results for: %1$s - %2$s"
+msgstr "Search Results for: %1$s - %2$s"
+
+#: functions.php:288
+#, php-format
+msgid "Search results for \"%1$s\" on %2$s."
+msgstr "Search results for \"%1$s\" on %2$s."
+
+#: template-parts/blog/listing-hero.php:59
+msgid "Search blog posts"
+msgstr "Search blog posts"
+
+#: includes/wp-login-captcha.php
+msgid "Security verification"
+msgstr "Security verification"

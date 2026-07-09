@@ -344,5 +344,13 @@ $has_right_nav = has_nav_menu( 'header_nav_right' );
 		</nav>
 
 		<?php zskeleton_header_search(); ?>
+		<?php
+		/**
+		 * Fires immediately after the header search block in the split-top-search layout.
+		 *
+		 * @see zskeleton_header_search()
+		 */
+		do_action( 'zskeleton_after_header_search' );
+		?>
 	</div>
 </div>

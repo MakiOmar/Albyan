@@ -159,19 +159,35 @@ class ZSkeleton_Form_Ajax {
 			 * @param array  $data    Sanitized values.
 			 */
 			do_action( 'zskeleton_form_kit_submitted', $form_id, isset( $res['sanitized'] ) ? $res['sanitized'] : array() );
+			$def         = ZSkeleton_Form_Definition::get( $form_id );
+			$default_msg = $def ? $def->get_success_message() : __( 'Submitted successfully.', 'zskeleton' );
 			/**
 			 * Filter success message returned to the client (AJAX JSON).
 			 *
 			 * @param string $message Default message.
 			 * @param string $form_id Form id.
 			 */
-			$success_msg = apply_filters( 'zskeleton_form_kit_submit_response_message', __( 'Submitted successfully.', 'zskeleton' ), $form_id );
-			wp_send_json_success(
-				array(
-					'saved'   => true,
-					'message' => $success_msg,
-				)
+			$success_msg = apply_filters( 'zskeleton_form_kit_submit_response_message', $default_msg, $form_id );
+			$response    = array(
+				'saved'   => true,
+				'message' => $success_msg,
 			);
+
+			$redirect = ZSkeleton_Form_Events_Runner::get_redirect_url();
+			if ( '' === $redirect && $def ) {
+				$config = $def->get_config();
+				if ( ! empty( $config['redirect_url'] ) ) {
+					$redirect = ZSkeleton_Form_Events_Runner::resolve_redirect_url( (string) $config['redirect_url'] );
+				}
+				if ( '' === $redirect ) {
+					$redirect = ZSkeleton_Form_Events_Runner::get_configured_redirect_from_events( $def->get_ui_events() );
+				}
+			}
+			if ( '' !== $redirect ) {
+				$response['redirect'] = $redirect;
+			}
+
+			wp_send_json_success( $response );
 		}
 		wp_send_json_error( array( 'message' => __( 'Submission could not be completed.', 'zskeleton' ) ), 400 );
 	}

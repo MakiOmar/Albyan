@@ -43,6 +43,12 @@ if ( is_home() && ! is_front_page() ) {
 		'current' => true,
 	);
 } elseif ( is_archive() ) {
+	$crumbs[] = function_exists( 'zskeleton_get_blog_posts_page_breadcrumb' )
+		? zskeleton_get_blog_posts_page_breadcrumb()
+		: array(
+			'label' => __( 'Blog', 'zskeleton' ),
+			'url'   => home_url( '/blog/' ),
+		);
 	$crumbs[] = array(
 		'label'   => wp_strip_all_tags( get_the_archive_title() ),
 		'url'     => '',
@@ -58,6 +64,11 @@ if ( is_home() && ! is_front_page() ) {
 	<div class="hero-content">
 		<?php if ( ! empty( $crumbs ) ) : ?>
 			<div class="hero-breadcrumbs">
+				<?php
+				if ( function_exists( 'zskeleton_render_breadcrumbs_html' ) ) {
+					echo wp_kses_post( zskeleton_render_breadcrumbs_html( $crumbs ) );
+				} else {
+					?>
 				<nav class="zskeleton-breadcrumbs" aria-label="<?php esc_attr_e( 'Breadcrumbs', 'zskeleton' ); ?>">
 					<ol class="zskeleton-breadcrumbs__list">
 						<?php foreach ( $crumbs as $crumb ) : ?>
@@ -78,6 +89,9 @@ if ( is_home() && ! is_front_page() ) {
 						<?php endforeach; ?>
 					</ol>
 				</nav>
+					<?php
+				}
+				?>
 			</div>
 		<?php endif; ?>
 		<?php if ( is_home() && ! is_front_page() ) : ?>

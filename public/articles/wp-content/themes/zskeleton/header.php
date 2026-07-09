@@ -271,6 +271,7 @@
                 </div>
 
                 <?php zskeleton_header_search(); ?>
+                <?php do_action( 'zskeleton_after_header_search' ); ?>
             </div>
         </div>
 <?php endif; ?>

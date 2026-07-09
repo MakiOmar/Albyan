@@ -65,6 +65,8 @@ class ZSkeleton_Theme_Features_Admin {
 
 		$glossary_url = admin_url( 'edit.php?post_type=' . ZSkeleton_Glossary_Terms::POST_TYPE );
 		$sliders_url  = admin_url( 'edit.php?post_type=' . ZSkeleton_Sliders::POST_TYPE );
+		$forms_url    = admin_url( 'edit.php?post_type=' . ZSkeleton_Forms_CPT::POST_TYPE );
+		$entries_url  = admin_url( 'admin.php?page=zskeleton-form-submissions' );
 		?>
 		<div class="wrap zskeleton-theme-features-wrap">
 			<h1><?php esc_html_e( 'Theme Features', 'zskeleton' ); ?></h1>
@@ -105,6 +107,27 @@ class ZSkeleton_Theme_Features_Admin {
 						<p style="margin-bottom:0;">
 							<a class="button button-primary" href="<?php echo esc_url( $glossary_url ); ?>">
 								<?php esc_html_e( 'Manage glossary', 'zskeleton' ); ?>
+							</a>
+						</p>
+					</div>
+				</div>
+				<div class="card" style="padding:0;overflow:hidden;border:1px solid #c3c4c7;background:#fff;">
+					<div class="card-header" style="padding:12px 16px;border-bottom:1px solid #dcdcde;background:#f6f7f7;">
+						<h2 class="title" style="margin:0;font-size:15px;"><?php esc_html_e( 'Forms', 'zskeleton' ); ?></h2>
+					</div>
+					<div class="card-body" style="padding:16px;">
+						<p style="margin-top:0;">
+							<?php esc_html_e( 'Build contact and lead forms with drag-and-drop rows, columns, and post-submit actions.', 'zskeleton' ); ?>
+						</p>
+						<p style="margin:0 0 8px;font-size:13px;color:#50575e;">
+							<code>[zskeleton_form id="your-form-slug"]</code>
+						</p>
+						<p style="margin-bottom:0;display:flex;flex-wrap:wrap;gap:8px;">
+							<a class="button button-primary" href="<?php echo esc_url( $forms_url ); ?>">
+								<?php esc_html_e( 'Manage forms', 'zskeleton' ); ?>
+							</a>
+							<a class="button" href="<?php echo esc_url( $entries_url ); ?>">
+								<?php esc_html_e( 'View submissions', 'zskeleton' ); ?>
 							</a>
 						</p>
 					</div>

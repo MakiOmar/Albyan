@@ -47,8 +47,8 @@ class ZSkeleton_Form_Field_Types {
 			'tel',
 			array(
 				'sanitize' => array( __CLASS__, 'sanitize_text_like' ),
-				'validate' => array( __CLASS__, 'validate_text_like' ),
-				'render'   => array( __CLASS__, 'render_input' ),
+				'validate' => array( __CLASS__, 'validate_tel_field' ),
+				'render'   => array( __CLASS__, 'render_tel_input' ),
 			)
 		);
 		$registry->register(
@@ -229,12 +229,9 @@ class ZSkeleton_Form_Field_Types {
 		if ( isset( $field['rules']['max_length'] ) && strlen( $value ) > (int) $field['rules']['max_length'] ) {
 			return array( __( 'Input is too long.', 'zskeleton' ) );
 		}
-		if ( ! empty( $field['rules']['pattern'] ) && is_string( $field['rules']['pattern'] ) && '' !== $value ) {
-			$p = (string) $field['rules']['pattern'];
-			// Pattern must include delimiters, e.g. /^[a-z]+$/i .
-			if ( @preg_match( $p, $value ) !== 1 ) {
-				return array( __( 'Invalid format.', 'zskeleton' ) );
-			}
+		$pattern_errs = self::pattern_validation_errors( $value, $field );
+		if ( null !== $pattern_errs ) {
+			return $pattern_errs;
 		}
 		return null;
 	}
@@ -263,6 +260,10 @@ class ZSkeleton_Form_Field_Types {
 		}
 		if ( is_string( $value ) && '' !== $value && ! is_email( $value ) ) {
 			return array( __( 'Please enter a valid email address.', 'zskeleton' ) );
+		}
+		$pattern_errs = self::pattern_validation_errors( $value, $field );
+		if ( null !== $pattern_errs ) {
+			return $pattern_errs;
 		}
 		return null;
 	}
@@ -295,6 +296,10 @@ class ZSkeleton_Form_Field_Types {
 				return array( __( 'Please enter a valid URL.', 'zskeleton' ) );
 			}
 		}
+		$pattern_errs = self::pattern_validation_errors( $value, $field );
+		if ( null !== $pattern_errs ) {
+			return $pattern_errs;
+		}
 		return null;
 	}
 
@@ -322,6 +327,10 @@ class ZSkeleton_Form_Field_Types {
 		}
 		if ( is_string( $value ) && isset( $field['rules']['max_length'] ) && strlen( $value ) > (int) $field['rules']['max_length'] ) {
 			return array( __( 'Input is too long.', 'zskeleton' ) );
+		}
+		$pattern_errs = self::pattern_validation_errors( $value, $field );
+		if ( null !== $pattern_errs ) {
+			return $pattern_errs;
 		}
 		return null;
 	}
@@ -366,6 +375,10 @@ class ZSkeleton_Form_Field_Types {
 		}
 		if ( isset( $field['rules']['max'] ) && $v > (float) $field['rules']['max'] ) {
 			return array( __( 'Value is too large.', 'zskeleton' ) );
+		}
+		$pattern_errs = self::pattern_validation_errors( (string) $value, $field );
+		if ( null !== $pattern_errs ) {
+			return $pattern_errs;
 		}
 		return null;
 	}
@@ -724,6 +737,62 @@ class ZSkeleton_Form_Field_Types {
 	}
 
 	/**
+	 * @param mixed $value Value.
+	 * @param array $field Field.
+	 * @param array $all   All.
+	 * @return array|string|null
+	 */
+	public static function validate_tel_field( $value, array $field, array $all ) {
+		$errs = self::required_error( $value, $field );
+		if ( null !== $errs ) {
+			return $errs;
+		}
+		if ( ! is_string( $value ) || '' === $value ) {
+			return null;
+		}
+		if ( ! empty( $field['intl_tel'] ) ) {
+			if ( ! preg_match( '/^\+[1-9]\d{6,14}$/', $value ) ) {
+				return array( __( 'Please enter a valid phone number.', 'zskeleton' ) );
+			}
+			$pattern_errs = self::pattern_validation_errors( $value, $field );
+			if ( null !== $pattern_errs ) {
+				return $pattern_errs;
+			}
+			return null;
+		}
+		return self::validate_text_like( $value, $field, $all );
+	}
+
+	/**
+	 * @param array  $field Field.
+	 * @param mixed  $value Value.
+	 * @param array  $args  Args.
+	 * @return string
+	 */
+	public static function render_tel_input( array $field, $value, array $args ) {
+		if ( ! empty( $field['intl_tel'] ) ) {
+			if ( ! isset( $field['attributes'] ) || ! is_array( $field['attributes'] ) ) {
+				$field['attributes'] = array();
+			}
+			$field['attributes']['data-zs-intl-tel']                 = '1';
+			$field['attributes']['data-zs-intl-tel-separate-dial'] = '1';
+			$field['attributes']['autocomplete']                   = 'tel';
+			if ( is_rtl() ) {
+				$field['attributes']['data-zs-intl-tel-rtl'] = '1';
+			}
+			if ( ! empty( $field['initial_country'] ) ) {
+				$field['attributes']['data-zs-intl-tel-country'] = sanitize_key( (string) $field['initial_country'] );
+			}
+			ZSkeleton_Form_Assets::request_intl_tel();
+		}
+		$html = self::render_input( $field, $value, $args );
+		if ( ! empty( $field['intl_tel'] ) ) {
+			return '<div class="zs-field__tel-wrap">' . $html . '</div>';
+		}
+		return $html;
+	}
+
+	/**
 	 * @param array  $field Field config.
 	 * @param string $fid   Field id.
 	 * @param mixed  $value Current value.
@@ -731,6 +800,7 @@ class ZSkeleton_Form_Field_Types {
 	 * @return string
 	 */
 	public static function render_input( array $field, $value, array $args ) {
+		self::apply_rules_to_field_attributes( $field );
 		$type     = isset( $field['type'] ) ? (string) $field['type'] : 'text';
 		$name     = $field['name'];
 		$id       = $args['field_id'];
@@ -760,17 +830,23 @@ class ZSkeleton_Form_Field_Types {
 	 * @return string
 	 */
 	public static function render_textarea( array $field, $value, array $args ) {
+		self::apply_rules_to_field_attributes( $field );
 		$name     = $field['name'];
 		$id       = $args['field_id'];
 		$required = ! empty( $field['required'] ) ? ' required' : '';
 		$rows     = isset( $field['rows'] ) ? (int) $field['rows'] : 4;
+		$attrs    = isset( $field['attributes'] ) && is_array( $field['attributes'] ) ? $field['attributes'] : array();
+		$extra    = '';
+		foreach ( $attrs as $ak => $av ) {
+			$extra .= ' ' . esc_attr( (string) $ak ) . '="' . esc_attr( (string) $av ) . '"';
+		}
 		$ph       = '';
 		if ( isset( $field['placeholder'] ) && '' !== (string) $field['placeholder'] ) {
 			$ph = ' placeholder="' . esc_attr( (string) $field['placeholder'] ) . '"';
 		} elseif ( ! empty( $args['floating'] ) ) {
 			$ph = ' placeholder=" "';
 		}
-		return '<textarea class="form-control zs-field__control" id="' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" rows="' . esc_attr( (string) $rows ) . '"' . $required . $ph . '>' . esc_textarea( (string) $value ) . '</textarea>';
+		return '<textarea class="form-control zs-field__control" id="' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" rows="' . esc_attr( (string) $rows ) . '"' . $required . $ph . $extra . '>' . esc_textarea( (string) $value ) . '</textarea>';
 	}
 
 	/**
@@ -977,6 +1053,66 @@ class ZSkeleton_Form_Field_Types {
 			}
 		}
 		return $vals;
+	}
+
+	/**
+	 * Validate a field value against an optional regex rule.
+	 *
+	 * @param mixed $value Value.
+	 * @param array $field Field.
+	 * @return array|null Null if ok, else array of errors.
+	 */
+	private static function pattern_validation_errors( $value, array $field ) {
+		if ( ! is_string( $value ) || '' === $value ) {
+			return null;
+		}
+		if ( empty( $field['rules']['pattern'] ) || ! is_string( $field['rules']['pattern'] ) ) {
+			return null;
+		}
+		$pattern = (string) $field['rules']['pattern'];
+		if ( @preg_match( $pattern, $value ) !== 1 ) {
+			$message = ! empty( $field['rules']['pattern_message'] )
+				? (string) $field['rules']['pattern_message']
+				: __( 'Invalid format.', 'zskeleton' );
+			return array( $message );
+		}
+		return null;
+	}
+
+	/**
+	 * Map a PHP regex to an HTML pattern attribute value.
+	 *
+	 * @param string $php_pattern Stored pattern with delimiters.
+	 * @return string
+	 */
+	private static function pattern_for_html( $php_pattern ) {
+		if ( preg_match( '/^\/(.+)\/([imsxADSUXJu]*)$/s', (string) $php_pattern, $matches ) ) {
+			return (string) $matches[1];
+		}
+		return (string) $php_pattern;
+	}
+
+	/**
+	 * Apply regex validation rules to rendered field attributes.
+	 *
+	 * @param array<string,mixed> $field Field config (by reference).
+	 */
+	private static function apply_rules_to_field_attributes( array &$field ) {
+		if ( empty( $field['rules']['pattern'] ) || ! is_string( $field['rules']['pattern'] ) ) {
+			return;
+		}
+		$html_pattern = self::pattern_for_html( (string) $field['rules']['pattern'] );
+		if ( '' === $html_pattern ) {
+			return;
+		}
+		if ( ! isset( $field['attributes'] ) || ! is_array( $field['attributes'] ) ) {
+			$field['attributes'] = array();
+		}
+		$field['attributes']['pattern'] = $html_pattern;
+		if ( ! empty( $field['rules']['pattern_message'] ) ) {
+			$field['attributes']['title']                  = (string) $field['rules']['pattern_message'];
+			$field['attributes']['data-zs-pattern-message'] = (string) $field['rules']['pattern_message'];
+		}
 	}
 
 	/**

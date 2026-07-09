@@ -27,9 +27,16 @@ class ZSkeleton_Form_Definition {
 	private $fields_by_name = array();
 
 	/**
+	 * Step index => layout tree nodes.
+	 *
+	 * @var array<int,array<int,array<string,mixed>>>
+	 */
+	private $layout_trees_by_step = array();
+
+	/**
 	 * Step index => list of field names.
 	 *
-	 * @var array
+	 * @var array<int,string[]>
 	 */
 	private $step_field_names = array();
 
@@ -51,12 +58,32 @@ class ZSkeleton_Form_Definition {
 		if ( '' === $form_id ) {
 			return null;
 		}
-		$forms = apply_filters( 'zskeleton_form_kit_forms', array() );
-		if ( ! is_array( $forms ) || ! isset( $forms[ $form_id ] ) || ! is_array( $forms[ $form_id ] ) ) {
+
+		$cfg = null;
+		if ( class_exists( 'ZSkeleton_Form_Registry_Loader' ) ) {
+			$cfg = ZSkeleton_Form_Registry_Loader::get_form_config( $form_id );
+		}
+
+		if ( ! is_array( $cfg ) ) {
+			$forms = apply_filters( 'zskeleton_form_kit_forms', array() );
+			if ( is_array( $forms ) && isset( $forms[ $form_id ] ) && is_array( $forms[ $form_id ] ) ) {
+				$cfg = $forms[ $form_id ];
+			}
+		}
+
+		if ( ! is_array( $cfg ) ) {
 			return null;
 		}
-		$cfg        = $forms[ $form_id ];
-		$cfg['id']  = $form_id;
+
+		$has_fields = class_exists( 'ZSkeleton_Form_Registry_Loader' )
+			? ZSkeleton_Form_Registry_Loader::config_has_fields( $cfg )
+			: ( ! empty( $cfg['fields'] ) || ! empty( $cfg['layout_tree'] ) || ! empty( $cfg['steps'] ) );
+
+		if ( ! $has_fields ) {
+			return null;
+		}
+
+		$cfg['id'] = $form_id;
 		return new self( $cfg );
 	}
 
@@ -217,6 +244,57 @@ class ZSkeleton_Form_Definition {
 	}
 
 	/**
+	 * @param int $step_index Zero-based step.
+	 * @return array<int,array<string,mixed>>
+	 */
+	public function get_layout_tree_for_step( $step_index ) {
+		$step_index = (int) $step_index;
+		return isset( $this->layout_trees_by_step[ $step_index ] ) && is_array( $this->layout_trees_by_step[ $step_index ] )
+			? $this->layout_trees_by_step[ $step_index ]
+			: array();
+	}
+
+	/**
+	 * @return array<string,mixed>
+	 */
+	public function get_layout_settings() {
+		return isset( $this->config['layout'] ) && is_array( $this->config['layout'] )
+			? $this->config['layout']
+			: array();
+	}
+
+	/**
+	 * @return array<int,array<string,mixed>>
+	 */
+	public function get_ui_events() {
+		return isset( $this->config['ui_events'] ) && is_array( $this->config['ui_events'] )
+			? $this->config['ui_events']
+			: array();
+	}
+
+	/**
+	 * @return string
+	 */
+	public function get_success_message() {
+		if ( ! empty( $this->config['success_message'] ) ) {
+			return (string) $this->config['success_message'];
+		}
+		return __( 'Thank you. Your submission was received.', 'zskeleton' );
+	}
+
+	/**
+	 * Submit button label for the front-end form.
+	 *
+	 * @return string
+	 */
+	public function get_submit_button_text() {
+		if ( ! empty( $this->config['submit_button_text'] ) ) {
+			return (string) $this->config['submit_button_text'];
+		}
+		return __( 'Submit', 'zskeleton' );
+	}
+
+	/**
 	 * @param array $config Input config.
 	 */
 	private function normalize_config( array $config ) {
@@ -228,6 +306,7 @@ class ZSkeleton_Form_Definition {
 		$this->config['id']           = $id;
 		$this->fields_by_name         = array();
 		$this->step_field_names       = array();
+		$this->layout_trees_by_step   = array();
 
 		if ( ! empty( $config['steps'] ) && is_array( $config['steps'] ) ) {
 			$steps_meta = array();
@@ -241,24 +320,86 @@ class ZSkeleton_Form_Definition {
 					'id'    => $sid,
 					'title' => $title,
 				);
-				$fields = isset( $step['fields'] ) && is_array( $step['fields'] ) ? $step['fields'] : array();
-				$this->step_field_names[ $i ] = array();
-				foreach ( $fields as $field ) {
-					$this->ingest_field( $field, $i );
+				$this->step_field_names[ $i ]       = array();
+				$this->layout_trees_by_step[ $i ]   = array();
+
+				if ( ! empty( $step['layout_tree'] ) && is_array( $step['layout_tree'] ) ) {
+					$this->layout_trees_by_step[ $i ] = $step['layout_tree'];
+					$this->walk_layout_tree( $step['layout_tree'], $i );
+				} else {
+					$fields = isset( $step['fields'] ) && is_array( $step['fields'] ) ? $step['fields'] : array();
+					foreach ( $fields as $field ) {
+						$this->ingest_field( $field, $i );
+					}
+					$this->layout_trees_by_step[ $i ] = $this->build_flat_layout_tree( $this->step_field_names[ $i ] );
 				}
 			}
 			$this->config['steps_meta'] = $steps_meta;
+		} elseif ( ! empty( $config['layout_tree'] ) && is_array( $config['layout_tree'] ) ) {
+			$this->step_field_names[0]     = array();
+			$this->layout_trees_by_step[0] = $config['layout_tree'];
+			$this->walk_layout_tree( $config['layout_tree'], 0 );
 		} else {
 			$fields = isset( $config['fields'] ) && is_array( $config['fields'] ) ? $config['fields'] : array();
-			$this->step_field_names[0] = array();
+			$this->step_field_names[0]     = array();
+			$this->layout_trees_by_step[0] = array();
 			foreach ( $fields as $field ) {
 				$this->ingest_field( $field, 0 );
 			}
+			$this->layout_trees_by_step[0] = $this->build_flat_layout_tree( $this->step_field_names[0] );
 		}
 
 		if ( empty( $this->step_field_names ) ) {
-			$this->step_field_names[0] = array();
+			$this->step_field_names[0]     = array();
+			$this->layout_trees_by_step[0] = array();
 		}
+	}
+
+	/**
+	 * @param array<int,array<string,mixed>> $nodes Layout nodes.
+	 * @param int                            $step_index Step index.
+	 */
+	private function walk_layout_tree( array $nodes, $step_index ) {
+		foreach ( $nodes as $node ) {
+			if ( ! is_array( $node ) || empty( $node['type'] ) ) {
+				continue;
+			}
+			$type = sanitize_key( (string) $node['type'] );
+			if ( 'field' === $type ) {
+				$field = isset( $node['field'] ) && is_array( $node['field'] ) ? $node['field'] : array();
+				$this->ingest_field( $field, $step_index );
+			} elseif ( 'row' === $type && ! empty( $node['children'] ) && is_array( $node['children'] ) ) {
+				foreach ( $node['children'] as $child ) {
+					if ( ! is_array( $child ) || 'column' !== sanitize_key( (string) ( $child['type'] ?? '' ) ) ) {
+						continue;
+					}
+					$col_fields = isset( $child['fields'] ) && is_array( $child['fields'] ) ? $child['fields'] : array();
+					foreach ( $col_fields as $field ) {
+						if ( is_array( $field ) ) {
+							$this->ingest_field( $field, $step_index );
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param string[] $field_names Field names in order.
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function build_flat_layout_tree( array $field_names ) {
+		$tree = array();
+		foreach ( $field_names as $name ) {
+			if ( ! isset( $this->fields_by_name[ $name ] ) ) {
+				continue;
+			}
+			$tree[] = array(
+				'type'  => 'field',
+				'field' => $this->fields_by_name[ $name ],
+			);
+		}
+		return $tree;
 	}
 
 	/**

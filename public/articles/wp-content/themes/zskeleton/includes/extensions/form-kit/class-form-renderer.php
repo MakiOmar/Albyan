@@ -38,12 +38,16 @@ class ZSkeleton_Form_Renderer {
 		ob_start();
 		$form_uid = 'zs-form-' . esc_attr( $definition->get_id() );
 		$action   = esc_url( admin_url( 'admin-ajax.php' ) );
+		$redirect = ZSkeleton_Form_Events_Runner::get_configured_redirect_from_events( $definition->get_ui_events() );
 		?>
 		<form id="<?php echo esc_attr( $form_uid ); ?>" class="<?php echo esc_attr( $classes ); ?>" method="post" action="<?php echo $action; ?>"
 			data-zs-form-id="<?php echo esc_attr( $definition->get_id() ); ?>"
 			data-zs-form-ajax="<?php echo $definition->use_ajax() ? '1' : '0'; ?>"
 			data-zs-form-wizard="<?php echo $definition->has_wizard() ? '1' : '0'; ?>"
 			data-zs-form-fallback="<?php echo esc_attr( $definition->get_fallback() ); ?>"
+			<?php if ( '' !== $redirect ) : ?>
+			data-zs-form-redirect="<?php echo esc_attr( $redirect ); ?>"
+			<?php endif; ?>
 			novalidate>
 			<?php wp_nonce_field( $definition->get_nonce_action(), 'zs_form_nonce', false, true ); ?>
 			<input type="hidden" name="action" value="zskeleton_form_submit" />
@@ -65,10 +69,13 @@ class ZSkeleton_Form_Renderer {
 					echo '<h3 class="zs-form__step-title" id="' . esc_attr( $form_uid . '-step-title-' . $s ) . '">' . esc_html( $meta[ $s ]['title'] ) . '</h3>';
 				}
 				echo '<div class="zs-form__step-inner">';
-				foreach ( $definition->get_fields_for_step( $s ) as $fname => $field ) {
-					$val = isset( $values[ $fname ] ) ? $values[ $fname ] : ( isset( $field['default'] ) ? $field['default'] : '' );
-					echo self::render_field_row( $field, $val, $registry, $definition, $form_uid ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in method.
-				}
+				self::render_layout_tree(
+					$definition->get_layout_tree_for_step( $s ),
+					$values,
+					$registry,
+					$definition,
+					$form_uid
+				);
 				echo '</div></div>';
 			}
 			$hp = $definition->get_honeypot_name();
@@ -116,13 +123,14 @@ class ZSkeleton_Form_Renderer {
 	 * @param string                    $form_uid Form DOM id.
 	 */
 	private static function render_footer_nav( ZSkeleton_Form_Definition $definition, $form_uid ) {
+		$submit_label = $definition->get_submit_button_text();
 		echo '<div class="zs-form__actions">';
 		if ( $definition->has_wizard() ) {
 			echo '<button type="button" class="button zs-form__btn zs-form__btn--back" data-zs-back hidden>' . esc_html( __( 'Back', 'zskeleton' ) ) . '</button>';
 			echo '<button type="button" class="button zs-form__btn zs-form__btn--next button-primary" data-zs-next>' . esc_html( __( 'Next', 'zskeleton' ) ) . '</button>';
-			echo '<button type="submit" class="button zs-form__btn zs-form__btn--submit button-primary" data-zs-submit hidden>' . esc_html( __( 'Submit', 'zskeleton' ) ) . '</button>';
+			echo '<button type="submit" class="button zs-form__btn zs-form__btn--submit button-primary" data-zs-submit hidden>' . esc_html( $submit_label ) . '</button>';
 		} else {
-			echo '<button type="submit" class="button zs-form__btn zs-form__btn--submit button-primary">' . esc_html( __( 'Submit', 'zskeleton' ) ) . '</button>';
+			echo '<button type="submit" class="button zs-form__btn zs-form__btn--submit button-primary">' . esc_html( $submit_label ) . '</button>';
 		}
 		echo '</div>';
 	}
@@ -144,7 +152,61 @@ class ZSkeleton_Form_Renderer {
 	}
 
 	/**
-	 * @param array                       $field Field config.
+	 * @param array<int,array<string,mixed>> $nodes Layout nodes.
+	 * @param array<string,mixed>            $values Field values.
+	 * @param ZSkeleton_Field_Registry       $registry Registry.
+	 * @param ZSkeleton_Form_Definition      $definition Definition.
+	 * @param string                           $form_uid Form DOM id.
+	 */
+	private static function render_layout_tree( array $nodes, array $values, ZSkeleton_Field_Registry $registry, ZSkeleton_Form_Definition $definition, $form_uid ) {
+		$layout_defaults = $definition->get_layout_settings();
+		// Global "force stack on mobile" overrides per-row settings when enabled (default on).
+		$force_stack = ! isset( $layout_defaults['mobile_stack_rows'] ) || ! empty( $layout_defaults['mobile_stack_rows'] );
+
+		foreach ( $nodes as $node ) {
+			if ( ! is_array( $node ) || empty( $node['type'] ) ) {
+				continue;
+			}
+			$type = sanitize_key( (string) $node['type'] );
+			if ( 'field' === $type ) {
+				$field = isset( $node['field'] ) && is_array( $node['field'] ) ? $node['field'] : array();
+				if ( empty( $field['name'] ) ) {
+					continue;
+				}
+				$name = $field['name'];
+				$val  = isset( $values[ $name ] ) ? $values[ $name ] : ( isset( $field['default'] ) ? $field['default'] : '' );
+				echo self::render_field_row( $field, $val, $registry, $definition, $form_uid ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			} elseif ( 'row' === $type ) {
+				$columns = isset( $node['columns'] ) ? (int) $node['columns'] : 2;
+				$columns = max( 2, min( 4, $columns ) );
+				// Force-stack wins; otherwise honor the per-row toggle (default stacked).
+				$stack   = $force_stack ? true : ( isset( $node['mobile_stack'] ) ? (bool) $node['mobile_stack'] : true );
+				$row_cls = 'zs-form__row zs-form__row--cols-' . $columns;
+				if ( $stack ) {
+					$row_cls .= ' zs-form__row--stack-mobile';
+				}
+				echo '<div class="' . esc_attr( $row_cls ) . '">';
+				$children = isset( $node['children'] ) && is_array( $node['children'] ) ? $node['children'] : array();
+				for ( $c = 0; $c < $columns; $c++ ) {
+					$child = isset( $children[ $c ] ) && is_array( $children[ $c ] ) ? $children[ $c ] : array();
+					echo '<div class="zs-form__col">';
+					$col_fields = isset( $child['fields'] ) && is_array( $child['fields'] ) ? $child['fields'] : array();
+					foreach ( $col_fields as $field ) {
+						if ( ! is_array( $field ) || empty( $field['name'] ) ) {
+							continue;
+						}
+						$name = $field['name'];
+						$val  = isset( $values[ $name ] ) ? $values[ $name ] : ( isset( $field['default'] ) ? $field['default'] : '' );
+						echo self::render_field_row( $field, $val, $registry, $definition, $form_uid ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
+					echo '</div>';
+				}
+				echo '</div>';
+			}
+		}
+	}
+
+	/**
 	 * @param mixed                       $value Value.
 	 * @param ZSkeleton_Field_Registry    $registry Registry.
 	 * @param ZSkeleton_Form_Definition   $definition Definition.
@@ -159,6 +221,9 @@ class ZSkeleton_Form_Renderer {
 		$ctx  = $definition->get_context();
 
 		$use_floating = ! in_array( $type, array( 'checkbox', 'checkboxes', 'radio', 'toggle', 'hidden', 'media', 'wysiwyg', 'repeater', 'group' ), true );
+		if ( 'tel' === $type && ! empty( $field['intl_tel'] ) ) {
+			$use_floating = false;
+		}
 
 		$inner = '';
 		if ( $cb && is_callable( $cb['render'] ) ) {
