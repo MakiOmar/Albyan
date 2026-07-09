@@ -1,0 +1,411 @@
+/**
+ * SEO AR AI lead block — layout, title stack, copy, and lead form column.
+ *
+ * Loaded with the dynamic block on any template; also imported by seo-home-ar.css
+ * for the Arabic SEO homepage template (single source of truth).
+ *
+ * @package ZSkeleton_Theme
+ */
+
+/* AI era + lead form (two columns); section edges use spacing + title separator instead of heavy borders */
+.seo-ar-ai-lead {
+	padding: 72px 0;
+	border-block: none;
+}
+
+.seo-ar-lead-notice {
+	margin: 0 0 20px;
+	padding: 12px 16px;
+	border-radius: 8px;
+	font-weight: 600;
+	text-align: start;
+}
+
+.seo-ar-lead-notice--success {
+	background: #ecfdf5;
+	color: #065f46;
+	border: 1px solid #a7f3d0;
+}
+
+.seo-ar-lead-notice--error {
+	background: #fef2f2;
+	color: #991b1b;
+	border: 1px solid #fecaca;
+}
+
+.seo-ar-ai-lead-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+	gap: 40px 48px;
+	align-items: start;
+}
+
+/* Title stack: optional icon + H2 + decorative separator */
+.seo-ar-ai-lead-title-stack {
+	margin: 0 0 22px;
+}
+
+.seo-ar-ai-lead-title-row {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.seo-ar-ai-lead-title-row h2 {
+	margin: 0;
+	flex: 1 1 auto;
+	min-width: 0;
+	font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+	line-height: 1.25;
+	color: #0c1e3a;
+	font-weight: 800;
+	text-align: start;
+}
+
+.seo-ar-ai-lead-title-icon {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.35rem;
+	height: 2.35rem;
+	margin-block-start: 0.12em;
+	color: #0b5f97;
+}
+
+.seo-ar-ai-lead-title-icon .dashicons {
+	font-size: 1.65rem;
+	width: 1.65rem;
+	height: 1.65rem;
+	line-height: 1.65rem;
+}
+
+.seo-ar-ai-lead-title-icon__img {
+	display: block;
+	width: 2rem;
+	height: 2rem;
+	object-fit: contain;
+}
+
+.seo-ar-ai-lead-title-separator {
+	--seo-ar-ai-lead-sep-color: #0b5f97;
+	margin-top: 14px;
+}
+
+.seo-ar-ai-lead-title-separator--line {
+	height: 3px;
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--seo-ar-ai-lead-sep-color, #0b5f97) 88%, transparent);
+}
+
+.seo-ar-ai-lead-title-separator--line.seo-ar-ai-lead-title-separator--align-start {
+	width: 72px;
+	max-width: 42%;
+	margin-inline-start: 0;
+	margin-inline-end: auto;
+}
+
+.seo-ar-ai-lead-title-separator--line.seo-ar-ai-lead-title-separator--align-center {
+	width: min(160px, 55%);
+	margin-inline: auto;
+}
+
+.seo-ar-ai-lead-title-separator--line.seo-ar-ai-lead-title-separator--align-full {
+	width: 100%;
+	max-width: 100%;
+}
+
+.seo-ar-ai-lead-title-separator--gradient {
+	height: 4px;
+	border-radius: 999px;
+	background: linear-gradient(
+		90deg,
+		transparent,
+		color-mix(in srgb, var(--seo-ar-ai-lead-sep-color, #0b5f97) 70%, transparent),
+		var(--seo-ar-ai-lead-sep-color, #0b5f97),
+		color-mix(in srgb, var(--seo-ar-ai-lead-sep-color, #0b5f97) 70%, transparent),
+		transparent
+	);
+}
+
+.seo-ar-ai-lead-title-separator--gradient.seo-ar-ai-lead-title-separator--align-start {
+	width: min(220px, 100%);
+	margin-inline-start: 0;
+	margin-inline-end: auto;
+}
+
+.seo-ar-ai-lead-title-separator--gradient.seo-ar-ai-lead-title-separator--align-center {
+	width: min(280px, 100%);
+	margin-inline: auto;
+}
+
+.seo-ar-ai-lead-title-separator--gradient.seo-ar-ai-lead-title-separator--align-full {
+	width: 100%;
+}
+
+.seo-ar-ai-lead-title-separator--dots {
+	position: relative;
+	height: 10px;
+	background-repeat: repeat-x;
+	background-size: 14px 10px;
+	background-image: radial-gradient(circle, var(--seo-ar-ai-lead-sep-color, #0b5f97) 2px, transparent 2.5px);
+	opacity: 0.55;
+}
+
+.seo-ar-ai-lead-title-separator--dots.seo-ar-ai-lead-title-separator--align-start {
+	max-width: 160px;
+	margin-inline-start: 0;
+	margin-inline-end: auto;
+}
+
+.seo-ar-ai-lead-title-separator--dots.seo-ar-ai-lead-title-separator--align-center {
+	max-width: 220px;
+	margin-inline: auto;
+}
+
+.seo-ar-ai-lead-title-separator--dots.seo-ar-ai-lead-title-separator--align-full {
+	width: 100%;
+	max-width: 100%;
+}
+
+.seo-ar-ai-lead-title-separator--character {
+	margin-top: 10px;
+	font-size: 1.35rem;
+	line-height: 1.2;
+	font-weight: 700;
+	color: color-mix(in srgb, var(--seo-ar-ai-lead-sep-color, #0b5f97) 92%, #0c1e3a);
+	letter-spacing: 0.04em;
+}
+
+.seo-ar-ai-lead-title-separator--character.seo-ar-ai-lead-title-separator--align-center {
+	text-align: center;
+}
+
+.seo-ar-ai-lead-title-separator--character.seo-ar-ai-lead-title-separator--align-full {
+	text-align: center;
+}
+
+.seo-ar-ai-lead-title-separator__char {
+	display: inline-block;
+}
+
+/* Block editor: RichText body */
+.zskeleton-seo-ar-ai-lead-block-edit .seo-ar-ai-lead-body--rich-editor {
+	min-height: 140px;
+	margin-bottom: 16px;
+	padding: 12px 14px;
+	border: 1px solid rgba(12, 62, 101, 0.14);
+	border-radius: 8px;
+	background: #fff;
+}
+
+.seo-ar-ai-lead-subhead {
+	margin: 28px 0 12px;
+	font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+	color: #0c1e3a;
+	font-weight: 800;
+	text-align: start;
+}
+
+.seo-ar-ai-lead-subhead:first-of-type {
+	margin-top: 24px;
+}
+
+.seo-ar-lead-text {
+	margin: 0 0 14px;
+	line-height: 1.85;
+	color: #334155;
+	font-size: 1.02rem;
+	text-align: start;
+}
+
+.seo-ar-text-highlight {
+	color: #0b5f97;
+	font-weight: 700;
+}
+
+a.seo-ar-text-link {
+	color: #0b5f97;
+	font-weight: 700;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+a.seo-ar-text-link:hover {
+	color: #094a78;
+}
+
+.seo-ar-custom-form-box {
+	background: #fff;
+	border-radius: 14px;
+	box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1);
+	border: 1px solid rgba(12, 62, 101, 0.08);
+	overflow: hidden;
+}
+
+.seo-ar-custom-form-box__inner {
+	padding: 0;
+}
+
+.seo-ar-custom-form-box__heading {
+	margin: 0;
+	padding: 16px 18px;
+	background: #0b5f97;
+	color: #fff;
+	font-size: clamp(0.95rem, 1.35vw, 1.05rem);
+	line-height: 1.35;
+	font-weight: 800;
+	text-align: center;
+}
+
+.seo-ar-custom-form-box__form {
+	position: relative;
+	padding: 20px 18px 22px;
+}
+
+/* Gravity Forms inside the card */
+.seo-ar-custom-form-box__form .gform_wrapper {
+	margin: 0;
+	padding: 0;
+}
+
+.seo-ar-custom-form-box__form .gform_wrapper .gform_heading,
+.seo-ar-custom-form-box__form .gform_wrapper .gform_title {
+	display: none;
+}
+
+.seo-ar-custom-form-box__form .gform_wrapper .gform_footer input[type="submit"],
+.seo-ar-custom-form-box__form .gform_wrapper .gform_footer .gform_button {
+	width: 100%;
+	border-radius: 999px;
+	padding: 14px 22px;
+	background: #0b5f97;
+	color: #fff;
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	border: none;
+	cursor: pointer;
+}
+
+.seo-ar-custom-form-box__form .gform_wrapper .gform_footer input[type="submit"]:hover,
+.seo-ar-custom-form-box__form .gform_wrapper .gform_footer .gform_button:hover {
+	background: #094a78;
+	color: #fff;
+}
+
+/* Fallback form */
+.seo-ar-lead-form-fallback__field {
+	margin: 0 0 14px;
+}
+
+.seo-ar-lead-form-fallback__field label,
+.seo-ar-lead-form-fallback__phone-label {
+	display: block;
+	font-size: 0.8rem;
+	font-weight: 700;
+	color: #0f172a;
+	margin-bottom: 6px;
+}
+
+.seo-ar-lead-form-fallback__field--phone .seo-ar-lead-form-fallback__phone-label {
+	margin-bottom: 6px;
+}
+
+.seo-ar-req {
+	color: #b91c1c;
+}
+
+.seo-ar-lead-form-fallback input[type="text"],
+.seo-ar-lead-form-fallback input[type="email"],
+.seo-ar-lead-form-fallback input[type="tel"],
+.seo-ar-lead-form-fallback textarea,
+.seo-ar-lead-form-fallback select {
+	width: 100%;
+	max-width: 100%;
+	padding: 11px 12px;
+	border: 1px solid #cbd5e1;
+	border-radius: 8px;
+	font-size: 0.95rem;
+	background: #fff;
+	box-sizing: border-box;
+}
+
+.seo-ar-lead-form-fallback__phone-row {
+	display: flex;
+	gap: 8px;
+	align-items: stretch;
+}
+
+.seo-ar-lead-form-fallback__phone-row select {
+	max-width: 42%;
+	flex-shrink: 0;
+}
+
+.seo-ar-lead-form-fallback__phone-row input[type="tel"] {
+	flex: 1;
+	min-width: 0;
+}
+
+.seo-ar-lead-form-fallback textarea {
+	min-height: 120px;
+	resize: vertical;
+}
+
+.seo-ar-lead-form-fallback__field--hp {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.seo-ar-lead-form-fallback__field--consent {
+	margin-top: 8px;
+}
+
+.seo-ar-lead-form-fallback__check {
+	display: flex;
+	gap: 10px;
+	align-items: flex-start;
+	font-size: 0.88rem;
+	line-height: 1.45;
+	color: #334155;
+	font-weight: 400;
+}
+
+.seo-ar-lead-form-fallback__check input {
+	margin-top: 3px;
+	flex-shrink: 0;
+}
+
+.seo-ar-lead-form-fallback__submit-wrap {
+	margin: 18px 0 0;
+}
+
+.seo-ar-lead-form-fallback__submit {
+	width: 100%;
+	border-radius: 999px;
+	padding: 14px 22px;
+	background: #0b5f97;
+	color: #fff;
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	border: none;
+	cursor: pointer;
+	font-size: 0.85rem;
+}
+
+.seo-ar-lead-form-fallback__submit:hover {
+	background: #094a78;
+	color: #fff;
+}
+
+@media (max-width: 960px) {
+	.seo-ar-ai-lead-grid {
+		grid-template-columns: 1fr;
+		gap: 32px;
+	}
+}

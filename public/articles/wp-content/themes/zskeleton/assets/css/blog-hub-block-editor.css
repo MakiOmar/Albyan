@@ -1,0 +1,17 @@
+/**
+ * Vertical spacing between ZSkeleton blog hub dynamic blocks in the block list.
+ * The live “Blog listing (block editor)” template uses .zskeleton-blog-blocks-entry; previews use a block list.
+ *
+ * @package ZSkeleton_Theme
+ */
+.editor-styles-wrapper .block-editor-block-list__block + .block-editor-block-list__block .zskeleton-block-blog {
+	margin-top: 2rem;
+}
+
+/* After the latest grid block, match the looser step used on the front template. */
+.editor-styles-wrapper
+	.block-editor-block-list__block:has( .zskeleton-block-blog-posts-grid )
+	+ .block-editor-block-list__block
+	.zskeleton-block-blog {
+	margin-top: 2.5rem;
+}

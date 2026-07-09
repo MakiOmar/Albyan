@@ -1,0 +1,108 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "zskeleton/expert-profile",
+	"version": "1.0.0",
+	"title": "Section: Expert Profile CTA",
+	"category": "widgets",
+	"icon": "id-alt",
+	"description": "Expert profile block with image, rich description, and configurable CTA buttons.",
+	"keywords": [ "expert", "cta", "profile", "zskeleton" ],
+	"textdomain": "zskeleton",
+	"editorScript": "zskeleton-expert-profile-block-editor",
+	"style": "file:../../assets/css/expert-profile-block.css",
+	"editorStyle": "file:../../assets/css/expert-profile-block.css",
+	"attributes": {
+		"title": {
+			"type": "string",
+			"default": ""
+		},
+		"titleDashicon": {
+			"type": "string",
+			"default": ""
+		},
+		"titleSeparatorWidthPx": {
+			"type": "number",
+			"default": 72
+		},
+		"titleSeparatorHeightPx": {
+			"type": "number",
+			"default": 4
+		},
+		"titleSeparatorRadiusPx": {
+			"type": "number",
+			"default": 999
+		},
+		"titleSeparatorColor": {
+			"type": "string",
+			"default": "#b8d4eb"
+		},
+		"description": {
+			"type": "string",
+			"default": ""
+		},
+		"imageUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"imageId": {
+			"type": "number",
+			"default": 0
+		},
+		"imageAlt": {
+			"type": "string",
+			"default": ""
+		},
+		"imageTitle": {
+			"type": "string",
+			"default": ""
+		},
+		"imageLoading": {
+			"type": "string",
+			"default": "lazy"
+		},
+		"imageDecoding": {
+			"type": "string",
+			"default": "async"
+		},
+		"buttons": {
+			"type": "array",
+			"default": [
+				{
+					"label": "",
+					"url": "",
+					"target": "_self",
+					"relNoFollow": false,
+					"relSponsored": false,
+					"relUgc": false,
+					"ariaLabel": "",
+					"title": ""
+				},
+				{
+					"label": "",
+					"url": "",
+					"target": "_self",
+					"relNoFollow": false,
+					"relSponsored": false,
+					"relUgc": false,
+					"ariaLabel": "",
+					"title": ""
+				},
+				{
+					"label": "",
+					"url": "",
+					"target": "_self",
+					"relNoFollow": false,
+					"relSponsored": false,
+					"relUgc": false,
+					"ariaLabel": "",
+					"title": ""
+				}
+			]
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	}
+}

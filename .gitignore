@@ -28,4 +28,15 @@ wordpress-rocket-lms-sync-plugin.zip
 /wordpress-rocket-lms-sync-plugin
 /learnpress
 /.cursor
-public/articles/wp-content/
+# Ignore everything under wp-content
+public/articles/wp-content/*
+
+# Keep themes and plugins tracked
+!public/articles/wp-content/themes/
+!public/articles/wp-content/themes/**
+
+!public/articles/wp-content/plugins/
+!public/articles/wp-content/plugins/**
+
+# Keep the wp-content index.php if desired
+!public/articles/wp-content/index.php

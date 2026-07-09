@@ -1,0 +1,270 @@
+/**
+ * Front: Case study split testimonial block.
+ *
+ * @package ZSkeleton_Theme
+ */
+
+.zskeleton-cssplit {
+	--zskeleton-cssplit-title: #101828;
+	--zskeleton-cssplit-desc: #475569;
+	--zskeleton-cssplit-card-subtitle: #0f172a;
+	--zskeleton-cssplit-quote: #475569;
+	--zskeleton-cssplit-name: #101828;
+	--zskeleton-cssplit-role: #64748b;
+	--zskeleton-cssplit-right-tint: rgba(255, 255, 255, 0.92);
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	padding-block: clamp(2.5rem, 5vw, 4rem);
+	padding-inline: clamp(1rem, 4vw, 2rem);
+	background: var(
+		--zskeleton-cssplit-section-bg,
+		linear-gradient(160deg, #f8fafc 0%, #e2e8f0 100%)
+	);
+	color: var(--zskeleton-cssplit-title);
+	position: relative;
+	overflow-x: clip;
+}
+
+.zskeleton-cssplit * {
+	box-sizing: border-box;
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__inner {
+	max-width: 72rem;
+	margin-inline: auto;
+	position: relative;
+	z-index: 2;
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__header {
+	text-align: center;
+	margin-block-end: clamp(2rem, 5vw, 3rem);
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__titles .zskeleton-block-heading__title,
+.zskeleton-cssplit .zskeleton-cssplit__heading {
+	color: var(--zskeleton-cssplit-title);
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__intro {
+	margin: 0.75rem 0 0;
+	font-size: 1rem;
+	line-height: 1.65;
+	max-width: 42rem;
+	margin-inline: auto;
+	color: var(--zskeleton-cssplit-desc);
+}
+
+/* Stage: min-heights controlled via inline CSS variables from block attrs */
+.zskeleton-cssplit .zskeleton-cssplit__stage {
+	position: relative;
+	width: 100%;
+	margin: 0;
+}
+
+/* Portrait column should shrink-wrap the image (no row/column stretch). */
+.zskeleton-cssplit .zskeleton-cssplit__col--photo {
+	align-self: flex-start;
+	display: inline-flex;
+	width: fit-content;
+	height: fit-content;
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	overflow: hidden;
+	border-radius: var(--zskeleton-cssplit-radius, 20px);
+	box-shadow:
+		0 4px 6px -1px rgba(15, 23, 42, 0.08),
+		0 12px 24px -8px rgba(15, 23, 42, 0.12);
+	background-color: #fff;
+	max-height: var(--zskeleton-cssplit-stage-mobile, 480px);
+}
+
+@media (min-width: 783px) {
+	.zskeleton-cssplit .zskeleton-cssplit__card {
+		max-height: var(--zskeleton-cssplit-stage-desktop, 460px);
+		flex-direction: row;
+	}
+
+	.zskeleton-cssplit .zskeleton-cssplit__col--photo {
+		position: relative;
+		flex: 0 0 auto;
+		width: fit-content;
+		height: fit-content;
+		max-width: 100%;
+		z-index: 2;
+	}
+
+	.zskeleton-cssplit .zskeleton-cssplit__col--content {
+		position: relative;
+		flex: 1 1 auto;
+		min-width: 0;
+		z-index: 2;
+		max-height: var(--zskeleton-cssplit-stage-desktop, 460px);
+	}
+}
+
+@media (max-width: 782px) {
+	.zskeleton-cssplit .zskeleton-cssplit__col--photo {
+		position: relative;
+		flex: 0 0 auto;
+		width: fit-content;
+		height: fit-content;
+		z-index: 2;
+	}
+
+	.zskeleton-cssplit .zskeleton-cssplit__col--content {
+		position: relative;
+		flex: 1 1 auto;
+		max-height: var(--zskeleton-cssplit-stage-mobile, 480px);
+		z-index: 2;
+	}
+}
+
+/* Left portrait image keeps natural width; only max-height is constrained. */
+.zskeleton-cssplit .zskeleton-cssplit__portrait {
+	display: block;
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: var(--zskeleton-cssplit-portrait-max-h-mobile, 260px);
+	object-fit: contain;
+}
+
+@media (min-width: 783px) {
+	.zskeleton-cssplit .zskeleton-cssplit__portrait {
+		max-height: var(--zskeleton-cssplit-portrait-max-h-desktop, 460px);
+	}
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__empty-hint {
+	margin: 0;
+	padding: 2rem;
+	font-size: 0.9375rem;
+	line-height: 1.6;
+	text-align: center;
+	color: #64748b;
+	background: #f1f5f9;
+}
+
+/* Right: blur underlay */
+.zskeleton-cssplit .zskeleton-cssplit__blur-layer {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+	z-index: 0;
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__blur-layer::before {
+	content: "";
+	position: absolute;
+	inset: -15%;
+	background-image: var(--zskeleton-cssplit-blur-img, none);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	filter: blur(var(--zskeleton-cssplit-blur, 18px));
+	transform: scale(1.05);
+	opacity: 0.85;
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__tint {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	background: var(--zskeleton-cssplit-right-tint, rgba(255, 255, 255, 0.92));
+	pointer-events: none;
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__content-inner {
+	position: relative;
+	z-index: 3;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	gap: 1rem;
+	padding: clamp(1.75rem, 4vw, 3rem);
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__logo {
+	display: block;
+	max-width: 180px;
+	height: auto;
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__logo-wrap .zskeleton-cssplit__logo {
+	max-height: 48px;
+	width: auto;
+	object-fit: contain;
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__meta-row {
+	display: flex;
+	align-items: center;
+	gap: 0.875rem;
+	width: 100%;
+}
+
+@media (max-width: 560px) {
+	.zskeleton-cssplit .zskeleton-cssplit__meta-row {
+		flex-wrap: wrap;
+	}
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__card-subtitle {
+	margin: 0;
+	font-size: 1.125rem;
+	font-weight: 700;
+	line-height: 1.35;
+	color: var(--zskeleton-cssplit-card-subtitle);
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__quote {
+	margin: 0;
+	font-size: 1rem;
+	line-height: 1.7;
+	color: var(--zskeleton-cssplit-quote);
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__quote p {
+	margin: 0 0 1em;
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__quote p:last-child {
+	margin-bottom: 0;
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__sig {
+	margin-block-start: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__name {
+	margin: 0;
+	font-size: 1.125rem;
+	font-weight: 700;
+	line-height: 1.35;
+	color: var(--zskeleton-cssplit-name);
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__role {
+	margin: 0;
+	font-size: 0.9375rem;
+	line-height: 1.5;
+	color: var(--zskeleton-cssplit-role);
+}
+
+.zskeleton-cssplit .zskeleton-cssplit__titles .zskeleton-block-heading--pos-center {
+	justify-content: center;
+}

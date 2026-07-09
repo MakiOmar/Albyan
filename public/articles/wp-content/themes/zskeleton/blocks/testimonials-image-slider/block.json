@@ -1,0 +1,108 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "zskeleton/testimonials-image-slider",
+	"version": "1.0.0",
+	"title": "Section: Testimonials image slider",
+	"category": "widgets",
+	"icon": "format-quote",
+	"description": "Heading, intro text, image carousel with dots, optional autoplay, and a CTA button. Includes structured data for SEO.",
+	"keywords": [ "testimonials", "slider", "carousel", "gallery", "reviews", "zskeleton" ],
+	"textdomain": "zskeleton",
+	"editorScript": "zskeleton-testimonials-image-slider-editor",
+	"style": "file:../../assets/css/testimonials-image-slider.css",
+	"editorStyle": "file:../../assets/css/testimonials-image-slider.css",
+	"attributes": {
+		"badgeTitle": {
+			"type": "string",
+			"default": ""
+		},
+		"title": {
+			"type": "string",
+			"default": ""
+		},
+		"paragraph": {
+			"type": "string",
+			"default": ""
+		},
+		"slides": {
+			"type": "array",
+			"default": []
+		},
+		"slidesPerView": {
+			"type": "number",
+			"default": 1
+		},
+		"slidesPerViewMobile": {
+			"type": "number",
+			"default": 1
+		},
+		"autoplay": {
+			"type": "boolean",
+			"default": false
+		},
+		"autoplayIntervalSec": {
+			"type": "number",
+			"default": 5
+		},
+		"ctaText": {
+			"type": "string",
+			"default": ""
+		},
+		"buttonLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"buttonUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"buttonTarget": {
+			"type": "string",
+			"default": "_self"
+		},
+		"buttonAriaLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"buttonTitleAttr": {
+			"type": "string",
+			"default": ""
+		},
+		"buttonRelNofollow": {
+			"type": "boolean",
+			"default": false
+		},
+		"buttonRelSponsored": {
+			"type": "boolean",
+			"default": false
+		},
+		"textDirection": {
+			"type": "string",
+			"default": "auto"
+		},
+		"titleDashicon": { "type": "string", "default": "" },
+		"titleShowSeparator": { "type": "boolean", "default": true },
+		"titleSeparatorWidthPx": { "type": "number", "default": 72 },
+		"titleSeparatorHeightPx": { "type": "number", "default": 4 },
+		"titleSeparatorRadiusPx": { "type": "number", "default": 999 },
+		"titleSeparatorColor": { "type": "string", "default": "#b8d4eb" },
+		"colorSectionBg": { "type": "string", "default": "" },
+		"colorBadgeBg": { "type": "string", "default": "" },
+		"colorBadgeText": { "type": "string", "default": "" },
+		"colorTitleText": { "type": "string", "default": "" },
+		"colorIntroText": { "type": "string", "default": "" },
+		"colorCardBg": { "type": "string", "default": "" },
+		"colorFigcaptionText": { "type": "string", "default": "" },
+		"colorDotInactive": { "type": "string", "default": "" },
+		"colorDotActive": { "type": "string", "default": "" },
+		"colorCtaText": { "type": "string", "default": "" },
+		"colorButtonBg": { "type": "string", "default": "" },
+		"colorButtonText": { "type": "string", "default": "" }
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"render": "file:./render.php"
+}

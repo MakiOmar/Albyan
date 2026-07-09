@@ -1,0 +1,31 @@
+/**
+ * Section title block — layout shell; dimensions and colors mostly inline from block attributes.
+ *
+ * @package ZSkeleton_Theme
+ */
+
+.zskeleton-section-title {
+	width: 100%;
+}
+
+.zskeleton-section-title__inner {
+	display: flow-root;
+}
+
+.zskeleton-section-title .zskeleton-block-heading__title.zskeleton-section-title__heading {
+	font-size: clamp(1.35rem, 2.8vw, 2rem);
+	font-weight: 700;
+	line-height: 1.25;
+	color: inherit;
+}
+
+.zskeleton-section-title__heading a {
+	color: inherit;
+	text-decoration: underline;
+	text-underline-offset: 0.12em;
+}
+
+.zskeleton-section-title__heading a:hover,
+.zskeleton-section-title__heading a:focus {
+	text-decoration-thickness: 2px;
+}

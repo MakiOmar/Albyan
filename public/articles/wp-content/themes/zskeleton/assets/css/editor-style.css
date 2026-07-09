@@ -1,0 +1,8 @@
+/**
+ * Block editor base canvas for ZSkeleton.
+ * Hub blog blocks also load blog-page.css and blog-hub-block-editor.css from includes/blocks/blog-hub-blocks.php.
+ *
+ * @package ZSkeleton_Theme
+ */
+
+/* Intentionally minimal: design tokens and palette come from theme.json in the block editor. */

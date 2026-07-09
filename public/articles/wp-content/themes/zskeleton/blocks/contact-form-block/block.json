@@ -1,0 +1,34 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "zskeleton/contact-form",
+	"version": "1.0.0",
+	"title": "Contact form",
+	"category": "widgets",
+	"icon": "email",
+	"description": "Theme contact message form (same submission flow as the Contact page).",
+	"keywords": [ "contact", "form", "email", "zskeleton", "message" ],
+	"textdomain": "zskeleton",
+	"editorScript": "zskeleton-contact-form-block-editor",
+	"style": "file:../../assets/css/contact-form-block.css",
+	"editorStyle": "file:../../assets/css/contact-form-block.css",
+	"attributes": {
+		"showHeading": {
+			"type": "boolean",
+			"default": true
+		},
+		"heading": {
+			"type": "string",
+			"default": ""
+		},
+		"lead": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"render": "file:./render.php"
+}
