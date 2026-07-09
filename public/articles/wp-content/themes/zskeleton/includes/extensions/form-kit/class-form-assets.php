@@ -226,6 +226,31 @@ class ZSkeleton_Form_Assets {
 	}
 
 	/**
+	 * Shared config for intl-tel-input (public forms + admin preview).
+	 *
+	 * @return array<string, mixed>
+	 */
+	public static function get_intl_tel_config() {
+		$is_arabic = function_exists( 'zskeleton_is_arabic_locale' ) && zskeleton_is_arabic_locale();
+
+		/**
+		 * Filter intl-tel-input runtime options passed to zskeletonIntlTelConfig.
+		 *
+		 * @param array<string, mixed> $config isRtl, isArabic, autoDetect, fallbackCountry, geoUrl.
+		 */
+		return apply_filters(
+			'zskeleton_intl_tel_config',
+			array(
+				'isRtl'           => is_rtl(),
+				'isArabic'        => $is_arabic,
+				'autoDetect'      => true,
+				'fallbackCountry' => $is_arabic ? 'ae' : 'us',
+				'geoUrl'          => 'https://ipapi.co/json/',
+			)
+		);
+	}
+
+	/**
 	 * intl-tel-input styles and initializer for Form Kit tel fields.
 	 */
 	public static function enqueue_intl_tel_assets() {
@@ -255,6 +280,11 @@ class ZSkeleton_Form_Assets {
 				array(),
 				(string) filemtime( $js_path ),
 				true
+			);
+			wp_localize_script(
+				'zskeleton-intl-tel-input',
+				'zskeletonIntlTelConfig',
+				self::get_intl_tel_config()
 			);
 		}
 	}

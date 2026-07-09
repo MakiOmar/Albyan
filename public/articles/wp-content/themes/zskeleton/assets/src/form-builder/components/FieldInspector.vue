@@ -140,7 +140,7 @@
 								<div v-if="local.intlTel" class="zs-fb-control zs-fb-intl-tel-preview-wrap">
 									<p class="zs-fb-control__hint">{{ strings.intlTelPreview || 'Preview' }}</p>
 									<IntlTelFieldPreview
-										:initial-country="local.initialCountry || 'auto'"
+										:initial-country="local.initialCountry || ''"
 										:placeholder="local.placeholder"
 									/>
 								</div>

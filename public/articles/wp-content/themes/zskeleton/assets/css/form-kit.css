@@ -584,9 +584,59 @@
 	width: 100%;
 }
 
-.zs-field__tel-wrap .iti .zs-field__control {
+.zs-field__tel-wrap .iti .zs-field__control,
+.zs-field__tel-wrap .iti input.iti__tel-input {
 	width: 100%;
 	min-height: var(--zs-form-touch, 2.75rem);
+	padding-block: 0.5rem;
+	padding-inline: 0.75rem;
+	border: 1px solid var(--zs-form-border, #c5c5c5);
+	border-radius: var(--zs-form-radius, 6px);
+	background: var(--zs-form-input-bg, #fff);
+	color: inherit;
+	font: inherit;
+	line-height: 1.4;
+}
+
+.zs-field__tel-wrap .iti--separate-dial-code .iti__selected-country,
+.zs-field__tel-wrap .iti--separate-dial-code .iti__selected-country-primary {
+	background: var(--zs-form-input-bg, #fff);
+}
+
+.zs-field__tel-wrap .iti__country-container {
+	z-index: 3;
+}
+
+.zs-field__tel-wrap .iti__selected-country {
+	border: 0;
+	color: inherit;
+}
+
+.zs-field__tel-wrap .iti__selected-country-primary {
+	padding-inline: 0.5rem 0.35rem;
+}
+
+.zs-field__tel-wrap .iti__flag {
+	box-shadow: none;
+	background-color: transparent;
+}
+
+.zs-field__tel-wrap .iti__country-list {
+	z-index: 30;
+	max-height: 240px;
+	border-radius: var(--zs-form-radius, 6px);
+}
+
+.zs-field__tel-wrap .iti__search-input {
+	font: inherit;
+}
+
+.zs-field__tel-wrap .iti[dir='rtl'] .iti__selected-dial-code {
+	margin-inline: 0.25rem 0;
+}
+
+.zs-field__tel-wrap .iti[dir='rtl'] .iti__arrow {
+	margin-inline: var(--iti-arrow-padding) 0;
 }
 
 /* ------------------------------------------------------------------------- */

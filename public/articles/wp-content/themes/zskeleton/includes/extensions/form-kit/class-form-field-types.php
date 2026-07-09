@@ -774,9 +774,12 @@ class ZSkeleton_Form_Field_Types {
 			if ( ! isset( $field['attributes'] ) || ! is_array( $field['attributes'] ) ) {
 				$field['attributes'] = array();
 			}
-			$field['attributes']['data-zs-intl-tel']           = '1';
+			$field['attributes']['data-zs-intl-tel']                 = '1';
 			$field['attributes']['data-zs-intl-tel-separate-dial'] = '1';
-			$field['attributes']['autocomplete']               = 'tel';
+			$field['attributes']['autocomplete']                   = 'tel';
+			if ( is_rtl() ) {
+				$field['attributes']['data-zs-intl-tel-rtl'] = '1';
+			}
 			if ( ! empty( $field['initial_country'] ) ) {
 				$field['attributes']['data-zs-intl-tel-country'] = sanitize_key( (string) $field['initial_country'] );
 			}

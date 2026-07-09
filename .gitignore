@@ -31,12 +31,16 @@ wordpress-rocket-lms-sync-plugin.zip
 # Ignore everything under wp-content
 public/articles/wp-content/*
 
-# Keep themes and plugins tracked
+# Track only themes
 !public/articles/wp-content/themes/
 !public/articles/wp-content/themes/**
 
+# Track only plugins
 !public/articles/wp-content/plugins/
 !public/articles/wp-content/plugins/**
+
+# Ignore uploads (already ignored by the wildcard above, listed for clarity)
+public/articles/wp-content/uploads/
 
 # Keep the wp-content index.php if desired
 !public/articles/wp-content/index.php
