@@ -23,18 +23,19 @@ const isRtl = computed( () => !! intlConfig.value.isRtl );
 
 const initialCountryLookup = async () => {
 	const config = intlConfig.value;
+	const fallback = config.fallbackCountry || ( isArabic.value ? 'ae' : 'us' );
 	const geoUrl = config.geoUrl || 'https://ipapi.co/json/';
 	try {
 		const response = await fetch( geoUrl, { credentials: 'omit' } );
 		const data = await response.json();
 		const code = String( data.country_code || data.country || '' ).toLowerCase();
-		if ( code ) {
+		if ( code && /^[a-z]{2}$/.test( code ) ) {
 			return code;
 		}
 	} catch ( error ) {
 		// Use locale fallback.
 	}
-	return config.fallbackCountry || ( isArabic.value ? 'ae' : 'us' );
+	return fallback;
 };
 
 const inputProps = computed( () => ( {
@@ -44,6 +45,13 @@ const inputProps = computed( () => ( {
 } ) );
 
 const useAutoDetect = computed( () => ! props.initialCountry || props.initialCountry === 'auto' );
+
+const resolvedInitialCountry = computed( () => {
+	if ( props.initialCountry && props.initialCountry !== 'auto' ) {
+		return props.initialCountry;
+	}
+	return intlConfig.value.fallbackCountry || ( isArabic.value ? 'ae' : 'us' );
+} );
 </script>
 
 <template>
@@ -51,6 +59,7 @@ const useAutoDetect = computed( () => ! props.initialCountry || props.initialCou
 		<IntlTelInput
 			v-if="useAutoDetect"
 			separate-dial-code
+			:initial-country="resolvedInitialCountry"
 			:initial-country-lookup="initialCountryLookup"
 			:ui-translations="isArabic ? ar : undefined"
 			:country-name-locale="isArabic ? 'ar' : undefined"
@@ -59,7 +68,7 @@ const useAutoDetect = computed( () => ! props.initialCountry || props.initialCou
 		/>
 		<IntlTelInput
 			v-else
-			:initial-country="initialCountry"
+			:initial-country="resolvedInitialCountry"
 			separate-dial-code
 			:ui-translations="isArabic ? ar : undefined"
 			:country-name-locale="isArabic ? 'ar' : undefined"

@@ -781,7 +781,11 @@ class ZSkeleton_Form_Field_Types {
 				$field['attributes']['data-zs-intl-tel-rtl'] = '1';
 			}
 			if ( ! empty( $field['initial_country'] ) ) {
-				$field['attributes']['data-zs-intl-tel-country'] = sanitize_key( (string) $field['initial_country'] );
+				$country = sanitize_key( (string) $field['initial_country'] );
+				// "auto" is not a valid iso2 code for intl-tel-input v29+.
+				if ( $country && 'auto' !== $country && 1 === preg_match( '/^[a-z]{2}$/', $country ) ) {
+					$field['attributes']['data-zs-intl-tel-country'] = $country;
+				}
 			}
 			ZSkeleton_Form_Assets::request_intl_tel();
 		}

@@ -598,37 +598,76 @@
 	line-height: 1.4;
 }
 
-.zs-field__tel-wrap .iti--separate-dial-code .iti__selected-country,
-.zs-field__tel-wrap .iti--separate-dial-code .iti__selected-country-primary {
-	background: var(--zs-form-input-bg, #fff);
-}
-
 .zs-field__tel-wrap .iti__country-container {
 	z-index: 3;
 }
 
-.zs-field__tel-wrap .iti__selected-country {
-	border: 0;
-	color: inherit;
+/* Override theme global button styles on the country selector. */
+.zs-field__tel-wrap .iti__selected-country,
+.zs-field__tel-wrap button.iti__selected-country,
+.zs-field__tel-wrap .iti__country-selector,
+.zs-field__tel-wrap button.iti__country-selector,
+.zs-field__tel-wrap .iti--separate-dial-code .iti__selected-country,
+.zs-field__tel-wrap .iti--separate-dial-code .iti__selected-country-primary {
+	background: transparent !important;
+	background-color: transparent !important;
+	color: inherit !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	min-height: 0;
+	padding: 0;
+	line-height: inherit;
+	font: inherit;
+	text-transform: none;
+	letter-spacing: normal;
+}
+
+.zs-field__tel-wrap .iti__selected-country:hover,
+.zs-field__tel-wrap .iti__selected-country:focus,
+.zs-field__tel-wrap button.iti__selected-country:hover,
+.zs-field__tel-wrap button.iti__selected-country:focus,
+.zs-field__tel-wrap .iti__country-selector:hover,
+.zs-field__tel-wrap .iti__country-selector:focus {
+	background: rgba(15, 23, 42, 0.06) !important;
+	background-color: rgba(15, 23, 42, 0.06) !important;
+	color: inherit !important;
+	border: 0 !important;
+	outline: none;
 }
 
 .zs-field__tel-wrap .iti__selected-country-primary {
 	padding-inline: 0.5rem 0.35rem;
+	background: transparent !important;
 }
 
-.zs-field__tel-wrap .iti__flag {
+.zs-field__tel-wrap .iti__selected-dial-code {
+	color: inherit;
+}
+
+.zs-field__tel-wrap .iti__flag,
+.zs-field__tel-wrap .iti__globe {
 	box-shadow: none;
 	background-color: transparent;
+}
+
+.zs-field__tel-wrap .iti__arrow {
+	border-color: currentColor;
+	opacity: 0.55;
 }
 
 .zs-field__tel-wrap .iti__country-list {
 	z-index: 30;
 	max-height: 240px;
 	border-radius: var(--zs-form-radius, 6px);
+	background: #fff;
+	color: #0f172a;
 }
 
 .zs-field__tel-wrap .iti__search-input {
 	font: inherit;
+	background: #fff;
+	color: inherit;
 }
 
 .zs-field__tel-wrap .iti[dir='rtl'] .iti__selected-dial-code {

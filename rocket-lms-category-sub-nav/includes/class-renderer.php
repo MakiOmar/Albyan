@@ -186,8 +186,9 @@ class RLMS_Cat_Subnav_Renderer {
         <style id="lms-category-subnav-css">
             #lmsCategorySubNav.lms-category-subnav{background:#f8fafc;border-bottom:1px solid #e2e8f0;z-index:490}
             #lmsCategorySubNav .lms-category-subnav-bar{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:8px;padding:10px 0}
-            #lmsCategorySubNav .lms-category-subnav-scroll{flex:1 1 auto;min-width:0;display:flex;flex-wrap:nowrap;align-items:stretch;gap:6px;overflow-x:auto;overflow-y:visible;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:2px 0}
+            #lmsCategorySubNav .lms-category-subnav-scroll{flex:1 1 auto;min-width:0;display:flex;flex-wrap:nowrap;align-items:stretch;gap:6px;overflow-x:auto;overflow-y:visible;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;touch-action:pan-x;cursor:grab;scrollbar-width:none;padding:2px 0}
             #lmsCategorySubNav .lms-category-subnav-scroll::-webkit-scrollbar{display:none}
+            #lmsCategorySubNav .lms-category-subnav-scroll.is-dragging{cursor:grabbing;scroll-behavior:auto;scroll-snap-type:none;user-select:none}
             #lmsCategorySubNav .lms-category-subnav-item{flex:0 0 auto;min-width:0}
             #lmsCategorySubNav .lms-category-subnav-link{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:10px 14px;border-radius:6px;font-size:13px;font-weight:600;color:#1e3a5f;background:transparent;white-space:nowrap;line-height:1.4;text-decoration:none;box-sizing:border-box}
             #lmsCategorySubNav .lms-category-subnav-link:hover{color:#01477d;background:rgba(1,71,125,.07);text-decoration:none}
@@ -311,6 +312,55 @@ class RLMS_Cat_Subnav_Renderer {
                 scrollEl.addEventListener('scroll',updateButtons,{passive:true});
                 window.addEventListener('resize',updateButtons);
                 window.addEventListener('load',updateButtons);
+
+                (function bindDragScroll(el){
+                    var dragging=false;
+                    var startX=0;
+                    var startScrollLeft=0;
+                    var moved=false;
+                    var activePointer=null;
+                    function endDrag(e){
+                        if(!dragging||(e&&activePointer!==null&&e.pointerId!==activePointer)){return;}
+                        dragging=false;
+                        activePointer=null;
+                        el.classList.remove('is-dragging');
+                        if(e&&el.releasePointerCapture){
+                            try{el.releasePointerCapture(e.pointerId);}catch(err){}
+                        }
+                        if(moved){
+                            el.dataset.suppressClick='1';
+                            window.setTimeout(function(){delete el.dataset.suppressClick;},0);
+                        }
+                        updateButtons();
+                    }
+                    el.addEventListener('pointerdown',function(e){
+                        if(e.pointerType!=='mouse'||e.button!==0){return;}
+                        dragging=true;
+                        moved=false;
+                        activePointer=e.pointerId;
+                        startX=e.clientX;
+                        startScrollLeft=el.scrollLeft;
+                        el.classList.add('is-dragging');
+                        if(el.setPointerCapture){el.setPointerCapture(e.pointerId);}
+                    });
+                    el.addEventListener('pointermove',function(e){
+                        if(!dragging||e.pointerId!==activePointer){return;}
+                        var dx=e.clientX-startX;
+                        if(Math.abs(dx)>3){moved=true;}
+                        el.scrollLeft=startScrollLeft-dx;
+                    });
+                    el.addEventListener('pointerup',endDrag);
+                    el.addEventListener('pointercancel',endDrag);
+                    el.addEventListener('lostpointercapture',function(){
+                        if(dragging){endDrag(null);}
+                    });
+                    el.addEventListener('click',function(e){
+                        if(el.dataset.suppressClick==='1'){
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+                    },true);
+                })(scrollEl);
 
                 requestAnimationFrame(function(){
                     requestAnimationFrame(updateButtons);

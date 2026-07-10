@@ -45,12 +45,20 @@
             overflow-y: visible;
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
+            touch-action: pan-x;
+            cursor: grab;
             scrollbar-width: none;
             -ms-overflow-style: none;
             padding: 2px 0;
         }
         #categorySubNav .category-sub-nav-scroll::-webkit-scrollbar {
             display: none;
+        }
+        #categorySubNav .category-sub-nav-scroll.is-dragging {
+            cursor: grabbing;
+            scroll-behavior: auto;
+            scroll-snap-type: none;
+            user-select: none;
         }
         #categorySubNav .category-sub-nav-item {
             flex: 0 0 auto;
@@ -358,6 +366,84 @@
                     scrollEl.addEventListener('scroll', updateButtons, { passive: true });
                     window.addEventListener('resize', updateButtons);
                     window.addEventListener('load', updateButtons);
+
+                    (function bindDragScroll(el) {
+                        var dragging = false;
+                        var startX = 0;
+                        var startScrollLeft = 0;
+                        var moved = false;
+                        var activePointer = null;
+
+                        function endDrag(e) {
+                            if (!dragging || (e && activePointer !== null && e.pointerId !== activePointer)) {
+                                return;
+                            }
+
+                            dragging = false;
+                            activePointer = null;
+                            el.classList.remove('is-dragging');
+
+                            if (e && el.releasePointerCapture) {
+                                try {
+                                    el.releasePointerCapture(e.pointerId);
+                                } catch (err) {}
+                            }
+
+                            if (moved) {
+                                el.dataset.suppressClick = '1';
+                                window.setTimeout(function () {
+                                    delete el.dataset.suppressClick;
+                                }, 0);
+                            }
+
+                            updateButtons();
+                        }
+
+                        el.addEventListener('pointerdown', function (e) {
+                            if (e.pointerType !== 'mouse' || e.button !== 0) {
+                                return;
+                            }
+
+                            dragging = true;
+                            moved = false;
+                            activePointer = e.pointerId;
+                            startX = e.clientX;
+                            startScrollLeft = el.scrollLeft;
+                            el.classList.add('is-dragging');
+
+                            if (el.setPointerCapture) {
+                                el.setPointerCapture(e.pointerId);
+                            }
+                        });
+
+                        el.addEventListener('pointermove', function (e) {
+                            if (!dragging || e.pointerId !== activePointer) {
+                                return;
+                            }
+
+                            var dx = e.clientX - startX;
+                            if (Math.abs(dx) > 3) {
+                                moved = true;
+                            }
+
+                            el.scrollLeft = startScrollLeft - dx;
+                        });
+
+                        el.addEventListener('pointerup', endDrag);
+                        el.addEventListener('pointercancel', endDrag);
+                        el.addEventListener('lostpointercapture', function () {
+                            if (dragging) {
+                                endDrag(null);
+                            }
+                        });
+
+                        el.addEventListener('click', function (e) {
+                            if (el.dataset.suppressClick === '1') {
+                                e.preventDefault();
+                                e.stopPropagation();
+                            }
+                        }, true);
+                    })(scrollEl);
 
                     var activeLink = root.querySelector('.category-sub-nav-link.active');
                     if (activeLink) {

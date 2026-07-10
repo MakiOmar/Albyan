@@ -3977,7 +3977,7 @@ body.rtl .site-header--split-top-search .header-main-split .nav-menu .sub-menu {
 
 /* Global Button Standardization */
 /* Apply primary blue to all buttons across the site (exclude .menu-toggle — it has its own Appearance settings) */
-button:not(.menu-toggle):not(.menu-close):not(.zskeleton-mbn2__btn),
+button:not(.menu-toggle):not(.menu-close):not(.zskeleton-mbn2__btn):not(.iti__selected-country):not(.iti__country-selector),
 input[type="button"],
 input[type="submit"],
 input[type="reset"],
@@ -3990,8 +3990,8 @@ a.btn,
     border: 1px solid var(--zskeleton-color-button-background, var(--primary-blue));
 }
 
-button:not(.menu-toggle):not(.menu-close):not(.zskeleton-mbn2__btn):hover,
-button:not(.menu-toggle):not(.menu-close):not(.zskeleton-mbn2__btn):focus,
+button:not(.menu-toggle):not(.menu-close):not(.zskeleton-mbn2__btn):not(.iti__selected-country):not(.iti__country-selector):hover,
+button:not(.menu-toggle):not(.menu-close):not(.zskeleton-mbn2__btn):not(.iti__selected-country):not(.iti__country-selector):focus,
 input[type="button"]:hover,
 input[type="button"]:focus,
 input[type="submit"]:hover,

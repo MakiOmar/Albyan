@@ -16,57 +16,88 @@ function getConfig() {
 }
 
 /**
+ * @return {string}
+ */
+function getFallbackCountry() {
+	const config = getConfig();
+	if ( typeof config.fallbackCountry === 'string' && /^[a-z]{2}$/i.test( config.fallbackCountry ) ) {
+		return config.fallbackCountry.toLowerCase();
+	}
+	return config.isArabic ? 'ae' : 'us';
+}
+
+/**
+ * Normalize a country attribute to a valid iso2 code, or empty for auto-detect.
+ *
+ * @param {string} value Raw attribute / setting value.
+ * @return {string}
+ */
+function normalizeCountryCode( value ) {
+	const code = String( value || '' ).trim().toLowerCase();
+	if ( ! code || code === 'auto' ) {
+		return '';
+	}
+	return /^[a-z]{2}$/.test( code ) ? code : '';
+}
+
+/**
  * @return {Promise<string>}
  */
 async function lookupVisitorCountry() {
 	const config = getConfig();
-	const geoUrl = typeof config.geoUrl === 'string' && config.geoUrl ? config.geoUrl : 'https://ipapi.co/json/';
+	const fallback = getFallbackCountry();
+	const endpoints = [];
 
-	try {
-		const response = await fetch( geoUrl, { credentials: 'omit' } );
-		if ( ! response.ok ) {
-			throw new Error( 'geo lookup failed' );
+	if ( typeof config.geoUrl === 'string' && config.geoUrl ) {
+		endpoints.push( config.geoUrl );
+	}
+	endpoints.push( 'https://ipapi.co/json/', 'https://ipwho.is/' );
+
+	for ( const geoUrl of endpoints ) {
+		try {
+			const response = await fetch( geoUrl, { credentials: 'omit' } );
+			if ( ! response.ok ) {
+				continue;
+			}
+			const data = await response.json();
+			const code = normalizeCountryCode( data.country_code || data.countryCode || data.country );
+			if ( code ) {
+				return code;
+			}
+		} catch ( error ) {
+			// Try next endpoint.
 		}
-		const data = await response.json();
-		const code = String( data.country_code || data.country || '' ).toLowerCase();
-		if ( code ) {
-			return code;
-		}
-	} catch ( error ) {
-		// Fall back to locale-based default below.
 	}
 
-	return typeof config.fallbackCountry === 'string' && config.fallbackCountry
-		? config.fallbackCountry
-		: 'us';
+	return fallback;
 }
 
 /**
  * @param {HTMLInputElement} input Tel input.
- * @return {object}
+ * @return {{ options: Record<string, unknown>, isRtl: boolean }}
  */
 function buildOptions( input ) {
 	const config = getConfig();
-	const attrCountry = input.getAttribute( 'data-zs-intl-tel-country' ) || '';
+	const attrCountry = normalizeCountryCode( input.getAttribute( 'data-zs-intl-tel-country' ) || '' );
 	const separateDial = input.getAttribute( 'data-zs-intl-tel-separate-dial' ) !== '0';
 	const isRtl =
 		input.getAttribute( 'data-zs-intl-tel-rtl' ) === '1' ||
 		input.closest( '[dir="rtl"]' ) !== null ||
 		document.documentElement.getAttribute( 'dir' ) === 'rtl' ||
 		!! config.isRtl;
+	const fallback = getFallbackCountry();
+	const useAutoDetect = ! attrCountry && config.autoDetect !== false;
 
+	// intl-tel-input v29+: initialCountry must be a valid iso2 code (never "auto").
+	// nationalMode was removed — do not pass it.
 	const options = {
 		separateDialCode: separateDial,
-		nationalMode: ! separateDial,
 		formatAsYouType: true,
+		initialCountry: attrCountry || fallback,
 	};
 
-	if ( attrCountry && 'auto' !== attrCountry ) {
-		options.initialCountry = attrCountry;
-	} else if ( config.autoDetect !== false ) {
+	if ( useAutoDetect ) {
 		options.initialCountryLookup = lookupVisitorCountry;
-	} else if ( typeof config.fallbackCountry === 'string' && config.fallbackCountry ) {
-		options.initialCountry = config.fallbackCountry;
 	}
 
 	if ( config.isArabic ) {
