@@ -796,6 +796,10 @@
                         </div>
                     </div>
                 @endif
+
+                {{-- Related courses from same category (SEO internal links) --}}
+                @include('web.default.course.sidebar_related_courses')
+
                 {{-- ads --}}
                 @if(!empty($advertisingBannersSidebar) and count($advertisingBannersSidebar))
                     <div class="row">

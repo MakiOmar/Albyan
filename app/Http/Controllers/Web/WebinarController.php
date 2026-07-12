@@ -421,6 +421,7 @@ class WebinarController extends Controller
             'joinUrl'                   => $joinUrl,
             'meetingID'                 => $meetingID,
             'groups'                    => $groups,
+            'relatedCategoryCourses'    => $this->getRelatedCategoryCourses($course),
         );
 
         // check for certificate
@@ -433,6 +434,33 @@ class WebinarController extends Controller
         }
 
         return view('web.default.course.index', $data);
+    }
+
+    /**
+     * Active courses in the same category for sidebar SEO internal links.
+     *
+     * @param Webinar $course
+     * @return \Illuminate\Support\Collection
+     */
+    private function getRelatedCategoryCourses(Webinar $course)
+    {
+        if (empty($course->category_id)) {
+            return collect();
+        }
+
+        return Webinar::query()
+            ->where('category_id', $course->category_id)
+            ->where('id', '!=', $course->id)
+            ->where('status', 'active')
+            ->where('private', false)
+            ->with([
+                'teacher' => function ($query) {
+                    $query->select('id', 'full_name', 'avatar', 'avatar_settings');
+                },
+            ])
+            ->orderByDesc('created_at')
+            ->limit(8)
+            ->get();
     }
 
     private function checkQuizzesResults($user, $quizzes)
