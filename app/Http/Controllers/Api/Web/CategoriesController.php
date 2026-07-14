@@ -13,17 +13,18 @@ class CategoriesController extends Controller
     public function index(Request $request)
     {
 
-        $categories = Category::whereNull('parent_id')->get()
-        ->map(function($category){
-            return $category->details ;
-        }) ;
-        ;
-         return apiResponse2(1, 'retrieved', trans('api.public.retrieved'),[
+        $categories = Category::whereNull('parent_id')
+            ->orderByRaw('IFNULL(`order`, 2147483647) ASC')
+            ->orderBy('id', 'asc')
+            ->get()
+            ->map(function ($category) {
+                return $category->details;
+            });
 
-            'count'=>$categories->count() ,
-            'categories'=>$categories
+        return apiResponse2(1, 'retrieved', trans('api.public.retrieved'), [
+            'count' => $categories->count(),
+            'categories' => $categories,
         ]);
-
     }
 
     /**

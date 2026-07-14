@@ -64,7 +64,9 @@ class Category extends Model implements TranslatableContract
 
     public function subCategories()
     {
-        return $this->hasMany($this, 'parent_id', 'id')->orderBy('order', 'asc');
+        return $this->hasMany($this, 'parent_id', 'id')
+            ->orderByRaw('IFNULL(`order`, 2147483647) ASC')
+            ->orderBy('id', 'asc');
     }
 
     public function filters()
@@ -101,14 +103,22 @@ class Category extends Model implements TranslatableContract
             return self::whereNull('parent_id')
                 ->with([
                     'subCategories' => function ($query) {
-                        $query->orderBy('order', 'asc');
+                        $query->orderByRaw('IFNULL(`order`, 2147483647) ASC')
+                            ->orderBy('id', 'asc');
                     },
                 ])
-                ->orderBy('order', 'asc')
+                ->orderByRaw('IFNULL(`order`, 2147483647) ASC')
+                ->orderBy('id', 'asc')
                 ->get();
         });
 
-        return $categories;
+        // Keep lowest order first even if an older cache entry was unsorted.
+        return $categories
+            ->sortBy([
+                fn ($category) => is_null($category->order) ? PHP_INT_MAX : (int) $category->order,
+                fn ($category) => (int) $category->id,
+            ])
+            ->values();
     }
 
     public function getCategoryCourses()

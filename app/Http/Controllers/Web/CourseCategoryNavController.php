@@ -27,6 +27,7 @@ class CourseCategoryNavController extends Controller
                     'slug' => $category->slug,
                     'url' => url($category->getUrl()),
                     'icon' => !empty($category->icon) ? url($category->icon) : null,
+                    'order' => (int) ($category->order ?? 0),
                 ];
             })
             ->values();
