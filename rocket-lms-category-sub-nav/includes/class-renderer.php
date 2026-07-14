@@ -234,7 +234,6 @@ class RLMS_Cat_Subnav_Renderer {
                     ||document.documentElement.getAttribute('dir')==='rtl'
                     ||window.getComputedStyle(scrollEl).direction==='rtl';
 
-                function isMobile(){return window.matchMedia('(max-width:991px)').matches;}
                 function maxScroll(){return Math.max(0,scrollEl.scrollWidth-scrollEl.clientWidth);}
 
                 function normalizedScrollPos(){
@@ -260,53 +259,35 @@ class RLMS_Cat_Subnav_Renderer {
                     nextBtn.disabled=state.atEnd;
                 }
 
-                function scrollByPage(direction){
+                function scrollByOne(direction){
                     if(maxScroll()<=1){return;}
                     var items=Array.prototype.slice.call(scrollEl.querySelectorAll('.lms-category-subnav-item'));
                     if(!items.length){return;}
                     var scrollRect=scrollEl.getBoundingClientRect();
-                    var target=null;
-                    var delta=0;
-                    var tolerance=2;
-                    if(direction==='next'){
-                        if(isRtl){
-                            for(var i=items.length-1;i>=0;i--){
-                                if(items[i].getBoundingClientRect().left<scrollRect.left-tolerance){target=items[i];break;}
-                            }
-                            if(target){delta=target.getBoundingClientRect().left-scrollRect.left;}
-                        }else{
-                            for(var j=0;j<items.length;j++){
-                                if(items[j].getBoundingClientRect().right>scrollRect.right+tolerance){target=items[j];break;}
-                            }
-                            if(target){delta=target.getBoundingClientRect().left-scrollRect.left;}
-                        }
-                    }else if(isRtl){
-                        for(var k=0;k<items.length;k++){
-                            if(items[k].getBoundingClientRect().right>scrollRect.right+tolerance){target=items[k];break;}
-                        }
-                        if(target){delta=target.getBoundingClientRect().right-scrollRect.right;}
-                    }else{
-                        for(var m=items.length-1;m>=0;m--){
-                            if(items[m].getBoundingClientRect().left<scrollRect.left-tolerance){target=items[m];break;}
-                        }
-                        if(target){delta=target.getBoundingClientRect().right-scrollRect.right;}
+                    var leadIndex=0;
+                    var bestDist=Infinity;
+                    for(var i=0;i<items.length;i++){
+                        var rect=items[i].getBoundingClientRect();
+                        var dist=isRtl?Math.abs(rect.right-scrollRect.right):Math.abs(rect.left-scrollRect.left);
+                        if(dist<bestDist){bestDist=dist;leadIndex=i;}
                     }
-                    if(!target||Math.abs(delta)<1){
-                        var step=isMobile()?scrollEl.clientWidth:Math.round(scrollEl.clientWidth*0.85);
-                        var sign=direction==='next'?1:-1;
-                        if(isRtl){sign=-sign;}
-                        delta=sign*step;
-                    }
+                    var targetIndex=direction==='next'
+                        ?Math.min(items.length-1,leadIndex+1)
+                        :Math.max(0,leadIndex-1);
+                    if(targetIndex===leadIndex&&bestDist<=2){return;}
+                    var targetRect=items[targetIndex].getBoundingClientRect();
+                    var delta=isRtl?targetRect.right-scrollRect.right:targetRect.left-scrollRect.left;
+                    if(Math.abs(delta)<1){return;}
                     scrollEl.scrollBy({left:delta,behavior:'smooth'});
                 }
 
                 prevBtn.addEventListener('click',function(e){
                     e.preventDefault();
-                    scrollByPage('prev');
+                    scrollByOne('prev');
                 });
                 nextBtn.addEventListener('click',function(e){
                     e.preventDefault();
-                    scrollByPage('next');
+                    scrollByOne('next');
                 });
 
                 scrollEl.addEventListener('scroll',updateButtons,{passive:true});
