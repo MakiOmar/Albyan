@@ -1147,6 +1147,10 @@ return [
 // Homepage content blocks (Al-Byan)
 'home_content_blocks_hint' => 'اضبط نصوص أقسام الصفحة الرئيسية الاختيارية. فعّل كل قسم من التخصيص → أقسام الصفحة الرئيسية.',
 'trust_badges_settings_hint' => 'حتى 5 عناصر ثقة. اتركها فارغة لاستخدام القيم الافتراضية.',
+'trust_badge_subtitle' => 'العنوان الفرعي',
+'trust_badge_icon' => 'الأيقونة',
+'trust_badges_background' => 'صورة خلفية القسم',
+'trust_badges_background_hint' => 'اختياري. تظهر خلف عناصر الثقة مع طبقة فاتحة.',
 'trust_badge_licensed' => 'معهد تدريب مرخص في دبي',
 'trust_badge_hybrid' => 'تدريب حضوري وأونلاين',
 'trust_badge_specialties' => 'تخصصات مهنية متعددة',

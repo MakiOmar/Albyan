@@ -30,15 +30,35 @@
         {{-- Trust badges --}}
         <h5 class="font-16 font-weight-bold">{{ trans('admin/main.trust_badges') }}</h5>
         <p class="font-12 text-gray">{{ trans('update.trust_badges_settings_hint') }}</p>
+
+        <div class="form-group col-md-6 px-0">
+            <label>{{ trans('update.trust_badges_background') }}</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <button type="button" class="input-group-text admin-file-manager" data-input="trust_badges_background" data-preview="holder">
+                        <i class="fa fa-chevron-up"></i>
+                    </button>
+                </div>
+                <input type="text" name="value[trust_badges][background]" id="trust_badges_background"
+                       value="{{ $iv['trust_badges']['background'] ?? '' }}" class="form-control">
+            </div>
+            <div class="text-muted font-12 mt-1">{{ trans('update.trust_badges_background_hint') }}</div>
+        </div>
+
         @for($i = 1; $i <= 5; $i++)
             <div class="row">
-                <div class="form-group col-md-5">
+                <div class="form-group col-md-4">
                     <label>{{ trans('admin/main.title') }} #{{ $i }}</label>
                     <input type="text" name="value[trust_badges][{{ $i }}][title]" class="form-control"
                            value="{{ $iv['trust_badges'][$i]['title'] ?? '' }}">
                 </div>
-                <div class="form-group col-md-5">
-                    <label>{{ trans('admin/main.image') }} #{{ $i }}</label>
+                <div class="form-group col-md-4">
+                    <label>{{ trans('update.trust_badge_subtitle') }} #{{ $i }}</label>
+                    <input type="text" name="value[trust_badges][{{ $i }}][subtitle]" class="form-control"
+                           value="{{ $iv['trust_badges'][$i]['subtitle'] ?? '' }}">
+                </div>
+                <div class="form-group col-md-4">
+                    <label>{{ trans('update.trust_badge_icon') }} #{{ $i }}</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <button type="button" class="input-group-text admin-file-manager" data-input="trust_badge_image_{{ $i }}" data-preview="holder">

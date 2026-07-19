@@ -1147,6 +1147,10 @@ return [
 // Homepage content blocks (Al-Byan)
 'home_content_blocks_hint' => 'Configure copy for optional homepage sections. Enable each section from Personalization → Home sections.',
 'trust_badges_settings_hint' => 'Up to 5 trust items. Leave empty to use defaults.',
+'trust_badge_subtitle' => 'Subtitle',
+'trust_badge_icon' => 'Icon',
+'trust_badges_background' => 'Section background image',
+'trust_badges_background_hint' => 'Optional. Shown behind the trust items with a light overlay.',
 'trust_badge_licensed' => 'Licensed training institute in Dubai',
 'trust_badge_hybrid' => 'In-person and online training',
 'trust_badge_specialties' => 'Multiple professional specialties',
