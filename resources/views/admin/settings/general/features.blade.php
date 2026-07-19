@@ -277,7 +277,34 @@
 
                         <p class="font-12 text-gray mb-0">{{ trans('update.direct_products_payment_button_status_hint') }}</p>
                     </div>
+                </div>
 
+                {{-- Course purchase CTA method: cart vs lead generation form --}}
+                <div class="mb-5">
+                    <h5>{{ trans('update.course_purchase_cta_settings') }}</h5>
+                    <p class="font-12 text-gray mb-2">{{ trans('update.course_purchase_cta_settings_hint') }}</p>
+
+                    @php
+                        $coursePurchaseCtaMethod = (!empty($itemValue) and !empty($itemValue['course_purchase_cta_method']))
+                            ? $itemValue['course_purchase_cta_method']
+                            : 'add_to_cart';
+                    @endphp
+
+                    <div class="form-group mt-3">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" name="value[course_purchase_cta_method]" id="coursePurchaseCtaAddToCart"
+                                   value="add_to_cart" class="custom-control-input"
+                                   {{ $coursePurchaseCtaMethod === 'add_to_cart' ? 'checked' : '' }}>
+                            <label class="custom-control-label" for="coursePurchaseCtaAddToCart">{{ trans('update.course_purchase_cta_add_to_cart') }}</label>
+                        </div>
+                        <div class="custom-control custom-radio mt-2">
+                            <input type="radio" name="value[course_purchase_cta_method]" id="coursePurchaseCtaLeadGeneration"
+                                   value="lead_generation" class="custom-control-input"
+                                   {{ $coursePurchaseCtaMethod === 'lead_generation' ? 'checked' : '' }}>
+                            <label class="custom-control-label" for="coursePurchaseCtaLeadGeneration">{{ trans('update.course_purchase_cta_lead_generation') }}</label>
+                        </div>
+                        <p class="font-12 text-gray mb-0 mt-2">{{ trans('update.course_purchase_cta_lead_generation_hint') }}</p>
+                    </div>
                 </div>
 
                 <div class="mb-5">

@@ -1137,6 +1137,12 @@ return [
 // Buy Now
 'direct_classes_payment_button_settings' => '"Buy Now" Button',
 'direct_classes_payment_button_status_hint' => 'By enabling this option, a "Buy Now" button will be added to the course page and users will be redirected to the checkout page directly.',
+'course_purchase_cta_settings' => 'Course purchase button',
+'course_purchase_cta_settings_hint' => 'Choose whether paid course pages show Add to cart or redirect to the lead generation registration form.',
+'course_purchase_cta_add_to_cart' => 'Add to cart',
+'course_purchase_cta_lead_generation' => 'Lead generation form',
+'course_purchase_cta_lead_generation_hint' => 'Redirects to the training program registration form with the course title as the program query parameter. Base URL is set via LEAD_GENERATION_BASE_URL in .env.',
+'register_for_program' => 'Register for this program',
 'buy_now' => 'Buy now!',
 
 // Misc

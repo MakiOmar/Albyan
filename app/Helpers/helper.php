@@ -1563,6 +1563,32 @@ function getFeaturesSettings($key = null)
     return App\Models\Setting::getFeaturesSettings($key);
 }
 
+/**
+ * Course page primary CTA: add_to_cart | lead_generation
+ */
+function getCoursePurchaseCtaMethod(): string
+{
+    $method = getFeaturesSettings('course_purchase_cta_method');
+
+    return in_array($method, ['add_to_cart', 'lead_generation'], true)
+        ? $method
+        : 'add_to_cart';
+}
+
+/**
+ * Build lead-generation registration URL for a course title (locale-aware).
+ */
+function getCourseLeadGenerationUrl(string $courseTitle): string
+{
+    $base = rtrim((string) config('lead_generation.base_url', ''), '/');
+    $locale = strtolower((string) app()->getLocale());
+    $isArabic = str_starts_with($locale, 'ar');
+    $path = $isArabic
+        ? (string) config('lead_generation.paths.ar', 'training-program-registration-ar')
+        : (string) config('lead_generation.paths.en', 'training-program-registration');
+
+    return $base . '/' . ltrim($path, '/') . '?program=' . rawurlencode($courseTitle);
+}
 
 function getSMSChannelsSettings($key = null)
 {

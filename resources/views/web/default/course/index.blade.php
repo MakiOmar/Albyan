@@ -415,6 +415,11 @@
                                 @php
                                     $canSale = ($course->canSale() and !$hasBought);
                                     $authUserJoinedWaitlist = false;
+                                    $coursePurchaseCtaMethod = getCoursePurchaseCtaMethod();
+                                    $useLeadGenerationCta = ($coursePurchaseCtaMethod === 'lead_generation');
+                                    $courseLeadGenerationUrl = $useLeadGenerationCta
+                                        ? getCourseLeadGenerationUrl((string) $course->title)
+                                        : null;
 
                                     if (!empty($authUser)) {
                                         $authUserWaitlist = $course->waitlists()->where('user_id', $authUser->id)->first();
@@ -434,34 +439,51 @@
                                     @elseif($hasBought or !empty($course->getInstallmentOrder()))
                                         <a href="{{ $course->getLearningPageUrl() }}" class="btn btn-primary">{{ trans('update.go_to_learning_page') }}</a>
                                     @elseif(!empty($course->price) and $course->price > 0)
-                                        <button type="button" class="btn btn-primary mr-20 {{ $canSale ? 'js-course-add-to-cart-btn' : ($course->cantSaleStatus($hasBought) .' disabled ') }}">
-                                            @if(!$canSale)
-                                                @if($course->checkCapacityReached())
-                                                    {{ trans('update.capacity_reached') }}
-                                                @else
-                                                    {{ trans('update.disabled_add_to_cart') }}
-                                                @endif
+                                        @if($useLeadGenerationCta)
+                                            {{-- Lead generation CTA redirects to locale-specific registration form --}}
+                                            @if($canSale)
+                                                <a href="{{ $courseLeadGenerationUrl }}" class="btn btn-primary mr-20">
+                                                    {{ trans('update.register_for_program') }}
+                                                </a>
                                             @else
-                                                {{ trans('public.add_to_cart') }}
+                                                <button type="button" class="btn btn-primary mr-20 {{ $course->cantSaleStatus($hasBought) }} disabled" disabled>
+                                                    @if($course->checkCapacityReached())
+                                                        {{ trans('update.capacity_reached') }}
+                                                    @else
+                                                        {{ trans('update.disabled_add_to_cart') }}
+                                                    @endif
+                                                </button>
                                             @endif
-                                        </button>
-
-                                        @if($canSale and !empty($course->points))
-                                            <a href="{{ !(auth()->check()) ? '/login' : '#' }}" class="{{ (auth()->check()) ? 'js-buy-with-point' : '' }} btn btn-outline-warning mt-20 {{ (!$canSale) ? 'disabled' : '' }}" rel="nofollow">
-                                                {!! trans('update.buy_with_n_points',['points' => $course->points]) !!}
-                                            </a>
-                                        @endif
-
-                                        @if($canSale and !empty(getFeaturesSettings('direct_classes_payment_button_status')))
-                                            <button type="button" data-action="buy_now" class="btn btn-outline-danger  js-course-add-to-cart-btn">
-                                                {{ trans('update.buy_now') }}
+                                        @else
+                                            <button type="button" class="btn btn-primary mr-20 {{ $canSale ? 'js-course-add-to-cart-btn' : ($course->cantSaleStatus($hasBought) .' disabled ') }}">
+                                                @if(!$canSale)
+                                                    @if($course->checkCapacityReached())
+                                                        {{ trans('update.capacity_reached') }}
+                                                    @else
+                                                        {{ trans('update.disabled_add_to_cart') }}
+                                                    @endif
+                                                @else
+                                                    {{ trans('public.add_to_cart') }}
+                                                @endif
                                             </button>
-                                        @endif
 
-                                        @if(!empty($installments) and count($installments) and getInstallmentsSettings('display_installment_button'))
-                                            <a href="/course/{{ $course->slug }}/installments" class="btn btn-outline-primary mt-20">
-                                                {{ trans('update.pay_with_installments') }}
-                                            </a>
+                                            @if($canSale and !empty($course->points))
+                                                <a href="{{ !(auth()->check()) ? '/login' : '#' }}" class="{{ (auth()->check()) ? 'js-buy-with-point' : '' }} btn btn-outline-warning mt-20 {{ (!$canSale) ? 'disabled' : '' }}" rel="nofollow">
+                                                    {!! trans('update.buy_with_n_points',['points' => $course->points]) !!}
+                                                </a>
+                                            @endif
+
+                                            @if($canSale and !empty(getFeaturesSettings('direct_classes_payment_button_status')))
+                                                <button type="button" data-action="buy_now" class="btn btn-outline-danger  js-course-add-to-cart-btn">
+                                                    {{ trans('update.buy_now') }}
+                                                </button>
+                                            @endif
+
+                                            @if(!empty($installments) and count($installments) and getInstallmentsSettings('display_installment_button'))
+                                                <a href="/course/{{ $course->slug }}/installments" class="btn btn-outline-primary mt-20">
+                                                    {{ trans('update.pay_with_installments') }}
+                                                </a>
+                                            @endif
                                         @endif
                                     @else
                                         <a href="{{ $canSale ? '/course/'. $course->slug .'/free' : '#' }}" class="btn btn-primary {{ (!$canSale) ? (' disabled ' . $course->cantSaleStatus($hasBought)) : '' }}">

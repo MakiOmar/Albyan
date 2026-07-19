@@ -1137,6 +1137,12 @@ return [
 // Buy Now
 'direct_classes_payment_button_settings' => 'زر "اشتر الآن"',
 'direct_classes_payment_button_status_hint' => 'بتمكين هذا الخيار، سيتم إضافة زر "اشتر الآن" لصفحة الدورة وسيتم توجيه المستخدمين مباشرة لصفحة الدفع.',
+'course_purchase_cta_settings' => 'زر شراء الدورة',
+'course_purchase_cta_settings_hint' => 'اختر ما إذا كانت صفحات الدورات المدفوعة تعرض إضافة إلى السلة أو تعيد التوجيه إلى نموذج تسجيل توليد العملاء.',
+'course_purchase_cta_add_to_cart' => 'إضافة إلى السلة',
+'course_purchase_cta_lead_generation' => 'نموذج توليد العملاء',
+'course_purchase_cta_lead_generation_hint' => 'يعيد التوجيه إلى نموذج تسجيل البرنامج التدريبي مع عنوان الدورة كمعامل program. يتم ضبط الرابط الأساسي عبر LEAD_GENERATION_BASE_URL في ملف .env.',
+'register_for_program' => 'سجّل في هذا البرنامج',
 'buy_now' => 'اشتر الآن!',
 
 // Misc
