@@ -1,6 +1,17 @@
+@php
+    // Settings are translated per locale; language files remain the fallback.
+    $trendingCategoriesSettings = $trendingCategoriesSettings ?? [];
+    $trendingCategoriesTitle = trim((string) ($trendingCategoriesSettings['title'] ?? ''))
+        ?: trans('home.trending_categories');
+    $trendingCategoriesHint = trim((string) ($trendingCategoriesSettings['hint'] ?? ''))
+        ?: trans('home.trending_categories_hint');
+@endphp
+
 <section class="home-sections home-sections-swiper container">
-    <h2 class="section-title">{{ trans('home.trending_categories') }}</h2>
-    <p class="section-hint">{{ trans('home.trending_categories_hint') }}</p>
+    <h2 class="section-title">{{ $trendingCategoriesTitle }}</h2>
+    @if($trendingCategoriesHint !== '')
+        <p class="section-hint">{{ $trendingCategoriesHint }}</p>
+    @endif
 
     <div class="swiper-container trend-categories-swiper px-12 mt-40">
         <div class="swiper-wrapper py-20">

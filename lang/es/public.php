@@ -10,6 +10,7 @@ return [
 
     'title' => 'Título',
     'sub_title' => 'Subtítulo',
+    'all_categories' => 'Todas las categorías',
     'name' => 'Nombre',
     'seo_description' => 'Meta descripción de SEO',
     'cover_image' => 'Imagen de portada',

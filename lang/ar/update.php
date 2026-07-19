@@ -1146,6 +1146,11 @@ return [
 
 // Homepage content blocks (Al-Byan)
 'home_content_blocks_hint' => 'اضبط نصوص أقسام الصفحة الرئيسية الاختيارية. فعّل كل قسم من التخصيص → أقسام الصفحة الرئيسية.',
+'trending_categories_settings_hint' => 'اختر تصميم قسم التصنيفات في الصفحة الرئيسية ويمكنك تخصيص نصوصه لكل لغة.',
+'trending_categories_layout' => 'تصميم قسم التصنيفات',
+'trending_categories_layout_rounded' => 'أزرار دائرية',
+'trending_categories_layout_cards' => 'سلايدر بطاقات الصور',
+'trending_categories_all_button' => 'نص زر كل الأقسام',
 'trust_badges_settings_hint' => 'حتى 5 عناصر ثقة. اتركها فارغة لاستخدام القيم الافتراضية.',
 'trust_badge_subtitle' => 'العنوان الفرعي',
 'trust_badge_icon' => 'الأيقونة',

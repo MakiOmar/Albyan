@@ -27,6 +27,53 @@
 
         <p class="text-muted font-14 mb-4">{{ trans('update.home_content_blocks_hint') }}</p>
 
+        {{-- Trending categories --}}
+        <h5 class="font-16 font-weight-bold">{{ trans('admin/main.trend_categories') }}</h5>
+        <p class="font-12 text-gray">{{ trans('update.trending_categories_settings_hint') }}</p>
+
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label>{{ trans('update.trending_categories_layout') }}</label>
+                <select name="value[trending_categories][layout]" class="form-control">
+                    <option value="rounded" {{ (($iv['trending_categories']['layout'] ?? 'rounded') === 'rounded') ? 'selected' : '' }}>
+                        {{ trans('update.trending_categories_layout_rounded') }}
+                    </option>
+                    <option value="cards" {{ (($iv['trending_categories']['layout'] ?? '') === 'cards') ? 'selected' : '' }}>
+                        {{ trans('update.trending_categories_layout_cards') }}
+                    </option>
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <label>{{ trans('admin/main.title') }}</label>
+                <input type="text" name="value[trending_categories][title]" class="form-control"
+                       value="{{ $iv['trending_categories']['title'] ?? '' }}"
+                       placeholder="{{ trans('home.trending_categories') }}">
+            </div>
+            <div class="form-group col-md-4">
+                <label>{{ trans('public.description') }}</label>
+                <input type="text" name="value[trending_categories][hint]" class="form-control"
+                       value="{{ $iv['trending_categories']['hint'] ?? '' }}"
+                       placeholder="{{ trans('home.trending_categories_hint') }}">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label>{{ trans('update.trending_categories_all_button') }}</label>
+                <input type="text" name="value[trending_categories][all_button_title]" class="form-control"
+                       value="{{ $iv['trending_categories']['all_button_title'] ?? '' }}"
+                       placeholder="{{ trans('public.all_categories') }}">
+            </div>
+            <div class="form-group col-md-6">
+                <label>{{ trans('admin/main.link') }}</label>
+                <input type="text" name="value[trending_categories][all_button_link]" class="form-control"
+                       value="{{ $iv['trending_categories']['all_button_link'] ?? '/categories' }}"
+                       placeholder="/categories">
+            </div>
+        </div>
+
+        <hr class="my-4">
+
         {{-- Trust badges --}}
         <h5 class="font-16 font-weight-bold">{{ trans('admin/main.trust_badges') }}</h5>
         <p class="font-12 text-gray">{{ trans('update.trust_badges_settings_hint') }}</p>

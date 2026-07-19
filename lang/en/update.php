@@ -1147,6 +1147,11 @@ return [
 
 // Homepage content blocks (Al-Byan)
 'home_content_blocks_hint' => 'Configure copy for optional homepage sections. Enable each section from Personalization → Home sections.',
+'trending_categories_settings_hint' => 'Choose the homepage categories layout and optionally override its translated copy.',
+'trending_categories_layout' => 'Categories layout',
+'trending_categories_layout_rounded' => 'Rounded buttons',
+'trending_categories_layout_cards' => 'Image cards carousel',
+'trending_categories_all_button' => 'All categories button text',
 'trust_badges_settings_hint' => 'Up to 5 trust items. Leave empty to use PDF defaults.',
 'trust_badge_subtitle' => 'Subtitle',
 'trust_badge_icon' => 'Icon',

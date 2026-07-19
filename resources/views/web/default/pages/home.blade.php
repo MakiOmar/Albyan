@@ -469,7 +469,21 @@
         @endif
         --}}
         @if($homeSection->name == \App\Models\HomeSection::$trend_categories and !empty($trendCategories) and !$trendCategories->isEmpty())
-            @include('web.default.pages.includes.categories-rounded')
+            @php
+                // Locale-specific overrides live in Personalization → Home content blocks.
+                $trendingCategoriesSettings = getHomeContentBlocksSettings('trending_categories') ?? [];
+                $trendingCategoriesLayout = $trendingCategoriesSettings['layout'] ?? 'rounded';
+            @endphp
+
+            @if($trendingCategoriesLayout === 'cards')
+                @include('web.default.pages.includes.trending-categories', [
+                    'trendingCategoriesSettings' => $trendingCategoriesSettings,
+                ])
+            @else
+                @include('web.default.pages.includes.categories-rounded', [
+                    'trendingCategoriesSettings' => $trendingCategoriesSettings,
+                ])
+            @endif
         @endif
         
         {{-- Ads Bannaer --}}

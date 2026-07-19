@@ -10,6 +10,7 @@ return [
 
     'title' => 'Title',
     'sub_title' => 'Subtitle',
+    'all_categories' => 'All categories',
     'new_course_group_title' => 'You have been added to a new course group!',
 'new_course_group_message' => 'You have been added to the ":course" group with Dr. :instructor. The classes will be held :interval for :duration. <a href=":link">Click here</a> to learn more and access the study material.',
     'duration_weeks' => ':count weeks',

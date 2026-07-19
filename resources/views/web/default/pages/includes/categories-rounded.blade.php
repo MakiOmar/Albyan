@@ -1,3 +1,14 @@
+@php
+    // Settings are translated per locale; language files remain the fallback.
+    $trendingCategoriesSettings = $trendingCategoriesSettings ?? [];
+    $trendingCategoriesTitle = trim((string) ($trendingCategoriesSettings['title'] ?? ''))
+        ?: trans('home.trending_categories');
+    $trendingCategoriesAllTitle = trim((string) ($trendingCategoriesSettings['all_button_title'] ?? ''))
+        ?: trans('public.all_categories');
+    $trendingCategoriesAllLink = trim((string) ($trendingCategoriesSettings['all_button_link'] ?? ''))
+        ?: '/categories';
+@endphp
+
 <section class="home-sections">
     
     <img src="/store/1/Group1321314336.png" style="position: absolute;z-index: -1;left: 0;top: -50px;width: 97px;height: 213px;" width="97" height="213" alt="{{ trans('public.categories_background_decoration') }}">  
@@ -5,7 +16,7 @@
             <h2 class="section-title section-title-bg mb-4" style="min-width: 200px;position: relative; display: inline-block">
 
             <span style="padding: 8px 24px; border-radius: 0 20px 0 20px;">
-                الأقسام
+                {{ $trendingCategoriesTitle }}
             </span>
         </h2>
 
@@ -13,9 +24,9 @@
             
             {{-- زر كل الأقسام --}}
             <div class="col-md-3 p-2">
-                <a href="#" class="btn btn-primary rounded-pill px-4 py-2 d-flex align-items-center gap-2 position-relative position-relative">
+                <a href="{{ $trendingCategoriesAllLink }}" class="btn btn-primary rounded-pill px-4 py-2 d-flex align-items-center gap-2 position-relative position-relative">
                     <i class="fas fa-th-large"></i>
-                    كل الأقسام
+                    {{ $trendingCategoriesAllTitle }}
                     <span class="position-absolute" style="right: -20px;top: -40px;">
                     <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_142_528)">
