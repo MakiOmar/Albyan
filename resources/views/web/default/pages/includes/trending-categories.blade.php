@@ -28,6 +28,9 @@
                             <div class="item-count px-10 px-lg-20 py-5 py-lg-10">{{ $trend->category->webinars_count }} {{ trans('product.course') }}</div>
 
                             <h3>{{ $trend->category->title }}</h3>
+                            @if(!empty($trend->category->description))
+                                <p class="trending-card-description font-12 text-gray mt-10 mb-0 text-center">{{ $trend->category->description }}</p>
+                            @endif
                         </div>
                     </a>
                 </div>
