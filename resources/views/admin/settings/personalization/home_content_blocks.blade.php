@@ -31,20 +31,81 @@
         <h5 class="font-16 font-weight-bold">{{ trans('admin/main.trust_badges') }}</h5>
         <p class="font-12 text-gray">{{ trans('update.trust_badges_settings_hint') }}</p>
 
-        <div class="form-group col-md-6 px-0">
-            <label>{{ trans('update.trust_badges_background') }}</label>
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <button type="button" class="input-group-text admin-file-manager" data-input="trust_badges_background" data-preview="holder">
-                        <i class="fa fa-chevron-up"></i>
-                    </button>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label>{{ trans('update.trust_badges_background') }}</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button type="button" class="input-group-text admin-file-manager" data-input="trust_badges_background" data-preview="holder">
+                            <i class="fa fa-chevron-up"></i>
+                        </button>
+                    </div>
+                    <input type="text" name="value[trust_badges][background]" id="trust_badges_background"
+                           value="{{ $iv['trust_badges']['background'] ?? '' }}" class="form-control">
                 </div>
-                <input type="text" name="value[trust_badges][background]" id="trust_badges_background"
-                       value="{{ $iv['trust_badges']['background'] ?? '' }}" class="form-control">
+                <div class="text-muted font-12 mt-1">{{ trans('update.trust_badges_background_hint') }}</div>
             </div>
-            <div class="text-muted font-12 mt-1">{{ trans('update.trust_badges_background_hint') }}</div>
+            <div class="form-group col-md-6">
+                <label>{{ trans('update.trust_hero_side_image') }}</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button type="button" class="input-group-text admin-file-manager" data-input="trust_hero_side_image" data-preview="holder">
+                            <i class="fa fa-chevron-up"></i>
+                        </button>
+                    </div>
+                    <input type="text" name="value[trust_badges][side_image]" id="trust_hero_side_image"
+                           value="{{ $iv['trust_badges']['side_image'] ?? '' }}" class="form-control">
+                </div>
+            </div>
         </div>
 
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label>{{ trans('update.trust_hero_chip') }}</label>
+                <input type="text" name="value[trust_badges][chip]" class="form-control"
+                       value="{{ $iv['trust_badges']['chip'] ?? '' }}">
+            </div>
+            <div class="form-group col-md-4">
+                <label>{{ trans('update.trust_hero_title_line1') }}</label>
+                <input type="text" name="value[trust_badges][title_line1]" class="form-control"
+                       value="{{ $iv['trust_badges']['title_line1'] ?? '' }}">
+            </div>
+            <div class="form-group col-md-4">
+                <label>{{ trans('update.trust_hero_title_line2') }}</label>
+                <input type="text" name="value[trust_badges][title_line2]" class="form-control"
+                       value="{{ $iv['trust_badges']['title_line2'] ?? '' }}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>{{ trans('public.description') }}</label>
+            <textarea name="value[trust_badges][description]" rows="3" class="form-control">{{ $iv['trust_badges']['description'] ?? '' }}</textarea>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-md-3">
+                <label>{{ trans('update.button') }} 1 - {{ trans('admin/main.title') }}</label>
+                <input type="text" name="value[trust_badges][button1][title]" class="form-control"
+                       value="{{ $iv['trust_badges']['button1']['title'] ?? '' }}">
+            </div>
+            <div class="form-group col-md-3">
+                <label>{{ trans('update.button') }} 1 - {{ trans('admin/main.link') }}</label>
+                <input type="text" name="value[trust_badges][button1][link]" class="form-control"
+                       value="{{ $iv['trust_badges']['button1']['link'] ?? '' }}">
+            </div>
+            <div class="form-group col-md-3">
+                <label>{{ trans('update.button') }} 2 - {{ trans('admin/main.title') }}</label>
+                <input type="text" name="value[trust_badges][button2][title]" class="form-control"
+                       value="{{ $iv['trust_badges']['button2']['title'] ?? '' }}">
+            </div>
+            <div class="form-group col-md-3">
+                <label>{{ trans('update.button') }} 2 - {{ trans('admin/main.link') }}</label>
+                <input type="text" name="value[trust_badges][button2][link]" class="form-control"
+                       value="{{ $iv['trust_badges']['button2']['link'] ?? '' }}">
+            </div>
+        </div>
+
+        <h6 class="mt-3">{{ trans('update.trust_badges_items') }}</h6>
         @for($i = 1; $i <= 5; $i++)
             <div class="row">
                 <div class="form-group col-md-4">
