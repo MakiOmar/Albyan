@@ -37,7 +37,7 @@ class Setting extends Model implements TranslatableContract
         $contactPage, $Error404Page, $navbarLink, $panelSidebar, $findInstructors, $rewardProgram, $rewardsSettings, $storeSettings,
         $registrationPackagesGeneral, $registrationPackagesInstructors, $registrationPackagesOrganizations, $becomeInstructorSection,
         $themeColors, $themeFonts, $forumHomeSection, $cookieSettings, $mobileAppSettings, $remindersSettings, $generalSecuritySettings, $advertisingModal,
-        $othersPersonalization, $installmentsSettings, $installmentsTermsSettings, $registrationBonusSettings, $registrationBonusTermsSettings, $statisticsSettings,
+        $othersPersonalization, $homeContentBlocks, $installmentsSettings, $installmentsTermsSettings, $registrationBonusSettings, $registrationBonusTermsSettings, $statisticsSettings,
         $maintenanceSettings, $restrictionSettings, $generalOptions, $giftsGeneralSettings, $aiContentsSettings, $certificateSettings, $abandonedCartSettings, $smsChannelsSettings,
         $commissionSettings;
 
@@ -81,6 +81,7 @@ class Setting extends Model implements TranslatableContract
     static $generalSecuritySettingsName = 'security';
     static $advertisingModalName = 'advertising_modal';
     static $othersPersonalizationName = 'others_personalization';
+    static $homeContentBlocksName = 'home_content_blocks';
     static $installmentsSettingsName = 'installments_settings';
     static $installmentsTermsSettingsName = 'installments_terms_settings';
     static $registrationBonusSettingsName = 'registration_bonus_settings';
@@ -450,6 +451,11 @@ class Setting extends Model implements TranslatableContract
     static function getOthersPersonalizationSettings($key = null)
     {
         return self::getSetting(self::$othersPersonalization, self::$othersPersonalizationName, $key);
+    }
+
+    static function getHomeContentBlocksSettings($key = null)
+    {
+        return self::getSetting(self::$homeContentBlocks, self::$homeContentBlocksName, $key);
     }
 
     static function getInstallmentsSettings($key = null)

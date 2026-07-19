@@ -6,6 +6,8 @@
     $rawFooter = getOthersPersonalizationSettings('institute_about_footer');
     $aboutFooter = !is_null($rawFooter) ? trim((string) $rawFooter) : null;
     $showInstituteBlock = ($aboutTitle !== '' || $aboutBody !== '');
+    // Homepage dual CTAs from PDF (explore courses + advisor lead form)
+    $advisorLeadUrl = getLeadGenerationFormUrl();
 @endphp
 
 @if($showInstituteBlock)
@@ -13,7 +15,7 @@
         {{-- Homepage: blockquote strip (optional footer line from settings only). --}}
         <blockquote class="blockquote text-center p-4 border-start border-4" style="min-height: 200px; width: 100%;">
             @if($aboutTitle !== '')
-                <h1 style="margin-bottom: 1rem;">{{ $aboutTitle }}</h1>
+                <h2 style="margin-bottom: 1rem;">{{ $aboutTitle }}</h2>
             @endif
             @if($aboutBody !== '')
                 <p class="mb-0" style="font-size: 16px; max-width: 768px; margin: auto; line-height: 1.6; min-height: 120px; height: auto; overflow: hidden;">
@@ -23,6 +25,11 @@
             @if(!is_null($aboutFooter) && $aboutFooter !== '')
                 <footer class="blockquote-footer mt-2" style="margin-top: 1rem !important;">{{ $aboutFooter }}</footer>
             @endif
+            {{-- PDF: dual CTAs under institute intro --}}
+            <div class="d-flex flex-wrap justify-content-center align-items-center mt-4" style="gap: 12px;">
+                <a href="/classes" class="btn btn-primary">{{ trans('site.explore_courses_diplomas') }}</a>
+                <a href="{{ $advisorLeadUrl }}" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer">{{ trans('site.contact_training_advisor') }}</a>
+            </div>
         </blockquote>
     @else
         {{-- About & contact: centered section --}}

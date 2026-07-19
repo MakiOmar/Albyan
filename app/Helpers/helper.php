@@ -1576,9 +1576,10 @@ function getCoursePurchaseCtaMethod(): string
 }
 
 /**
- * Build lead-generation registration URL for a course title (locale-aware).
+ * Build lead-generation registration URL (locale-aware).
+ * Optional course title becomes ?program= when provided.
  */
-function getCourseLeadGenerationUrl(string $courseTitle): string
+function getLeadGenerationFormUrl(?string $courseTitle = null): string
 {
     $base = rtrim((string) config('lead_generation.base_url', ''), '/');
     $locale = strtolower((string) app()->getLocale());
@@ -1587,7 +1588,30 @@ function getCourseLeadGenerationUrl(string $courseTitle): string
         ? (string) config('lead_generation.paths.ar', 'training-program-registration-ar')
         : (string) config('lead_generation.paths.en', 'training-program-registration');
 
-    return $base . '/' . ltrim($path, '/') . '?program=' . rawurlencode($courseTitle);
+    $url = $base . '/' . ltrim($path, '/');
+    $title = trim((string) $courseTitle);
+
+    if ($title !== '') {
+        $url .= '?program=' . rawurlencode($title);
+    }
+
+    return $url;
+}
+
+/**
+ * Build lead-generation registration URL for a course title (locale-aware).
+ */
+function getCourseLeadGenerationUrl(string $courseTitle): string
+{
+    return getLeadGenerationFormUrl($courseTitle);
+}
+
+/**
+ * Homepage content blocks settings (trust badges, domains, modality, why, help CTA).
+ */
+function getHomeContentBlocksSettings($key = null)
+{
+    return \App\Models\Setting::getHomeContentBlocksSettings($key);
 }
 
 function getSMSChannelsSettings($key = null)

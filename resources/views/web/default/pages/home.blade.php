@@ -193,7 +193,12 @@
                             @endphp
                             @foreach($featureWebinars as $index => $feature)
                                 <div class="col-md-4">
-                                    @include('web.default.includes.webinar.grid-card',['webinar' => $feature->webinar, 'index' => $index, 'featuredCount' => $featuredCount])
+                                    @include('web.default.includes.webinar.grid-card',[
+                                        'webinar' => $feature->webinar,
+                                        'index' => $index,
+                                        'featuredCount' => $featuredCount,
+                                        'homeFeaturedDualCta' => true,
+                                    ])
                                     
                                     {{--
                                     <a href="{{ $feature->webinar->getUrl() }}">
@@ -698,7 +703,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card text-center p-4 shadow-lg">
-                            <h1 class="fw-bold">{{ trans('site.albyan_institute_full_name') }}</h1>
+                            <h2 class="fw-bold">{{ trans('site.albyan_institute_full_name') }}</h2>
                         
                             <div class="d-flex justify-content-center align-items-center">
                                 <div class="ms-2 d-flex">
@@ -1163,6 +1168,31 @@
 
                 </div>
             </section>
+        @endif
+
+        {{-- Al-Byan optional sections: enable via Admin → Home sections --}}
+        @if($homeSection->name == \App\Models\HomeSection::$trust_badges)
+            @include('web.default.pages.includes.home_sections.trust_badges')
+        @endif
+
+        @if($homeSection->name == \App\Models\HomeSection::$training_domains)
+            @include('web.default.pages.includes.home_sections.training_domains')
+        @endif
+
+        @if($homeSection->name == \App\Models\HomeSection::$training_modality)
+            @include('web.default.pages.includes.home_sections.training_modality')
+        @endif
+
+        @if($homeSection->name == \App\Models\HomeSection::$why_albyan)
+            @include('web.default.pages.includes.home_sections.why_albyan')
+        @endif
+
+        @if($homeSection->name == \App\Models\HomeSection::$help_cta_band)
+            @include('web.default.pages.includes.home_sections.help_cta_band')
+        @endif
+
+        @if($homeSection->name == \App\Models\HomeSection::$wp_blog)
+            @include('web.default.pages.includes.home_sections.wp_blog')
         @endif
 
     @endforeach

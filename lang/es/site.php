@@ -107,7 +107,11 @@ return [
     'server_error_try_again' => '¡Error del servidor! Vuelve a intentarlo más tarde ',
     'store_error_try_again' => '¡Operación fallida! Vuelve a intentarlo más tarde ',
 
-    'graduation_celebration_title' => 'Ceremonia de graduación de estudiantes Albyan 2023/2024',
+    'graduation_celebration_title' => 'Instituto Albyan de Formación Profesional en Dubái',
+    'explore_courses_diplomas' => 'Explorar cursos y diplomas',
+    'contact_training_advisor' => 'Contactar a un asesor de formación',
+    'program_details' => 'Detalles del programa',
+    'inquire_now' => 'Consultar ahora',
     'albyan_institute_full_name' => 'Instituto Albyan para Servicios Educativos',
     'google_rating_based_on_reviews' => '{0} Sin reseñas aún|{1} Según 1 reseña|[2,*] Según :count reseñas',
     'rate_us_on_google' => 'Valóranos en Google',

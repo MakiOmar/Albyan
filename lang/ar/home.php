@@ -33,9 +33,9 @@ return [
 
     'hours' => 'ساعات',
 
-    'featured_classes' => 'الأعلى تقييما',
-    'featured_webinars' => 'الأعلى تقييما',
-    'featured_classes_hint' => 'اكتشف افضل الدبلومات واستمتع بالتعلم',
+    'featured_classes' => 'الدورات والدبلومات التدريبية الأكثر طلباً',
+    'featured_webinars' => 'الدورات والدبلومات التدريبية الأكثر طلباً',
+    'featured_classes_hint' => 'برامج مختارة يدوياً من التخصصات الاستراتيجية',
 
     'latest_classes' => 'أحدث الدبلومات',
     'latest_webinars' => 'احدث الدبلومات',

@@ -35,6 +35,13 @@ class HomeSection extends Model
         'upcoming_courses',
         'category_courses',
         'faq_section',
+        // Al-Byan homepage blocks (enable via Admin → Home sections)
+        'trust_badges',
+        'training_domains',
+        'training_modality',
+        'why_albyan',
+        'help_cta_band',
+        'wp_blog',
     ];
 
     static $featured_classes = 'featured_classes';
@@ -61,6 +68,12 @@ class HomeSection extends Model
     static $upcoming_courses = 'upcoming_courses';
     static $category_courses = 'category_courses';
     static $faq_section = 'faq_section';
+    static $trust_badges = 'trust_badges';
+    static $training_domains = 'training_domains';
+    static $training_modality = 'training_modality';
+    static $why_albyan = 'why_albyan';
+    static $help_cta_band = 'help_cta_band';
+    static $wp_blog = 'wp_blog';
 
     protected $casts = [
         'value' => 'array',

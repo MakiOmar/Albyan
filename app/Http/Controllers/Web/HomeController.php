@@ -418,6 +418,29 @@ class HomeController extends Controller
             }
         }
 
+        // Curated training domain categories (only when section is enabled in home_sections)
+        $trainingDomainCategories = collect();
+        if (in_array(HomeSection::$training_domains, $selectedSectionsName, true)) {
+            $domainsSettings = getHomeContentBlocksSettings('training_domains') ?? [];
+            $idsRaw = trim((string) ($domainsSettings['category_ids'] ?? ''));
+            $categoryIds = array_values(array_filter(array_map('intval', preg_split('/\s*,\s*/', $idsRaw))));
+            if (!empty($categoryIds)) {
+                $trainingDomainCategories = Category::query()
+                    ->whereIn('id', $categoryIds)
+                    ->withCount(['webinars' => function ($query) {
+                        $query->where('status', Webinar::$active)->where('private', false);
+                    }])
+                    ->get()
+                    ->sortBy(function ($category) use ($categoryIds) {
+                        return array_search($category->id, $categoryIds, true);
+                    })
+                    ->values();
+            }
+        }
+
+        // WP blog stub: empty until WordPress API is wired
+        $wpBlogPosts = collect();
+
         $data = [
             'pageTitle' => $pageTitle,
             'pageDescription' => $pageDescription,
@@ -452,6 +475,8 @@ class HomeController extends Controller
             'forumSection' => $forumSection ?? null,
             'categorySectionData' => $categorySectionData,
             'siteFaqs' => $siteFaqs,
+            'trainingDomainCategories' => $trainingDomainCategories,
+            'wpBlogPosts' => $wpBlogPosts,
         ];
 
         return view(getTemplate() . '.pages.home', $data);

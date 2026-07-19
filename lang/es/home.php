@@ -33,9 +33,9 @@ return [
 
     'hours' => 'Horas',
 
-    'featured_classes' => 'Cursos destacados',
-    'featured_webinars' => 'Webinars destacados',
-    'featured_classes_hint' => '#Explora los Cursos VIP y potencia tus habilidades',
+    'featured_classes' => 'Cursos y diplomas de formación más solicitados',
+    'featured_webinars' => 'Cursos y diplomas de formación más solicitados',
+    'featured_classes_hint' => 'Programas seleccionados manualmente en especialidades estratégicas',
 
     'latest_classes' => 'Nuevos Cursos',
     'latest_webinars' => 'Nuevos Webinars',

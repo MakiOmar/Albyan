@@ -74,7 +74,7 @@
 
                 <div class="footer-social mt-2 mb-4">
                     {{-- Section title: follows active Laravel locale (language switcher) --}}
-                    <h1>{{ trans('footer.follow_us_on') }}</h1>
+                    <h2>{{ trans('footer.follow_us_on') }}</h2>
                     @include('web.default.includes.title_border')
                     @if(!empty($socials) and count($socials))
                     <div class="mt-2">
@@ -87,7 +87,7 @@
                     @endif
                 </div>
 
-                <h1>{{ trans('footer.important_links') }}</h1>
+                <h2>{{ trans('footer.important_links') }}</h2>
                 @include('web.default.includes.title_border')
                 
                 <ul class="list-unstyled  mt-4">
@@ -104,7 +104,7 @@
             </div>
 
             <div class="col-md-4 info-section">
-              <h1>{{ trans('footer.about_us_title') }}</h1>
+              <h2>{{ trans('footer.about_us_title') }}</h2>
               @include('web.default.includes.title_border')
                 {{-- Institute intro: strings live in lang/{locale}/footer.php for language switcher --}}
                 <p class=" mt-4">{{ trans('footer.about_us_intro') }}</p>
@@ -112,7 +112,7 @@
 
                         
             <div class="col-md-5 info-section">
-                <h1>{{ trans('footer.contact_us_title') }}</h1>
+                <h2>{{ trans('footer.contact_us_title') }}</h2>
                 @include('web.default.includes.title_border')
                 <ul class="list-unstyled mt-4">
                 <li class="pb-2 d-flex align-items-center">

@@ -33,9 +33,9 @@ return [
 
     'hours' => 'Hours',
 
-    'featured_classes' => 'Featured Courses',
-    'featured_webinars' => 'Featured Courses',
-    'featured_classes_hint' => '#Browse featured courses and become skillful',
+    'featured_classes' => 'Most requested training courses and diplomas',
+    'featured_webinars' => 'Most requested training courses and diplomas',
+    'featured_classes_hint' => 'Manually selected programs across strategic specialties',
 
     'latest_classes' => 'Newest Courses',
     'latest_webinars' => 'Newest Courses',

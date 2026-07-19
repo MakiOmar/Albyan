@@ -16,6 +16,42 @@ use Illuminate\Support\Facades\DB;
 
 class CategoriesController extends Controller
 {
+    /**
+     * Public all-categories listing (Vitazonei-style hub).
+     */
+    public function all()
+    {
+        $categories = Category::getCategories();
+
+        // Count active public programs per parent (including subcategories)
+        $categories = $categories->map(function ($category) {
+            $ids = [$category->id];
+            if (!empty($category->subCategories) && $category->subCategories->count()) {
+                $ids = array_merge($ids, $category->subCategories->pluck('id')->toArray());
+            }
+            $category->programs_count = Webinar::query()
+                ->where('status', Webinar::$active)
+                ->where('private', false)
+                ->whereIn('category_id', $ids)
+                ->count();
+
+            return $category;
+        });
+
+        // Use categories SEO settings when present; otherwise translation fallbacks (do not write SEO)
+        $seoSettings = getSeoMetas('categories');
+        $pageTitle = !empty($seoSettings['title']) ? $seoSettings['title'] : trans('update.all_categories_page_title');
+        $pageDescription = !empty($seoSettings['description']) ? $seoSettings['description'] : trans('update.all_categories_page_hint');
+        $pageRobot = getPageRobot('categories');
+
+        return view(getTemplate() . '.pages.all_categories', [
+            'pageTitle' => $pageTitle,
+            'pageDescription' => $pageDescription,
+            'pageRobot' => $pageRobot,
+            'categories' => $categories,
+        ]);
+    }
+
     public function index(Request $request, $categorySlug, $subCategorySlug = null)
     {
 

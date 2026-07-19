@@ -304,6 +304,8 @@ Route::group([
     });
 
     Route::group(['prefix' => 'categories'], function () {
+        // All-categories hub (must be registered before the slug route)
+        Route::get('/', 'CategoriesController@all')->name('categories.all');
         Route::get('/{categoryTitle}/{subCategoryTitle?}', 'CategoriesController@index');
     });
 

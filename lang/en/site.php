@@ -108,7 +108,11 @@ return [
     'store_error_try_again' => 'Operation failed! Try again later',
 
     // Albyan public home / gallery / reviews (follows language switcher)
-    'graduation_celebration_title' => 'Albyan students graduation ceremony 2023/2024',
+    'graduation_celebration_title' => 'Albyan Institute for Vocational Training in Dubai',
+    'explore_courses_diplomas' => 'Explore courses and diplomas',
+    'contact_training_advisor' => 'Contact a training advisor',
+    'program_details' => 'Program details',
+    'inquire_now' => 'Inquire now',
     'albyan_institute_full_name' => 'Albyan Institute for Educational Services',
     'google_rating_based_on_reviews' => '{0} No reviews yet|{1} Based on 1 review|[2,*] Based on :count reviews',
     'rate_us_on_google' => 'Rate us on Google',

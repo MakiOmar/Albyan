@@ -1238,4 +1238,11 @@ return [
    	'new_support_ticket_title' => 'New Support Ticket',
    	'edit_support_ticket_title' => 'Edit Support Ticket',
    	'staff_list_title' => 'Staff List',
+    'trust_badges' => 'Trust badges',
+    'training_domains' => 'Training domains',
+    'training_modality' => 'Training modality',
+    'why_albyan' => 'Why Albyan',
+    'help_cta_band' => 'Help CTA band',
+    'wp_blog' => 'WordPress blog (API)',
+    'home_content_blocks' => 'Home content blocks',
 ];
