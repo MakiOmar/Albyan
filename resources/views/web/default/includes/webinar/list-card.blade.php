@@ -61,7 +61,7 @@
 
         @include(getTemplate() . '.includes.webinar.rate',['rate' => $webinar->getRate()])
 
-        <div class="d-flex justify-content-between mt-auto">
+        <div class="d-flex justify-content-between align-items-center mt-auto">
             <div class="d-flex align-items-center">
                 <div class="d-flex align-items-center">
                     <i data-feather="clock" width="20" height="20" class="webinar-icon"></i>
@@ -75,6 +75,37 @@
                     <span class="date-published ml-5 font-14">{{ dateTimeFormat(!empty($webinar->start_date) ? $webinar->start_date : $webinar->created_at,'j M Y') }}</span>
                 </div>
                 --}}
+
+                @php
+                    // List layout CTA: same Features setting as grid / course details
+                    $listUser = auth()->user();
+                    $listHasBought = $webinar->checkUserHasBought($listUser, true, true);
+                    $listCanSale = ($webinar->canSale() and !$listHasBought);
+                    $listUseLeadGenerationCta = (getCoursePurchaseCtaMethod() === 'lead_generation');
+                @endphp
+
+                @if($listCanSale and !empty($webinar->price) and $webinar->price > 0)
+                    <div class="d-flex align-items-center ml-15">
+                        @if($listUseLeadGenerationCta)
+                            {{-- Lead generation: redirect to locale-specific registration form --}}
+                            <a href="{{ getCourseLeadGenerationUrl((string) $webinar->title) }}" class="btn btn-primary btn-sm">
+                                {{ trans('update.register_for_program') }}
+                            </a>
+                        @else
+                            {{-- Default: add to cart / buy now --}}
+                            <form action="/cart/store" method="post">
+                                {{ csrf_field() }}
+                                <input type="hidden" name="item_id" value="{{ $webinar->id }}">
+                                <input type="hidden" name="item_name" value="webinar_id">
+                                <input type="text" style="display:none;" name="direct_buy" value="yes">
+                                <button type="button" data-action="buy_now" class="btn btn-primary btn-sm js-course-add-to-cart-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                                    {{ trans('webinars.add_to_cart') }}
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                @endif
             </div>
 
             <div class="webinar-price-box d-flex flex-column justify-content-center align-items-center">

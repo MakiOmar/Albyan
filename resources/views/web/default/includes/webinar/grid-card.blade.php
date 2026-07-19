@@ -88,20 +88,30 @@
                 $user = auth()->user();
                 $hasBought = $webinar->checkUserHasBought($user, true, true);
                 $canSale   = ( $webinar->canSale() and ! $hasBought );
+                // Respect Features setting: add_to_cart | lead_generation
+                $useLeadGenerationCta = (getCoursePurchaseCtaMethod() === 'lead_generation');
                 @endphp
 
                 @if($canSale and !empty($webinar->price) and $webinar->price > 0)
                 <div class="d-flex align-items-center">
-                    <form action="/cart/store" method="post">
-                        {{ csrf_field() }}
-                        <input type="hidden" name="item_id" value="{{ $webinar->id }}">
-                        <input type="hidden" name="item_name" value="webinar_id">
-                        <input id="direct_buy" type="text" style="display:none;" name="direct_buy" value="yes">
-                        <button type="button" data-action="buy_now" class="btn btn-primary {{ $canSale ? 'js-course-add-to-cart-btn' : ($webinar->cantSaleStatus($hasBought) .' disabled ') }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                            {{ trans( 'webinars.add_to_cart' ) }}
-                        </button>
-                    </form>
+                    @if($useLeadGenerationCta)
+                        {{-- Lead generation: redirect to locale-specific registration form --}}
+                        <a href="{{ getCourseLeadGenerationUrl((string) $webinar->title) }}" class="btn btn-primary">
+                            {{ trans('update.register_for_program') }}
+                        </a>
+                    @else
+                        {{-- Default: add to cart / buy now --}}
+                        <form action="/cart/store" method="post">
+                            {{ csrf_field() }}
+                            <input type="hidden" name="item_id" value="{{ $webinar->id }}">
+                            <input type="hidden" name="item_name" value="webinar_id">
+                            <input id="direct_buy" type="text" style="display:none;" name="direct_buy" value="yes">
+                            <button type="button" data-action="buy_now" class="btn btn-primary {{ $canSale ? 'js-course-add-to-cart-btn' : ($webinar->cantSaleStatus($hasBought) .' disabled ') }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                                {{ trans( 'webinars.add_to_cart' ) }}
+                            </button>
+                        </form>
+                    @endif
                 </div>
                 @endif
                 <div class="webinar-price-box">
