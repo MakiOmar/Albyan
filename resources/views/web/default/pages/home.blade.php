@@ -72,7 +72,7 @@
 
         <section class="{{ ($heroSection == "2") ? 'slider-hero-section2 ' : '' }}slider-container" @if(empty($heroSectionData['is_video_background'])) style="background-image: url('{{ $heroSectionData['hero_background'] }}')" @endif>
             {{-- Hero title: respects active locale (language switcher) --}}
-            <h1 class="slider-heading">{{ trans('site.graduation_celebration_title') }}</h1>
+            <h2 class="slider-heading">{{ trans('site.graduation_celebration_title') }}</h2>
             @if($heroSection == "1")
                 @if(!empty($heroSectionData['is_video_background']))
                     @php

@@ -98,7 +98,7 @@ return [
     'server_error_try_again' => 'خطأ تقني حاول مجددا',
     'store_error_try_again' => 'فشلت العملية حاول مجددا',
 
-    'graduation_celebration_title' => 'معهد البيان للتدريب المهني في دبي',
+    'graduation_celebration_title' => 'حفل تخرج طلاب البيان 2023/2024',
     'explore_courses_diplomas' => 'استكشف الدورات والدبلومات',
     'contact_training_advisor' => 'تواصل مع مستشار تدريبي',
     'program_details' => 'تفاصيل البرنامج',

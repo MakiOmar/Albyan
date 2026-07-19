@@ -108,7 +108,7 @@ return [
     'store_error_try_again' => 'Operation failed! Try again later',
 
     // Albyan public home / gallery / reviews (follows language switcher)
-    'graduation_celebration_title' => 'Albyan Institute for Vocational Training in Dubai',
+    'graduation_celebration_title' => 'Students graduated in 2023/2024',
     'explore_courses_diplomas' => 'Explore courses and diplomas',
     'contact_training_advisor' => 'Contact a training advisor',
     'program_details' => 'Program details',

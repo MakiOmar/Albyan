@@ -107,7 +107,7 @@ return [
     'server_error_try_again' => '¡Error del servidor! Vuelve a intentarlo más tarde ',
     'store_error_try_again' => '¡Operación fallida! Vuelve a intentarlo más tarde ',
 
-    'graduation_celebration_title' => 'Instituto Albyan de Formación Profesional en Dubái',
+    'graduation_celebration_title' => 'Students graduated in 2023/2024',
     'explore_courses_diplomas' => 'Explorar cursos y diplomas',
     'contact_training_advisor' => 'Contactar a un asesor de formación',
     'program_details' => 'Detalles del programa',
