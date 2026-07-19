@@ -14,6 +14,9 @@
                 <div class="col-12 col-md-9 col-lg-7">
                     <div class="top-search-categories-form">
                         <h1 class="text-white font-30 mb-15">{{ !empty($category) ? $category->title : $pageTitle }}</h1>
+                        @if(!empty($category) && !empty($category->description))
+                            <p class="text-white font-14 mb-15">{{ $category->description }}</p>
+                        @endif
                         <span class="course-count-badge py-5 px-10 text-white rounded">{{ $webinarsCount }} {{ trans('product.courses') }}</span>
 
                         <div class="search-input bg-white p-10 flex-grow-1">

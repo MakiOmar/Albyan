@@ -59,6 +59,21 @@
                                     @enderror
                                 </div>
 
+                                {{-- Public category description (per locale); used on homepage domain cards, etc. --}}
+                                <div class="form-group">
+                                    <label>{{ trans('admin/main.description') }}</label>
+                                    <textarea name="description"
+                                              class="form-control @error('description') is-invalid @enderror"
+                                              rows="3"
+                                              placeholder="{{ trans('update.category_description_placeholder') }}">{{ !empty($category) ? $category->description : old('description') }}</textarea>
+                                    <div class="text-muted text-small mt-1">{{ trans('update.category_description_hint') }}</div>
+                                    @error('description')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+
                                 <div class="form-group">
                                     <label>{{ trans('admin/main.url') }}</label>
                                     <input type="text" name="slug"

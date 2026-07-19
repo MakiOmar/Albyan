@@ -49,6 +49,7 @@ class CategoryController extends Controller
         $this->validate($request, [
             'title' => 'required|min:3|max:128',
             'slug' => 'nullable|max:255|unique:categories,slug',
+            'description' => 'nullable|string|max:1000',
             'seo_title' => 'nullable|string|max:255',
             'seo_description' => 'nullable|string|max:500',
         ]);
@@ -72,6 +73,7 @@ class CategoryController extends Controller
             'locale' => mb_strtolower($data['locale']),
         ], [
             'title' => $data['title'],
+            'description' => $data['description'] ?? null,
             'seo_title' => $data['seo_title'] ?? null,
             'seo_description' => $data['seo_description'] ?? null,
         ]);
@@ -116,6 +118,7 @@ class CategoryController extends Controller
         $this->validate($request, [
             'title' => 'required|min:3|max:255',
             'slug' => 'nullable|max:255|unique:categories,slug,' . $category->id,
+            'description' => 'nullable|string|max:1000',
             'seo_title' => 'nullable|string|max:255',
             'seo_description' => 'nullable|string|max:500',
         ]);
@@ -133,6 +136,7 @@ class CategoryController extends Controller
             'locale' => mb_strtolower($data['locale']),
         ], [
             'title' => $data['title'],
+            'description' => $data['description'] ?? null,
             'seo_title' => $data['seo_title'] ?? null,
             'seo_description' => $data['seo_description'] ?? null,
         ]);

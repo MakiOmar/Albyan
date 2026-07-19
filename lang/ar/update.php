@@ -1151,6 +1151,8 @@ return [
 'trending_categories_layout_rounded' => 'أزرار دائرية',
 'trending_categories_layout_cards' => 'سلايدر بطاقات الصور',
 'trending_categories_all_button' => 'نص زر كل الأقسام',
+'category_description_placeholder' => 'وصف قصير عام لهذا التصنيف',
+'category_description_hint' => 'يظهر في صفحات التصنيف وبطاقات مجالات التدريب في الصفحة الرئيسية. منفصل عن وصف SEO.',
 'trust_badges_settings_hint' => 'حتى 5 عناصر ثقة. اتركها فارغة لاستخدام القيم الافتراضية.',
 'trust_badge_subtitle' => 'العنوان الفرعي',
 'trust_badge_icon' => 'الأيقونة',

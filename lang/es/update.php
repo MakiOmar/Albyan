@@ -1151,6 +1151,8 @@ return [
 'trending_categories_layout_rounded' => 'Rounded buttons',
 'trending_categories_layout_cards' => 'Image cards carousel',
 'trending_categories_all_button' => 'All categories button text',
+'category_description_placeholder' => 'Short public description for this category',
+'category_description_hint' => 'Shown on category pages and homepage training domain cards. Separate from SEO meta description.',
 'trust_badges_settings_hint' => 'Up to 5 trust items. Leave empty to use defaults.',
 'trust_badge_subtitle' => 'Subtitle',
 'trust_badge_icon' => 'Icon',

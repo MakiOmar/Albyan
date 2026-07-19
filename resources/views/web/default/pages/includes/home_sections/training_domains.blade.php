@@ -22,8 +22,8 @@
                 <div class="col-12 col-md-6 col-lg-3 mt-20">
                     <a href="{{ $category->getUrl() }}" class="d-block border rounded p-20 h-100 text-dark">
                         <h3 class="font-16 font-weight-bold">{{ $category->title }}</h3>
-                        @if(!empty($category->home_domain_description))
-                            <p class="font-12 text-gray mt-10 mb-10">{{ $category->home_domain_description }}</p>
+                        @if(!empty($category->description))
+                            <p class="font-12 text-gray mt-10 mb-10">{{ $category->description }}</p>
                         @endif
                         <span class="font-12 text-primary">
                             {{ trans_choice('update.programs_count', (int) $category->webinars_count, ['count' => (int) $category->webinars_count]) }}

@@ -26,6 +26,9 @@
                             <h2 class="font-24 text-dark-blue mb-5">
                                 <a href="{{ $category->getUrl() }}" class="text-dark-blue">{{ $category->title }}</a>
                             </h2>
+                            @if(!empty($category->description))
+                                <p class="font-14 text-gray mb-5">{{ $category->description }}</p>
+                            @endif
                             <span class="font-12 text-gray">
                                 {{ trans_choice('update.programs_count', (int) $category->programs_count, ['count' => (int) $category->programs_count]) }}
                             </span>
