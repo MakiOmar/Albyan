@@ -137,7 +137,7 @@
 
         .training-modality-card-image {
             width: 100%;
-            height: 180px;
+            height: auto;
             object-fit: cover;
             display: block;
         }
@@ -162,10 +162,6 @@
         @media (max-width: 767px) {
             .training-modality-section {
                 margin-top: 60px;
-            }
-
-            .training-modality-card-image {
-                height: 150px;
             }
         }
     </style>
