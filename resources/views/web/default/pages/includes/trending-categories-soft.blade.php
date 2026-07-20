@@ -86,8 +86,8 @@
         }
 
         .trending-soft-image {
-            width: 70%;
-            max-width: 180px;
+            width: auto;
+            max-width: 100%;
             height: auto;
             object-fit: contain;
         }
@@ -95,8 +95,8 @@
         .trending-soft-count {
             position: absolute;
             left: 50%;
-            bottom: 0;
-            transform: translate(-50%, 50%);
+            bottom: 20px;
+            transform: translateX(-50%);
             white-space: nowrap;
             background: #fff;
             color: #171347;
@@ -134,10 +134,6 @@
             .trending-soft-media {
                 min-height: 170px;
                 padding: 20px 16px 30px;
-            }
-
-            .trending-soft-image {
-                max-width: 140px;
             }
         }
     </style>
