@@ -130,6 +130,11 @@
             transform: translateY(-8px);
         }
 
+        .trend-categories-swiper .swiper-pagination,
+        .trend-categories-swiper-pagination {
+            bottom: 5px;
+        }
+
         @media (max-width: 767px) {
             .trending-soft-media {
                 min-height: 170px;

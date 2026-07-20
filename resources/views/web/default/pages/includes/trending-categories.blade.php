@@ -42,3 +42,12 @@
         <div class="swiper-pagination trend-categories-swiper-pagination"></div>
     </div>
 </section>
+
+@push('styles_top')
+    <style>
+        .trend-categories-swiper .swiper-pagination,
+        .trend-categories-swiper-pagination {
+            bottom: 5px;
+        }
+    </style>
+@endpush
