@@ -104,7 +104,7 @@
 @push('styles_top')
     <style>
         .training-modality-section {
-            margin-top: 100px;
+            margin-top: 100px !important;
         }
 
         .training-modality-card {
