@@ -132,14 +132,15 @@
         .training-modality-card-media {
             border-radius: 14px;
             overflow: hidden;
-            background: #f4f7fb;
+            background: #fff;
+            text-align: center;
         }
 
         .training-modality-card-image {
-            width: 100%;
-            height: auto;
+            width: auto;
+            height: 150px;
             object-fit: cover;
-            display: block;
+            display: inline-block;
         }
 
         .training-modality-feature-icon {
