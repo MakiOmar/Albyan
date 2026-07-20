@@ -127,6 +127,7 @@
             color: #171347;
             margin: 0;
             line-height: 1.4;
+            text-align: center;
         }
 
         .training-modality-card-media {
