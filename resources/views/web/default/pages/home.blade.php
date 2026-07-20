@@ -479,6 +479,10 @@
                 @include('web.default.pages.includes.trending-categories', [
                     'trendingCategoriesSettings' => $trendingCategoriesSettings,
                 ])
+            @elseif($trendingCategoriesLayout === 'soft_cards')
+                @include('web.default.pages.includes.trending-categories-soft', [
+                    'trendingCategoriesSettings' => $trendingCategoriesSettings,
+                ])
             @else
                 @include('web.default.pages.includes.categories-rounded', [
                     'trendingCategoriesSettings' => $trendingCategoriesSettings,

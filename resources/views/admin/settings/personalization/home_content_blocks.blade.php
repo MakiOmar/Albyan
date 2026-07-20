@@ -41,6 +41,9 @@
                     <option value="cards" {{ (($iv['trending_categories']['layout'] ?? '') === 'cards') ? 'selected' : '' }}>
                         {{ trans('update.trending_categories_layout_cards') }}
                     </option>
+                    <option value="soft_cards" {{ (($iv['trending_categories']['layout'] ?? '') === 'soft_cards') ? 'selected' : '' }}>
+                        {{ trans('update.trending_categories_layout_soft_cards') }}
+                    </option>
                 </select>
             </div>
             <div class="form-group col-md-4">
@@ -69,6 +72,28 @@
                 <input type="text" name="value[trending_categories][all_button_link]" class="form-control"
                        value="{{ $iv['trending_categories']['all_button_link'] ?? '/categories' }}"
                        placeholder="/categories">
+            </div>
+        </div>
+
+        {{-- Soft floating cards style controls (border radius + shadow) --}}
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label>{{ trans('update.trending_categories_card_border_radius') }}</label>
+                <input type="number" min="0" max="48" step="1"
+                       name="value[trending_categories][card_border_radius]" class="form-control"
+                       value="{{ $iv['trending_categories']['card_border_radius'] ?? 24 }}">
+                <div class="text-muted font-12 mt-1">{{ trans('update.trending_categories_card_border_radius_hint') }}</div>
+            </div>
+            <div class="form-group col-md-6">
+                <label>{{ trans('update.trending_categories_card_shadow') }}</label>
+                <select name="value[trending_categories][card_shadow]" class="form-control">
+                    @php $cardShadow = $iv['trending_categories']['card_shadow'] ?? 'soft'; @endphp
+                    <option value="none" {{ $cardShadow === 'none' ? 'selected' : '' }}>{{ trans('update.trending_categories_card_shadow_none') }}</option>
+                    <option value="soft" {{ $cardShadow === 'soft' ? 'selected' : '' }}>{{ trans('update.trending_categories_card_shadow_soft') }}</option>
+                    <option value="medium" {{ $cardShadow === 'medium' ? 'selected' : '' }}>{{ trans('update.trending_categories_card_shadow_medium') }}</option>
+                    <option value="strong" {{ $cardShadow === 'strong' ? 'selected' : '' }}>{{ trans('update.trending_categories_card_shadow_strong') }}</option>
+                </select>
+                <div class="text-muted font-12 mt-1">{{ trans('update.trending_categories_card_shadow_hint') }}</div>
             </div>
         </div>
 
