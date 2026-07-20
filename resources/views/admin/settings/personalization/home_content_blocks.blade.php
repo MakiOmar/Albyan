@@ -247,10 +247,42 @@
                            value="{{ $iv['training_modality'][$key]['link'] ?? '' }}" placeholder="/classes">
                 </div>
                 <div class="form-group col-md-4">
-                    <label>{{ trans('public.description') }}</label>
-                    <textarea name="value[training_modality][{{ $key }}][description]" rows="3" class="form-control">{{ $iv['training_modality'][$key]['description'] ?? '' }}</textarea>
+                    <label>{{ trans('admin/main.image') }}</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <button type="button" class="input-group-text admin-file-manager" data-input="training_modality_{{ $key }}_image" data-preview="holder">
+                                <i class="fa fa-chevron-up"></i>
+                            </button>
+                        </div>
+                        <input type="text" name="value[training_modality][{{ $key }}][image]" id="training_modality_{{ $key }}_image"
+                               value="{{ $iv['training_modality'][$key]['image'] ?? '' }}" class="form-control">
+                    </div>
+                    <div class="text-muted font-12 mt-1">{{ trans('update.modality_card_image_hint') }}</div>
                 </div>
             </div>
+
+            <p class="font-12 text-gray mb-2">{{ trans('update.modality_features_hint') }}</p>
+            @for($i = 1; $i <= 3; $i++)
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>{{ trans('update.modality_feature_title') }} #{{ $i }}</label>
+                        <input type="text" name="value[training_modality][{{ $key }}][features][{{ $i }}][title]" class="form-control"
+                               value="{{ $iv['training_modality'][$key]['features'][$i]['title'] ?? '' }}">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>{{ trans('update.modality_feature_icon') }} #{{ $i }}</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <button type="button" class="input-group-text admin-file-manager" data-input="training_modality_{{ $key }}_feature_{{ $i }}" data-preview="holder">
+                                    <i class="fa fa-chevron-up"></i>
+                                </button>
+                            </div>
+                            <input type="text" name="value[training_modality][{{ $key }}][features][{{ $i }}][image]" id="training_modality_{{ $key }}_feature_{{ $i }}"
+                                   value="{{ $iv['training_modality'][$key]['features'][$i]['image'] ?? '' }}" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            @endfor
         @endforeach
 
         <hr class="my-4">
