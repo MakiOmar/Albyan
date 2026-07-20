@@ -296,6 +296,19 @@
                    placeholder="{{ trans('update.why_albyan_title_default') }}">
         </div>
         <div class="form-group">
+            <label>{{ trans('admin/main.image') }}</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <button type="button" class="input-group-text admin-file-manager" data-input="why_albyan_image" data-preview="holder">
+                        <i class="fa fa-chevron-up"></i>
+                    </button>
+                </div>
+                <input type="text" name="value[why_albyan][image]" id="why_albyan_image"
+                       value="{{ $iv['why_albyan']['image'] ?? '' }}" class="form-control">
+            </div>
+            <div class="text-muted font-12 mt-1">{{ trans('update.why_albyan_image_hint') }}</div>
+        </div>
+        <div class="form-group">
             <label>{{ trans('update.why_albyan_items') }}</label>
             <textarea name="value[why_albyan][items]" rows="8" class="form-control"
                       placeholder="{{ trans('update.why_albyan_items_hint') }}">{{ $iv['why_albyan']['items'] ?? '' }}</textarea>

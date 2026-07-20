@@ -1195,6 +1195,7 @@ return [
 'why_albyan_title_default' => 'Why choose Albyan Institute for your career path?',
 'why_albyan_items' => 'Benefits (one per line)',
 'why_albyan_items_hint' => 'Leave empty to use default benefits.',
+'why_albyan_image_hint' => 'Shown in the second column of the Why Albyan box.',
 'why_albyan_default_items' => [
     'Programs linked to in-demand labor market skills',
     'Training that combines theory and practical application',
