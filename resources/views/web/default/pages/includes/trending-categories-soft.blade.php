@@ -31,7 +31,7 @@
         <p class="section-hint">{{ $trendingCategoriesHint }}</p>
     @endif
 
-    <div class="swiper-container trend-categories-swiper px-12 mt-40">
+    <div class="swiper-container trend-categories-swiper px-12 mt-10">
         <div class="swiper-wrapper py-30">
             @foreach($trendCategories as $trend)
                 <div class="swiper-slide">
