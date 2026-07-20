@@ -1196,6 +1196,11 @@ return [
 'why_albyan_items' => 'Benefits (one per line)',
 'why_albyan_items_hint' => 'Leave empty to use default benefits.',
 'why_albyan_image_hint' => 'Shown in the second column of the Why Albyan box.',
+'why_albyan_side_image' => 'Side image (content column)',
+'why_albyan_background' => 'Section background image',
+'why_albyan_background_hint' => 'Optional photo behind the primary color overlay.',
+'why_albyan_overlay_opacity' => 'Primary overlay opacity (%)',
+'why_albyan_overlay_opacity_hint' => '0 = fully transparent overlay (photo only), 100 = solid primary color. Default 85.',
 'why_albyan_default_items' => [
     'Programs linked to in-demand labor market skills',
     'Training that combines theory and practical application',

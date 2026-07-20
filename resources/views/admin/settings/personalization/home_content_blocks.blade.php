@@ -295,8 +295,30 @@
                    value="{{ $iv['why_albyan']['title'] ?? '' }}"
                    placeholder="{{ trans('update.why_albyan_title_default') }}">
         </div>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label>{{ trans('update.why_albyan_background') }}</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button type="button" class="input-group-text admin-file-manager" data-input="why_albyan_background" data-preview="holder">
+                            <i class="fa fa-chevron-up"></i>
+                        </button>
+                    </div>
+                    <input type="text" name="value[why_albyan][background]" id="why_albyan_background"
+                           value="{{ $iv['why_albyan']['background'] ?? '' }}" class="form-control">
+                </div>
+                <div class="text-muted font-12 mt-1">{{ trans('update.why_albyan_background_hint') }}</div>
+            </div>
+            <div class="form-group col-md-6">
+                <label>{{ trans('update.why_albyan_overlay_opacity') }}</label>
+                <input type="number" min="0" max="100" step="1"
+                       name="value[why_albyan][overlay_opacity]" class="form-control"
+                       value="{{ $iv['why_albyan']['overlay_opacity'] ?? 85 }}">
+                <div class="text-muted font-12 mt-1">{{ trans('update.why_albyan_overlay_opacity_hint') }}</div>
+            </div>
+        </div>
         <div class="form-group">
-            <label>{{ trans('admin/main.image') }}</label>
+            <label>{{ trans('update.why_albyan_side_image') }}</label>
             <div class="input-group">
                 <div class="input-group-prepend">
                     <button type="button" class="input-group-text admin-file-manager" data-input="why_albyan_image" data-preview="holder">
