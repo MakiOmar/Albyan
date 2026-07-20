@@ -109,7 +109,7 @@
 
         .training-modality-card {
             background: #fff;
-            border: 1px solid #e8edf5;
+            border: 1px solid #01477d;
             border-radius: 18px;
             padding: 28px 24px 24px;
             box-shadow: 0 16px 40px rgba(15, 42, 89, 0.08);
