@@ -80,7 +80,7 @@
         .trending-soft-media {
             position: relative;
             min-height: 210px;
-            padding: 28px 20px 36px;
+            padding: 10px;
             border-radius: var(--trending-soft-radius, 24px);
             background: #fff;
         }
@@ -133,7 +133,6 @@
         @media (max-width: 767px) {
             .trending-soft-media {
                 min-height: 170px;
-                padding: 20px 16px 30px;
             }
         }
     </style>
