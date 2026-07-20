@@ -109,7 +109,7 @@
         }
 
         .trending-soft-title {
-            margin-top: 28px;
+            margin-top: 15px;
             font-size: 16px;
             font-weight: 600;
             line-height: 1.35;
