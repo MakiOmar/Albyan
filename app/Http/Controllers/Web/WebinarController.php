@@ -215,6 +215,12 @@ class WebinarController extends Controller
         if (empty($course)) {
             return $justReturnData ? false : back();
         }
+
+        // Marketing/deep links: /course/{slug}?program=apply → lead generation form with course title
+        if (! $justReturnData && request()->query('program') === 'apply') {
+            return redirect()->away(getCourseLeadGenerationUrl((string) $course->title));
+        }
+
         $userGroup     = null;
         $nextStartTime = false;
         $joinUrl       = false;
