@@ -13,34 +13,38 @@
         <p class="section-hint">{{ $trendingCategoriesHint }}</p>
     @endif
 
-    <div class="swiper-container trend-categories-swiper px-12 mt-10">
-        <div class="swiper-wrapper py-20">
-            @foreach($trendCategories as $trend)
-                <div class="swiper-slide">
-                    <a href="{{ $trend->category->getUrl() }}">
-                        <div class="trending-card d-flex flex-column align-items-center w-100">
-                            <div class="trending-image d-flex align-items-center justify-content-center w-100" style="background-color: {{ $trend->color }}">
-                                <div class="icon mb-3">
-                                    <img src="{{ $trend->getIcon() }}" width="10" class="img-cover" alt="">
+    {{-- Fixed all-categories column + scrolling categories swiper --}}
+    <div class="trending-categories-row px-12 mt-10">
+        <div class="trending-categories-swiper-col">
+            <div class="swiper-container trend-categories-swiper">
+                <div class="swiper-wrapper py-20">
+                    @foreach($trendCategories as $trend)
+                        <div class="swiper-slide">
+                            <a href="{{ $trend->category->getUrl() }}">
+                                <div class="trending-card d-flex flex-column align-items-center w-100">
+                                    <div class="trending-image d-flex align-items-center justify-content-center w-100" style="background-color: {{ $trend->color }}">
+                                        <div class="icon mb-3">
+                                            <img src="{{ $trend->getIcon() }}" width="10" class="img-cover" alt="">
+                                        </div>
+                                    </div>
+
+                                    <div class="item-count px-10 px-lg-20 py-5 py-lg-10">{{ $trend->category->webinars_count }} {{ trans('product.course') }}</div>
+
+                                    <h3>{{ $trend->category->title }}</h3>
+                                    @if(!empty($trend->category->description))
+                                        <p class="trending-card-description font-12 text-gray mt-10 mb-0 text-center">{{ $trend->category->description }}</p>
+                                    @endif
                                 </div>
-                            </div>
-
-                            <div class="item-count px-10 px-lg-20 py-5 py-lg-10">{{ $trend->category->webinars_count }} {{ trans('product.course') }}</div>
-
-                            <h3>{{ $trend->category->title }}</h3>
-                            @if(!empty($trend->category->description))
-                                <p class="trending-card-description font-12 text-gray mt-10 mb-0 text-center">{{ $trend->category->description }}</p>
-                            @endif
+                            </a>
                         </div>
-                    </a>
+                    @endforeach
                 </div>
-            @endforeach
-
-            {{-- All categories CTA as final swiper slide --}}
-            @include('web.default.pages.includes.trending-all-categories-slide', [
-                'trendingCategoriesSettings' => $trendingCategoriesSettings,
-            ])
+            </div>
         </div>
+
+        @include('web.default.pages.includes.trending-all-categories-slide', [
+            'trendingCategoriesSettings' => $trendingCategoriesSettings,
+        ])
     </div>
 
     <div class="d-flex justify-content-center">
@@ -53,6 +57,11 @@
         .trend-categories-swiper .swiper-pagination,
         .trend-categories-swiper-pagination {
             bottom: 5px;
+        }
+
+        /* Match swiper-wrapper py-20 so the CTA aligns with category cards */
+        .trending-all-categories-col {
+            padding-top: 20px;
         }
     </style>
 @endpush

@@ -1,4 +1,4 @@
-{{-- All-categories CTA slide: gradient card, centered label, animated circulating border --}}
+{{-- All-categories CTA: fixed column beside the categories swiper --}}
 @php
     $trendingCategoriesSettings = $trendingCategoriesSettings ?? [];
     $trendingAllTitle = trim((string) ($trendingCategoriesSettings['all_button_title'] ?? ''))
@@ -14,7 +14,8 @@
     }
 @endphp
 
-<div class="swiper-slide">
+{{-- Fixed column outside the swiper so the CTA stays visible while categories scroll --}}
+<div class="trending-all-categories-col">
     <a href="{{ $trendingAllLink }}"
        class="trending-all-categories-link d-block text-decoration-none"
        style="--trending-all-radius: {{ $allCardRadius }}px;">
@@ -27,7 +28,26 @@
 @once
     @push('styles_top')
         <style>
+            /* Row: swiper + fixed all-categories column */
+            .trending-categories-row {
+                display: flex;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .trending-categories-swiper-col {
+                flex: 1 1 0;
+                min-width: 0;
+            }
+
+            .trending-all-categories-col {
+                flex: 0 0 160px;
+                width: 160px;
+                max-width: 160px;
+            }
+
             .trending-all-categories-link {
+                display: block;
                 height: 100%;
             }
 
@@ -95,9 +115,37 @@
                 }
             }
 
+            @media (min-width: 992px) {
+                .trending-all-categories-col {
+                    flex-basis: 180px;
+                    width: 180px;
+                    max-width: 180px;
+                }
+            }
+
+            @media (min-width: 1200px) {
+                .trending-all-categories-col {
+                    flex-basis: 200px;
+                    width: 200px;
+                    max-width: 200px;
+                }
+            }
+
+            /* Stack on small screens so the swiper keeps full width */
             @media (max-width: 767px) {
+                .trending-categories-row {
+                    flex-direction: column;
+                }
+
+                .trending-all-categories-col {
+                    flex: none;
+                    width: 100%;
+                    max-width: none;
+                    order: -1;
+                }
+
                 .trending-all-categories-card {
-                    min-height: 170px;
+                    min-height: 120px;
                 }
 
                 .trending-all-categories-label {

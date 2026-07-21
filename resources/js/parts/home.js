@@ -101,11 +101,12 @@
             container: 'trend-categories-swiper',
             pagination: "trend-categories-swiper-pagination",
             breakpoints: {
+                // One fewer than before: all-categories CTA is a fixed column outside the swiper
                 1200: {
-                    slidesPerView: 6,
+                    slidesPerView: 5,
                 },
                 991: {
-                    slidesPerView: 4,
+                    slidesPerView: 3,
                 },
                 660: {
                     slidesPerView: 2,

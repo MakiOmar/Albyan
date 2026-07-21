@@ -31,40 +31,44 @@
         <p class="section-hint">{{ $trendingCategoriesHint }}</p>
     @endif
 
-    <div class="swiper-container trend-categories-swiper px-12 mt-10">
-        <div class="swiper-wrapper py-30">
-            @foreach($trendCategories as $trend)
-                <div class="swiper-slide">
-                    <a href="{{ $trend->category->getUrl() }}" class="trending-soft-link d-block text-decoration-none">
-                        <div class="trending-soft-card text-center"
-                             style="--trending-soft-radius: {{ $cardRadius }}px; --trending-soft-shadow: {{ $cardShadow }};">
-                            <div class="trending-soft-media d-flex align-items-center justify-content-center">
-                                <img src="{{ $trend->getIcon() }}"
-                                     class="trending-soft-image"
-                                     alt="{{ $trend->category->title }}"
-                                     width="180"
-                                     height="180">
+    {{-- Fixed all-categories column + scrolling categories swiper --}}
+    <div class="trending-categories-row px-12 mt-10">
+        <div class="trending-categories-swiper-col">
+            <div class="swiper-container trend-categories-swiper">
+                <div class="swiper-wrapper py-30">
+                    @foreach($trendCategories as $trend)
+                        <div class="swiper-slide">
+                            <a href="{{ $trend->category->getUrl() }}" class="trending-soft-link d-block text-decoration-none">
+                                <div class="trending-soft-card text-center"
+                                     style="--trending-soft-radius: {{ $cardRadius }}px; --trending-soft-shadow: {{ $cardShadow }};">
+                                    <div class="trending-soft-media d-flex align-items-center justify-content-center">
+                                        <img src="{{ $trend->getIcon() }}"
+                                             class="trending-soft-image"
+                                             alt="{{ $trend->category->title }}"
+                                             width="180"
+                                             height="180">
 
-                                {{-- Count pill overlaid on the bottom edge of the media area --}}
-                                <span class="trending-soft-count">
-                                    {{ $trend->category->webinars_count }} {{ trans('product.course') }}
-                                </span>
-                            </div>
+                                        {{-- Count pill overlaid on the bottom edge of the media area --}}
+                                        <span class="trending-soft-count">
+                                            {{ $trend->category->webinars_count }} {{ trans('product.course') }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <h3 class="trending-soft-title">{{ $trend->category->title }}</h3>
+                                @if(!empty($trend->category->description))
+                                    <p class="trending-soft-description mb-0">{{ $trend->category->description }}</p>
+                                @endif
+                            </a>
                         </div>
-
-                        <h3 class="trending-soft-title">{{ $trend->category->title }}</h3>
-                        @if(!empty($trend->category->description))
-                            <p class="trending-soft-description mb-0">{{ $trend->category->description }}</p>
-                        @endif
-                    </a>
+                    @endforeach
                 </div>
-            @endforeach
-
-            {{-- All categories CTA as final swiper slide --}}
-            @include('web.default.pages.includes.trending-all-categories-slide', [
-                'trendingCategoriesSettings' => $trendingCategoriesSettings,
-            ])
+            </div>
         </div>
+
+        @include('web.default.pages.includes.trending-all-categories-slide', [
+            'trendingCategoriesSettings' => $trendingCategoriesSettings,
+        ])
     </div>
 
     <div class="d-flex justify-content-center">
@@ -140,9 +144,18 @@
             bottom: 5px;
         }
 
+        /* Match swiper-wrapper py-30 so the CTA aligns with soft category cards */
+        .trending-soft-section .trending-all-categories-col {
+            padding-top: 30px;
+        }
+
         @media (max-width: 767px) {
             .trending-soft-media {
                 min-height: 170px;
+            }
+
+            .trending-soft-section .trending-all-categories-col {
+                padding-top: 0;
             }
         }
     </style>
