@@ -61,13 +61,13 @@ return [
     'free_classes' => 'دبلومات مجانية',
     'free_classes_hint' => 'لم ننس اهمية التعليم المجاني',
 
-    'testimonials' => 'آراء العملاء',
+    'testimonials' => 'تجارب خرجي ومتدربي معهد البيان',
     'testimonials_hint' => 'ماذا قال عملاؤنا عنا',
 
     'subscribe_now' => 'اشترك الان!',
     'subscribe_now_hint' => 'قم بأختيار خطة اسعار وابدأ التعلم الان!',
 
-    'instructors' => 'الأساتذة',
+    'instructors' => 'تعلم مع نخبة من المدربين والخبراء',
     'all_instructors' => 'كل الأساتذة',
     'instructors_hint' => 'تعلم مع افضل الأساتذة',
     'reserve_a_live_class' => 'احجز حصة مباشرة',

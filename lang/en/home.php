@@ -61,13 +61,13 @@ return [
     'free_classes' => 'Free Courses',
     'free_classes_hint' => '#Never miss free learning opportunities',
 
-    'testimonials' => 'Testimonials',
+    'testimonials' => 'Experiences of Albyan Institute graduates and trainees',
     'testimonials_hint' => '#What our customers say about us',
 
     'subscribe_now' => 'Subscribe Now!',
     'subscribe_now_hint' => '#Choose a subscription plan and save money!',
 
-    'instructors' => 'Instructors',
+    'instructors' => 'Learn with an elite group of trainers and experts',
     'all_instructors' => 'All Instructors',
     'instructors_hint' => '#Learn from the experienced & skillful instructors',
     'reserve_a_live_class' => 'Reserve a live meeting',
