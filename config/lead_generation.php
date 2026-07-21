@@ -26,7 +26,7 @@ return [
     | Deep-link form for /course/{slug}?program=apply
     */
     'diploma_paths' => [
-        'ar' => 'diploma-application-ar',
+        'ar' => 'diploma-application',
         'en' => 'diploma-application',
     ],
 

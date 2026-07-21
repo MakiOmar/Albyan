@@ -1589,7 +1589,7 @@ function getLeadGenerationFormUrl(?string $courseTitle = null, string $pathGroup
     $isArabic = str_starts_with($locale, 'ar');
     $paths = (array) config('lead_generation.' . $pathGroup, []);
     $defaults = $pathGroup === 'diploma_paths'
-        ? ['ar' => 'diploma-application-ar', 'en' => 'diploma-application']
+        ? ['ar' => 'diploma-application', 'en' => 'diploma-application']
         : ['ar' => 'training-program-registration-ar', 'en' => 'training-program-registration'];
     $path = $isArabic
         ? (string) ($paths['ar'] ?? $defaults['ar'])
