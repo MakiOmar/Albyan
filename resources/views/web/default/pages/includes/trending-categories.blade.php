@@ -35,6 +35,11 @@
                     </a>
                 </div>
             @endforeach
+
+            {{-- All categories CTA as final swiper slide --}}
+            @include('web.default.pages.includes.trending-all-categories-slide', [
+                'trendingCategoriesSettings' => $trendingCategoriesSettings,
+            ])
         </div>
     </div>
 
