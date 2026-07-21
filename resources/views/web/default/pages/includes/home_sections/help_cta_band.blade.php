@@ -23,7 +23,9 @@
                 <a href="{{ $whatsapp }}" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer">{{ trans('update.help_cta_whatsapp') }}</a>
             @endif
             @if($phone !== '')
-                <a href="tel:{{ preg_replace('/\s+/', '', $phone) }}" class="btn btn-outline-primary">{{ $phone }}</a>
+                <a href="tel:{{ preg_replace('/\s+/', '', $phone) }}"
+                   class="btn btn-outline-primary"
+                   title="{{ $phone }}">{{ trans('update.help_cta_call_us') }}</a>
             @endif
             @if($mapUrl !== '')
                 <a href="{{ $mapUrl }}" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer">{{ trans('update.help_cta_map') }}</a>

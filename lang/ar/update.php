@@ -1212,6 +1212,7 @@ return [
 ],
 'help_cta_band_title_default' => 'لست متأكداً من البرنامج المناسب لمسارك؟',
 'help_cta_whatsapp' => 'واتساب',
+'help_cta_call_us' => 'اتصل بنا',
 'help_cta_hours' => 'مواعيد العمل',
 'help_cta_map_url' => 'رابط خريطة فرع دبي',
 'help_cta_map' => 'خريطة فرع دبي',

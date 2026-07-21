@@ -1213,6 +1213,7 @@ return [
 ],
 'help_cta_band_title_default' => 'Not sure which program fits your path?',
 'help_cta_whatsapp' => 'WhatsApp',
+'help_cta_call_us' => 'Call us',
 'help_cta_hours' => 'Working hours',
 'help_cta_map_url' => 'Dubai branch map URL',
 'help_cta_map' => 'Dubai branch map',
