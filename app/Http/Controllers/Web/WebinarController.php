@@ -216,9 +216,9 @@ class WebinarController extends Controller
             return $justReturnData ? false : back();
         }
 
-        // Marketing/deep links: /course/{slug}?program=apply → lead generation form with course title
+        // Marketing/deep links: /course/{slug}?program=apply → diploma application form with course title
         if (! $justReturnData && request()->query('program') === 'apply') {
-            return redirect()->away(getCourseLeadGenerationUrl((string) $course->title));
+            return redirect()->away(getDiplomaApplicationFormUrl((string) $course->title));
         }
 
         $userGroup     = null;

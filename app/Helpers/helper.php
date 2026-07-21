@@ -1576,17 +1576,24 @@ function getCoursePurchaseCtaMethod(): string
 }
 
 /**
- * Build lead-generation registration URL (locale-aware).
+ * Build lead-generation form URL (locale-aware).
  * Optional course title becomes ?program= when provided.
+ *
+ * @param  string|null  $courseTitle  Appended as ?program=
+ * @param  string  $pathGroup  Config key under lead_generation (paths | diploma_paths)
  */
-function getLeadGenerationFormUrl(?string $courseTitle = null): string
+function getLeadGenerationFormUrl(?string $courseTitle = null, string $pathGroup = 'paths'): string
 {
     $base = rtrim((string) config('lead_generation.base_url', ''), '/');
     $locale = strtolower((string) app()->getLocale());
     $isArabic = str_starts_with($locale, 'ar');
+    $paths = (array) config('lead_generation.' . $pathGroup, []);
+    $defaults = $pathGroup === 'diploma_paths'
+        ? ['ar' => 'diploma-application-ar', 'en' => 'diploma-application']
+        : ['ar' => 'training-program-registration-ar', 'en' => 'training-program-registration'];
     $path = $isArabic
-        ? (string) config('lead_generation.paths.ar', 'training-program-registration-ar')
-        : (string) config('lead_generation.paths.en', 'training-program-registration');
+        ? (string) ($paths['ar'] ?? $defaults['ar'])
+        : (string) ($paths['en'] ?? $defaults['en']);
 
     $url = $base . '/' . ltrim($path, '/');
     $title = trim((string) $courseTitle);
@@ -1604,6 +1611,14 @@ function getLeadGenerationFormUrl(?string $courseTitle = null): string
 function getCourseLeadGenerationUrl(string $courseTitle): string
 {
     return getLeadGenerationFormUrl($courseTitle);
+}
+
+/**
+ * Diploma application form URL used by /course/{slug}?program=apply deep links.
+ */
+function getDiplomaApplicationFormUrl(string $courseTitle): string
+{
+    return getLeadGenerationFormUrl($courseTitle, 'diploma_paths');
 }
 
 /**
