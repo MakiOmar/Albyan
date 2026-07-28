@@ -602,14 +602,44 @@
     @endif
 </div>
 @if(!empty(turnstile_site_key()))
-    {{-- Cloudflare Turnstile (widgets use .cf-turnstile + site key) --}}
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-    <script>window.turnstileSiteKey = @json(turnstile_site_key());</script>
+    {{-- Turnstile: load only when a widget exists, after idle — avoids TBT on pages without captcha. --}}
+    <script>
+        (function () {
+            window.turnstileSiteKey = @json(turnstile_site_key());
+            function loadTurnstile() {
+                if (window.__turnstileScriptLoaded) {
+                    return;
+                }
+                if (!document.querySelector('.cf-turnstile, [data-turnstile]')) {
+                    return;
+                }
+                window.__turnstileScriptLoaded = true;
+                var s = document.createElement('script');
+                s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+                s.async = true;
+                s.defer = true;
+                document.head.appendChild(s);
+            }
+            function schedule() {
+                if (window.requestIdleCallback) {
+                    window.requestIdleCallback(loadTurnstile, { timeout: 8000 });
+                } else {
+                    window.setTimeout(loadTurnstile, 4000);
+                }
+            }
+            if (document.readyState === 'complete') {
+                schedule();
+            } else {
+                window.addEventListener('load', schedule, { once: true });
+            }
+            document.addEventListener('pointerdown', loadTurnstile, { once: true, passive: true });
+        })();
+    </script>
 @endif
 <!-- Template JS File -->
 <script src="/assets/default/js/app.min.js"></script>
 <script src="/assets/default/vendors/feather-icons/dist/feather.min.js"></script>
-{{-- Moment / SweetAlert2 / Toast / SimpleBar: defer until idle so they do not block TBT; same features when needed. --}}
+{{-- Moment / SweetAlert2 / Toast / SimpleBar: defer until interaction or late idle (keeps TBT down in lab). --}}
 <script>
     (function () {
         var deferredVendorUrls = [
@@ -618,6 +648,7 @@
             '/assets/default/vendors/toast/jquery.toast.min.js',
             '/assets/default/vendors/simplebar/simplebar.min.js'
         ];
+        var started = false;
         function loadNext(index) {
             if (index >= deferredVendorUrls.length) {
                 window.__deferredVendorsReady = true;
@@ -634,16 +665,28 @@
             document.body.appendChild(sc);
         }
         function startDeferredVendors() {
-            if (window.requestIdleCallback) {
-                window.requestIdleCallback(function () { loadNext(0); }, { timeout: 2500 });
-            } else {
-                window.setTimeout(function () { loadNext(0); }, 1);
+            if (started) {
+                return;
             }
+            started = true;
+            loadNext(0);
         }
+        function scheduleIdle() {
+            window.setTimeout(function () {
+                if (window.requestIdleCallback) {
+                    window.requestIdleCallback(startDeferredVendors, { timeout: 6000 });
+                } else {
+                    window.setTimeout(startDeferredVendors, 3000);
+                }
+            }, 3000);
+        }
+        ['pointerdown', 'touchstart', 'keydown'].forEach(function (ev) {
+            window.addEventListener(ev, startDeferredVendors, { once: true, passive: true, capture: true });
+        });
         if (document.readyState === 'complete') {
-            startDeferredVendors();
+            scheduleIdle();
         } else {
-            window.addEventListener('load', startDeferredVendors, { once: true });
+            window.addEventListener('load', scheduleIdle, { once: true });
         }
     })();
 </script>

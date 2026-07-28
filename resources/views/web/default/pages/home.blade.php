@@ -1394,9 +1394,9 @@
                 if (window.requestIdleCallback) {
                     window.requestIdleCallback(function () {
                         startCarouselLibs();
-                    }, { timeout: 8000 });
+                    }, { timeout: 12000 });
                 } else {
-                    window.setTimeout(startCarouselLibs, 8000);
+                    window.setTimeout(startCarouselLibs, 12000);
                 }
             }
 

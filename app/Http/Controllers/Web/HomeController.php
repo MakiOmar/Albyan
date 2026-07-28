@@ -30,10 +30,16 @@ use Illuminate\Support\Facades\Cache;
 class HomeController extends Controller
 {
     /** Guest/shared homepage data cache TTL (seconds). */
-    public const HOME_CACHE_TTL = 600;
+    public const HOME_CACHE_TTL = 900;
+
+    /** Guest rendered HTML cache TTL (seconds). */
+    public const HOME_HTML_CACHE_TTL = 120;
 
     /** Cache key prefix for locale-scoped homepage payloads. */
     public const HOME_CACHE_PREFIX = 'home.page_data.';
+
+    /** Cache key prefix for guest rendered homepage HTML. */
+    public const HOME_HTML_CACHE_PREFIX = 'home.html.';
 
     /**
      * Forget cached homepage payloads for site-configured locales.
@@ -64,6 +70,7 @@ class HomeController extends Controller
 
         foreach ($locales as $locale) {
             Cache::forget(self::HOME_CACHE_PREFIX . $locale);
+            Cache::forget(self::HOME_HTML_CACHE_PREFIX . $locale);
         }
 
         Cache::forget('home.default_statistics');
@@ -72,6 +79,30 @@ class HomeController extends Controller
     public function index()
     {
         $locale = app()->getLocale();
+        $isGuest = !auth()->check()
+            && !session()->get('toast')
+            && !session()->has('errors')
+            && !session()->has('registration_package_limited');
+
+        // Guest full HTML cache (CSRF tokens refreshed per request).
+        if ($isGuest) {
+            $htmlKey = self::HOME_HTML_CACHE_PREFIX . $locale;
+            $html = Cache::remember($htmlKey, self::HOME_HTML_CACHE_TTL, function () use ($locale) {
+                $data = Cache::remember(self::HOME_CACHE_PREFIX . $locale, self::HOME_CACHE_TTL, function () {
+                    return $this->buildHomePageData();
+                });
+
+                return view(getTemplate() . '.pages.home', $data)->render();
+            });
+
+            $html = $this->refreshCsrfTokensInHtml($html);
+
+            return response($html, 200, [
+                'Content-Type' => 'text/html; charset=UTF-8',
+                'Cache-Control' => 'public, max-age=60, s-maxage=120',
+            ]);
+        }
+
         $cacheKey = self::HOME_CACHE_PREFIX . $locale;
 
         // Shared section data (no auth-specific installment flags).
@@ -85,15 +116,34 @@ class HomeController extends Controller
         }
 
         $response = response()->view(getTemplate() . '.pages.home', $data);
-
-        // Guest HTML can be short-cached by browsers/CDN; logged-in stays private.
-        if (!auth()->check() && !session()->get('toast') && !session()->has('errors')) {
-            $response->headers->set('Cache-Control', 'public, max-age=60, s-maxage=300');
-        } else {
-            $response->headers->set('Cache-Control', 'private, no-store');
-        }
+        $response->headers->set('Cache-Control', 'private, no-store');
 
         return $response;
+    }
+
+    /**
+     * Replace cached CSRF meta/input values with the current session token.
+     */
+    private function refreshCsrfTokensInHtml(string $html): string
+    {
+        $token = csrf_token();
+        if ($token === '') {
+            return $html;
+        }
+
+        $html = preg_replace(
+            '/(<meta\s+name=["\']csrf-token["\']\s+content=["\'])[^"\']*(["\'])/i',
+            '$1' . $token . '$2',
+            $html
+        ) ?: $html;
+
+        $html = preg_replace(
+            '/(<input[^>]+name=["\']_token["\'][^>]+value=["\'])[^"\']*(["\'])/i',
+            '$1' . $token . '$2',
+            $html
+        ) ?: $html;
+
+        return $html;
     }
 
     /**

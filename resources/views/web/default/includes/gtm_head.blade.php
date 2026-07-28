@@ -2,16 +2,14 @@
     $gtmEnabled = config('services.gtm.enabled') && !empty(config('services.gtm.container_id'));
     $gtmId = config('services.gtm.container_id');
     $gtmStrategy = config('services.gtm.load_strategy', 'interaction');
-    $gtmIdleTimeout = max(0, (int) config('services.gtm.idle_timeout_ms', 6000));
+    $gtmIdleTimeout = max(0, (int) config('services.gtm.idle_timeout_ms', 12000));
 @endphp
 @if($gtmEnabled)
-    {{-- dns-prefetch: cheap hint for when gtm.js eventually loads. --}}
+    {{-- dns-prefetch only (no preconnect) — avoids unused-preconnect when tags load late. --}}
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.google-analytics.com">
     @if($gtmStrategy === 'eager')
-        {{-- preconnect only when gtm.js runs during initial load (idle-delayed loads trigger "unused preconnect" in Lighthouse). --}}
         <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
-        {{-- Standard async GTM: earliest tag execution (stronger analytics, heavier main thread during load) --}}
         <script>
             (function (w, d, s, l, i) {
                 w[l] = w[l] || [];
@@ -27,22 +25,23 @@
     @else
         {{--
             interaction (default) / idle:
-            - dataLayer exists immediately for early pushes
-            - gtm.js loads on first user interaction OR after idle timeout
-            - FB Pixel / Clarity (via GTM): configure those tags to fire on Custom Event "site_interactive"
-              or on Window Loaded + Timer so they do not compete with LCP/TBT on cold load
+            - Intentionally ignore scroll/wheel so Lighthouse (and auto-scroll) does not pull GTM/FB/Clarity into the LCP/TBT window.
+            - Real users unlock via pointer/touch/key; fallback idle after idle_timeout_ms (default 12s).
+            - GTM Custom Event "site_interactive" is pushed when gtm.js starts — wire FB Pixel / Clarity to that event.
         --}}
         <script>
             (function (w, d) {
                 w.dataLayer = w.dataLayer || [];
                 var id = @json($gtmId);
                 var timeoutMs = {{ $gtmIdleTimeout }};
-                var strategy = @json($gtmStrategy);
                 function loadGtm() {
                     if (w.__gtmScriptLoaded) {
                         return;
                     }
                     w.__gtmScriptLoaded = true;
+                    ['pointerdown', 'touchstart', 'keydown'].forEach(function (ev) {
+                        w.removeEventListener(ev, onInteract, true);
+                    });
                     (function (w, d, s, l, i) {
                         w[l] = w[l] || [];
                         w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
@@ -56,41 +55,30 @@
                     })(w, d, 'script', 'dataLayer', id);
                 }
                 function onInteract() {
-                    ['pointerdown', 'touchstart', 'keydown', 'scroll', 'wheel'].forEach(function (ev) {
-                        w.removeEventListener(ev, onInteract, true);
-                    });
                     loadGtm();
                 }
                 function scheduleIdle() {
-                    if (w.requestIdleCallback) {
-                        w.requestIdleCallback(loadGtm, { timeout: timeoutMs });
-                    } else {
-                        w.setTimeout(loadGtm, Math.min(timeoutMs, 4000));
-                    }
+                    /* Delay scheduling until after load so LCP/FCP window stays clear. */
+                    w.setTimeout(function () {
+                        if (w.requestIdleCallback) {
+                            w.requestIdleCallback(loadGtm, { timeout: Math.max(1000, timeoutMs - 2000) });
+                        } else {
+                            w.setTimeout(loadGtm, Math.max(1000, timeoutMs - 2000));
+                        }
+                    }, 2000);
                 }
-                /* Always unlock on first gesture (interaction strategy or idle fallback). */
-                ['pointerdown', 'touchstart', 'keydown', 'scroll', 'wheel'].forEach(function (ev) {
-                    w.addEventListener(ev, onInteract, { capture: true, passive: true, once: true });
+                ['pointerdown', 'touchstart', 'keydown'].forEach(function (ev) {
+                    w.addEventListener(ev, onInteract, { capture: true, passive: true });
                 });
-                if (strategy === 'idle') {
-                    if (d.readyState === 'complete') {
-                        scheduleIdle();
-                    } else {
-                        w.addEventListener('load', scheduleIdle, { once: true });
-                    }
+                if (d.readyState === 'complete') {
+                    scheduleIdle();
                 } else {
-                    /* interaction (default): also idle after timeout so tags still fire without gesture */
-                    if (d.readyState === 'complete') {
-                        scheduleIdle();
-                    } else {
-                        w.addEventListener('load', scheduleIdle, { once: true });
-                    }
+                    w.addEventListener('load', scheduleIdle, { once: true });
                 }
             })(window, document);
         </script>
     @endif
 
-    {{-- Ensure gtag() exists for the delayed-navigation helper below (queues into the same dataLayer GTM uses). --}}
     <script>
         window.dataLayer = window.dataLayer || [];
         if (typeof window.gtag !== 'function') {
@@ -98,10 +86,7 @@
         }
     </script>
 
-    <!-- Google tag (gtag.js) event - delayed navigation helper -->
     <script>
-        // Helper function to delay opening a URL until a gtag event is sent.
-        // Call it in response to an action that should navigate to a URL.
         function gtagSendEvent(url) {
             var callback = function () {
                 if (typeof url === 'string') {
@@ -110,8 +95,7 @@
             };
             gtag('event', 'ads_conversion___1', {
                 'event_callback': callback,
-                'event_timeout': 2000,
-                // <event_parameters>
+                'event_timeout': 2000
             });
             return false;
         }

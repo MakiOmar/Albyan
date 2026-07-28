@@ -34,7 +34,7 @@ class OptimizeHomeImagesCommand extends Command
             ['path' => 'store/1/Next-Level-New-Logo-e1656427733314.webp', 'max' => 860],
             ['path' => 'store/1/video_thumb.webp', 'max' => 800],
             ['path' => 'store/1/diplomas-landing/7.webp', 'max' => $maxEdge],
-            ['path' => 'store/1/in-person-course-3d-icon.webp', 'max' => 400],
+            ['path' => 'store/1/in-person-course-3d-icon.webp', 'max' => 256],
             ['path' => 'assets/default/img/footer/pattern.png', 'max' => 800],
             ['path' => 'assets/default/vendors/flagstrap/css/flags.webp', 'max' => 1024],
         ];

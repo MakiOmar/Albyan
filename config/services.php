@@ -80,20 +80,19 @@ return [
     |
     | container_id: e.g. GTM-XXXXXXX
     | load_strategy:
-    |   - interaction (default): inject gtm.js on first user gesture OR after idle_timeout_ms —
-    |     best PageSpeed; pushes dataLayer event "site_interactive" when gtm.js starts.
-    |     Configure FB Pixel / Clarity tags in GTM to fire on Custom Event "site_interactive"
-    |     (or Window Loaded + Timer) so they do not compete with LCP/TBT.
-    |   - idle: inject gtm.js after window load + requestIdleCallback — good PageSpeed,
-    |     tags fire within idle_timeout_ms. dataLayer exists immediately for early pushes.
-    |   - eager: official async snippet in <head> — best for capturing fastest bounces / earliest hits.
+    |   - interaction (default): gtm.js on pointer/touch/key OR after idle_timeout_ms.
+    |     Scroll/wheel intentionally ignored (Lighthouse auto-scroll must not load tags early).
+    |     Pushes dataLayer event "site_interactive" when gtm.js starts — configure FB Pixel /
+    |     Clarity in GTM on that Custom Event.
+    |   - idle: same delayed path (kept for backwards-compatible env values).
+    |   - eager: official async snippet in <head> — earliest hits, heaviest TBT.
     |
     */
     'gtm' => [
         'enabled' => filter_var(env('GTM_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
         'container_id' => env('GTM_CONTAINER_ID', 'GTM-NB3BZ2JT'),
         'load_strategy' => env('GTM_LOAD_STRATEGY', 'interaction'),
-        'idle_timeout_ms' => (int) env('GTM_IDLE_TIMEOUT_MS', 6000),
+        'idle_timeout_ms' => (int) env('GTM_IDLE_TIMEOUT_MS', 12000),
     ],
 
     /*

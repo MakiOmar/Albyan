@@ -1,13 +1,37 @@
 <?php
 /**
- * One-shot optimizer for local public assets (no Laravel boot / DB required).
+ * One-shot optimizer for homepage Lighthouse image offenders (no Laravel/DB boot).
  * Usage: php scripts/optimize-home-images.php
  */
 $root = dirname(__DIR__);
 $targets = [
+    [$root . '/public/store/1/Next-Level-New-Logo-e1656427733314.webp', 860],
+    [$root . '/public/store/1/video_thumb.webp', 800],
+    [$root . '/public/store/1/in-person-course-3d-icon.webp', 400],
     [$root . '/public/assets/default/img/footer/pattern.png', 800],
     [$root . '/public/assets/default/vendors/flagstrap/css/flags.webp', 1024],
 ];
+
+// Diploma landing + section icons if present
+foreach ([
+    $root . '/public/store/1/diplomas-landing',
+    $root . '/public/store/1/ايقونات الاقسام',
+] as $dir) {
+    if (!is_dir($dir)) {
+        continue;
+    }
+    foreach (scandir($dir) as $file) {
+        if ($file === '.' || $file === '..') {
+            continue;
+        }
+        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        if (!in_array($ext, ['webp', 'png', 'jpg', 'jpeg'], true)) {
+            continue;
+        }
+        $max = (strpos($dir, 'ايقونات') !== false) ? 128 : 1200;
+        $targets[] = [$dir . DIRECTORY_SEPARATOR . $file, $max];
+    }
+}
 
 if (!extension_loaded('gd')) {
     fwrite(STDERR, "GD required\n");
@@ -28,6 +52,12 @@ foreach ($targets as [$full, $maxEdge]) {
     $scale = min(1, $maxEdge / max($w, $h));
     $nw = max(1, (int) round($w * $scale));
     $nh = max(1, (int) round($h * $scale));
+
+    // Skip if already small enough on disk and dimensions
+    if ($scale >= 1 && filesize($full) < 24 * 1024) {
+        echo "skip small: $full\n";
+        continue;
+    }
 
     switch ($type) {
         case IMAGETYPE_PNG:
@@ -58,11 +88,11 @@ foreach ($targets as [$full, $maxEdge]) {
     $ext = strtolower(pathinfo($full, PATHINFO_EXTENSION));
     $ok = false;
     if ($ext === 'webp' && function_exists('imagewebp')) {
-        $ok = imagewebp($dst, $tmp, 82);
+        $ok = imagewebp($dst, $tmp, 80);
     } elseif ($ext === 'png') {
         $ok = imagepng($dst, $tmp, 8);
     } elseif (in_array($ext, ['jpg', 'jpeg'], true)) {
-        $ok = imagejpeg($dst, $tmp, 82);
+        $ok = imagejpeg($dst, $tmp, 80);
     }
 
     imagedestroy($src);
@@ -76,14 +106,17 @@ foreach ($targets as [$full, $maxEdge]) {
 
     $before = filesize($full);
     $after = filesize($tmp);
-    if ($after >= $before) {
+    if ($after >= $before && $scale >= 1) {
         unlink($tmp);
         echo "no gain: $full ($before bytes)\n";
         continue;
     }
-    if (!is_file($full . '.bak')) {
-        copy($full, $full . '.bak');
+    // Prefer smaller file even when resizing
+    if ($after >= $before) {
+        unlink($tmp);
+        echo "no gain after resize: $full\n";
+        continue;
     }
     rename($tmp, $full);
-    echo "ok: $full {$w}x{$h}->{$nw}x{$nh} {$before}->{$after}\n";
+    echo "ok: " . basename($full) . " {$w}x{$h}->{$nw}x{$nh} {$before}->{$after}\n";
 }
