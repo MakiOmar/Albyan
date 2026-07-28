@@ -88,12 +88,8 @@ class HomeController extends Controller
 
         $response = response()->view(getTemplate() . '.pages.home', $data);
 
-        // Guests: short CDN/browser cache. Do not cache full HTML (CSRF tokens must stay per-session).
-        if (!auth()->check() && !session()->get('toast') && !session()->has('errors')) {
-            $response->headers->set('Cache-Control', 'public, max-age=60, s-maxage=120');
-        } else {
-            $response->headers->set('Cache-Control', 'private, no-store');
-        }
+        // Never publicly cache HTML — CSRF fields are per-session; public/CDN cache caused token leakage.
+        $response->headers->set('Cache-Control', 'private, no-store');
 
         return $response;
     }
