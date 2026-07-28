@@ -56,9 +56,7 @@
             <link rel="preload" as="image" href="{{ $__homeHeroPoster }}" fetchpriority="high">
         @endif
     @endif
-    {{-- Swiper + Owl: load in head on home so sliders layout horizontally before JS runs (lazy loader skips duplicate fetch). --}}
-    <link rel="stylesheet" href="/assets/default/vendors/swiper/swiper-bundle.min.css">
-    <link rel="stylesheet" href="/assets/default/vendors/owl-carousel2/owl.carousel.min.css">
+    {{-- Swiper + Owl CSS: loaded via lazyCSSLoader near viewport (not render-blocking). Min-heights on wrappers protect CLS. --}}
 @endpush
 
 @section('content')
@@ -139,7 +137,7 @@
                             @if(!empty($heroSectionData['has_lottie']) and $heroSectionData['has_lottie'] == "1")
                                 <lottie-player src="{{ $heroSectionData['hero_vector'] }}" background="transparent" speed="1" class="w-100" loop autoplay></lottie-player>
                             @else
-                                <img src="{{ $heroSectionData['hero_vector'] }}" alt="{{ $heroSectionData['title'] }}" class="img-cover">
+                                <img src="{{ $heroSectionData['hero_vector'] }}" alt="{{ $heroSectionData['title'] }}" class="img-cover" loading="eager" decoding="async" fetchpriority="high" data-no-lazy="true">
                             @endif
                         </div>
                     </div>
@@ -497,7 +495,7 @@
                     @foreach($advertisingBanners1 as $banner1)
                         <div class="col-{{ $banner1->size }}">
                             <a href="{{ $banner1->link }}">
-                                <img src="{{ $banner1->image }}" class="img-cover rounded-sm" alt="{{ $banner1->title }}">
+                                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $banner1->image }}" class="img-cover rounded-sm" alt="{{ $banner1->title }}" loading="lazy" decoding="async" width="800" height="250">
                             </a>
                         </div>
                     @endforeach
@@ -774,7 +772,7 @@
                                             @endif
 
                                             <div class="plan-icon">
-                                                <img src="{{ $subscribe->icon }}" class="img-cover" alt="{{ $subscribe->title ?? trans('public.subscription_icon') }}">
+                                                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $subscribe->icon }}" class="img-cover" alt="{{ $subscribe->title ?? trans('public.subscription_icon') }}" loading="lazy" decoding="async" width="64" height="64">
                                             </div>
 
                                             <h3 class="mt-20 font-30 text-secondary">{{ $subscribe->title }}</h3>
@@ -869,13 +867,13 @@
 
                     <div class="col-12 col-lg-6 mt-20 mt-lg-0">
                         <div class="position-relative ">
-                            <img src="{{ $findInstructorSection['image'] }}" class="find-instructor-section-hero" alt="{{ $findInstructorSection['title'] }}">
-                            <img src="/assets/default/img/home/circle-4.png" class="find-instructor-section-circle" alt="circle">
-                            <img src="/assets/default/img/home/dot.png" class="find-instructor-section-dots" alt="dots">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $findInstructorSection['image'] }}" class="find-instructor-section-hero" alt="{{ $findInstructorSection['title'] }}" loading="lazy" decoding="async">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/default/img/home/circle-4.png" class="find-instructor-section-circle" alt="circle" loading="lazy" decoding="async" width="80" height="80">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/default/img/home/dot.png" class="find-instructor-section-dots" alt="dots" loading="lazy" decoding="async" width="40" height="40">
 
                             <div class="example-instructor-card bg-white rounded-sm shadow-lg  p-5 p-md-15 d-flex align-items-center">
                                 <div class="example-instructor-card-avatar">
-                                    <img src="/assets/default/img/home/toutor_finder.svg" class="img-cover rounded-circle" alt="user name">
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/default/img/home/toutor_finder.svg" class="img-cover rounded-circle" alt="user name" loading="lazy" decoding="async" width="48" height="48">
                                 </div>
 
                                 <div class="flex-grow-1 ml-15">
@@ -894,11 +892,11 @@
                 <div class="row align-items-center">
                     <div class="col-12 col-lg-6">
                         <div class="position-relative reward-program-section-hero-card">
-                            <img src="{{ $rewardProgramSection['image'] }}" class="reward-program-section-hero" alt="{{ $rewardProgramSection['title'] }}">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $rewardProgramSection['image'] }}" class="reward-program-section-hero" alt="{{ $rewardProgramSection['title'] }}" loading="lazy" decoding="async">
 
                             <div class="example-reward-card bg-white rounded-sm shadow-lg p-5 p-md-15 d-flex align-items-center">
                                 <div class="example-reward-card-medal">
-                                    <img src="/assets/default/img/rewards/medal.png" class="img-cover rounded-circle" alt="medal">
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/default/img/rewards/medal.png" class="img-cover rounded-circle" alt="medal" loading="lazy" decoding="async" width="48" height="48">
                                 </div>
 
                                 <div class="flex-grow-1 ml-15">
@@ -951,13 +949,13 @@
 
                     <div class="col-12 col-lg-6 mt-20 mt-lg-0">
                         <div class="position-relative ">
-                            <img src="{{ $becomeInstructorSection['image'] }}" class="find-instructor-section-hero" alt="{{ $becomeInstructorSection['title'] }}">
-                            <img src="/assets/default/img/home/circle-4.png" class="find-instructor-section-circle" alt="circle">
-                            <img src="/assets/default/img/home/dot.png" class="find-instructor-section-dots" alt="dots">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $becomeInstructorSection['image'] }}" class="find-instructor-section-hero" alt="{{ $becomeInstructorSection['title'] }}" loading="lazy" decoding="async">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/default/img/home/circle-4.png" class="find-instructor-section-circle" alt="circle" loading="lazy" decoding="async" width="80" height="80">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/default/img/home/dot.png" class="find-instructor-section-dots" alt="dots" loading="lazy" decoding="async" width="40" height="40">
 
                             <div class="example-instructor-card bg-white rounded-sm shadow-lg border p-5 p-md-15 d-flex align-items-center">
                                 <div class="example-instructor-card-avatar">
-                                    <img src="/assets/default/img/home/become_instructor.svg" class="img-cover rounded-circle" alt="user name">
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/default/img/home/become_instructor.svg" class="img-cover rounded-circle" alt="user name" loading="lazy" decoding="async" width="48" height="48">
                                 </div>
 
                                 <div class="flex-grow-1 ml-15">
@@ -976,9 +974,9 @@
                 <div class="row align-items-center">
                     <div class="col-12 col-lg-6 mt-20 mt-lg-0">
                         <div class="position-relative ">
-                            <img src="{{ $forumSection['image'] }}" class="find-instructor-section-hero" alt="{{ $forumSection['title'] }}">
-                            <img src="/assets/default/img/home/circle-4.png" class="find-instructor-section-circle" alt="circle">
-                            <img src="/assets/default/img/home/dot.png" class="find-instructor-section-dots" alt="dots">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $forumSection['image'] }}" class="find-instructor-section-hero" alt="{{ $forumSection['title'] }}" loading="lazy" decoding="async">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/default/img/home/circle-4.png" class="find-instructor-section-circle" alt="circle" loading="lazy" decoding="async" width="80" height="80">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/default/img/home/dot.png" class="find-instructor-section-dots" alt="dots" loading="lazy" decoding="async" width="40" height="40">
                         </div>
                     </div>
 
@@ -1117,7 +1115,7 @@
                     @foreach($advertisingBanners2 as $banner2)
                         <div class="col-{{ $banner2->size }}">
                             <a href="{{ $banner2->link }}">
-                                <img src="{{ $banner2->image }}" class="img-cover rounded-sm" alt="{{ $banner2->title }}">
+                                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $banner2->image }}" class="img-cover rounded-sm" alt="{{ $banner2->title }}" loading="lazy" decoding="async" width="800" height="250">
                             </a>
                         </div>
                     @endforeach
@@ -1145,7 +1143,7 @@
                                 <div class="swiper-slide">
                                     <div class="home-organizations-card d-flex flex-column align-items-center justify-content-center">
                                         <div class="home-organizations-avatar">
-                                            <img src="{{ $organization->getAvatar(120) }}" class="img-cover rounded-circle" alt="{{ $organization->full_name }}">
+                                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $organization->getAvatar(120) }}" class="img-cover rounded-circle" alt="{{ $organization->full_name }}" loading="lazy" decoding="async" width="120" height="120">
                                         </div>
                                         <a href="{{ $organization->getProfileUrl() }}" class="mt-25 d-flex flex-column align-items-center justify-content-center">
                                             <h3 class="home-organizations-title">{{ $organization->full_name }}</h3>
@@ -1261,15 +1259,17 @@
             };
         })(@json(['more' => trans('site.show_more_ellipsis'), 'less' => trans('site.show_less_ellipsis')]));
         (function () {
+            /* Carousel chain only — parallax loads separately when its nodes approach the viewport. */
             var carouselUrls = [
                 '/assets/default/vendors/swiper/swiper-bundle.min.js',
                 '/assets/default/vendors/owl-carousel2/owl.carousel.min.js',
-                '/assets/default/vendors/parallax/parallax.min.js',
                 '/assets/default/js/parts/home.min.js'
             ];
             var started = false;
+            var parallaxStarted = false;
+
             function afterHomeLibs() {
-                /* Stagger after carousel init (home.min.js uses double rAF + idle parallax) to cut layout thrashing. */
+                /* Stagger after carousel init (home.min.js uses double rAF) to cut layout thrashing. */
                 requestAnimationFrame(function () {
                     requestAnimationFrame(function () {
                         document.querySelectorAll('.swiper-slide').forEach(function (slide) {
@@ -1314,31 +1314,35 @@
                     });
                 });
             }
-            function loadScriptChain(index) {
-                if (index >= carouselUrls.length) {
-                    afterHomeLibs();
+
+            function loadScriptChain(urls, index, done) {
+                if (index >= urls.length) {
+                    if (typeof done === 'function') {
+                        done();
+                    }
                     return;
                 }
                 var sc = document.createElement('script');
-                sc.src = carouselUrls[index];
+                sc.src = urls[index];
                 sc.async = false;
                 sc.onload = function () {
-                    loadScriptChain(index + 1);
+                    loadScriptChain(urls, index + 1, done);
                 };
                 sc.onerror = function () {
-                    loadScriptChain(index + 1);
+                    loadScriptChain(urls, index + 1, done);
                 };
                 document.body.appendChild(sc);
             }
+
             function startCarouselLibs() {
                 if (started) {
                     return;
                 }
                 started = true;
-                /* Async vendor CSS (not render-blocking), then script chain — order Swiper/Owl before home.min.js */
+                /* Async vendor CSS (not render-blocking), then script chain — Swiper/Owl before home.min.js */
                 var loader = window.lazyCSSLoader;
                 var runChain = function () {
-                    loadScriptChain(0);
+                    loadScriptChain(carouselUrls, 0, afterHomeLibs);
                 };
                 if (loader && typeof loader.loadMultipleCSS === 'function') {
                     loader.loadMultipleCSS(['swiper', 'owl-carousel']).then(runChain).catch(runChain);
@@ -1346,29 +1350,71 @@
                     runChain();
                 }
             }
+
+            /* Parallax: same visuals, load only when parallax nodes near viewport (desktop shows them). */
+            function initParallaxInstances() {
+                if (typeof Parallax === 'undefined') {
+                    return;
+                }
+                for (var i = 1; i <= 6; i++) {
+                    var el = document.getElementById('parallax' + i);
+                    if (!el) {
+                        continue;
+                    }
+                    try {
+                        new Parallax(el, { relativeInput: true });
+                    } catch (e) { /* ignore */ }
+                }
+            }
+
+            function startParallaxLib() {
+                if (parallaxStarted) {
+                    return;
+                }
+                parallaxStarted = true;
+                loadScriptChain(['/assets/default/vendors/parallax/parallax.min.js'], 0, initParallaxInstances);
+            }
+
             var probe = document.querySelector('.swiper-container, .owl-carousel');
-            if (!probe) {
-                return;
-            }
-            if ('IntersectionObserver' in window) {
-                var io = new IntersectionObserver(function (entries) {
-                    entries.forEach(function (e) {
-                        if (e.isIntersecting) {
-                            io.disconnect();
-                            startCarouselLibs();
-                        }
-                    });
-                }, { rootMargin: '280px 0px', threshold: 0.01 });
-                io.observe(probe);
-            } else {
-                startCarouselLibs();
-            }
-            if (window.requestIdleCallback) {
-                window.requestIdleCallback(function () {
+            if (probe) {
+                if ('IntersectionObserver' in window) {
+                    var io = new IntersectionObserver(function (entries) {
+                        entries.forEach(function (e) {
+                            if (e.isIntersecting) {
+                                io.disconnect();
+                                startCarouselLibs();
+                            }
+                        });
+                    }, { rootMargin: '400px 0px', threshold: 0.01 });
+                    io.observe(probe);
+                } else {
                     startCarouselLibs();
-                }, { timeout: 3500 });
-            } else {
-                window.setTimeout(startCarouselLibs, 3200);
+                }
+                /* Late fallback only — avoid forcing carousels during hero Lighthouse window. */
+                if (window.requestIdleCallback) {
+                    window.requestIdleCallback(function () {
+                        startCarouselLibs();
+                    }, { timeout: 8000 });
+                } else {
+                    window.setTimeout(startCarouselLibs, 8000);
+                }
+            }
+
+            var parallaxProbe = document.querySelector('#parallax1, #parallax2, #parallax3, #parallax4, #parallax5, #parallax6');
+            if (parallaxProbe) {
+                if ('IntersectionObserver' in window) {
+                    var pio = new IntersectionObserver(function (entries) {
+                        entries.forEach(function (e) {
+                            if (e.isIntersecting) {
+                                pio.disconnect();
+                                startParallaxLib();
+                            }
+                        });
+                    }, { rootMargin: '200px 0px', threshold: 0.01 });
+                    pio.observe(parallaxProbe);
+                } else {
+                    window.setTimeout(startParallaxLib, 5000);
+                }
             }
         })();
     </script>

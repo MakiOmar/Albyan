@@ -1,11 +1,11 @@
 @php
     $gtmEnabled = config('services.gtm.enabled') && !empty(config('services.gtm.container_id'));
     $gtmId = config('services.gtm.container_id');
-    $gtmStrategy = config('services.gtm.load_strategy', 'idle');
-    $gtmIdleTimeout = max(0, (int) config('services.gtm.idle_timeout_ms', 2500));
+    $gtmStrategy = config('services.gtm.load_strategy', 'interaction');
+    $gtmIdleTimeout = max(0, (int) config('services.gtm.idle_timeout_ms', 6000));
 @endphp
 @if($gtmEnabled)
-    {{-- dns-prefetch: cheap hint for when gtm.js eventually loads (including idle strategy). --}}
+    {{-- dns-prefetch: cheap hint for when gtm.js eventually loads. --}}
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.google-analytics.com">
     @if($gtmStrategy === 'eager')
@@ -25,12 +25,19 @@
             })(window, document, 'script', 'dataLayer', @json($gtmId));
         </script>
     @else
-        {{-- dataLayer immediately; gtm.js after load + idle (or timeout) — lighter PageSpeed, tags still run soon --}}
+        {{--
+            interaction (default) / idle:
+            - dataLayer exists immediately for early pushes
+            - gtm.js loads on first user interaction OR after idle timeout
+            - FB Pixel / Clarity (via GTM): configure those tags to fire on Custom Event "site_interactive"
+              or on Window Loaded + Timer so they do not compete with LCP/TBT on cold load
+        --}}
         <script>
             (function (w, d) {
                 w.dataLayer = w.dataLayer || [];
                 var id = @json($gtmId);
                 var timeoutMs = {{ $gtmIdleTimeout }};
+                var strategy = @json($gtmStrategy);
                 function loadGtm() {
                     if (w.__gtmScriptLoaded) {
                         return;
@@ -39,6 +46,7 @@
                     (function (w, d, s, l, i) {
                         w[l] = w[l] || [];
                         w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+                        w[l].push({ event: 'site_interactive' });
                         var f = d.getElementsByTagName(s)[0],
                             j = d.createElement(s),
                             dl = l !== 'dataLayer' ? '&l=' + l : '';
@@ -47,17 +55,36 @@
                         f.parentNode.insertBefore(j, f);
                     })(w, d, 'script', 'dataLayer', id);
                 }
-                function schedule() {
+                function onInteract() {
+                    ['pointerdown', 'touchstart', 'keydown', 'scroll', 'wheel'].forEach(function (ev) {
+                        w.removeEventListener(ev, onInteract, true);
+                    });
+                    loadGtm();
+                }
+                function scheduleIdle() {
                     if (w.requestIdleCallback) {
                         w.requestIdleCallback(loadGtm, { timeout: timeoutMs });
                     } else {
-                        w.setTimeout(loadGtm, Math.min(timeoutMs, 2000));
+                        w.setTimeout(loadGtm, Math.min(timeoutMs, 4000));
                     }
                 }
-                if (d.readyState === 'complete') {
-                    schedule();
+                /* Always unlock on first gesture (interaction strategy or idle fallback). */
+                ['pointerdown', 'touchstart', 'keydown', 'scroll', 'wheel'].forEach(function (ev) {
+                    w.addEventListener(ev, onInteract, { capture: true, passive: true, once: true });
+                });
+                if (strategy === 'idle') {
+                    if (d.readyState === 'complete') {
+                        scheduleIdle();
+                    } else {
+                        w.addEventListener('load', scheduleIdle, { once: true });
+                    }
                 } else {
-                    w.addEventListener('load', schedule, { once: true });
+                    /* interaction (default): also idle after timeout so tags still fire without gesture */
+                    if (d.readyState === 'complete') {
+                        scheduleIdle();
+                    } else {
+                        w.addEventListener('load', scheduleIdle, { once: true });
+                    }
                 }
             })(window, document);
         </script>

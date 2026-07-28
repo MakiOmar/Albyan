@@ -207,6 +207,9 @@ class SettingsController extends Controller
             if ($name == 'general') {
                 cache()->forget('settings.getDefaultLocale');
             }
+
+            // Homepage payload includes settings-driven hero/sections — drop shared cache.
+            \App\Http\Controllers\Web\HomeController::clearHomePageCache();
         }
 
         if ($name == "security") { // after change admin panel url

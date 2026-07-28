@@ -609,10 +609,44 @@
 <!-- Template JS File -->
 <script src="/assets/default/js/app.min.js"></script>
 <script src="/assets/default/vendors/feather-icons/dist/feather.min.js"></script>
-<script src="/assets/default/vendors/moment.min.js"></script>
-<script src="/assets/default/vendors/sweetalert2/dist/sweetalert2.min.js"></script>
-<script src="/assets/default/vendors/toast/jquery.toast.min.js"></script>
-<script type="text/javascript" src="/assets/default/vendors/simplebar/simplebar.min.js"></script>
+{{-- Moment / SweetAlert2 / Toast / SimpleBar: defer until idle so they do not block TBT; same features when needed. --}}
+<script>
+    (function () {
+        var deferredVendorUrls = [
+            '/assets/default/vendors/moment.min.js',
+            '/assets/default/vendors/sweetalert2/dist/sweetalert2.min.js',
+            '/assets/default/vendors/toast/jquery.toast.min.js',
+            '/assets/default/vendors/simplebar/simplebar.min.js'
+        ];
+        function loadNext(index) {
+            if (index >= deferredVendorUrls.length) {
+                window.__deferredVendorsReady = true;
+                try {
+                    document.dispatchEvent(new Event('deferred-vendors-ready'));
+                } catch (e) { /* ignore */ }
+                return;
+            }
+            var sc = document.createElement('script');
+            sc.src = deferredVendorUrls[index];
+            sc.async = false;
+            sc.onload = function () { loadNext(index + 1); };
+            sc.onerror = function () { loadNext(index + 1); };
+            document.body.appendChild(sc);
+        }
+        function startDeferredVendors() {
+            if (window.requestIdleCallback) {
+                window.requestIdleCallback(function () { loadNext(0); }, { timeout: 2500 });
+            } else {
+                window.setTimeout(function () { loadNext(0); }, 1);
+            }
+        }
+        if (document.readyState === 'complete') {
+            startDeferredVendors();
+        } else {
+            window.addEventListener('load', startDeferredVendors, { once: true });
+        }
+    })();
+</script>
 
 @if(empty($justMobileApp) and checkShowCookieSecurityDialog())
     @include('web.default.includes.cookie-security')
@@ -637,16 +671,23 @@
         (function () {
             "use strict";
 
-            $.toast({
-                heading: '{{ session()->get('toast')['title'] ?? '' }}',
-                text: '{{ session()->get('toast')['msg'] ?? '' }}',
-                bgColor: '@if(session()->get('toast')['status'] == 'success') #43d477 @else #f63c3c @endif',
-                textColor: 'white',
-                hideAfter: 10000,
-                position: 'bottom-right',
-                icon: '{{ session()->get('toast')['status'] }}'
-            });
-        })(jQuery)
+            function showSessionToast() {
+                if (typeof jQuery === 'undefined' || typeof jQuery.toast !== 'function') {
+                    document.addEventListener('deferred-vendors-ready', showSessionToast, { once: true });
+                    return;
+                }
+                jQuery.toast({
+                    heading: '{{ session()->get('toast')['title'] ?? '' }}',
+                    text: '{{ session()->get('toast')['msg'] ?? '' }}',
+                    bgColor: '@if(session()->get('toast')['status'] == 'success') #43d477 @else #f63c3c @endif',
+                    textColor: 'white',
+                    hideAfter: 10000,
+                    position: 'bottom-right',
+                    icon: '{{ session()->get('toast')['status'] }}'
+                });
+            }
+            showSessionToast();
+        })();
     </script>
 @endif
 

@@ -253,13 +253,16 @@
     /**
      * Double rAF: run after the next paint so Swiper/Owl measure after layout settles
      * (reduces forced reflow / layout thrashing vs sync init right after script parse).
+     * Parallax is loaded separately near its nodes (see home.blade.php) — only init if already present.
      * @see https://developer.chrome.com/docs/performance/insights/forced-reflow
      */
     function scheduleHomeCarousels() {
         requestAnimationFrame(function () {
             requestAnimationFrame(function () {
                 initSwipersAndOwl();
-                initParallaxDeferred();
+                if (typeof Parallax !== 'undefined') {
+                    initParallaxDeferred();
+                }
             });
         });
     }

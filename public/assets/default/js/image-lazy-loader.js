@@ -150,32 +150,61 @@ class ImageLazyLoader {
     }
 
     observeImages() {
-        // Get all img tags except logos and explicit exclusions
+        // Get all img tags except logos, LCP/hero, and explicit exclusions
         const allImages = document.querySelectorAll('img');
         const lazyImages = Array.from(allImages).filter(img => {
+            if (img.dataset && img.dataset.noLazy === 'true') {
+                return false;
+            }
+            if (img.getAttribute('fetchpriority') === 'high') {
+                return false;
+            }
+            if (img.getAttribute('loading') === 'eager') {
+                return false;
+            }
+            // Keep first-viewport hero/slider images eager for LCP
+            if (img.closest && img.closest('.slider-container, .slider-hero-section2, #homeHeroVideoBackground')) {
+                return false;
+            }
+
             // Skip logos - check for logo-related classes, alt text, or src patterns
-            const isLogo = img.classList.contains('logo') || 
+            const alt = (img.alt || '').toLowerCase();
+            const src = (img.getAttribute('src') || img.dataset.src || '').toLowerCase();
+            const id = (img.id || '').toLowerCase();
+            const isLogo = img.classList.contains('logo') ||
                           img.classList.contains('navbar-logo') ||
                           img.classList.contains('footer-logo') ||
                           img.classList.contains('site-logo') ||
-                          img.alt.toLowerCase().includes('logo') ||
-                          img.src.toLowerCase().includes('logo') ||
-                          img.src.toLowerCase().includes('favicon') ||
-                          img.id.toLowerCase().includes('logo');
-            
+                          alt.includes('logo') ||
+                          src.includes('logo') ||
+                          src.includes('favicon') ||
+                          id.includes('logo');
+
             // Skip captcha image
             const isCaptcha = (img.id && img.id === 'captchaImageComment');
-            
+
             return !isLogo && !isCaptcha;
         });
         
         lazyImages.forEach((img, index) => {
+            // Prefer native lazy hint alongside IO
+            if (!img.hasAttribute('loading')) {
+                img.setAttribute('loading', 'lazy');
+            }
+            if (!img.hasAttribute('decoding')) {
+                img.setAttribute('decoding', 'async');
+            }
+
             // If image doesn't have data-src, set it up for lazy loading
             if (!img.dataset.src && img.src && !img.src.includes('data:image/gif')) {
                 // Check if image is already loaded and visible (skip lazy loading)
                 if (img.complete && img.naturalWidth > 0) {
-                    img.classList.add('lazy-loaded');
-                    return;
+                    const rect = img.getBoundingClientRect();
+                    const inFirstViewport = rect.top < (window.innerHeight + 50) && rect.bottom > 0;
+                    if (inFirstViewport) {
+                        img.classList.add('lazy-loaded');
+                        return;
+                    }
                 }
                 
                 // Preserve the original src format (relative vs absolute)

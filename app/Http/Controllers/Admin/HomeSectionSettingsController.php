@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Web\HomeController;
 use App\Models\HomeSection;
 use App\Models\Webinar;
 use Illuminate\Http\Request;
@@ -78,6 +79,8 @@ class HomeSectionSettingsController extends Controller
             );
         }
 
+        HomeController::clearHomePageCache();
+
         return redirect()->back();
     }
 
@@ -99,6 +102,8 @@ class HomeSectionSettingsController extends Controller
 
             $order += 1;
         }
+
+        HomeController::clearHomePageCache();
 
         return redirect()->back();
     }
@@ -126,6 +131,8 @@ class HomeSectionSettingsController extends Controller
             HomeSection::where('id', $id)
                 ->update(['order' => ($order + 1)]);
         }
+
+        HomeController::clearHomePageCache();
 
         return response()->json([
             'title' => trans('public.request_success'),

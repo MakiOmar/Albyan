@@ -23,14 +23,83 @@ use App\Models\UpcomingCourse;
 use App\Models\Webinar;
 use App\Models\Testimonial;
 use App\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
+    /** Guest/shared homepage data cache TTL (seconds). */
+    public const HOME_CACHE_TTL = 600;
+
+    /** Cache key prefix for locale-scoped homepage payloads. */
+    public const HOME_CACHE_PREFIX = 'home.page_data.';
+
+    /**
+     * Forget cached homepage payloads for site-configured locales.
+     */
+    public static function clearHomePageCache(): void
+    {
+        $locales = [];
+
+        try {
+            $general = getGeneralSettings();
+            if (!empty($general['user_languages']) && is_array($general['user_languages'])) {
+                $locales = $general['user_languages'];
+            }
+            if (!empty($general['site_language'])) {
+                $locales[] = $general['site_language'];
+            }
+        } catch (\Throwable $e) {
+            // Settings may be unavailable during early boot/cache clear.
+        }
+
+        $locales = array_unique(array_filter(array_map(function ($locale) {
+            return strtolower((string) $locale);
+        }, array_merge($locales, [
+            app()->getLocale(),
+            'en',
+            'ar',
+        ]))));
+
+        foreach ($locales as $locale) {
+            Cache::forget(self::HOME_CACHE_PREFIX . $locale);
+        }
+
+        Cache::forget('home.default_statistics');
+    }
+
     public function index()
+    {
+        $locale = app()->getLocale();
+        $cacheKey = self::HOME_CACHE_PREFIX . $locale;
+
+        // Shared section data (no auth-specific installment flags).
+        $data = Cache::remember($cacheKey, self::HOME_CACHE_TTL, function () {
+            return $this->buildHomePageData();
+        });
+
+        // User-specific subscribe installment flags (must not live in shared cache).
+        if (!empty($data['subscribes']) && count($data['subscribes'])) {
+            $data['subscribes'] = $this->applySubscribeInstallments($data['subscribes']);
+        }
+
+        $response = response()->view(getTemplate() . '.pages.home', $data);
+
+        // Guest HTML can be short-cached by browsers/CDN; logged-in stays private.
+        if (!auth()->check() && !session()->get('toast') && !session()->has('errors')) {
+            $response->headers->set('Cache-Control', 'public, max-age=60, s-maxage=300');
+        } else {
+            $response->headers->set('Cache-Control', 'private, no-store');
+        }
+
+        return $response;
+    }
+
+    /**
+     * Build the homepage view payload (cacheable for guests/shared).
+     */
+    private function buildHomePageData(): array
     {
         $homeSections = HomeSection::orderBy('order', 'asc')->get();
         $selectedSectionsName = $homeSections->pluck('name')->toArray();
@@ -58,9 +127,9 @@ class HomeController extends Controller
                 ])
                 ->orderBy('updated_at', 'desc')
                 ->get();
-            //$selectedWebinarIds = $featureWebinars->pluck('id')->toArray();
         }
 
+        $latestWebinars = [];
         if (in_array(HomeSection::$latest_classes, $selectedSectionsName)) {
             $latestWebinars = Webinar::where('status', Webinar::$active)
                 ->where('private', false)
@@ -77,10 +146,9 @@ class HomeController extends Controller
                 ])
                 ->limit(6)
                 ->get();
-
-            //$selectedWebinarIds = array_merge($selectedWebinarIds, $latestWebinars->pluck('id')->toArray());
         }
 
+        $latestBundles = [];
         if (in_array(HomeSection::$latest_bundles, $selectedSectionsName)) {
             $latestBundles = Bundle::where('status', Webinar::$active)
                 ->orderBy('updated_at', 'desc')
@@ -97,6 +165,7 @@ class HomeController extends Controller
                 ->get();
         }
 
+        $upcomingCourses = [];
         if (in_array(HomeSection::$upcoming_courses, $selectedSectionsName)) {
             $upcomingCourses = UpcomingCourse::where('status', Webinar::$active)
                 ->orderBy('created_at', 'desc')
@@ -109,6 +178,7 @@ class HomeController extends Controller
                 ->get();
         }
 
+        $bestSaleWebinars = [];
         if (in_array(HomeSection::$best_sellers, $selectedSectionsName)) {
             $bestSaleWebinarsIds = Sale::whereNotNull('webinar_id')
                 ->select(DB::raw('COUNT(id) as cnt,webinar_id'))
@@ -128,15 +198,13 @@ class HomeController extends Controller
                     'reviews' => function ($query) {
                         $query->where('status', 'active');
                     },
-                    'sales',
                     'tickets',
                     'feature'
                 ])
                 ->get();
-
-            //$selectedWebinarIds = array_merge($selectedWebinarIds, $bestSaleWebinars->pluck('id')->toArray());
         }
 
+        $bestRateWebinars = [];
         if (in_array(HomeSection::$best_rates, $selectedSectionsName)) {
             $bestRateWebinars = Webinar::join('webinar_reviews', 'webinars.id', '=', 'webinar_reviews.webinar_id')
                 ->select('webinars.*', 'webinar_reviews.rates', 'webinar_reviews.status', DB::raw('avg(rates) as avg_rates'))
@@ -154,47 +222,12 @@ class HomeController extends Controller
                 ->get();
         }
 
-        // hasDiscountWebinars
+        $hasDiscountWebinars = [];
         if (in_array(HomeSection::$discount_classes, $selectedSectionsName)) {
-            $now = time();
-            $webinarIdsHasDiscount = [];
-
-            $tickets = Ticket::where('start_date', '<', $now)
-                ->where('end_date', '>', $now)
-                ->get();
-
-            foreach ($tickets as $ticket) {
-                if ($ticket->isValid()) {
-                    $webinarIdsHasDiscount[] = $ticket->webinar_id;
-                }
-            }
-
-            $specialOffersWebinarIds = SpecialOffer::where('status', 'active')
-                ->where('from_date', '<', $now)
-                ->where('to_date', '>', $now)
-                ->pluck('webinar_id')
-                ->toArray();
-
-            $webinarIdsHasDiscount = array_merge($specialOffersWebinarIds, $webinarIdsHasDiscount);
-            $hasDiscountWebinars = Webinar::whereIn('id', array_unique($webinarIdsHasDiscount))
-                ->where('status', Webinar::$active)
-                ->where('private', false)
-                ->with([
-                    'teacher' => function ($qu) {
-                        $qu->select('id', 'full_name', 'avatar');
-                    },
-                    'reviews' => function ($query) {
-                        $query->where('status', 'active');
-                    },
-                    'sales',
-                    'tickets',
-                    'feature'
-                ])
-                ->limit(6)
-                ->get();
+            $hasDiscountWebinars = $this->getHasDiscountWebinars();
         }
-        // .\ hasDiscountWebinars
 
+        $freeWebinars = [];
         if (in_array(HomeSection::$free_classes, $selectedSectionsName)) {
             $freeWebinars = Webinar::where('status', Webinar::$active)
                 ->where('private', false)
@@ -217,6 +250,7 @@ class HomeController extends Controller
                 ->get();
         }
 
+        $newProducts = [];
         if (in_array(HomeSection::$store_products, $selectedSectionsName)) {
             $newProducts = Product::where('status', Product::$active)
                 ->orderBy('updated_at', 'desc')
@@ -229,6 +263,7 @@ class HomeController extends Controller
                 ->get();
         }
 
+        $trendCategories = [];
         if (in_array(HomeSection::$trend_categories, $selectedSectionsName)) {
             $trendCategories = TrendCategory::with([
                 'category' => function ($query) {
@@ -242,6 +277,7 @@ class HomeController extends Controller
                 ->get();
         }
 
+        $blog = [];
         if (in_array(HomeSection::$blog, $selectedSectionsName) && !isLaravelPublicBlogDisabled()) {
             $blog = Blog::where('status', 'publish')
                 ->with(['category', 'author' => function ($query) {
@@ -253,6 +289,7 @@ class HomeController extends Controller
                 ->get();
         }
 
+        $instructors = [];
         if (in_array(HomeSection::$instructors, $selectedSectionsName)) {
             $instructors = User::where('role_name', Role::$teacher)
                 ->select('id', 'full_name', 'avatar', 'bio')
@@ -268,6 +305,7 @@ class HomeController extends Controller
                 ->get();
         }
 
+        $organizations = [];
         if (in_array(HomeSection::$organizations, $selectedSectionsName)) {
             $organizations = User::where('role_name', Role::$organization)
                 ->where('status', 'active')
@@ -284,44 +322,38 @@ class HomeController extends Controller
                 ->get();
         }
 
+        $testimonials = [];
+        $rating_reviews = [];
         if (in_array(HomeSection::$testimonials, $selectedSectionsName)) {
-            $data = $this->getGoogleReviews();
+            $googleData = $this->getGoogleReviews();
             $rating_reviews = [
-                'rating' => $data['result']['rating'] ?? 0,
-                'reviews' => $data['result']['user_ratings_total'] ?? 0,
+                'rating' => $googleData['result']['rating'] ?? 0,
+                'reviews' => $googleData['result']['user_ratings_total'] ?? 0,
             ];
             $testimonials = Testimonial::where('status', 'active')->get();
         }
 
+        $subscribes = [];
         if (in_array(HomeSection::$subscribes, $selectedSectionsName)) {
             $subscribes = Subscribe::all();
-
-            $user = auth()->user();
-            $installmentPlans = new InstallmentPlans($user);
-
-            foreach ($subscribes as $subscribe) {
-                if (getInstallmentsSettings('status') and (empty($user) or $user->enable_installments) and $subscribe->price > 0) {
-                    $installments = $installmentPlans->getPlans('subscription_packages', $subscribe->id);
-
-                    $subscribe->has_installment = (!empty($installments) and count($installments));
-                }
-            }
         }
 
+        $findInstructorSection = null;
         if (in_array(HomeSection::$find_instructors, $selectedSectionsName)) {
             $findInstructorSection = getFindInstructorsSettings();
         }
 
+        $rewardProgramSection = null;
         if (in_array(HomeSection::$reward_program, $selectedSectionsName)) {
             $rewardProgramSection = getRewardProgramSettings();
         }
 
-
+        $becomeInstructorSection = null;
         if (in_array(HomeSection::$become_instructor, $selectedSectionsName)) {
             $becomeInstructorSection = getBecomeInstructorSectionSettings();
         }
 
-
+        $forumSection = null;
         if (in_array(HomeSection::$forum_section, $selectedSectionsName)) {
             $forumSection = getForumSectionSettings();
         }
@@ -391,11 +423,11 @@ class HomeController extends Controller
             ->whereIn('position', ['home1', 'home2'])
             ->get();
 
-
         $siteGeneralSettings = getGeneralSettings();
         $heroSection = (!empty($siteGeneralSettings['hero_section2']) and $siteGeneralSettings['hero_section2'] == "1") ? "2" : "1";
         $heroSectionData = getHomeHeroSettings($heroSection);
 
+        $boxVideoOrImage = null;
         if (in_array(HomeSection::$video_or_image_section, $selectedSectionsName)) {
             $boxVideoOrImage = getHomeVideoOrImageBoxSettings();
         }
@@ -418,7 +450,6 @@ class HomeController extends Controller
             }
         }
 
-        // Curated training domain categories (only when section is enabled in home_sections)
         $trainingDomainCategories = collect();
         if (in_array(HomeSection::$training_domains, $selectedSectionsName, true)) {
             $domainsSettings = getHomeContentBlocksSettings('training_domains') ?? [];
@@ -438,10 +469,9 @@ class HomeController extends Controller
             }
         }
 
-        // WP blog stub: empty until WordPress API is wired
         $wpBlogPosts = collect();
 
-        $data = [
+        return [
             'pageTitle' => $pageTitle,
             'pageDescription' => $pageDescription,
             'pageRobot' => $pageRobot,
@@ -449,89 +479,161 @@ class HomeController extends Controller
             'heroSectionData' => $heroSectionData,
             'homeSections' => $homeSections,
             'featureWebinars' => $featureWebinars,
-            'latestWebinars' => $latestWebinars ?? [],
-            'latestBundles' => $latestBundles ?? [],
-            'upcomingCourses' => $upcomingCourses ?? [],
-            'bestSaleWebinars' => $bestSaleWebinars ?? [],
-            'hasDiscountWebinars' => $hasDiscountWebinars ?? [],
-            'bestRateWebinars' => $bestRateWebinars ?? [],
-            'freeWebinars' => $freeWebinars ?? [],
-            'newProducts' => $newProducts ?? [],
-            'trendCategories' => $trendCategories ?? [],
-            'instructors' => $instructors ?? [],
-            'testimonials' => $testimonials ?? [],
-            'rating_reviews' => $rating_reviews ?? [],
-            'subscribes' => $subscribes ?? [],
-            'blog' => $blog ?? [],
-            'organizations' => $organizations ?? [],
+            'latestWebinars' => $latestWebinars,
+            'latestBundles' => $latestBundles,
+            'upcomingCourses' => $upcomingCourses,
+            'bestSaleWebinars' => $bestSaleWebinars,
+            'hasDiscountWebinars' => $hasDiscountWebinars,
+            'bestRateWebinars' => $bestRateWebinars,
+            'freeWebinars' => $freeWebinars,
+            'newProducts' => $newProducts,
+            'trendCategories' => $trendCategories,
+            'instructors' => $instructors,
+            'testimonials' => $testimonials,
+            'rating_reviews' => $rating_reviews,
+            'subscribes' => $subscribes,
+            'blog' => $blog,
+            'organizations' => $organizations,
             'advertisingBanners1' => $advertisingBanners->where('position', 'home1'),
             'advertisingBanners2' => $advertisingBanners->where('position', 'home2'),
             'homeDefaultStatistics' => $homeDefaultStatistics,
             'homeCustomStatistics' => $homeCustomStatistics,
-            'boxVideoOrImage' => $boxVideoOrImage ?? null,
-            'findInstructorSection' => $findInstructorSection ?? null,
-            'rewardProgramSection' => $rewardProgramSection ?? null,
-            'becomeInstructorSection' => $becomeInstructorSection ?? null,
-            'forumSection' => $forumSection ?? null,
+            'boxVideoOrImage' => $boxVideoOrImage,
+            'findInstructorSection' => $findInstructorSection,
+            'rewardProgramSection' => $rewardProgramSection,
+            'becomeInstructorSection' => $becomeInstructorSection,
+            'forumSection' => $forumSection,
             'categorySectionData' => $categorySectionData,
             'siteFaqs' => $siteFaqs,
             'trainingDomainCategories' => $trainingDomainCategories,
             'wpBlogPosts' => $wpBlogPosts,
         ];
-
-        return view(getTemplate() . '.pages.home', $data);
     }
-    public function getGoogleReviews() {
+
+    /**
+     * Discount section: single-query ticket IDs (capacity-aware) + active special offers.
+     */
+    private function getHasDiscountWebinars()
+    {
+        $now = time();
+
+        // Date window + capacity check in SQL (avoids per-ticket TicketUser::count N+1).
+        $ticketWebinarIds = Ticket::query()
+            ->where('start_date', '<', $now)
+            ->where('end_date', '>', $now)
+            ->where(function ($query) {
+                $query->whereNull('capacity')
+                    ->orWhere('capacity', 0)
+                    ->orWhereRaw(
+                        '(SELECT COUNT(*) FROM ticket_users WHERE ticket_users.ticket_id = tickets.id) < tickets.capacity'
+                    );
+            })
+            ->pluck('webinar_id')
+            ->toArray();
+
+        $specialOffersWebinarIds = SpecialOffer::where('status', 'active')
+            ->where('from_date', '<', $now)
+            ->where('to_date', '>', $now)
+            ->pluck('webinar_id')
+            ->toArray();
+
+        $webinarIdsHasDiscount = array_values(array_unique(array_merge($specialOffersWebinarIds, $ticketWebinarIds)));
+
+        if (empty($webinarIdsHasDiscount)) {
+            return collect();
+        }
+
+        return Webinar::whereIn('id', $webinarIdsHasDiscount)
+            ->where('status', Webinar::$active)
+            ->where('private', false)
+            ->with([
+                'teacher' => function ($qu) {
+                    $qu->select('id', 'full_name', 'avatar');
+                },
+                'reviews' => function ($query) {
+                    $query->where('status', 'active');
+                },
+                'tickets',
+                'feature'
+            ])
+            ->limit(6)
+            ->get();
+    }
+
+    /**
+     * Attach installment flags for the current user without storing them in shared cache.
+     */
+    private function applySubscribeInstallments($subscribes)
+    {
+        $user = auth()->user();
+        $installmentPlans = new InstallmentPlans($user);
+
+        foreach ($subscribes as $subscribe) {
+            $subscribe->has_installment = false;
+            if (getInstallmentsSettings('status') and (empty($user) or $user->enable_installments) and $subscribe->price > 0) {
+                $installments = $installmentPlans->getPlans('subscription_packages', $subscribe->id);
+                $subscribe->has_installment = (!empty($installments) and count($installments));
+            }
+        }
+
+        return $subscribes;
+    }
+
+    public function getGoogleReviews()
+    {
         $cacheKey = 'google_reviews';
-        $cacheDuration = now()->addDays(3); // Store for 3 days
-    
+        $cacheDuration = now()->addDays(3);
+
         return Cache::remember($cacheKey, $cacheDuration, function () {
             $apiKey = env('GOOGLE_API_KEY');
-            $placeId = env('GOOGLE_PLACE_ID'); // Your actual Place ID
-        
+            $placeId = env('GOOGLE_PLACE_ID');
+
             $url = "https://maps.googleapis.com/maps/api/place/details/json?place_id={$placeId}&fields=rating,user_ratings_total&key={$apiKey}";
-        
+
             $response = Http::get($url);
             return $response->json();
         });
     }
+
     private function getHomeDefaultStatistics()
     {
-        $skillfulTeachersCount = User::where('role_name', Role::$teacher)
-            ->where(function ($query) {
-                $query->where('ban', false)
-                    ->orWhere(function ($query) {
-                        $query->whereNotNull('ban_end_at')
-                            ->where('ban_end_at', '<', time());
-                    });
-            })
-            ->where('status', 'active')
-            ->count();
+        return Cache::remember('home.default_statistics', self::HOME_CACHE_TTL, function () {
+            $skillfulTeachersCount = User::where('role_name', Role::$teacher)
+                ->where(function ($query) {
+                    $query->where('ban', false)
+                        ->orWhere(function ($query) {
+                            $query->whereNotNull('ban_end_at')
+                                ->where('ban_end_at', '<', time());
+                        });
+                })
+                ->where('status', 'active')
+                ->count();
 
-        $studentsCount = User::where('role_name', Role::$user)
-            ->where(function ($query) {
-                $query->where('ban', false)
-                    ->orWhere(function ($query) {
-                        $query->whereNotNull('ban_end_at')
-                            ->where('ban_end_at', '<', time());
-                    });
-            })
-            ->where('status', 'active')
-            ->count();
+            $studentsCount = User::where('role_name', Role::$user)
+                ->where(function ($query) {
+                    $query->where('ban', false)
+                        ->orWhere(function ($query) {
+                            $query->whereNotNull('ban_end_at')
+                                ->where('ban_end_at', '<', time());
+                        });
+                })
+                ->where('status', 'active')
+                ->count();
 
-        $liveClassCount = Webinar::where('type', 'webinar')
-            ->where('status', 'active')
-            ->count();
+            $liveClassCount = Webinar::where('type', 'webinar')
+                ->where('status', 'active')
+                ->count();
 
-        $offlineCourseCount = Webinar::where('status', 'active')
-            ->whereIn('type', ['course', 'text_lesson'])
-            ->count();
+            $offlineCourseCount = Webinar::where('status', 'active')
+                ->whereIn('type', ['course', 'text_lesson'])
+                ->count();
 
-        return [
-            'skillfulTeachersCount' => $skillfulTeachersCount,
-            'studentsCount' => $studentsCount,
-            'liveClassCount' => $liveClassCount,
-            'offlineCourseCount' => $offlineCourseCount,
-        ];
+            return [
+                'skillfulTeachersCount' => $skillfulTeachersCount,
+                'studentsCount' => $studentsCount,
+                'liveClassCount' => $liveClassCount,
+                'offlineCourseCount' => $offlineCourseCount,
+            ];
+        });
     }
 }
