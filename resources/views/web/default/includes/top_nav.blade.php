@@ -136,11 +136,15 @@
                 return;
             }
             var done = false;
-            function loadFlagStrap() {
+            function loadFlagStrap(fromInteraction) {
                 if (done) {
                     return;
                 }
                 done = true;
+                // Sprite (flags.webp) only when a real gesture happened — not on idle CSS/JS prefetch.
+                if (fromInteraction) {
+                    document.documentElement.classList.add('user-interacted');
+                }
                 var link = document.createElement('link');
                 link.rel = 'stylesheet';
                 link.href = '/assets/default/vendors/flagstrap/css/flags.css';
@@ -157,15 +161,21 @@
                 };
                 document.body.appendChild(s1);
             }
-            ['pointerdown', 'mouseenter', 'focusin', 'touchstart'].forEach(function (ev) {
-                wrap.addEventListener(ev, loadFlagStrap, { capture: true, passive: true, once: true });
+            function loadFlagStrapFromInteraction() {
+                loadFlagStrap(true);
+            }
+            ['pointerdown', 'mouseenter', 'focusin', 'touchstart', 'mousemove'].forEach(function (ev) {
+                wrap.addEventListener(ev, loadFlagStrapFromInteraction, { capture: true, passive: true, once: true });
             });
+            // Prefetch flagstrap CSS/JS on idle; flags.webp stays gated until html.user-interacted.
             if (window.requestIdleCallback) {
                 window.requestIdleCallback(function () {
-                    loadFlagStrap();
+                    loadFlagStrap(false);
                 }, { timeout: 4000 });
             } else {
-                window.setTimeout(loadFlagStrap, 4000);
+                window.setTimeout(function () {
+                    loadFlagStrap(false);
+                }, 4000);
             }
         })();
     </script>

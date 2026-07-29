@@ -635,6 +635,21 @@
     </style>
 
     @include('web.default.includes.gtm_head')
+    {{-- Marks first real gesture so deferred assets (e.g. flagstrap flags.webp) can unlock. --}}
+    <script>
+        (function () {
+            var events = ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'];
+            function markInteracted() {
+                document.documentElement.classList.add('user-interacted');
+                events.forEach(function (ev) {
+                    window.removeEventListener(ev, markInteracted, true);
+                });
+            }
+            events.forEach(function (ev) {
+                window.addEventListener(ev, markInteracted, { capture: true, passive: true });
+            });
+        })();
+    </script>
     
 </head>
 
@@ -701,7 +716,7 @@
             } else {
                 window.addEventListener('load', schedule, { once: true });
             }
-            ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'].forEach(function (ev) {
+            ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'].forEach(function (ev) {
                 document.addEventListener(ev, loadTurnstile, { once: true, passive: true, capture: true });
             });
         })();
@@ -751,7 +766,7 @@
                 }
             }, 3000);
         }
-        ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'].forEach(function (ev) {
+        ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'].forEach(function (ev) {
             window.addEventListener(ev, startDeferredVendors, { once: true, passive: true, capture: true });
         });
         if (document.readyState === 'complete') {

@@ -107,17 +107,17 @@
                                 function startHeroVideoOnInteraction() {
                                     if (unlocked) return;
                                     unlocked = true;
-                                    ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'].forEach(function (ev) {
-                                        document.removeEventListener(ev, startHeroVideoOnInteraction, true);
-                                    });
-                                    var playPromise = video.play();
-                                    if (playPromise && typeof playPromise.catch === 'function') {
-                                        playPromise.catch(function () {});
-                                    }
-                                }
-                                ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'].forEach(function (ev) {
-                                    document.addEventListener(ev, startHeroVideoOnInteraction, { capture: true, passive: true });
+                                ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'].forEach(function (ev) {
+                                    document.removeEventListener(ev, startHeroVideoOnInteraction, true);
                                 });
+                                var playPromise = video.play();
+                                if (playPromise && typeof playPromise.catch === 'function') {
+                                    playPromise.catch(function () {});
+                                }
+                            }
+                            ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'].forEach(function (ev) {
+                                document.addEventListener(ev, startHeroVideoOnInteraction, { capture: true, passive: true });
+                            });
                             })();
                         </script>
                     @endpush
@@ -1226,7 +1226,7 @@
 @push('scripts_bottom')
     <script>
         (function () {
-            /* Home (non-hero sections): background-images load after first user interaction (pointer, touch, key, wheel, or scroll). */
+            /* Home (non-hero sections): background-images load after first user interaction (pointer, touch, key, wheel, scroll, or mousemove). */
             function applyDeferredSectionBackgrounds() {
                 document.querySelectorAll('.js-deferred-section-bg[data-deferred-bg]').forEach(function (el) {
                     var url = el.getAttribute('data-deferred-bg');
@@ -1243,12 +1243,12 @@
                     return;
                 }
                 sectionBgUnlocked = true;
-                ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'].forEach(function (ev) {
+                ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'].forEach(function (ev) {
                     document.removeEventListener(ev, unlockSectionBackgrounds, true);
                 });
                 applyDeferredSectionBackgrounds();
             }
-            ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'].forEach(function (ev) {
+            ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'].forEach(function (ev) {
                 document.addEventListener(ev, unlockSectionBackgrounds, { capture: true, passive: true });
             });
         })();

@@ -125,7 +125,7 @@ class LazyCSSLoader {
         }
 
         let fired = false;
-        const events = ['scroll', 'wheel', 'touchstart', 'pointerdown', 'keydown', 'click'];
+        const events = ['scroll', 'wheel', 'touchstart', 'pointerdown', 'keydown', 'click', 'mousemove'];
         const opts = { passive: true };
 
         const cleanup = () => {

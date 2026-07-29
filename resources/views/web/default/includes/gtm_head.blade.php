@@ -25,7 +25,7 @@
     @else
         {{--
             interaction (default) / idle:
-            - Unlock on pointer/touch/key/wheel/scroll (page scroll counts as interaction).
+            - Unlock on pointer/touch/key/wheel/scroll/mousemove (page scroll counts as interaction).
             - Fallback idle after idle_timeout_ms (default 12s).
             - GTM Custom Event "site_interactive" is pushed when gtm.js starts — wire FB Pixel / Clarity to that event.
         --}}
@@ -34,7 +34,7 @@
                 w.dataLayer = w.dataLayer || [];
                 var id = @json($gtmId);
                 var timeoutMs = {{ $gtmIdleTimeout }};
-                var unlockEvents = ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'];
+                var unlockEvents = ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'];
                 function loadGtm() {
                     if (w.__gtmScriptLoaded) {
                         return;
