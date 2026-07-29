@@ -96,6 +96,9 @@ class HomeController extends Controller
 
         // Never publicly cache HTML — CSRF fields are per-session; public/CDN cache caused token leakage.
         $response->headers->set('Cache-Control', 'private, no-store');
+        // Live debugging: inspect Response headers in DevTools Network tab.
+        $response->headers->set('X-Perf-Home-Cache', $useCache ? 'cached' : 'original');
+        $response->headers->set('X-Perf-Lazy', getImageLazyLoadMode());
 
         return $response;
     }

@@ -1,8 +1,11 @@
 @php
     $isRtl = web_layout_is_rtl($generalSettings ?? null);
+    $__perfHomepageCacheMode = getHomepageCacheMode();
+    $__perfImageLazyLoadMode = getImageLazyLoadMode();
+    $__perfDebug = request()->boolean('perf_debug');
 @endphp
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" dir="{{ $isRtl ? 'rtl' : 'ltr' }}">
+<html lang="{{ app()->getLocale() }}" dir="{{ $isRtl ? 'rtl' : 'ltr' }}" data-perf-home-cache="{{ $__perfHomepageCacheMode }}" data-perf-lazy="{{ $__perfImageLazyLoadMode }}">
 
 <head>
     @include('web.default.includes.metas')
@@ -744,7 +747,12 @@
 
 <script>
     {{-- Performance setting: viewport (IO) vs interaction (placeholder until gesture). --}}
-    window.__imageLazyLoadMode = @json(getImageLazyLoadMode());
+    window.__imageLazyLoadMode = @json($__perfImageLazyLoadMode);
+    window.__homepageCacheMode = @json($__perfHomepageCacheMode);
+    window.__perfDebug = @json($__perfDebug);
+    if (window.__perfDebug) {
+        console.log('[perf-debug] homepage_cache_mode=', window.__homepageCacheMode, 'image_lazy_load_mode=', window.__imageLazyLoadMode);
+    }
 </script>
 <script src="/assets/default/js/image-lazy-loader.js" defer></script>
 <script src="/assets/default/js/parts/main.min.js" defer></script>
@@ -1037,5 +1045,33 @@
         </div>
     </div>
 
+@if(!empty($__perfDebug))
+    {{-- Temporary live debug badge: open any page with ?perf_debug=1 --}}
+    <div id="perf-debug-badge" style="position:fixed;z-index:99999;left:8px;bottom:8px;background:#111;color:#0f0;font:12px/1.4 monospace;padding:8px 10px;border-radius:6px;opacity:.92;max-width:90vw;">
+        <div><strong>perf-debug</strong></div>
+        <div>home_cache: {{ $__perfHomepageCacheMode }}</div>
+        <div>lazy: {{ $__perfImageLazyLoadMode }}</div>
+        <div>js_mode: <span id="perf-debug-js-mode">…</span></div>
+        <div>pending: <span id="perf-debug-pending">…</span></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var modeEl = document.getElementById('perf-debug-js-mode');
+            var pendingEl = document.getElementById('perf-debug-pending');
+            function refresh() {
+                if (modeEl) {
+                    modeEl.textContent = (window.imageLazyLoader && window.imageLazyLoader.mode)
+                        ? window.imageLazyLoader.mode
+                        : (window.__imageLazyLoadMode || 'unset');
+                }
+                if (pendingEl) {
+                    pendingEl.textContent = document.querySelectorAll('img[data-src].lazy-loading, img[data-src]:not(.lazy-loaded)').length;
+                }
+            }
+            refresh();
+            window.setInterval(refresh, 1000);
+        });
+    </script>
+@endif
 </body>
 </html>

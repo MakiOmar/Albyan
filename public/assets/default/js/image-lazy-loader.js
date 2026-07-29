@@ -20,6 +20,10 @@ class ImageLazyLoader {
     }
 
     init() {
+        if (window.__perfDebug) {
+            console.log('[perf-debug] ImageLazyLoader init mode=', this.mode, 'window.__imageLazyLoadMode=', window.__imageLazyLoadMode);
+        }
+
         // First, fix any existing images with "undefined" src
         this.fixUndefinedImages();
         
@@ -33,6 +37,9 @@ class ImageLazyLoader {
         
         // Check if Intersection Observer is supported
         if ('IntersectionObserver' in window) {
+            if (window.__perfDebug) {
+                console.log('[perf-debug] using IntersectionObserver viewport mode');
+            }
             this.setupIntersectionObserver();
         } else {
             // Fallback for older browsers
@@ -41,6 +48,9 @@ class ImageLazyLoader {
     }
 
     setupInteractionMode() {
+        if (window.__perfDebug) {
+            console.log('[perf-debug] using interaction mode (placeholder until pointer/touch/key; scroll does NOT unlock)');
+        }
         this.observeImages();
 
         const unlock = () => {
@@ -48,13 +58,17 @@ class ImageLazyLoader {
                 return;
             }
             this.interactionUnlocked = true;
-            ['pointerdown', 'touchstart', 'keydown', 'scroll', 'wheel'].forEach((ev) => {
+            ['pointerdown', 'touchstart', 'keydown'].forEach((ev) => {
                 window.removeEventListener(ev, unlock, true);
             });
+            if (window.__perfDebug) {
+                console.log('[perf-debug] interaction unlocked — loading pending images');
+            }
             this.loadAllPendingImages();
         };
 
-        ['pointerdown', 'touchstart', 'keydown', 'scroll', 'wheel'].forEach((ev) => {
+        // Intentionally ignore scroll/wheel so lab/auto-scroll does not look like viewport lazy-load.
+        ['pointerdown', 'touchstart', 'keydown'].forEach((ev) => {
             window.addEventListener(ev, unlock, { capture: true, passive: true });
         });
     }

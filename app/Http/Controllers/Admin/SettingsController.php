@@ -208,6 +208,10 @@ class SettingsController extends Controller
                 cache()->forget('settings.getDefaultLocale');
             }
 
+            if ($name === Setting::$performanceSettingsName) {
+                Cache::forget('settings.' . Setting::$performanceSettingsName);
+            }
+
             // Homepage payload includes settings-driven hero/sections — drop shared cache.
             \App\Http\Controllers\Web\HomeController::clearHomePageCache();
         }

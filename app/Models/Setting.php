@@ -129,6 +129,7 @@ class Setting extends Model implements TranslatableContract
             self::$customCssJsName,
             self::$Error404PageName,
             self::$contactPageName,
+            self::$performanceSettingsName,
         ];
     }
 

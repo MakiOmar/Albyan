@@ -1977,6 +1977,7 @@ function getGeneralOptionsSettings($key = null)
 
 /**
  * Performance / PageSpeed options.
+ * Always reads the default (en) settings locale — these values are not translated.
  *
  * @param string|null $key homepage_cache_mode | image_lazy_load_mode
  * @return mixed
@@ -1991,7 +1992,7 @@ function getPerformanceSettings($key = null)
  */
 function getHomepageCacheMode(): string
 {
-    $mode = getPerformanceSettings('homepage_cache_mode');
+    $mode = strtolower(trim((string) getPerformanceSettings('homepage_cache_mode')));
 
     return ($mode === 'original') ? 'original' : 'cached';
 }
@@ -2001,7 +2002,7 @@ function getHomepageCacheMode(): string
  */
 function getImageLazyLoadMode(): string
 {
-    $mode = getPerformanceSettings('image_lazy_load_mode');
+    $mode = strtolower(trim((string) getPerformanceSettings('image_lazy_load_mode')));
 
     return ($mode === 'interaction') ? 'interaction' : 'viewport';
 }
