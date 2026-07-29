@@ -1,6 +1,6 @@
 {{-- Organization + BreadcrumbList JSON-LD for the about page --}}
 @php
-    $orgName = !empty($generalSettings['site_name']) ? $generalSettings['site_name'] : 'أكاديمية البيان';
+    $orgName = !empty($generalSettings['site_name']) ? $generalSettings['site_name'] : 'معهد البيان';
     $orgUrl = url('/');
     $aboutPageUrl = url()->current();
     $logoUrl = !empty($generalSettings['logo']) ? url($generalSettings['logo']) : (!empty($generalSettings['fav_icon']) ? url($generalSettings['fav_icon']) : $orgUrl);

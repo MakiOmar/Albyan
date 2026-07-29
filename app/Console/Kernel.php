@@ -19,6 +19,8 @@ class Kernel extends ConsoleKernel
         Commands\GenerateSitemap::class,
         Commands\SyncSingleCourseToWordpress::class,
         Commands\SyncAllCoursesToWordpress::class,
+        Commands\OptimizeHomeImagesCommand::class,
+        Commands\ReplaceAcademyWithInstituteCommand::class,
     ];
 
     /**

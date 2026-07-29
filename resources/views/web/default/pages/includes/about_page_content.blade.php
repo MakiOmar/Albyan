@@ -16,20 +16,20 @@
 
 <article class="about-page-content contact-us-about col-12 py-4">
     <header>
-        <h1 class="section-title-bg p-2 text-center mb-4">عن أكاديمية البيان</h1>
-        <p class="text-center mb-4">مرحباً بكم في أكاديمية البيان، وجهتكم الاولى للتعليم المهني واكتساب المهارات العملية في دبي ودولة الإمارات العربية المتحدة.</p>
+        <h1 class="section-title-bg p-2 text-center mb-4">عن معهد البيان</h1>
+        <p class="text-center mb-4">مرحباً بكم في معهد البيان، وجهتكم الاولى للتعليم المهني واكتساب المهارات العملية في دبي ودولة الإمارات العربية المتحدة.</p>
     </header>
 
-    <p>في أكاديمية البيان لا نؤمن بفكرة "احضر الدورة و احصل على الشهادة"، لأن هذا وحده لا يكفي، ما يهمنا هو أن يخرج المتدرب بمهارات يستخدمها في عمله في دراسته، أو في مشروعه، لـ هذا نبني كل برنامج على اساس تطبيقي بالمقام الاول، و نحرص أن يعرف المتدرب من اليوم الأول ما الذي سيتعلمه وإلى أين سيوصله.</p>
+    <p>في معهد البيان لا نؤمن بفكرة "احضر الدورة و احصل على الشهادة"، لأن هذا وحده لا يكفي، ما يهمنا هو أن يخرج المتدرب بمهارات يستخدمها في عمله في دراسته، أو في مشروعه، لـ هذا نبني كل برنامج على اساس تطبيقي بالمقام الاول، و نحرص أن يعرف المتدرب من اليوم الأول ما الذي سيتعلمه وإلى أين سيوصله.</p>
 
     <section class="about-page-section" aria-labelledby="about-vision-heading">
         <h2 id="about-vision-heading" class="section-title-bg p-2 mt-4 mb-3">رؤيتنا</h2>
-        <p>أن تكون أكاديمية البيان المرجع الأول لأي شخص في الإمارات يريد تطوير نفسه مهنياً، لأننا نربط التدريب بما يطلبه سوق العمل فعلاً، لا بما كان مطلوباً قبل خمس سنوات.</p>
+        <p>أن يكون معهد البيان المرجع الأول لأي شخص في الإمارات يريد تطوير نفسه مهنياً، لأننا نربط التدريب بما يطلبه سوق العمل فعلاً، لا بما كان مطلوباً قبل خمس سنوات.</p>
     </section>
 
     <section class="about-page-section" aria-labelledby="about-mission-heading">
         <h2 id="about-mission-heading" class="section-title-bg p-2 mt-4 mb-3">رسالتنا</h2>
-        <p>نسد الفجوة بين التعليم والعمل، نقدم برامج يقودها متخصصون من الميدان، وليس فقط في الأكاديمية، حتى يخرج المتدرب بثقة حقيقية في مهارته سواء كان هدفه الترقية او التوظيف، او فتح مشروع خاص.</p>
+        <p>نسد الفجوة بين التعليم والعمل، نقدم برامج يقودها متخصصون من الميدان، وليس فقط في المعهد، حتى يخرج المتدرب بثقة حقيقية في مهارته سواء كان هدفه الترقية او التوظيف، او فتح مشروع خاص.</p>
     </section>
 
     <section class="about-page-section" aria-labelledby="about-goals-heading">
@@ -38,8 +38,8 @@
     </section>
 
     <section class="about-page-section" aria-labelledby="about-programs-heading">
-        <h2 id="about-programs-heading" class="section-title-bg p-2 mt-4 mb-3">ماذا نقدم في أكاديمية البيان؟</h2>
-        <p>في أكاديمية البيان نقدم مجموعة متنوعة من البرامج التدريبية المصممة لتلبية احتياجات الأفراد و المهنيين والمؤسسات، وتشمل:</p>
+        <h2 id="about-programs-heading" class="section-title-bg p-2 mt-4 mb-3">ماذا نقدم في معهد البيان؟</h2>
+        <p>في معهد البيان نقدم مجموعة متنوعة من البرامج التدريبية المصممة لتلبية احتياجات الأفراد و المهنيين والمؤسسات، وتشمل:</p>
         <ul class="about-page-list list-unstyled">
             <li class="mb-3">
                 <h3 class="h5 font-weight-bold d-inline">دورات اللغات:</h3>
@@ -68,7 +68,7 @@
     </section>
 
     <section class="about-page-section" aria-labelledby="about-stats-heading">
-        <h2 id="about-stats-heading" class="section-title-bg p-2 mt-4 mb-3">أرقام تعكس تطور أكاديمية البيان</h2>
+        <h2 id="about-stats-heading" class="section-title-bg p-2 mt-4 mb-3">أرقام تعكس تطور معهد البيان</h2>
         <dl class="about-page-stats row text-center my-4">
             <div class="col-6 col-md-3 mb-3">
                 <dt class="font-weight-bold d-block" style="font-size: 1.25rem; color: var(--primary, #01477d);">+300</dt>
@@ -90,7 +90,7 @@
     </section>
 
     <section class="about-page-section" aria-labelledby="about-why-heading">
-        <h2 id="about-why-heading" class="section-title-bg p-2 mt-4 mb-3">لماذا تختار أكاديمية البيان؟</h2>
+        <h2 id="about-why-heading" class="section-title-bg p-2 mt-4 mb-3">لماذا تختار معهد البيان؟</h2>
         <p class="font-weight-bold">لأننا لا نقدم تدريبًا تقليديًا…</p>
         <ul class="about-page-features list-unstyled">
             <li class="mb-3">
@@ -121,7 +121,7 @@
     </section>
 
     <section class="about-page-section" aria-labelledby="about-values-heading">
-        <h2 id="about-values-heading" class="section-title-bg p-2 mt-4 mb-3">قيم أكاديمية البيان</h2>
+        <h2 id="about-values-heading" class="section-title-bg p-2 mt-4 mb-3">قيم معهد البيان</h2>
         <ul class="about-page-values list-unstyled">
             <li class="mb-3">
                 <h3 class="h5 font-weight-bold mb-1">الوضوح</h3>
@@ -147,14 +147,14 @@
     </section>
 
     <section class="about-page-section" aria-labelledby="about-audience-heading">
-        <h2 id="about-audience-heading" class="section-title-bg p-2 mt-4 mb-3">لمن تناسب أكاديمية البيان؟</h2>
-        <p>تناسب أكاديمية البيان للطلاب الذين يريدون مهارات إضافية، للموظفين الذين يفكرون في الترقية، لمن يبحث عن عمل ويريد سيرة ذاتية أقوى، لرواد الأعمال الذين يحتاجون أدوات عملية، وللشركات التي تستثمر في فريقها.</p>
+        <h2 id="about-audience-heading" class="section-title-bg p-2 mt-4 mb-3">لمن يناسب معهد البيان؟</h2>
+        <p>يناسب معهد البيان الطلاب الذين يريدون مهارات إضافية، للموظفين الذين يفكرون في الترقية، لمن يبحث عن عمل ويريد سيرة ذاتية أقوى، لرواد الأعمال الذين يحتاجون أدوات عملية، وللشركات التي تستثمر في فريقها.</p>
     </section>
 
     <section class="about-page-cta text-center my-5 p-4 rounded-lg" style="background: var(--secondary, #01477d); color: #fff;" aria-labelledby="about-cta-heading">
         <h2 id="about-cta-heading" class="h4 font-weight-bold mb-3">{{ trans('site.about_cta_heading') }}</h2>
         <p class="mb-3 font-weight-bold">ابدأ اليوم رحلتك نحو فرصة مهنية أفضل.</p>
-        <p class="mb-0">تواصل مع فريق أكاديمية البيان عبر واتساب وسنساعدك في تحديد الدورة الأقرب لهدفك.</p>
+        <p class="mb-0">تواصل مع فريق معهد البيان عبر واتساب وسنساعدك في تحديد الدورة الأقرب لهدفك.</p>
         @if(!empty($whatsappLink))
             <a href="{{ $whatsappLink }}" target="_blank" rel="noopener" class="btn btn-light mt-3">
                 <i class="fab fa-whatsapp" aria-hidden="true"></i> {{ trans('site.about_whatsapp_cta_link') }}
@@ -163,7 +163,7 @@
     </section>
 
     <section class="about-page-section" aria-labelledby="about-contact-heading">
-        <h2 id="about-contact-heading" class="section-title-bg p-2 mt-4 mb-3">تواصل مع أكاديمية البيان</h2>
+        <h2 id="about-contact-heading" class="section-title-bg p-2 mt-4 mb-3">تواصل مع معهد البيان</h2>
         <p>نحن هنا للإجابة على جميع استفساراتكم ومساعدتكم في اختيار البرنامج التدريبي الأنسب لكم.</p>
         <ul class="list-unstyled about-page-contact-links">
             <li class="mb-2">

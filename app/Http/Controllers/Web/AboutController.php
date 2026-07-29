@@ -46,9 +46,9 @@ class AboutController extends Controller
         $schemaEmails = array_map(fn ($item) => $item['label'], $emailLinks);
 
         return view('web.default.pages.about', [
-            'pageTitle' => 'عن أكاديمية البيان| تدريب مهني معتمد في دبي والإمارات',
+            'pageTitle' => 'عن معهد البيان| تدريب مهني معتمد في دبي والإمارات',
             'pageTitleFull' => true,
-            'pageDescription' => 'تعرف على أكاديمية البيان، رائد التدريب المهني واللغات في دبي، نتميز بتقديم برامج عملية، شهادات معتمدة، ومسارات تعليمية مصممة خصيصاً لـ ترقية مهاراتك اليوم.',
+            'pageDescription' => 'تعرف على معهد البيان، رائد التدريب المهني واللغات في دبي، نتميز بتقديم برامج عملية، شهادات معتمدة، ومسارات تعليمية مصممة خصيصاً لـ ترقية مهاراتك اليوم.',
             'pageRobot' => getPageRobot('about'),
             'whatsappLink' => $whatsappLink,
             'phoneLinks' => $phoneLinks,
