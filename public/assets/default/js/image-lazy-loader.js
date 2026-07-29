@@ -240,8 +240,9 @@ class ImageLazyLoader {
 
             // If image doesn't have data-src, set it up for lazy loading
             if (!img.dataset.src && img.src && !img.src.includes('data:image/gif')) {
-                // Check if image is already loaded and visible (skip lazy loading)
-                if (img.complete && img.naturalWidth > 0) {
+                // Viewport mode only: keep already-visible images eager.
+                // Interaction mode must still gate them behind unlock.
+                if (this.mode !== 'interaction' && img.complete && img.naturalWidth > 0) {
                     const rect = img.getBoundingClientRect();
                     const inFirstViewport = rect.top < (window.innerHeight + 50) && rect.bottom > 0;
                     if (inFirstViewport) {
@@ -251,13 +252,22 @@ class ImageLazyLoader {
                 }
                 
                 // Preserve the original src format (relative vs absolute)
-                img.dataset.src = img.src;
+                img.dataset.src = img.getAttribute('src') || img.src;
                 img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
                 img.classList.add('lazy-loading');
             }
             
             // Check if image already has a real src (not placeholder)
-            if (img.src && img.src !== 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' && !img.src.includes('undefined')) {
+            if (img.src && img.src !== 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' && !img.src.includes('undefined') && !img.src.includes('data:image/gif')) {
+                // Interaction mode: demote real src back to placeholder until unlock
+                if (this.mode === 'interaction' && !this.interactionUnlocked) {
+                    if (!img.dataset.src) {
+                        img.dataset.src = img.getAttribute('src') || img.src;
+                    }
+                    img.src = this.placeholderSrc;
+                    img.classList.add('lazy-loading');
+                    return;
+                }
                 img.classList.remove('lazy-loading');
                 img.classList.add('lazy-loaded');
                 if (img.dataset.src) {

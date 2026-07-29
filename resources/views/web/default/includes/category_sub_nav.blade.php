@@ -189,7 +189,15 @@
                                class="category-sub-nav-link {{ $activeTopCategorySlug === $topCategory->slug ? 'active' : '' }}"
                                title="{{ $topCategory->title }}">
                                 @if(!empty($topCategory->icon))
-                                    <img src="{{ $topCategory->icon }}" class="category-sub-nav-icon" alt="" width="20" height="20">
+                                    {{-- Placeholder + data-src: real src in first viewport was marked lazy-loaded immediately and bypassed interaction mode --}}
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                                         data-src="{{ $topCategory->icon }}"
+                                         class="category-sub-nav-icon"
+                                         alt=""
+                                         width="20"
+                                         height="20"
+                                         loading="lazy"
+                                         decoding="async">
                                 @endif
                                 <span>{{ $topCategory->title }}</span>
                             </a>
