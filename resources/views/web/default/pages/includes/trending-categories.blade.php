@@ -14,7 +14,7 @@
     @endif
 
     {{-- Fixed all-categories column + scrolling categories swiper --}}
-    <div class="trending-categories-row px-12 mt-10">
+    <div class="trending-categories-row mt-10">
         <div class="trending-categories-swiper-col">
             <div class="swiper-container trend-categories-swiper">
                 <div class="swiper-wrapper py-20">

@@ -122,11 +122,15 @@
                 continue;
             }
 
+            const isTrendCategories = slider.container === 'trend-categories-swiper';
             const swip = new Swiper('.' + slider.container, {
                 rtl: pageDirIsRtl(),
                 slidesPerView: 1,
                 spaceBetween: 16,
                 loop: false,
+                watchOverflow: true,
+                observer: true,
+                observeParents: true,
                 autoplay: {
                     delay: 5000,
                     disableOnInteraction: true,
@@ -138,10 +142,20 @@
                 },
                 breakpoints: slider.breakpoints
             });
-            requestAnimationFrame(function () {
+
+            // Remeasure after flex/CSS settle — prevents RTL mobile slides translating off-screen
+            function refreshTrendSwiper() {
                 try {
                     swip.update();
+                    if (isTrendCategories && typeof swip.slideToClosest === 'function') {
+                        swip.slideToClosest(0);
+                    }
                 } catch (e) { /* ignore */ }
+            }
+            requestAnimationFrame(function () {
+                refreshTrendSwiper();
+                window.setTimeout(refreshTrendSwiper, 120);
+                window.setTimeout(refreshTrendSwiper, 400);
             });
 
             const $el = $("." + slider.container);

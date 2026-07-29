@@ -33,11 +33,23 @@
                 display: flex;
                 align-items: flex-start;
                 gap: 16px;
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
             }
 
             .trending-categories-swiper-col {
                 flex: 1 1 0;
                 min-width: 0;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .trending-categories-swiper-col .trend-categories-swiper {
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+                box-sizing: border-box;
             }
 
             .trending-all-categories-col {
@@ -135,6 +147,29 @@
             @media (max-width: 767px) {
                 .trending-categories-row {
                     flex-direction: column;
+                    gap: 12px;
+                    /* Avoid double horizontal inset with .container */
+                    padding-left: 0 !important;
+                    padding-right: 0 !important;
+                }
+
+                .trending-categories-swiper-col {
+                    flex: none;
+                    width: 100%;
+                    max-width: 100%;
+                    min-width: 0;
+                    overflow: hidden;
+                }
+
+                .trending-categories-swiper-col .trend-categories-swiper,
+                .trending-categories-swiper-col .swiper-wrapper {
+                    width: 100%;
+                    max-width: 100%;
+                }
+
+                .trending-categories-swiper-col .swiper-slide {
+                    box-sizing: border-box;
+                    max-width: 100%;
                 }
 
                 .trending-all-categories-col {

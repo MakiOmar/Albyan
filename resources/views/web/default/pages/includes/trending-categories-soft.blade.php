@@ -32,7 +32,7 @@
     @endif
 
     {{-- Fixed all-categories column + scrolling categories swiper --}}
-    <div class="trending-categories-row px-12 mt-10">
+    <div class="trending-categories-row mt-10">
         <div class="trending-categories-swiper-col">
             <div class="swiper-container trend-categories-swiper">
                 <div class="swiper-wrapper py-30">
@@ -88,6 +88,7 @@
             border-radius: var(--trending-soft-radius, 24px);
             box-shadow: var(--trending-soft-shadow, 0 12px 30px rgba(15, 42, 89, 0.08));
             transition: transform 0.35s ease, box-shadow 0.35s ease;
+            overflow: hidden;
         }
 
         .trending-soft-media {
@@ -95,14 +96,18 @@
             min-height: 210px;
             padding: 10px;
             border-radius: var(--trending-soft-radius, 24px);
-            background: #fff;
+            /* Soft tint so empty/lazy placeholders are not invisible white-on-white */
+            background: #f3f6fb;
         }
 
         .trending-soft-image {
             width: auto;
             max-width: 100%;
             height: auto;
+            max-height: 180px;
             object-fit: contain;
+            display: block;
+            margin: 0 auto;
         }
 
         .trending-soft-count {
@@ -154,12 +159,32 @@
         }
 
         @media (max-width: 767px) {
+            .trending-soft-section.container {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
             .trending-soft-media {
-                min-height: 170px;
+                min-height: 180px;
+            }
+
+            .trending-soft-image {
+                max-height: 140px;
+            }
+
+            .trending-soft-title {
+                font-size: 15px;
+                padding: 0 8px;
             }
 
             .trending-soft-section .trending-all-categories-col {
                 padding-top: 0;
+            }
+
+            /* Keep soft card fully inside the mobile viewport */
+            .trending-soft-section .swiper-slide {
+                padding: 0 2px;
+                box-sizing: border-box;
             }
         }
     </style>
