@@ -701,7 +701,9 @@
             } else {
                 window.addEventListener('load', schedule, { once: true });
             }
-            document.addEventListener('pointerdown', loadTurnstile, { once: true, passive: true });
+            ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'].forEach(function (ev) {
+                document.addEventListener(ev, loadTurnstile, { once: true, passive: true, capture: true });
+            });
         })();
     </script>
 @endif
@@ -749,7 +751,7 @@
                 }
             }, 3000);
         }
-        ['pointerdown', 'touchstart', 'keydown'].forEach(function (ev) {
+        ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'].forEach(function (ev) {
             window.addEventListener(ev, startDeferredVendors, { once: true, passive: true, capture: true });
         });
         if (document.readyState === 'complete') {

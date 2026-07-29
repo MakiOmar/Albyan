@@ -550,7 +550,7 @@ return [
 'image_lazy_load_mode' => 'Image lazy-load method',
 'image_lazy_load_mode_hint' => 'Viewport loads images when they approach the screen. Interaction keeps a placeholder until the first user gesture (click, touch, key, or scroll) — better for lab PageSpeed, images appear after interaction.',
 'image_lazy_load_mode_viewport' => 'Viewport (default)',
-'image_lazy_load_mode_interaction' => 'On interaction (placeholder until gesture)',
+'image_lazy_load_mode_interaction' => 'On interaction (placeholder until click/scroll/key)',
 'only_available_products' => 'Only available products',
 'products_with_points' => 'Products with points',
 'max_four_image_can_select' => 'You can define maximum 4 images for each product.',

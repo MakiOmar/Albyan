@@ -80,8 +80,7 @@ return [
     |
     | container_id: e.g. GTM-XXXXXXX
     | load_strategy:
-    |   - interaction (default): gtm.js on pointer/touch/key OR after idle_timeout_ms.
-    |     Scroll/wheel intentionally ignored (Lighthouse auto-scroll must not load tags early).
+    |   - interaction (default): gtm.js on pointer/touch/key/wheel/scroll OR after idle_timeout_ms.
     |     Pushes dataLayer event "site_interactive" when gtm.js starts — configure FB Pixel /
     |     Clarity in GTM on that Custom Event.
     |   - idle: same delayed path (kept for backwards-compatible env values).

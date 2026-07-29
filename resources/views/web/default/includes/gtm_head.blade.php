@@ -25,8 +25,8 @@
     @else
         {{--
             interaction (default) / idle:
-            - Intentionally ignore scroll/wheel so Lighthouse (and auto-scroll) does not pull GTM/FB/Clarity into the LCP/TBT window.
-            - Real users unlock via pointer/touch/key; fallback idle after idle_timeout_ms (default 12s).
+            - Unlock on pointer/touch/key/wheel/scroll (page scroll counts as interaction).
+            - Fallback idle after idle_timeout_ms (default 12s).
             - GTM Custom Event "site_interactive" is pushed when gtm.js starts — wire FB Pixel / Clarity to that event.
         --}}
         <script>
@@ -34,12 +34,13 @@
                 w.dataLayer = w.dataLayer || [];
                 var id = @json($gtmId);
                 var timeoutMs = {{ $gtmIdleTimeout }};
+                var unlockEvents = ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'];
                 function loadGtm() {
                     if (w.__gtmScriptLoaded) {
                         return;
                     }
                     w.__gtmScriptLoaded = true;
-                    ['pointerdown', 'touchstart', 'keydown'].forEach(function (ev) {
+                    unlockEvents.forEach(function (ev) {
                         w.removeEventListener(ev, onInteract, true);
                     });
                     (function (w, d, s, l, i) {
@@ -67,7 +68,7 @@
                         }
                     }, 2000);
                 }
-                ['pointerdown', 'touchstart', 'keydown'].forEach(function (ev) {
+                unlockEvents.forEach(function (ev) {
                     w.addEventListener(ev, onInteract, { capture: true, passive: true });
                 });
                 if (d.readyState === 'complete') {
