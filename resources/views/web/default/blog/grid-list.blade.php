@@ -6,7 +6,13 @@
         </div>
 
 
-        <img src="{{ $post->image }}" class="img-cover" alt="{{ $post->title }}">
+        {{-- Placeholder + data-src so deferred image-lazy-loader controls the fetch --}}
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+             data-src="{{ $post->image }}"
+             class="img-cover"
+             alt="{{ $post->title }}"
+             loading="lazy"
+             decoding="async">
 
         <span class="badge created-at d-flex align-items-center">
             <i data-feather="calendar" width="20" height="20" class="mr-5"></i>

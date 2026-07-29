@@ -24,7 +24,15 @@
                                 <div class="trending-card d-flex flex-column align-items-center w-100">
                                     <div class="trending-image d-flex align-items-center justify-content-center w-100" style="background-color: {{ $trend->color }}">
                                         <div class="icon mb-3">
-                                            <img src="{{ $trend->getIcon() }}" width="10" class="img-cover" alt="">
+                                            {{-- Placeholder + data-src so deferred image-lazy-loader controls the fetch --}}
+                                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                                                 data-src="{{ $trend->getIcon() }}"
+                                                 width="10"
+                                                 height="10"
+                                                 class="img-cover"
+                                                 alt=""
+                                                 loading="lazy"
+                                                 decoding="async">
                                         </div>
                                     </div>
 

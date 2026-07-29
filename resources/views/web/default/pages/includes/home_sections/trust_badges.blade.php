@@ -88,9 +88,13 @@
 
                 @if($trustSideImage !== '')
                     <div class="col-12 col-lg-6 mt-30 mt-lg-0">
-                        <img src="{{ $trustSideImage }}"
+                        {{-- Placeholder + data-src so deferred image-lazy-loader controls the fetch --}}
+                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                             data-src="{{ $trustSideImage }}"
                              alt="{{ $trustTitleLine1 !== '' ? $trustTitleLine1 : trans('update.trust_badges_items') }}"
-                             class="trust-hero-side-image img-cover w-100">
+                             class="trust-hero-side-image img-cover w-100"
+                             loading="lazy"
+                             decoding="async">
                     </div>
                 @endif
             </div>
@@ -103,7 +107,14 @@
                     <div class="trust-badge-item text-center">
                         <div class="trust-badge-icon d-flex align-items-center justify-content-center mx-auto">
                             @if(!empty($item['image']))
-                                <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" width="24" height="24">
+                                {{-- Placeholder + data-src so deferred image-lazy-loader controls the fetch --}}
+                                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                                     data-src="{{ $item['image'] }}"
+                                     alt="{{ $item['title'] }}"
+                                     width="24"
+                                     height="24"
+                                     loading="lazy"
+                                     decoding="async">
                             @else
                                 <i data-feather="{{ $trustDefaultIcons[$index % count($trustDefaultIcons)] }}" width="22" height="22"></i>
                             @endif

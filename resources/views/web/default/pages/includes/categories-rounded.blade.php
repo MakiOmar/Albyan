@@ -11,7 +11,8 @@
 
 <section class="home-sections">
     
-    <img src="/store/1/Group1321314336.png" style="position: absolute;z-index: -1;left: 0;top: -50px;width: 97px;height: 213px;" width="97" height="213" alt="{{ trans('public.categories_background_decoration') }}">  
+    {{-- Placeholder + data-src so deferred image-lazy-loader controls the fetch --}}
+    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/store/1/Group1321314336.png" style="position: absolute;z-index: -1;left: 0;top: -50px;width: 97px;height: 213px;" width="97" height="213" alt="{{ trans('public.categories_background_decoration') }}" loading="lazy" decoding="async">  
         <div class="container text-center">
             <h2 class="section-title section-title-bg mb-4" style="min-width: 200px;position: relative; display: inline-block">
 
@@ -57,7 +58,7 @@
             @foreach($trendCategories as $trend)
                 <div class="col-md-3 p-2">
                     <a href="{{ $trend->category->getUrl() }}" class="btn trendy-category btn-outline text-dark rounded-pill px-4 py-2 d-flex align-items-center" style="border: 1px solid #000">
-                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $trend->getIcon() }}" class="ml-1" style="height: 20px;width: 20px;" alt="" width="20" height="20">
+                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="{{ $trend->getIcon() }}" class="ml-1" style="height: 20px;width: 20px;" alt="" width="20" height="20" loading="lazy" decoding="async">
                         {{ $trend->category->title }}
                     </a>
                 </div>
@@ -65,5 +66,6 @@
             
         </div>
     </div>  
-    <img src="/store/1/Ellipse.png" style="position: absolute;z-index: -1;right: 0;bottom: -50px;width: 68px;height: 136px;" width="68" height="136" alt="{{ trans('public.categories_background_decoration_right') }}"> 
+    {{-- Placeholder + data-src so deferred image-lazy-loader controls the fetch --}}
+    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/store/1/Ellipse.png" style="position: absolute;z-index: -1;right: 0;bottom: -50px;width: 68px;height: 136px;" width="68" height="136" alt="{{ trans('public.categories_background_decoration_right') }}" loading="lazy" decoding="async"> 
 </section>

@@ -51,11 +51,15 @@
             @if($whyImage !== '')
                 <div class="col-12 col-lg-6 mt-30 mt-lg-0">
                     <div class="why-albyan-media text-center">
-                        <img src="{{ $whyImage }}"
+                        {{-- Placeholder + data-src so deferred image-lazy-loader controls the fetch --}}
+                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                             data-src="{{ $whyImage }}"
                              alt="{{ $whyTitle }}"
                              class="why-albyan-image"
                              width="560"
-                             height="360">
+                             height="360"
+                             loading="lazy"
+                             decoding="async">
                     </div>
                 </div>
             @endif

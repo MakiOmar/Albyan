@@ -723,7 +723,8 @@
                         
                             <div class="d-flex justify-content-center align-items-center">
                                 <div class="ms-2 d-flex">
-                                    <img class="google-icon" src="/store/1/icons/google.png" width="24" height="24" alt="{{ trans('public.google_icon') }}">
+                                    {{-- Placeholder + data-src so deferred image-lazy-loader controls the fetch --}}
+                                    <img class="google-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/store/1/icons/google.png" width="24" height="24" alt="{{ trans('public.google_icon') }}" loading="lazy" decoding="async" fetchpriority="low">
                                     @include('web.default.includes.webinar.rate',['rate' => $rating_reviews['rating'], 'dontShowRate' => false])
                                 </div>
                             </div>

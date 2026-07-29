@@ -71,11 +71,15 @@
 
                     @if($card['image'] !== '')
                         <div class="training-modality-card-media mt-20">
-                            <img src="{{ $card['image'] }}"
+                            {{-- Placeholder + data-src so deferred image-lazy-loader controls the fetch --}}
+                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                                 data-src="{{ $card['image'] }}"
                                  alt="{{ $card['title'] }}"
                                  class="training-modality-card-image"
                                  width="480"
-                                 height="240">
+                                 height="240"
+                                 loading="lazy"
+                                 decoding="async">
                         </div>
                     @endif
 
@@ -85,7 +89,14 @@
                                 <div class="col-4 text-center mb-10">
                                     <div class="training-modality-feature-icon d-flex align-items-center justify-content-center mx-auto">
                                         @if(!empty($feature['image']))
-                                            <img src="{{ $feature['image'] }}" alt="{{ $feature['title'] }}" width="22" height="22">
+                                            {{-- Placeholder + data-src so deferred image-lazy-loader controls the fetch --}}
+                                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                                                 data-src="{{ $feature['image'] }}"
+                                                 alt="{{ $feature['title'] }}"
+                                                 width="22"
+                                                 height="22"
+                                                 loading="lazy"
+                                                 decoding="async">
                                         @else
                                             <i data-feather="{{ $feature['icon'] }}" width="20" height="20"></i>
                                         @endif

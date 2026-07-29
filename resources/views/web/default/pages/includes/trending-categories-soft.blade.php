@@ -42,11 +42,15 @@
                                 <div class="trending-soft-card text-center"
                                      style="--trending-soft-radius: {{ $cardRadius }}px; --trending-soft-shadow: {{ $cardShadow }};">
                                     <div class="trending-soft-media d-flex align-items-center justify-content-center">
-                                        <img src="{{ $trend->getIcon() }}"
+                                        {{-- Placeholder + data-src so deferred image-lazy-loader controls the fetch --}}
+                                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                                             data-src="{{ $trend->getIcon() }}"
                                              class="trending-soft-image"
                                              alt="{{ $trend->category->title }}"
                                              width="180"
-                                             height="180">
+                                             height="180"
+                                             loading="lazy"
+                                             decoding="async">
 
                                         {{-- Count pill overlaid on the bottom edge of the media area --}}
                                         <span class="trending-soft-count">
