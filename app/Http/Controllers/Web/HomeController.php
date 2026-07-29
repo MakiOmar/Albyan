@@ -74,12 +74,18 @@ class HomeController extends Controller
     public function index()
     {
         $locale = app()->getLocale();
-        $cacheKey = self::HOME_CACHE_PREFIX . $locale;
+        $useCache = getHomepageCacheMode() === 'cached';
 
-        // Shared section data (no auth-specific installment flags).
-        $data = Cache::remember($cacheKey, self::HOME_CACHE_TTL, function () {
-            return $this->buildHomePageData();
-        });
+        if ($useCache) {
+            $cacheKey = self::HOME_CACHE_PREFIX . $locale;
+            // Shared section data (no auth-specific installment flags).
+            $data = Cache::remember($cacheKey, self::HOME_CACHE_TTL, function () {
+                return $this->buildHomePageData();
+            });
+        } else {
+            // Original: always live queries (admin performance setting).
+            $data = $this->buildHomePageData();
+        }
 
         // User-specific subscribe installment flags (must not live in shared cache).
         if (!empty($data['subscribes']) && count($data['subscribes'])) {

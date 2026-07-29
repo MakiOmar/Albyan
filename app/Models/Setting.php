@@ -39,7 +39,7 @@ class Setting extends Model implements TranslatableContract
         $themeColors, $themeFonts, $forumHomeSection, $cookieSettings, $mobileAppSettings, $remindersSettings, $generalSecuritySettings, $advertisingModal,
         $othersPersonalization, $homeContentBlocks, $installmentsSettings, $installmentsTermsSettings, $registrationBonusSettings, $registrationBonusTermsSettings, $statisticsSettings,
         $maintenanceSettings, $restrictionSettings, $generalOptions, $giftsGeneralSettings, $aiContentsSettings, $certificateSettings, $abandonedCartSettings, $smsChannelsSettings,
-        $commissionSettings;
+        $commissionSettings, $performanceSettings;
 
     // settings name , Using these keys, values are taken from the settings table
     static $seoMetasName = 'seo_metas';
@@ -90,6 +90,7 @@ class Setting extends Model implements TranslatableContract
     static $maintenanceSettingsName = 'maintenance_settings';
     static $restrictionSettingsName = 'restriction_settings';
     static $generalOptionsName = 'general_options';
+    static $performanceSettingsName = 'performance';
     static $giftsGeneralSettingsName = 'gifts_general_settings';
     static $aiContentsSettingsName = 'ai_contents_settings';
     static $abandonedCartSettingsName = 'abandoned_cart_settings';
@@ -496,6 +497,14 @@ class Setting extends Model implements TranslatableContract
     static function getGeneralOptionsSettings($key = null)
     {
         return self::getSetting(self::$generalOptions, self::$generalOptionsName, $key);
+    }
+
+    /**
+     * Performance settings: homepage_cache_mode (cached|original), image_lazy_load_mode (viewport|interaction).
+     */
+    static function getPerformanceSettings($key = null)
+    {
+        return self::getSetting(self::$performanceSettings, self::$performanceSettingsName, $key);
     }
 
     static function getSMSChannelsSettings($key = null)

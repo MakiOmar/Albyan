@@ -742,6 +742,10 @@
 @stack('scripts_bottom')
 @stack('footer_content')
 
+<script>
+    {{-- Performance setting: viewport (IO) vs interaction (placeholder until gesture). --}}
+    window.__imageLazyLoadMode = @json(getImageLazyLoadMode());
+</script>
 <script src="/assets/default/js/image-lazy-loader.js" defer></script>
 <script src="/assets/default/js/parts/main.min.js" defer></script>
 

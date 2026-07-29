@@ -14,6 +14,8 @@ class ImageLazyLoader {
         this.observerTight = null;
         this.loadedImages = new Set();
         this.placeholderSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        this.mode = (window.__imageLazyLoadMode === 'interaction') ? 'interaction' : 'viewport';
+        this.interactionUnlocked = false;
         this.init();
     }
 
@@ -23,6 +25,11 @@ class ImageLazyLoader {
         
         // Add global protection against undefined src
         this.setupGlobalProtection();
+
+        if (this.mode === 'interaction') {
+            this.setupInteractionMode();
+            return;
+        }
         
         // Check if Intersection Observer is supported
         if ('IntersectionObserver' in window) {
@@ -31,6 +38,25 @@ class ImageLazyLoader {
             // Fallback for older browsers
             this.fallbackLazyLoad();
         }
+    }
+
+    setupInteractionMode() {
+        this.observeImages();
+
+        const unlock = () => {
+            if (this.interactionUnlocked) {
+                return;
+            }
+            this.interactionUnlocked = true;
+            ['pointerdown', 'touchstart', 'keydown', 'scroll', 'wheel'].forEach((ev) => {
+                window.removeEventListener(ev, unlock, true);
+            });
+            this.loadAllPendingImages();
+        };
+
+        ['pointerdown', 'touchstart', 'keydown', 'scroll', 'wheel'].forEach((ev) => {
+            window.addEventListener(ev, unlock, { capture: true, passive: true });
+        });
     }
 
     setupGlobalProtection() {
@@ -142,6 +168,9 @@ class ImageLazyLoader {
         }
         img.src = this.placeholderSrc;
         img.classList.add('lazy-loading');
+        if (this.mode === 'interaction') {
+            return;
+        }
         if (this.observerTight && img.dataset.src && !this.loadedImages.has(img.dataset.src)) {
             this.observerTight.observe(img);
         } else if (this.observer && img.dataset.src && !this.loadedImages.has(img.dataset.src)) {
@@ -231,6 +260,9 @@ class ImageLazyLoader {
             
             // Only observe if we have a data-src and haven't loaded it yet
             if (img.dataset.src && !this.loadedImages.has(img.dataset.src)) {
+                if (this.mode === 'interaction') {
+                    return;
+                }
                 if (this.observerTight && this.usesTightLazyRoot(img)) {
                     this.observerTight.observe(img);
                 } else if (this.observer) {
@@ -333,6 +365,11 @@ class ImageLazyLoader {
     }
 
     fallbackLazyLoad() {
+        if (this.mode === 'interaction') {
+            this.observeImages();
+            return;
+        }
+
         // Fallback for browsers without Intersection Observer
         const allImages = document.querySelectorAll('img');
         const lazyImages = Array.from(allImages).filter(img => {
@@ -426,8 +463,27 @@ class ImageLazyLoader {
         }
     }
 
+    loadAllPendingImages() {
+        const pendingImages = document.querySelectorAll('img[data-src]');
+
+        pendingImages.forEach((img) => {
+            if (!img.dataset.src || this.loadedImages.has(img.dataset.src)) {
+                return;
+            }
+            this.loadImage(img);
+        });
+    }
+
     // Public method to refresh lazy loading for dynamically added images
     refresh() {
+        if (this.mode === 'interaction') {
+            this.observeImages();
+            if (this.interactionUnlocked) {
+                this.loadAllPendingImages();
+            }
+            return;
+        }
+
         if (this.observer || this.observerTight) {
             this.observeImages();
         } else {

@@ -1976,6 +1976,37 @@ function getGeneralOptionsSettings($key = null)
 }
 
 /**
+ * Performance / PageSpeed options.
+ *
+ * @param string|null $key homepage_cache_mode | image_lazy_load_mode
+ * @return mixed
+ */
+function getPerformanceSettings($key = null)
+{
+    return App\Models\Setting::getPerformanceSettings($key);
+}
+
+/**
+ * Homepage data cache: cached (default) or original (always live queries).
+ */
+function getHomepageCacheMode(): string
+{
+    $mode = getPerformanceSettings('homepage_cache_mode');
+
+    return ($mode === 'original') ? 'original' : 'cached';
+}
+
+/**
+ * Image lazy-load strategy: viewport (IntersectionObserver, default) or interaction (placeholder until gesture).
+ */
+function getImageLazyLoadMode(): string
+{
+    $mode = getPerformanceSettings('image_lazy_load_mode');
+
+    return ($mode === 'interaction') ? 'interaction' : 'viewport';
+}
+
+/**
  * When true, public Laravel blog pages, guest blog API, blog RSS, and blog URLs in sitemaps are turned off (e.g. blog is hosted on external WordPress).
  */
 function isLaravelPublicBlogDisabled(): bool
