@@ -189,9 +189,10 @@
                                class="category-sub-nav-link {{ $activeTopCategorySlug === $topCategory->slug ? 'active' : '' }}"
                                title="{{ $topCategory->title }}">
                                 @if(!empty($topCategory->icon))
-                                    {{-- Placeholder + data-src: real src in first viewport was marked lazy-loaded immediately and bypassed interaction mode --}}
+                                    {{-- Always gated on user interaction (data-lazy-until), even when global mode is viewport --}}
                                     <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                                          data-src="{{ $topCategory->icon }}"
+                                         data-lazy-until="interaction"
                                          class="category-sub-nav-icon"
                                          alt=""
                                          width="20"

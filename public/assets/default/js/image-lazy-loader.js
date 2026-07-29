@@ -16,7 +16,48 @@ class ImageLazyLoader {
         this.placeholderSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         this.mode = (window.__imageLazyLoadMode === 'interaction') ? 'interaction' : 'viewport';
         this.interactionUnlocked = false;
+        this._interactionUnlockBound = false;
         this.init();
+    }
+
+    /** Category sub-nav (and any data-lazy-until=interaction) never load until pointer/touch/key. */
+    requiresInteractionGate(img) {
+        if (!img) {
+            return false;
+        }
+        if (img.dataset && img.dataset.lazyUntil === 'interaction') {
+            return true;
+        }
+        if (img.classList && img.classList.contains('category-sub-nav-icon')) {
+            return true;
+        }
+        return !!(img.closest && img.closest('#categorySubNav, .category-sub-nav'));
+    }
+
+    ensureInteractionUnlock() {
+        if (this._interactionUnlockBound) {
+            return;
+        }
+        this._interactionUnlockBound = true;
+
+        const unlock = () => {
+            if (this.interactionUnlocked) {
+                return;
+            }
+            this.interactionUnlocked = true;
+            ['pointerdown', 'touchstart', 'keydown'].forEach((ev) => {
+                window.removeEventListener(ev, unlock, true);
+            });
+            if (window.__perfDebug) {
+                console.log('[perf-debug] interaction unlocked — loading pending images');
+            }
+            this.loadAllPendingImages();
+        };
+
+        // Intentionally ignore scroll/wheel so lab/auto-scroll does not unlock.
+        ['pointerdown', 'touchstart', 'keydown'].forEach((ev) => {
+            window.addEventListener(ev, unlock, { capture: true, passive: true });
+        });
     }
 
     init() {
@@ -29,6 +70,11 @@ class ImageLazyLoader {
         
         // Add global protection against undefined src
         this.setupGlobalProtection();
+
+        // Always bind unlock when interaction-gated icons exist (even in viewport mode).
+        if (document.querySelector('img[data-lazy-until="interaction"], .category-sub-nav-icon, #categorySubNav img, .category-sub-nav img')) {
+            this.ensureInteractionUnlock();
+        }
 
         if (this.mode === 'interaction') {
             this.setupInteractionMode();
@@ -51,26 +97,8 @@ class ImageLazyLoader {
         if (window.__perfDebug) {
             console.log('[perf-debug] using interaction mode (placeholder until pointer/touch/key; scroll does NOT unlock)');
         }
+        this.ensureInteractionUnlock();
         this.observeImages();
-
-        const unlock = () => {
-            if (this.interactionUnlocked) {
-                return;
-            }
-            this.interactionUnlocked = true;
-            ['pointerdown', 'touchstart', 'keydown'].forEach((ev) => {
-                window.removeEventListener(ev, unlock, true);
-            });
-            if (window.__perfDebug) {
-                console.log('[perf-debug] interaction unlocked — loading pending images');
-            }
-            this.loadAllPendingImages();
-        };
-
-        // Intentionally ignore scroll/wheel so lab/auto-scroll does not look like viewport lazy-load.
-        ['pointerdown', 'touchstart', 'keydown'].forEach((ev) => {
-            window.addEventListener(ev, unlock, { capture: true, passive: true });
-        });
     }
 
     setupGlobalProtection() {
@@ -132,6 +160,10 @@ class ImageLazyLoader {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     const img = entry.target;
+                    if (this.requiresInteractionGate(img) && !this.interactionUnlocked) {
+                        this.ensureInteractionUnlock();
+                        return;
+                    }
                     obs.unobserve(img);
                     if (this.observer) {
                         this.observer.unobserve(img);
@@ -230,6 +262,8 @@ class ImageLazyLoader {
         });
         
         lazyImages.forEach((img, index) => {
+            const forceInteraction = this.requiresInteractionGate(img);
+
             // Prefer native lazy hint alongside IO
             if (!img.hasAttribute('loading')) {
                 img.setAttribute('loading', 'lazy');
@@ -241,8 +275,8 @@ class ImageLazyLoader {
             // If image doesn't have data-src, set it up for lazy loading
             if (!img.dataset.src && img.src && !img.src.includes('data:image/gif')) {
                 // Viewport mode only: keep already-visible images eager.
-                // Interaction mode must still gate them behind unlock.
-                if (this.mode !== 'interaction' && img.complete && img.naturalWidth > 0) {
+                // Interaction-gated images and global interaction mode must wait.
+                if (!forceInteraction && this.mode !== 'interaction' && img.complete && img.naturalWidth > 0) {
                     const rect = img.getBoundingClientRect();
                     const inFirstViewport = rect.top < (window.innerHeight + 50) && rect.bottom > 0;
                     if (inFirstViewport) {
@@ -253,19 +287,22 @@ class ImageLazyLoader {
                 
                 // Preserve the original src format (relative vs absolute)
                 img.dataset.src = img.getAttribute('src') || img.src;
-                img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                img.src = this.placeholderSrc;
                 img.classList.add('lazy-loading');
             }
             
             // Check if image already has a real src (not placeholder)
-            if (img.src && img.src !== 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' && !img.src.includes('undefined') && !img.src.includes('data:image/gif')) {
-                // Interaction mode: demote real src back to placeholder until unlock
-                if (this.mode === 'interaction' && !this.interactionUnlocked) {
+            if (img.src && img.src !== this.placeholderSrc && !img.src.includes('undefined') && !img.src.includes('data:image/gif')) {
+                // Demote until unlock for interaction-gated images or global interaction mode
+                if ((forceInteraction || this.mode === 'interaction') && !this.interactionUnlocked) {
                     if (!img.dataset.src) {
                         img.dataset.src = img.getAttribute('src') || img.src;
                     }
                     img.src = this.placeholderSrc;
                     img.classList.add('lazy-loading');
+                    if (forceInteraction) {
+                        this.ensureInteractionUnlock();
+                    }
                     return;
                 }
                 img.classList.remove('lazy-loading');
@@ -278,8 +315,15 @@ class ImageLazyLoader {
             
             // Fix any images that already have "undefined" as src
             if (img.src === 'undefined' || img.src.includes('undefined')) {
-                img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                img.src = this.placeholderSrc;
                 img.classList.add('lazy-error');
+            }
+
+            // Interaction-gated: never observe / never load until unlock
+            if (forceInteraction && !this.interactionUnlocked) {
+                this.ensureInteractionUnlock();
+                img.classList.add('lazy-loading');
+                return;
             }
             
             // Only observe if we have a data-src and haven't loaded it yet
@@ -297,6 +341,11 @@ class ImageLazyLoader {
     }
 
     loadImage(img) {
+        if (this.requiresInteractionGate(img) && !this.interactionUnlocked) {
+            this.ensureInteractionUnlock();
+            return;
+        }
+
         // Check if data-src exists and is not empty
         if (!img.dataset.src || img.dataset.src === 'undefined' || img.dataset.src.trim() === '') {
             img.classList.add('lazy-error');
@@ -304,7 +353,7 @@ class ImageLazyLoader {
         }
 
         // Check if image is already loaded (has a real src, not placeholder)
-        if (img.src && img.src !== 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' && !img.src.includes('undefined')) {
+        if (img.src && img.src !== this.placeholderSrc && !img.src.includes('undefined') && !img.src.includes('data:image/gif')) {
             img.classList.remove('lazy-loading');
             img.classList.add('lazy-loaded');
             return;
@@ -500,19 +549,20 @@ class ImageLazyLoader {
 
     // Public method to refresh lazy loading for dynamically added images
     refresh() {
+        this.observeImages();
+        if (this.interactionUnlocked) {
+            this.loadAllPendingImages();
+            return;
+        }
         if (this.mode === 'interaction') {
-            this.observeImages();
-            if (this.interactionUnlocked) {
-                this.loadAllPendingImages();
-            }
             return;
         }
 
         if (this.observer || this.observerTight) {
-            this.observeImages();
-        } else {
-            this.fallbackLazyLoad();
+            // already called observeImages above
+            return;
         }
+        this.fallbackLazyLoad();
     }
 
     // Public method to manually load an image
