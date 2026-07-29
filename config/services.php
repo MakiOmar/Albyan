@@ -85,6 +85,7 @@ return [
     |     Clarity in GTM on that Custom Event.
     |   - idle: same delayed path (kept for backwards-compatible env values).
     |   - eager: official async snippet in <head> — earliest hits, heaviest TBT.
+    |   - Query disable (testing / Lighthouse without tags): ?gtm=0 or ?no_gtm=1
     |
     */
     'gtm' => [

@@ -1,5 +1,5 @@
 @php
-    $gtmEnabled = config('services.gtm.enabled') && !empty(config('services.gtm.container_id'));
+    $gtmEnabled = gtmIsEnabledForRequest();
     $gtmId = config('services.gtm.container_id');
     $gtmStrategy = config('services.gtm.load_strategy', 'interaction');
     $gtmIdleTimeout = max(0, (int) config('services.gtm.idle_timeout_ms', 12000));
@@ -102,3 +102,7 @@
         }
     </script>
 @endif
+@unless($gtmEnabled)
+    {{-- Skipped via ?gtm=0 / ?no_gtm=1 (or GTM_ENABLED=false). Useful for Lighthouse A/B. --}}
+    <meta name="gtm-status" content="disabled">
+@endunless

@@ -1,5 +1,5 @@
 @php
-    $gtmEnabled = config('services.gtm.enabled') && !empty(config('services.gtm.container_id'));
+    $gtmEnabled = gtmIsEnabledForRequest();
     $gtmId = config('services.gtm.container_id');
 @endphp
 @if($gtmEnabled)

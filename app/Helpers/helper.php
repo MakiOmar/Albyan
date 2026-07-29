@@ -2008,6 +2008,36 @@ function getImageLazyLoadMode(): string
 }
 
 /**
+ * Whether GTM should load for the current request.
+ * Disable for testing with ?gtm=0 / ?gtm=off / ?no_gtm=1 (also works with perf_debug).
+ */
+function gtmIsEnabledForRequest(): bool
+{
+    if (!config('services.gtm.enabled') || empty(config('services.gtm.container_id'))) {
+        return false;
+    }
+
+    try {
+        $req = request();
+    } catch (\Throwable $e) {
+        return true;
+    }
+
+    if ($req->boolean('no_gtm')) {
+        return false;
+    }
+
+    if ($req->has('gtm')) {
+        $value = strtolower(trim((string) $req->query('gtm')));
+        if (in_array($value, ['0', 'false', 'off', 'no', 'disable', 'disabled'], true)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
  * Cache-bust a public asset URL with ?v= (ASSET_VERSION or file mtime).
  * Example: asset_v('/assets/default/css/app.css') => /assets/default/css/app.css?v=1719...
  */
