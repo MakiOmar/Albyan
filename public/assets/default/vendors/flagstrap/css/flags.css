@@ -9,17 +9,13 @@
     width: 16px;
     height: 11px;
     background-repeat: no-repeat;
-    /* Sprite deferred until first user interaction (html.user-interacted) for PageSpeed. */
-}
-
-/* PNG fallback for browsers without WebP (sprite positions unchanged). */
-html.user-interacted .flagstrap-icon {
+    /* PNG fallback for browsers without WebP (sprite positions unchanged) */
     background-image: url(flags.png);
 }
 
 /* WebP sprite: same dimensions & background-position grid as flags.png (~60% smaller). */
 @supports (background-image: url("data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==")) {
-    html.user-interacted .flagstrap-icon {
+    .flagstrap-icon {
         background-image: url(flags.webp);
     }
 }

@@ -635,21 +635,6 @@
     </style>
 
     @include('web.default.includes.gtm_head')
-    {{-- Marks first real gesture so deferred assets (e.g. flagstrap flags.webp) can unlock. --}}
-    <script>
-        (function () {
-            var events = ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'];
-            function markInteracted() {
-                document.documentElement.classList.add('user-interacted');
-                events.forEach(function (ev) {
-                    window.removeEventListener(ev, markInteracted, true);
-                });
-            }
-            events.forEach(function (ev) {
-                window.addEventListener(ev, markInteracted, { capture: true, passive: true });
-            });
-        })();
-    </script>
     
 </head>
 

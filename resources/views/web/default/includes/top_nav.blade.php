@@ -42,6 +42,11 @@
                 @include('web.default.includes.top_nav.currency')
 
                 @if(!empty($localLanguage) && count($localLanguage) > 1)
+                    @php
+                        // Text-only label until language control interaction loads flagstrap + flags.webp.
+                        $__localeCountry = localeToCountryCode(mb_strtoupper(app()->getLocale()));
+                        $__localeLabel = $localLanguage[$__localeCountry] ?? $__localeCountry;
+                    @endphp
                     <form action="/locale" method="post" class="mr-15 mx-md-20">
                         {{ csrf_field() }}
 
@@ -52,8 +57,10 @@
                         @endif
 
                         <div class="language-select">
+                            {{-- Shown until flagstrap inits; no flags.webp request --}}
+                            <button type="button" class="btn btn-sm btn-default js-flagstrap-placeholder" aria-label="{{ $__localeLabel }}">{{ $__localeLabel }}</button>
                             <div id="localItems"
-                                 data-selected-country="{{ localeToCountryCode(mb_strtoupper(app()->getLocale())) }}"
+                                 data-selected-country="{{ $__localeCountry }}"
                                  data-countries='{{ json_encode($localLanguage) }}'
                             ></div>
                         </div>
@@ -127,7 +134,7 @@
 </div>
 
 @push('scripts_bottom')
-    {{-- Flagstrap: load on first interaction with language control or after idle — shortens critical path --}}
+    {{-- Flagstrap CSS/JS (and flags.webp) only when the language control is used — never idle. --}}
     <script>
         (function () {
             var mount = document.getElementById('localItems');
@@ -136,15 +143,11 @@
                 return;
             }
             var done = false;
-            function loadFlagStrap(fromInteraction) {
+            function loadFlagStrap() {
                 if (done) {
                     return;
                 }
                 done = true;
-                // Sprite (flags.webp) only when a real gesture happened — not on idle CSS/JS prefetch.
-                if (fromInteraction) {
-                    document.documentElement.classList.add('user-interacted');
-                }
                 var link = document.createElement('link');
                 link.rel = 'stylesheet';
                 link.href = '/assets/default/vendors/flagstrap/css/flags.css';
@@ -152,6 +155,10 @@
                 var s1 = document.createElement('script');
                 s1.src = '/assets/default/vendors/flagstrap/js/jquery.flagstrap.min.js';
                 s1.onload = function () {
+                    var placeholder = wrap.querySelector('.js-flagstrap-placeholder');
+                    if (placeholder) {
+                        placeholder.remove();
+                    }
                     var s2 = document.createElement('script');
                     s2.src = '/assets/default/js/parts/top_nav_flags.min.js';
                     document.body.appendChild(s2);
@@ -161,22 +168,10 @@
                 };
                 document.body.appendChild(s1);
             }
-            function loadFlagStrapFromInteraction() {
-                loadFlagStrap(true);
-            }
-            ['pointerdown', 'mouseenter', 'focusin', 'touchstart', 'mousemove'].forEach(function (ev) {
-                wrap.addEventListener(ev, loadFlagStrapFromInteraction, { capture: true, passive: true, once: true });
+            // Intentionally exclude mousemove/scroll/idle — those unlocked flags.webp without a language gesture.
+            ['pointerdown', 'mouseenter', 'focusin', 'touchstart'].forEach(function (ev) {
+                wrap.addEventListener(ev, loadFlagStrap, { capture: true, passive: true, once: true });
             });
-            // Prefetch flagstrap CSS/JS on idle; flags.webp stays gated until html.user-interacted.
-            if (window.requestIdleCallback) {
-                window.requestIdleCallback(function () {
-                    loadFlagStrap(false);
-                }, { timeout: 4000 });
-            } else {
-                window.setTimeout(function () {
-                    loadFlagStrap(false);
-                }, 4000);
-            }
         })();
     </script>
 @endpush

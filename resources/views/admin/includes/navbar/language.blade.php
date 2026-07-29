@@ -35,8 +35,6 @@
 @endif
 
 @push('scripts_bottom')
-    {{-- Admin is not PageSpeed-critical; enable flag sprite immediately. --}}
-    <script>document.documentElement.classList.add('user-interacted');</script>
     <link href="/assets/default/vendors/flagstrap/css/flags.css" rel="stylesheet">
     <script src="/assets/default/vendors/flagstrap/js/jquery.flagstrap.min.js"></script>
     <script src="/assets/default/js/parts/top_nav_flags.min.js"></script>
