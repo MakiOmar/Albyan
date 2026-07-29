@@ -13,7 +13,7 @@
 @if($showInstituteBlock)
     @if($layout === 'home_blockquote')
         {{-- Homepage: blockquote strip (optional footer line from settings only). --}}
-        <blockquote class="blockquote text-center p-4 border-start border-4" style="min-height: 200px; width: 100%;">
+        <blockquote class="blockquote text-center p-4 border-start border-4" style="height: 390px; width: 100%;">
             @if($aboutTitle !== '')
                 <h2 style="margin-bottom: 1rem;">{{ $aboutTitle }}</h2>
             @endif
