@@ -24,10 +24,10 @@
     @endif
 
     <!-- General CSS File -->
-    <link rel="stylesheet" href="/assets/default/css/app.css">
+    <link rel="stylesheet" href="{{ asset_v('/assets/default/css/app.css') }}">
 
     @if($isRtl)
-        <link rel="stylesheet" href="/assets/default/css/rtl-app.css">
+        <link rel="stylesheet" href="{{ asset_v('/assets/default/css/rtl-app.css') }}">
     @endif
 
     @stack('styles_top')
@@ -640,16 +640,16 @@
     </script>
 @endif
 <!-- Template JS File -->
-<script src="/assets/default/js/app.min.js"></script>
-<script src="/assets/default/vendors/feather-icons/dist/feather.min.js"></script>
+<script src="{{ asset_v('/assets/default/js/app.min.js') }}"></script>
+<script src="{{ asset_v('/assets/default/vendors/feather-icons/dist/feather.min.js') }}"></script>
 {{-- Moment / SweetAlert2 / Toast / SimpleBar: defer until interaction or late idle (keeps TBT down in lab). --}}
 <script>
     (function () {
         var deferredVendorUrls = [
-            '/assets/default/vendors/moment.min.js',
-            '/assets/default/vendors/sweetalert2/dist/sweetalert2.min.js',
-            '/assets/default/vendors/toast/jquery.toast.min.js',
-            '/assets/default/vendors/simplebar/simplebar.min.js'
+            @json(asset_v('/assets/default/vendors/moment.min.js')),
+            @json(asset_v('/assets/default/vendors/sweetalert2/dist/sweetalert2.min.js')),
+            @json(asset_v('/assets/default/vendors/toast/jquery.toast.min.js')),
+            @json(asset_v('/assets/default/vendors/simplebar/simplebar.min.js'))
         ];
         var started = false;
         function loadNext(index) {
@@ -741,7 +741,7 @@
 
 @stack('styles_bottom')
 {{-- Lazy CSS before page scripts: Swiper/Owl CSS load on interaction; onVendorCssReady queues init until then --}}
-<script src="/assets/default/js/lazy-css-loader.js"></script>
+<script src="{{ asset_v('/assets/default/js/lazy-css-loader.js') }}"></script>
 @stack('scripts_bottom')
 @stack('footer_content')
 
@@ -754,8 +754,8 @@
         console.log('[perf-debug] homepage_cache_mode=', window.__homepageCacheMode, 'image_lazy_load_mode=', window.__imageLazyLoadMode);
     }
 </script>
-<script src="/assets/default/js/image-lazy-loader.js" defer></script>
-<script src="/assets/default/js/parts/main.min.js" defer></script>
+<script src="{{ asset_v('/assets/default/js/image-lazy-loader.js') }}" defer></script>
+<script src="{{ asset_v('/assets/default/js/parts/main.min.js') }}" defer></script>
 
 <script>
     @if(session()->has('registration_package_limited'))

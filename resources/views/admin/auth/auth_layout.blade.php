@@ -93,7 +93,7 @@
 </script>
 
 <!-- Template JS File -->
-<script src="/assets/default/js/lazy-css-loader.js"></script>
+<script src="{{ asset_v('/assets/default/js/lazy-css-loader.js') }}"></script>
 <script src="/assets/admin/js/scripts.js"></script>
 <script src="/assets/admin/js/custom.js"></script>
 

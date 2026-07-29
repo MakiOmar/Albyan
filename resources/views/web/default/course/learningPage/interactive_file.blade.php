@@ -4,7 +4,7 @@
 
     <!-- General CSS File -->
     <link href="/assets/default/css/font.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/default/css/app.css">
+    <link rel="stylesheet" href="{{ asset_v('/assets/default/css/app.css') }}">
 </head>
 <body class="play-iframe-page">
 @if(!empty($iframe))

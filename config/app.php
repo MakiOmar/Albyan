@@ -19,6 +19,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Public Asset Cache-Bust Version
+    |--------------------------------------------------------------------------
+    |
+    | Optional global suffix for asset_v(). When empty, asset_v() uses each
+    | file's mtime so rebuilt CSS/JS get a new ?v= after deploy.
+    |
+    */
+    'asset_version' => env('ASSET_VERSION'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

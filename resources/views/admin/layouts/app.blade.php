@@ -181,8 +181,8 @@
 @stack('styles_bottom')
 @stack('scripts_bottom')
 
-<script src="/assets/default/js/lazy-css-loader.js"></script>
-<script src="/assets/default/js/image-lazy-loader.js"></script>
+<script src="{{ asset_v('/assets/default/js/lazy-css-loader.js') }}"></script>
+<script src="{{ asset_v('/assets/default/js/image-lazy-loader.js') }}"></script>
 <!-- Loading Overlay -->
 <div class="loading-overlay">
     <div class="loading-content">

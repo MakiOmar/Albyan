@@ -11,12 +11,12 @@
     @include('web.default.includes.metas')
     <meta name="theme" content="{{ str_replace('web.', '', getTemplate()) }}">
     <title>{{ $pageTitle ?? '' }}{{ !empty($generalSettings['site_name']) ? (' | '.$generalSettings['site_name']) : '' }}</title>
-    <link rel="stylesheet" href="/assets/default/css/app.css">
+    <link rel="stylesheet" href="{{ asset_v('/assets/default/css/app.css') }}">
     @if($isRtl)
-        <link rel="stylesheet" href="/assets/default/css/rtl-app.css">
+        <link rel="stylesheet" href="{{ asset_v('/assets/default/css/rtl-app.css') }}">
     @endif
-    <link rel="stylesheet" href="/assets/default/vendors/swiper/swiper-bundle.min.css">
-    <link rel="stylesheet" href="/assets/default/vendors/owl-carousel2/owl.carousel.min.css">
+    <link rel="stylesheet" href="{{ asset_v('/assets/default/vendors/swiper/swiper-bundle.min.css') }}">
+    <link rel="stylesheet" href="{{ asset_v('/assets/default/vendors/owl-carousel2/owl.carousel.min.css') }}">
     @include('web.default.includes.landing_google_cairo_font')
     @stack('styles_top')
     <style>
@@ -217,8 +217,8 @@
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <script>window.turnstileSiteKey = @json(turnstile_site_key());</script>
 @endif
-<script src="/assets/default/js/app.min.js"></script>
-<script src="/assets/default/js/image-lazy-loader.js" defer></script>
+<script src="{{ asset_v('/assets/default/js/app.min.js') }}"></script>
+<script src="{{ asset_v('/assets/default/js/image-lazy-loader.js') }}" defer></script>
 <script src="/assets/default/vendors/feather-icons/dist/feather.min.js"></script>
 <script src="/assets/default/vendors/sweetalert2/dist/sweetalert2.min.js"></script>
 <script src="/assets/default/vendors/toast/jquery.toast.min.js"></script>

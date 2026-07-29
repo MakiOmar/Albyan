@@ -64,7 +64,7 @@
 
         @if(!empty($heroSectionData['has_lottie']) and $heroSectionData['has_lottie'] == "1")
             @push('scripts_bottom')
-                <script src="/assets/default/vendors/lottie/lottie-player.js"></script>
+                <script src="{{ asset_v('/assets/default/vendors/lottie/lottie-player.js') }}"></script>
             @endpush
         @endif
 
@@ -1262,9 +1262,9 @@
         (function () {
             /* Carousel chain only — parallax loads separately when its nodes approach the viewport. */
             var carouselUrls = [
-                '/assets/default/vendors/swiper/swiper-bundle.min.js',
-                '/assets/default/vendors/owl-carousel2/owl.carousel.min.js',
-                '/assets/default/js/parts/home.min.js'
+                @json(asset_v('/assets/default/vendors/swiper/swiper-bundle.min.js')),
+                @json(asset_v('/assets/default/vendors/owl-carousel2/owl.carousel.min.js')),
+                @json(asset_v('/assets/default/js/parts/home.min.js'))
             ];
             var started = false;
             var parallaxStarted = false;
@@ -1373,7 +1373,7 @@
                     return;
                 }
                 parallaxStarted = true;
-                loadScriptChain(['/assets/default/vendors/parallax/parallax.min.js'], 0, initParallaxInstances);
+                loadScriptChain([@json(asset_v('/assets/default/vendors/parallax/parallax.min.js'))], 0, initParallaxInstances);
             }
 
             var probe = document.querySelector('.swiper-container, .owl-carousel');

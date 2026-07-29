@@ -21,11 +21,11 @@
     <!-- General CSS File -->
     <link href="/assets/default/css/font.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="/assets/default/css/app.css">
-    <link rel="stylesheet" href="/assets/default/css/panel.min.css">
+    <link rel="stylesheet" href="{{ asset_v('/assets/default/css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset_v('/assets/default/css/panel.min.css') }}">
 
     @if($isRtl)
-        <link rel="stylesheet" href="/assets/default/css/rtl-app.css">
+        <link rel="stylesheet" href="{{ asset_v('/assets/default/css/rtl-app.css') }}">
     @endif
 
     @stack('styles_top')
@@ -111,13 +111,13 @@
 
 </div>
 <!-- Template JS File -->
-<script src="/assets/default/js/app.min.js"></script>
-<script src="/assets/default/vendors/moment.min.js"></script>
-<script src="/assets/default/vendors/feather-icons/dist/feather.min.js"></script>
+<script src="{{ asset_v('/assets/default/js/app.min.js') }}"></script>
+<script src="{{ asset_v('/assets/default/vendors/moment.min.js') }}"></script>
+<script src="{{ asset_v('/assets/default/vendors/feather-icons/dist/feather.min.js') }}"></script>
 <script src="/vendor/laravel-filemanager/js/stand-alone-button.js"></script>
-<script src="/assets/default/vendors/sweetalert2/dist/sweetalert2.min.js"></script>
-<script src="/assets/default/vendors/toast/jquery.toast.min.js"></script>
-<script type="text/javascript" src="/assets/default/vendors/simplebar/simplebar.min.js"></script>
+<script src="{{ asset_v('/assets/default/vendors/sweetalert2/dist/sweetalert2.min.js') }}"></script>
+<script src="{{ asset_v('/assets/default/vendors/toast/jquery.toast.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset_v('/assets/default/vendors/simplebar/simplebar.min.js') }}"></script>
 
 <script>
     var deleteAlertTitle = '{{ trans('public.are_you_sure') }}';
@@ -164,12 +164,12 @@
 @stack('styles_bottom')
 @stack('scripts_bottom')
 
-<script src="/assets/default/js/lazy-css-loader.js"></script>
-<script src="/assets/default/js/image-lazy-loader.js"></script>
-<script src="/assets/default/js//parts/main.min.js"></script>
-<script src="/assets/default/js/panel/public.min.js"></script>
-<script src="/assets/default/js/parts/content_delete.min.js"></script>
-<script src="/assets/default/js/panel/ai-content-generator.min.js"></script>
+<script src="{{ asset_v('/assets/default/js/lazy-css-loader.js') }}"></script>
+<script src="{{ asset_v('/assets/default/js/image-lazy-loader.js') }}"></script>
+<script src="{{ asset_v('/assets/default/js/parts/main.min.js') }}"></script>
+<script src="{{ asset_v('/assets/default/js/panel/public.min.js') }}"></script>
+<script src="{{ asset_v('/assets/default/js/parts/content_delete.min.js') }}"></script>
+<script src="{{ asset_v('/assets/default/js/panel/ai-content-generator.min.js') }}"></script>
 
 @stack('scripts_bottom2')
 

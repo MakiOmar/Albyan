@@ -2008,6 +2008,25 @@ function getImageLazyLoadMode(): string
 }
 
 /**
+ * Cache-bust a public asset URL with ?v= (ASSET_VERSION or file mtime).
+ * Example: asset_v('/assets/default/css/app.css') => /assets/default/css/app.css?v=1719...
+ */
+function asset_v(string $path): string
+{
+    $path = '/' . ltrim(trim($path), '/');
+    $version = config('app.asset_version');
+
+    if ($version === null || $version === '') {
+        $fullPath = public_path(ltrim($path, '/'));
+        $version = is_file($fullPath) ? (string) filemtime($fullPath) : (string) time();
+    }
+
+    $separator = str_contains($path, '?') ? '&' : '?';
+
+    return $path . $separator . 'v=' . rawurlencode((string) $version);
+}
+
+/**
  * When true, public Laravel blog pages, guest blog API, blog RSS, and blog URLs in sitemaps are turned off (e.g. blog is hosted on external WordPress).
  */
 function isLaravelPublicBlogDisabled(): bool
