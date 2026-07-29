@@ -671,25 +671,142 @@
     @endif
 </div>
 @if(!empty(turnstile_site_key()))
-    {{-- Turnstile: load only when a widget exists, after idle — avoids TBT on pages without captcha. --}}
+    {{-- Turnstile: defer for PageSpeed, but always load before newsletter/forms need it. --}}
     <script>
         (function () {
             window.turnstileSiteKey = @json(turnstile_site_key());
+            var scriptLoading = false;
+            var unlockEvents = ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'];
+
+            function widgets() {
+                return document.querySelectorAll('.cf-turnstile, [data-turnstile]');
+            }
+
+            function hasWidget() {
+                return widgets().length > 0;
+            }
+
+            function renderPendingWidgets() {
+                if (typeof turnstile === 'undefined' || typeof turnstile.render !== 'function') {
+                    return;
+                }
+                widgets().forEach(function (el) {
+                    if (el.getAttribute('data-turnstile-rendered') === '1') {
+                        return;
+                    }
+                    // Already has an iframe from auto-render
+                    if (el.querySelector && el.querySelector('iframe')) {
+                        el.setAttribute('data-turnstile-rendered', '1');
+                        return;
+                    }
+                    try {
+                        turnstile.render(el);
+                        el.setAttribute('data-turnstile-rendered', '1');
+                    } catch (e) {
+                        // Ignore double-render races
+                    }
+                });
+            }
+
             function loadTurnstile() {
-                if (window.__turnstileScriptLoaded) {
+                if (window.__turnstileScriptLoaded || scriptLoading) {
+                    renderPendingWidgets();
                     return;
                 }
-                if (!document.querySelector('.cf-turnstile, [data-turnstile]')) {
+                if (!hasWidget()) {
                     return;
                 }
-                window.__turnstileScriptLoaded = true;
+                scriptLoading = true;
                 var s = document.createElement('script');
-                s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+                s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
                 s.async = true;
                 s.defer = true;
+                s.onload = function () {
+                    window.__turnstileScriptLoaded = true;
+                    scriptLoading = false;
+                    unlockEvents.forEach(function (ev) {
+                        document.removeEventListener(ev, loadTurnstile, true);
+                    });
+                    renderPendingWidgets();
+                };
+                s.onerror = function () {
+                    scriptLoading = false;
+                };
                 document.head.appendChild(s);
             }
+
+            // Load when a captcha host nears the viewport (footer newsletter on home).
+            function observeWidgets() {
+                if (!('IntersectionObserver' in window) || !hasWidget()) {
+                    return;
+                }
+                var io = new IntersectionObserver(function (entries) {
+                    for (var i = 0; i < entries.length; i++) {
+                        if (entries[i].isIntersecting) {
+                            loadTurnstile();
+                            io.disconnect();
+                            return;
+                        }
+                    }
+                }, { rootMargin: '200px 0px' });
+                widgets().forEach(function (el) {
+                    io.observe(el);
+                });
+            }
+
+            // Load as soon as user focuses newsletter / any form with Turnstile.
+            document.addEventListener('focusin', function (e) {
+                var t = e.target;
+                if (!t || !t.closest) {
+                    return;
+                }
+                if (t.closest('.cf-turnstile, .turnstile-widget-wrap, form[action*="newsletter"], .footer-subscribe')) {
+                    loadTurnstile();
+                }
+            }, true);
+
+            // Ensure token exists before newsletter submit on fast (cached) pages.
+            document.addEventListener('submit', function (e) {
+                var form = e.target;
+                if (!form || !form.querySelector) {
+                    return;
+                }
+                if (!form.querySelector('.cf-turnstile, [data-turnstile]')) {
+                    return;
+                }
+                var token = form.querySelector('textarea[name="cf-turnstile-response"], input[name="cf-turnstile-response"]');
+                if (token && token.value) {
+                    return;
+                }
+                e.preventDefault();
+                e.stopPropagation();
+                loadTurnstile();
+                var tries = 0;
+                var timer = window.setInterval(function () {
+                    tries++;
+                    renderPendingWidgets();
+                    token = form.querySelector('textarea[name="cf-turnstile-response"], input[name="cf-turnstile-response"]');
+                    if (token && token.value) {
+                        window.clearInterval(timer);
+                        if (typeof form.requestSubmit === 'function') {
+                            form.requestSubmit();
+                        } else {
+                            form.submit();
+                        }
+                        return;
+                    }
+                    if (tries > 40) {
+                        window.clearInterval(timer);
+                    }
+                }, 250);
+            }, true);
+
+            unlockEvents.forEach(function (ev) {
+                document.addEventListener(ev, loadTurnstile, { passive: true, capture: true });
+            });
+
             function schedule() {
+                observeWidgets();
                 if (window.requestIdleCallback) {
                     window.requestIdleCallback(loadTurnstile, { timeout: 8000 });
                 } else {
@@ -701,9 +818,6 @@
             } else {
                 window.addEventListener('load', schedule, { once: true });
             }
-            ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'].forEach(function (ev) {
-                document.addEventListener(ev, loadTurnstile, { once: true, passive: true, capture: true });
-            });
         })();
     </script>
 @endif

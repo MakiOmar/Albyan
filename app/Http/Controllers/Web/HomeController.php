@@ -36,9 +36,11 @@ class HomeController extends Controller
     public const HOME_CACHE_PREFIX = 'home.page_data.';
 
     /**
-     * Forget cached homepage payloads for site-configured locales.
+     * Locales that may have a homepage data cache entry.
+     *
+     * @return array<int, string>
      */
-    public static function clearHomePageCache(): void
+    public static function homeCacheLocales(): array
     {
         $locales = [];
 
@@ -54,21 +56,73 @@ class HomeController extends Controller
             // Settings may be unavailable during early boot/cache clear.
         }
 
-        $locales = array_unique(array_filter(array_map(function ($locale) {
+        return array_values(array_unique(array_filter(array_map(function ($locale) {
             return strtolower((string) $locale);
         }, array_merge($locales, [
             app()->getLocale(),
             'en',
             'ar',
-        ]))));
+        ])))));
+    }
 
-        foreach ($locales as $locale) {
+    /**
+     * Forget cached homepage payloads for site-configured locales.
+     */
+    public static function clearHomePageCache(): void
+    {
+        foreach (self::homeCacheLocales() as $locale) {
             Cache::forget(self::HOME_CACHE_PREFIX . $locale);
             // Legacy key from short-lived full-HTML cache (removed — broke CSRF markup).
             Cache::forget('home.html.' . $locale);
         }
 
         Cache::forget('home.default_statistics');
+    }
+
+    /**
+     * Clear then rebuild homepage data cache for one or all locales.
+     *
+     * @param  array<int, string>|null  $locales  Null = all configured locales
+     * @return array<int, string> Warmed cache keys
+     */
+    public function regenerateHomePageCache(?array $locales = null): array
+    {
+        $targets = !empty($locales)
+            ? array_values(array_unique(array_filter(array_map(static function ($locale) {
+                return strtolower(trim((string) $locale));
+            }, $locales))))
+            : self::homeCacheLocales();
+
+        if (empty($targets)) {
+            $targets = [strtolower((string) app()->getLocale())];
+        }
+
+        // Drop existing keys first (including stats shared across locales).
+        if ($locales === null) {
+            self::clearHomePageCache();
+        } else {
+            foreach ($targets as $locale) {
+                Cache::forget(self::HOME_CACHE_PREFIX . $locale);
+                Cache::forget('home.html.' . $locale);
+            }
+            Cache::forget('home.default_statistics');
+        }
+
+        $previousLocale = app()->getLocale();
+        $warmed = [];
+
+        try {
+            foreach ($targets as $locale) {
+                app()->setLocale($locale);
+                $key = self::HOME_CACHE_PREFIX . $locale;
+                Cache::put($key, $this->buildHomePageData(), self::HOME_CACHE_TTL);
+                $warmed[] = $key;
+            }
+        } finally {
+            app()->setLocale($previousLocale);
+        }
+
+        return $warmed;
     }
 
     public function index()

@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         Commands\SyncAllCoursesToWordpress::class,
         Commands\OptimizeHomeImagesCommand::class,
         Commands\ReplaceAcademyWithInstituteCommand::class,
+        Commands\RegenerateHomePageCacheCommand::class,
     ];
 
     /**
