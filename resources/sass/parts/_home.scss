@@ -10,18 +10,30 @@
 
 .slider-container {
     position: relative;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    padding: 250px 0 350px 0;
+    /* Fixed height (not padding) so absolute video/title cannot collapse the box and cause CLS */
+    min-height: 300px;
+    height: 300px;
+    padding: 0;
 
     &.slider-hero-section2 {
-        padding: 100px 0 150px 0;
+        min-height: 300px;
+        height: 300px;
+        padding: 0;
     }
 
-    @media (max-width: $screen-sm-max) {
+    @media (min-width: 768px) {
         &, &.slider-hero-section2 {
-            padding: 60px 0 100px 0;
+            min-height: 600px;
+            height: 600px;
+            padding: 0;
         }
     }
 
@@ -29,6 +41,9 @@
         position: absolute;
         inset: 0;
         z-index: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     .slider-content {

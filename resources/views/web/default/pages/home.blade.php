@@ -68,7 +68,15 @@
             @endpush
         @endif
 
-        <section class="{{ ($heroSection == "2") ? 'slider-hero-section2 ' : '' }}slider-container" @if(empty($heroSectionData['is_video_background'])) style="background-image: url('{{ $heroSectionData['hero_background'] }}')" @endif>
+        @php
+            // Inline min-height only (not height) so desktop CSS can grow to 600px without fighting inline styles
+            $__heroSectionStyle = 'min-height: 300px; padding: 0;';
+            if (empty($heroSectionData['is_video_background']) && !empty($heroSectionData['hero_background'])) {
+                $__heroSectionStyle .= " background-image: url('" . e($heroSectionData['hero_background']) . "');";
+            }
+        @endphp
+        {{-- Inline min-height reserves space before CSS; desktop 600px comes from critical/layout CSS --}}
+        <section class="{{ ($heroSection == "2") ? 'slider-hero-section2 ' : '' }}slider-container" style="{{ $__heroSectionStyle }}">
             {{-- Hero title: respects active locale (language switcher) --}}
             <h2 class="slider-heading">{{ trans('site.graduation_celebration_title') }}</h2>
             @if($heroSection == "1")

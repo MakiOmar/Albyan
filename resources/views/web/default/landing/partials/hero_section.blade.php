@@ -7,7 +7,13 @@
         @endpush
     @endif
 
-    <section class="{{ ($heroSection == "2") ? 'slider-hero-section2 ' : '' }}slider-container" @if(empty($heroSectionData['is_video_background'])) style="background-image: url('{{ $heroSectionData['hero_background'] }}')" @endif>
+    @php
+        $__heroSectionStyle = 'min-height: 300px; padding: 0;';
+        if (empty($heroSectionData['is_video_background']) && !empty($heroSectionData['hero_background'])) {
+            $__heroSectionStyle .= " background-image: url('" . e($heroSectionData['hero_background']) . "');";
+        }
+    @endphp
+    <section class="{{ ($heroSection == "2") ? 'slider-hero-section2 ' : '' }}slider-container" style="{{ $__heroSectionStyle }}">
         <h2 class="slider-heading">{{ trans('site.graduation_celebration_title') }}</h2>
         @if($heroSection == "1")
             @if(!empty($heroSectionData['is_video_background']))

@@ -23,6 +23,61 @@
         <link rel="preload" href="{{ $__themePrimaryFont }}" as="font" type="font/woff2" crossorigin>
     @endif
 
+    {{-- Critical hero CLS lock BEFORE app.css: absolute video/title would otherwise collapse height until CSS arrives --}}
+    <style id="critical-hero-cls">
+        .slider-container {
+            position: relative;
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+            box-sizing: border-box;
+            background-color: #0b1c2c;
+            min-height: 300px;
+            height: 300px;
+            padding: 0 !important;
+        }
+        .slider-container #homeHeroVideoBackground,
+        .slider-container > video.img-cover {
+            position: absolute !important;
+            inset: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            z-index: 0;
+        }
+        .slider-container .slider-heading {
+            position: absolute;
+            z-index: 2;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 3.5rem;
+            margin: 0;
+        }
+        .slider-container .mask {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+        @media (min-width: 768px) {
+            .slider-container,
+            .slider-container.slider-hero-section2 {
+                min-height: 600px;
+                height: 600px;
+            }
+            .slider-container .slider-heading {
+                min-height: 4.25rem;
+            }
+        }
+        /* Reserve category strip height so late styles/icons do not push the hero */
+        #categorySubNav.category-sub-nav {
+            min-height: 56px;
+        }
+    </style>
+
     <!-- General CSS File -->
     <link rel="stylesheet" href="{{ asset_v('/assets/default/css/app.css') }}">
 
@@ -94,13 +149,19 @@
         @media (min-width: 768px) {
             .slider-container{
                 height: 600px;
-                width: 100vw;
+                min-height: 600px;
+                width: 100%;
+                max-width: 100%;
                 background-color: rgba(0,0,0,0.3);
-                padding: 0;
+                padding: 0 !important;
             }
+            /* Keep video out of flow — relative sizing caused CLS when media metrics resolved */
             .slider-container #homeHeroVideoBackground {
-                position: relative;
-                height: 600px;
+                position: absolute !important;
+                inset: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
             }
         }
         #app{
@@ -112,6 +173,9 @@
         .slider-container{
             overflow: hidden;
             background-color: rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 100%;
+            padding: 0 !important;
         }
         /* CLS: bottom heading strip — full width + min-height so web font load / line wrap does not shift following content */
         .slider-container .slider-heading {
@@ -247,6 +311,8 @@
 
             .slider-container, .slider-container.slider-hero-section2 {
                 min-height: 300px;
+                height: 300px;
+                padding: 0 !important;
             }
             }
             @media (min-width: 1200px) {

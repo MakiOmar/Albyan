@@ -25,6 +25,7 @@
             background: #f8fafc;
             border-bottom: 1px solid #e2e8f0;
             z-index: 490;
+            min-height: 56px;
         }
         #categorySubNav .category-sub-nav-bar {
             display: flex !important;
