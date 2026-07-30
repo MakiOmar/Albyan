@@ -1,4 +1,4 @@
-$gray: #818894;
+$gray: #5c6570; // WCAG AA ≥4.5:1 on white (was #818894 ~3.57:1)
 $gray-100: #f9f9f9;
 $gray-200: #f1f1f1;
 $gray-300: #ececec;
@@ -250,7 +250,7 @@ $input-border-radius: .5rem;
 $input-padding-y: .5rem;
 $input-padding-x: 1rem;
 $input-color: $black;
-$input-placeholder-color: #818894;
+$input-placeholder-color: #5c6570;
 $input-font-family: $font-family-base;
 $input-font-size: .75rem;
 $input-font-weight: normal;

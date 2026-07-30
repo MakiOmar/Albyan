@@ -365,7 +365,7 @@
         font-size: 14px;
         font-weight: normal;
         line-height: 1.5;
-        color: $gray;
+        color: #5c6570; // AA contrast on white
         pointer-events: none;
 
         @media (max-width: $screen-sm-max) {

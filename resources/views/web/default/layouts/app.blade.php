@@ -102,6 +102,17 @@
             right: auto !important;
             left: 0px !important;
         }
+        /* A11y: language placeholder is outside .flagstrap until JS loads — force white on blue bar */
+        .top-navbar.blue-bg .js-flagstrap-placeholder,
+        .top-navbar.blue-bg .language-select > .btn,
+        .top-navbar.blue-bg .flagstrap > .btn {
+            color: #fff !important;
+            background-color: transparent;
+            border-color: rgba(255, 255, 255, 0.65);
+        }
+        .top-navbar.blue-bg .navbar-search .search-icon {
+            color: #fff !important;
+        }
         .flagstrap button{
             color: #fff;
         }
