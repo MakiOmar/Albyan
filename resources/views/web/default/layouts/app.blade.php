@@ -671,12 +671,11 @@
     @endif
 </div>
 @if(!empty(turnstile_site_key()))
-    {{-- Turnstile: defer for PageSpeed, but always load before newsletter/forms need it. --}}
+    {{-- Turnstile: load only when a captcha form enters the viewport (not on idle / global gestures). --}}
     <script>
         (function () {
             window.turnstileSiteKey = @json(turnstile_site_key());
             var scriptLoading = false;
-            var unlockEvents = ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'];
 
             function widgets() {
                 return document.querySelectorAll('.cf-turnstile, [data-turnstile]');
@@ -684,6 +683,18 @@
 
             function hasWidget() {
                 return widgets().length > 0;
+            }
+
+            /** Forms / hosts to watch for visibility (footer newsletter, login, etc.). */
+            function observeTargets() {
+                var set = [];
+                widgets().forEach(function (el) {
+                    var host = el.closest('form, .footer-subscribe, .turnstile-widget-wrap') || el;
+                    if (set.indexOf(host) === -1) {
+                        set.push(host);
+                    }
+                });
+                return set;
             }
 
             function renderPendingWidgets() {
@@ -694,7 +705,6 @@
                     if (el.getAttribute('data-turnstile-rendered') === '1') {
                         return;
                     }
-                    // Already has an iframe from auto-render
                     if (el.querySelector && el.querySelector('iframe')) {
                         el.setAttribute('data-turnstile-rendered', '1');
                         return;
@@ -724,9 +734,6 @@
                 s.onload = function () {
                     window.__turnstileScriptLoaded = true;
                     scriptLoading = false;
-                    unlockEvents.forEach(function (ev) {
-                        document.removeEventListener(ev, loadTurnstile, true);
-                    });
                     renderPendingWidgets();
                 };
                 s.onerror = function () {
@@ -735,11 +742,17 @@
                 document.head.appendChild(s);
             }
 
-            // Load when a captcha host nears the viewport (footer newsletter on home).
-            function observeWidgets() {
-                if (!('IntersectionObserver' in window) || !hasWidget()) {
+            function observeWhenInView() {
+                var targets = observeTargets();
+                if (!targets.length) {
                     return;
                 }
+
+                if (!('IntersectionObserver' in window)) {
+                    // Legacy fallback: load on first focus of a Turnstile form.
+                    return;
+                }
+
                 var io = new IntersectionObserver(function (entries) {
                     for (var i = 0; i < entries.length; i++) {
                         if (entries[i].isIntersecting) {
@@ -748,24 +761,25 @@
                             return;
                         }
                     }
-                }, { rootMargin: '200px 0px' });
-                widgets().forEach(function (el) {
+                }, { root: null, rootMargin: '50px 0px', threshold: 0 });
+
+                targets.forEach(function (el) {
                     io.observe(el);
                 });
             }
 
-            // Load as soon as user focuses newsletter / any form with Turnstile.
+            // If the user focuses the form (keyboard), ensure script loads even if IO missed.
             document.addEventListener('focusin', function (e) {
                 var t = e.target;
                 if (!t || !t.closest) {
                     return;
                 }
-                if (t.closest('.cf-turnstile, .turnstile-widget-wrap, form[action*="newsletter"], .footer-subscribe')) {
+                if (t.closest('form') && t.closest('form').querySelector('.cf-turnstile, [data-turnstile]')) {
                     loadTurnstile();
                 }
             }, true);
 
-            // Ensure token exists before newsletter submit on fast (cached) pages.
+            // Safety: wait for a token if the user submits before the challenge is ready.
             document.addEventListener('submit', function (e) {
                 var form = e.target;
                 if (!form || !form.querySelector) {
@@ -801,22 +815,13 @@
                 }, 250);
             }, true);
 
-            unlockEvents.forEach(function (ev) {
-                document.addEventListener(ev, loadTurnstile, { passive: true, capture: true });
-            });
-
-            function schedule() {
-                observeWidgets();
-                if (window.requestIdleCallback) {
-                    window.requestIdleCallback(loadTurnstile, { timeout: 8000 });
-                } else {
-                    window.setTimeout(loadTurnstile, 4000);
-                }
+            function start() {
+                observeWhenInView();
             }
-            if (document.readyState === 'complete') {
-                schedule();
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', start, { once: true });
             } else {
-                window.addEventListener('load', schedule, { once: true });
+                start();
             }
         })();
     </script>
