@@ -42,7 +42,7 @@ class ImageLazyLoader {
 
         const unlockEvents = (window.__perfUnlockEvents && window.__perfUnlockEvents.length)
             ? window.__perfUnlockEvents.slice()
-            : ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'];
+            : ['pointerdown', 'touchstart', 'keydown', 'mousemove'];
 
         const unlock = () => {
             if (this.interactionUnlocked) {
@@ -58,7 +58,7 @@ class ImageLazyLoader {
             this.loadAllPendingImages();
         };
 
-        // Real gestures unlock images; scroll/wheel skipped when ?lab=1 / ?strict_interaction=1 (mousemove still unlocks).
+        // Real gestures unlock images; page scroll/wheel never count (mousemove does).
         unlockEvents.forEach((ev) => {
             window.addEventListener(ev, unlock, { capture: true, passive: true });
         });

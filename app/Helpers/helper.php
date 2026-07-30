@@ -2038,7 +2038,8 @@ function gtmIsEnabledForRequest(): bool
 }
 
 /**
- * Lab / Lighthouse mode: ignore page scroll and wheel as "user interaction" (mousemove still counts).
+ * Lab / Lighthouse mode: skip idle auto-load of deferred assets (GTM/vendors/feather).
+ * Scroll/wheel are never unlock gestures site-wide; mousemove still unlocks.
  * Enable with ?lab=1 or ?strict_interaction=1.
  */
 function perfStrictInteractionMode(): bool

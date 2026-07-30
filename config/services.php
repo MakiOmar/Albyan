@@ -80,13 +80,13 @@ return [
     |
     | container_id: e.g. GTM-XXXXXXX
     | load_strategy:
-    |   - interaction (default): gtm.js on pointer/touch/key/wheel/scroll/mousemove OR after idle_timeout_ms.
-    |     Pushes dataLayer event "site_interactive" when gtm.js starts — configure FB Pixel /
-    |     Clarity in GTM on that Custom Event.
+    |   - interaction (default): gtm.js on pointer/touch/key/mousemove OR after idle_timeout_ms.
+    |     Page scroll/wheel do not unlock. Pushes dataLayer event "site_interactive" when gtm.js starts —
+    |     configure FB Pixel / Clarity in GTM on that Custom Event.
     |   - idle: same delayed path (kept for backwards-compatible env values).
     |   - eager: official async snippet in <head> — earliest hits, heaviest TBT.
     |   - Query disable (testing / Lighthouse without tags): ?gtm=0 or ?no_gtm=1
-    |   - Lab mode (?lab=1 or ?strict_interaction=1): do not treat page scroll/wheel as interaction unlocks (mousemove still does).
+    |   - Lab mode (?lab=1 or ?strict_interaction=1): also skip idle auto-load (gesture-only unlock).
     |
     */
     'gtm' => [

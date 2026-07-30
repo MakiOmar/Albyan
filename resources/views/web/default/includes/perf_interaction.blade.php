@@ -4,14 +4,12 @@
 @endphp
 <script>
     (function () {
-        var strict = @json($__perfStrictInteraction);
-        // Lab/Lighthouse often auto-fires page scroll — ignore scroll/wheel when ?lab=1 (mousemove still counts).
-        var full = ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'];
-        var labEvents = ['pointerdown', 'touchstart', 'keydown', 'mousemove'];
-        window.__perfStrictInteraction = !!strict;
-        window.__perfUnlockEvents = strict ? labEvents.slice() : full.slice();
-        window.__perfUnlockEventsWithClick = strict
-            ? ['pointerdown', 'touchstart', 'keydown', 'click', 'mousemove']
-            : ['scroll', 'wheel', 'touchstart', 'pointerdown', 'keydown', 'click', 'mousemove'];
+        var lab = @json($__perfStrictInteraction);
+        // Page scroll/wheel are not treated as interaction (Lighthouse/auto-scroll). Mousemove still unlocks.
+        var unlockEvents = ['pointerdown', 'touchstart', 'keydown', 'mousemove'];
+        window.__perfStrictInteraction = !!lab;
+        window.__perfUnlockEvents = unlockEvents.slice();
+        window.__perfUnlockEventsWithClick = ['pointerdown', 'touchstart', 'keydown', 'click', 'mousemove'];
+        // ?lab=1 additionally skips idle auto-load of GTM/vendors/feather (gesture-only).
     })();
 </script>

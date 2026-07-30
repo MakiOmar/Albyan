@@ -114,7 +114,7 @@ class LazyCSSLoader {
     }
 
     /**
-     * Load Swiper / Owl vendor CSS after first user gesture (scroll, wheel, touch, pointer, key, click).
+     * Load Swiper / Owl vendor CSS after first user gesture (pointer, touch, key, click, mousemove — not scroll/wheel).
      * Page scripts should defer Swiper/Owl init via onVendorCssReady() until this runs.
      */
     setupCarouselVendorCSSOnInteraction() {
@@ -127,7 +127,7 @@ class LazyCSSLoader {
         let fired = false;
         const events = (window.__perfUnlockEventsWithClick && window.__perfUnlockEventsWithClick.length)
             ? window.__perfUnlockEventsWithClick.slice()
-            : ['scroll', 'wheel', 'touchstart', 'pointerdown', 'keydown', 'click', 'mousemove'];
+            : ['pointerdown', 'touchstart', 'keydown', 'click', 'mousemove'];
         const opts = { passive: true };
 
         const cleanup = () => {
