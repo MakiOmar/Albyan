@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         Commands\clearAll::class,
         Commands\NotifyGroupsNearEndCommand::class,
         Commands\SearchReplaceCommand::class,
+        Commands\DbSearchCommand::class,
         Commands\GenerateSitemap::class,
         Commands\SyncSingleCourseToWordpress::class,
         Commands\SyncAllCoursesToWordpress::class,
