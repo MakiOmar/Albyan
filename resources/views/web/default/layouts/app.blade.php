@@ -669,7 +669,9 @@
         @include('web.default.includes.mobile_app_top_nav')
     @endif
 
-    @yield('content')
+    <main id="main-content">
+        @yield('content')
+    </main>
 
     @if(!isset($appFooter))
         @include('web.default.includes.footer')
