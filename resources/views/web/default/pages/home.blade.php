@@ -1298,7 +1298,7 @@
                         });
                         $(function () {
                             var $accordion = $('#homeFaqAccordion');
-                            if (!$accordion.length || typeof feather === 'undefined') {
+                            if (!$accordion.length) {
                                 return;
                             }
                             function setChevron($btn, isOpen) {
@@ -1308,17 +1308,24 @@
                                 }
                                 $chevron.attr('data-feather', isOpen ? 'chevron-up' : 'chevron-down');
                                 requestAnimationFrame(function () {
-                                    feather.replace({ class: 'js-faq-chevron' });
+                                    if (typeof feather !== 'undefined' && typeof feather.replace === 'function') {
+                                        feather.replace({ class: 'js-faq-chevron' });
+                                    }
                                 });
                             }
-                            $accordion.find('.collapse').on('show.bs.collapse', function () {
-                                var $card = $(this).closest('.card');
-                                $accordion.find('.js-faq-accordion-btn').each(function () {
-                                    setChevron($(this), $(this).closest('.card').is($card));
-                                });
-                            }).on('hide.bs.collapse', function () {
-                                setChevron($(this).closest('.card').find('.js-faq-accordion-btn'), false);
-                            });
+                            function bindFaqChevrons() {
+                                $accordion.find('.collapse').off('show.bs.collapse.feather hide.bs.collapse.feather')
+                                    .on('show.bs.collapse.feather', function () {
+                                        var $card = $(this).closest('.card');
+                                        $accordion.find('.js-faq-accordion-btn').each(function () {
+                                            setChevron($(this), $(this).closest('.card').is($card));
+                                        });
+                                    }).on('hide.bs.collapse.feather', function () {
+                                        setChevron($(this).closest('.card').find('.js-faq-accordion-btn'), false);
+                                    });
+                            }
+                            bindFaqChevrons();
+                            document.addEventListener('feather-ready', bindFaqChevrons, { once: true });
                         });
                     });
                 });

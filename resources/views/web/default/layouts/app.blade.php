@@ -839,7 +839,50 @@
 @endif
 <!-- Template JS File -->
 <script src="{{ asset_v('/assets/default/js/app.min.js') }}"></script>
-<script src="{{ asset_v('/assets/default/vendors/feather-icons/dist/feather.min.js') }}"></script>
+{{-- Feather icons: defer until interaction/idle (legacy polyfills in feather.min.js hurt Lighthouse TBT). --}}
+<script>
+    (function () {
+        var started = false;
+        var url = @json(asset_v('/assets/default/vendors/feather-icons/dist/feather.min.js'));
+        function runReplace() {
+            if (typeof feather !== 'undefined' && typeof feather.replace === 'function') {
+                feather.replace();
+            }
+            try {
+                document.dispatchEvent(new Event('feather-ready'));
+            } catch (e) { /* ignore */ }
+        }
+        function loadFeather() {
+            if (started) {
+                return;
+            }
+            started = true;
+            var s = document.createElement('script');
+            s.src = url;
+            s.async = true;
+            s.onload = runReplace;
+            s.onerror = function () { started = false; };
+            document.body.appendChild(s);
+        }
+        function scheduleIdle() {
+            window.setTimeout(function () {
+                if (window.requestIdleCallback) {
+                    window.requestIdleCallback(loadFeather, { timeout: 5000 });
+                } else {
+                    window.setTimeout(loadFeather, 2500);
+                }
+            }, 2500);
+        }
+        ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'].forEach(function (ev) {
+            window.addEventListener(ev, loadFeather, { once: true, passive: true, capture: true });
+        });
+        if (document.readyState === 'complete') {
+            scheduleIdle();
+        } else {
+            window.addEventListener('load', scheduleIdle, { once: true });
+        }
+    })();
+</script>
 {{-- Moment / SweetAlert2 / Toast / SimpleBar: defer until interaction or late idle (keeps TBT down in lab). --}}
 <script>
     (function () {
