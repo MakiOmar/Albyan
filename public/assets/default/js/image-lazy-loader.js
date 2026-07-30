@@ -58,7 +58,7 @@ class ImageLazyLoader {
             this.loadAllPendingImages();
         };
 
-        // Real gestures unlock images; scroll/mousemove skipped when ?lab=1 / ?strict_interaction=1.
+        // Real gestures unlock images; scroll/wheel skipped when ?lab=1 / ?strict_interaction=1 (mousemove still unlocks).
         unlockEvents.forEach((ev) => {
             window.addEventListener(ev, unlock, { capture: true, passive: true });
         });

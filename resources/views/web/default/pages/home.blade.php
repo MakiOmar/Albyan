@@ -1226,7 +1226,7 @@
 @push('scripts_bottom')
     <script>
         (function () {
-            /* Home section backgrounds: unlock on gesture list from window.__perfUnlockEvents (?lab=1 drops scroll/mousemove). */
+            /* Home section backgrounds: unlock on gesture list from window.__perfUnlockEvents (?lab=1 drops scroll/wheel only). */
             function applyDeferredSectionBackgrounds() {
                 document.querySelectorAll('.js-deferred-section-bg[data-deferred-bg]').forEach(function (el) {
                     var url = el.getAttribute('data-deferred-bg');

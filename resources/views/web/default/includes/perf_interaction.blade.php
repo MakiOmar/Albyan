@@ -5,13 +5,13 @@
 <script>
     (function () {
         var strict = @json($__perfStrictInteraction);
-        // Lab/Lighthouse often fires scroll/mousemove without a real click — ignore those when ?lab=1 or ?strict_interaction=1.
+        // Lab/Lighthouse often auto-fires page scroll — ignore scroll/wheel when ?lab=1 (mousemove still counts).
         var full = ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'];
-        var strictEvents = ['pointerdown', 'touchstart', 'keydown'];
+        var labEvents = ['pointerdown', 'touchstart', 'keydown', 'mousemove'];
         window.__perfStrictInteraction = !!strict;
-        window.__perfUnlockEvents = strict ? strictEvents.slice() : full.slice();
+        window.__perfUnlockEvents = strict ? labEvents.slice() : full.slice();
         window.__perfUnlockEventsWithClick = strict
-            ? ['pointerdown', 'touchstart', 'keydown', 'click']
+            ? ['pointerdown', 'touchstart', 'keydown', 'click', 'mousemove']
             : ['scroll', 'wheel', 'touchstart', 'pointerdown', 'keydown', 'click', 'mousemove'];
     })();
 </script>

@@ -2038,7 +2038,7 @@ function gtmIsEnabledForRequest(): bool
 }
 
 /**
- * Lab / Lighthouse mode: ignore scroll, wheel, and mousemove as "user interaction".
+ * Lab / Lighthouse mode: ignore page scroll and wheel as "user interaction" (mousemove still counts).
  * Enable with ?lab=1 or ?strict_interaction=1.
  */
 function perfStrictInteractionMode(): bool

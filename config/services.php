@@ -86,7 +86,7 @@ return [
     |   - idle: same delayed path (kept for backwards-compatible env values).
     |   - eager: official async snippet in <head> — earliest hits, heaviest TBT.
     |   - Query disable (testing / Lighthouse without tags): ?gtm=0 or ?no_gtm=1
-    |   - Lab mode (?lab=1 or ?strict_interaction=1): do not treat scroll/wheel/mousemove as interaction unlocks.
+    |   - Lab mode (?lab=1 or ?strict_interaction=1): do not treat page scroll/wheel as interaction unlocks (mousemove still does).
     |
     */
     'gtm' => [

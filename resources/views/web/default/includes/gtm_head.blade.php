@@ -25,7 +25,7 @@
     @else
         {{--
             interaction (default) / idle:
-            - Unlock on pointer/touch/key (plus wheel/scroll/mousemove unless ?lab=1 / ?strict_interaction=1).
+            - Unlock on pointer/touch/key/mousemove (plus wheel/scroll unless ?lab=1 / ?strict_interaction=1).
             - Fallback idle after idle_timeout_ms (default 12s).
             - GTM Custom Event "site_interactive" is pushed when gtm.js starts — wire FB Pixel / Clarity to that event.
         --}}

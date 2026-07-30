@@ -1301,7 +1301,7 @@
         <div>home_cache: {{ $__perfHomepageCacheMode }}</div>
         <div>lazy: {{ $__perfImageLazyLoadMode }}</div>
         <div>gtm: {{ gtmIsEnabledForRequest() ? 'on' : 'off' }}</div>
-        <div>strict_ix: {{ perfStrictInteractionMode() ? 'on (no scroll/mousemove)' : 'off' }}</div>
+        <div>strict_ix: {{ perfStrictInteractionMode() ? 'on (no scroll/wheel)' : 'off' }}</div>
         <div>js_mode: <span id="perf-debug-js-mode">…</span></div>
         <div>pending: <span id="perf-debug-pending">…</span></div>
     </div>
