@@ -110,3 +110,5 @@
 
 {!! getSeoMetas('extra_meta_tags') !!}
 
+@include('web.default.includes.perf_interaction')
+

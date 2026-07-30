@@ -42,7 +42,7 @@
                             function startHeroVideoOnInteraction() {
                                 if (unlocked) return;
                                 unlocked = true;
-                                ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'].forEach(function (ev) {
+                                (window.__perfUnlockEvents || ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove']).forEach(function (ev) {
                                     document.removeEventListener(ev, startHeroVideoOnInteraction, true);
                                 });
                                 var playPromise = video.play();
@@ -50,7 +50,7 @@
                                     playPromise.catch(function () {});
                                 }
                             }
-                            ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'].forEach(function (ev) {
+                            (window.__perfUnlockEvents || ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove']).forEach(function (ev) {
                                 document.addEventListener(ev, startHeroVideoOnInteraction, { capture: true, passive: true });
                             });
                         })();

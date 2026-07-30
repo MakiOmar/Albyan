@@ -107,7 +107,7 @@
                                 function startHeroVideoOnInteraction() {
                                     if (unlocked) return;
                                     unlocked = true;
-                                ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'].forEach(function (ev) {
+                                (window.__perfUnlockEvents || ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove']).forEach(function (ev) {
                                     document.removeEventListener(ev, startHeroVideoOnInteraction, true);
                                 });
                                 var playPromise = video.play();
@@ -115,7 +115,7 @@
                                     playPromise.catch(function () {});
                                 }
                             }
-                            ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'].forEach(function (ev) {
+                            (window.__perfUnlockEvents || ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove']).forEach(function (ev) {
                                 document.addEventListener(ev, startHeroVideoOnInteraction, { capture: true, passive: true });
                             });
                             })();
@@ -1226,7 +1226,7 @@
 @push('scripts_bottom')
     <script>
         (function () {
-            /* Home (non-hero sections): background-images load after first user interaction (pointer, touch, key, wheel, scroll, or mousemove). */
+            /* Home section backgrounds: unlock on gesture list from window.__perfUnlockEvents (?lab=1 drops scroll/mousemove). */
             function applyDeferredSectionBackgrounds() {
                 document.querySelectorAll('.js-deferred-section-bg[data-deferred-bg]').forEach(function (el) {
                     var url = el.getAttribute('data-deferred-bg');
@@ -1238,17 +1238,18 @@
                 });
             }
             var sectionBgUnlocked = false;
+            var sectionBgEvents = window.__perfUnlockEvents || ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'];
             function unlockSectionBackgrounds() {
                 if (sectionBgUnlocked) {
                     return;
                 }
                 sectionBgUnlocked = true;
-                ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'].forEach(function (ev) {
+                sectionBgEvents.forEach(function (ev) {
                     document.removeEventListener(ev, unlockSectionBackgrounds, true);
                 });
                 applyDeferredSectionBackgrounds();
             }
-            ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'].forEach(function (ev) {
+            sectionBgEvents.forEach(function (ev) {
                 document.addEventListener(ev, unlockSectionBackgrounds, { capture: true, passive: true });
             });
         })();

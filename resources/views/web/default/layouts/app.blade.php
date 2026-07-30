@@ -867,6 +867,9 @@
             document.body.appendChild(s);
         }
         function scheduleIdle() {
+            if (window.__perfStrictInteraction) {
+                return;
+            }
             window.setTimeout(function () {
                 if (window.requestIdleCallback) {
                     window.requestIdleCallback(loadFeather, { timeout: 5000 });
@@ -875,7 +878,7 @@
                 }
             }, 2500);
         }
-        ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'].forEach(function (ev) {
+        (window.__perfUnlockEvents || ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove']).forEach(function (ev) {
             window.addEventListener(ev, loadFeather, { once: true, passive: true, capture: true });
         });
         if (document.readyState === 'complete') {
@@ -918,6 +921,9 @@
             loadNext(0);
         }
         function scheduleIdle() {
+            if (window.__perfStrictInteraction) {
+                return;
+            }
             window.setTimeout(function () {
                 if (window.requestIdleCallback) {
                     window.requestIdleCallback(startDeferredVendors, { timeout: 6000 });
@@ -926,7 +932,7 @@
                 }
             }, 3000);
         }
-        ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'].forEach(function (ev) {
+        (window.__perfUnlockEvents || ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove']).forEach(function (ev) {
             window.addEventListener(ev, startDeferredVendors, { once: true, passive: true, capture: true });
         });
         if (document.readyState === 'complete') {
@@ -1295,6 +1301,7 @@
         <div>home_cache: {{ $__perfHomepageCacheMode }}</div>
         <div>lazy: {{ $__perfImageLazyLoadMode }}</div>
         <div>gtm: {{ gtmIsEnabledForRequest() ? 'on' : 'off' }}</div>
+        <div>strict_ix: {{ perfStrictInteractionMode() ? 'on (no scroll/mousemove)' : 'off' }}</div>
         <div>js_mode: <span id="perf-debug-js-mode">…</span></div>
         <div>pending: <span id="perf-debug-pending">…</span></div>
     </div>

@@ -40,7 +40,9 @@ class ImageLazyLoader {
         }
         this._interactionUnlockBound = true;
 
-        const unlockEvents = ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'];
+        const unlockEvents = (window.__perfUnlockEvents && window.__perfUnlockEvents.length)
+            ? window.__perfUnlockEvents.slice()
+            : ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'];
 
         const unlock = () => {
             if (this.interactionUnlocked) {
@@ -51,12 +53,12 @@ class ImageLazyLoader {
                 window.removeEventListener(ev, unlock, true);
             });
             if (window.__perfDebug) {
-                console.log('[perf-debug] interaction unlocked (pointer/touch/key/wheel/scroll/mousemove) — loading pending images');
+                console.log('[perf-debug] interaction unlocked (' + unlockEvents.join('/') + ') — loading pending images');
             }
             this.loadAllPendingImages();
         };
 
-        // Mouse move / wheel / page scroll count as interaction (same as click/touch/key).
+        // Real gestures unlock images; scroll/mousemove skipped when ?lab=1 / ?strict_interaction=1.
         unlockEvents.forEach((ev) => {
             window.addEventListener(ev, unlock, { capture: true, passive: true });
         });
@@ -97,7 +99,7 @@ class ImageLazyLoader {
 
     setupInteractionMode() {
         if (window.__perfDebug) {
-            console.log('[perf-debug] using interaction mode (placeholder until pointer/touch/key/wheel/scroll/mousemove)');
+            console.log('[perf-debug] using interaction mode (placeholder until unlock events:', (window.__perfUnlockEvents || []).join('/') || 'default', ')');
         }
         this.ensureInteractionUnlock();
         this.observeImages();

@@ -25,7 +25,7 @@
     @else
         {{--
             interaction (default) / idle:
-            - Unlock on pointer/touch/key/wheel/scroll/mousemove (page scroll counts as interaction).
+            - Unlock on pointer/touch/key (plus wheel/scroll/mousemove unless ?lab=1 / ?strict_interaction=1).
             - Fallback idle after idle_timeout_ms (default 12s).
             - GTM Custom Event "site_interactive" is pushed when gtm.js starts — wire FB Pixel / Clarity to that event.
         --}}
@@ -34,7 +34,9 @@
                 w.dataLayer = w.dataLayer || [];
                 var id = @json($gtmId);
                 var timeoutMs = {{ $gtmIdleTimeout }};
-                var unlockEvents = ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'];
+                var unlockEvents = (window.__perfUnlockEvents && window.__perfUnlockEvents.length)
+                    ? window.__perfUnlockEvents.slice()
+                    : ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll', 'mousemove'];
                 function loadGtm() {
                     if (w.__gtmScriptLoaded) {
                         return;
@@ -59,6 +61,10 @@
                     loadGtm();
                 }
                 function scheduleIdle() {
+                    /* In lab/strict mode, only real click/touch/key unlocks — no idle fallback. */
+                    if (w.__perfStrictInteraction) {
+                        return;
+                    }
                     /* Delay scheduling until after load so LCP/FCP window stays clear. */
                     w.setTimeout(function () {
                         if (w.requestIdleCallback) {

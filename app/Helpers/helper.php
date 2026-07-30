@@ -2038,6 +2038,39 @@ function gtmIsEnabledForRequest(): bool
 }
 
 /**
+ * Lab / Lighthouse mode: ignore scroll, wheel, and mousemove as "user interaction".
+ * Enable with ?lab=1 or ?strict_interaction=1.
+ */
+function perfStrictInteractionMode(): bool
+{
+    try {
+        $req = request();
+    } catch (\Throwable $e) {
+        return false;
+    }
+
+    if ($req->boolean('lab') || $req->boolean('strict_interaction')) {
+        return true;
+    }
+
+    if ($req->has('lab')) {
+        $v = strtolower(trim((string) $req->query('lab')));
+        if (in_array($v, ['1', 'true', 'yes', 'on'], true)) {
+            return true;
+        }
+    }
+
+    if ($req->has('strict_interaction')) {
+        $v = strtolower(trim((string) $req->query('strict_interaction')));
+        if (in_array($v, ['1', 'true', 'yes', 'on'], true)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
  * Cache-bust a public asset URL with ?v= (ASSET_VERSION or file mtime).
  * Example: asset_v('/assets/default/css/app.css') => /assets/default/css/app.css?v=1719...
  */
