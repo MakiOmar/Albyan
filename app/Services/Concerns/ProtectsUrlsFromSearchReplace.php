@@ -62,25 +62,40 @@ trait ProtectsUrlsFromSearchReplace
             return false;
         }
 
-        // Multi-line or space-heavy values are treated as content, not pure URLs.
-        if (preg_match('/\s/', $trimmed) && !preg_match('#^(https?://|//|www\.)\S+$#iu', $trimmed)) {
-            return false;
+        // Upload/store media paths may include spaces and non-Latin filenames, e.g.
+        // /store/1/الدبلومات/الدبلوم التدريبي في مهارات الطفوله المبكرة.jpg
+        if ($this->isStoreUploadPath($trimmed)) {
+            return true;
         }
 
         if (preg_match('#^(https?://|//|www\.)#iu', $trimmed)) {
             return true;
         }
 
-        if (preg_match('#^(store/|/store/|uploads/|/uploads/|storage/|/storage/|public/|/public/)#iu', $trimmed)) {
-            return true;
+        // Multi-line or space-heavy values are treated as content, not pure URLs.
+        if (preg_match('/\s/', $trimmed)) {
+            return false;
         }
 
         // Bare domain-like values without spaces.
-        if (!preg_match('/\s/', $trimmed) && preg_match('#^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}(/.*)?$#iu', $trimmed)) {
+        if (preg_match('#^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}(/.*)?$#iu', $trimmed)) {
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Detect local upload/store paths (with or without leading slash / absolute host).
+     */
+    protected function isStoreUploadPath(string $value): bool
+    {
+        $trimmed = trim($value);
+
+        return (bool) preg_match(
+            '#^(?:https?://[^/\s]+)?/?(?:store|uploads|storage|public)/#iu',
+            $trimmed
+        );
     }
 
     /**
@@ -95,10 +110,10 @@ trait ProtectsUrlsFromSearchReplace
         $patterns = [
             // Absolute / protocol-relative / www URLs
             '#(https?://[^\s<>"\'\)\]]+|//[^\s<>"\'\)\]]+|www\.[^\s<>"\'\)\]]+)#iu',
-            // Common HTML attribute URLs
-            '#((?:href|src|action|data-src|poster)\s*=\s*)([\'"])([^\'"]+)\2#iu',
-            // Common media/store paths
-            '#(?<![A-Za-z0-9_])((?:/?store/|/?uploads/|/?storage/|/?public/)[^\s<>"\']+)#iu',
+            // Common HTML attribute URLs (quoted values may include spaces)
+            '#((?:href|src|action|data-src|data-url|poster|content)\s*=\s*)([\'"])([^\'"]+)\2#iu',
+            // Local upload/store paths — allow spaces & unicode in filenames
+            '#(?<![A-Za-z0-9_])((?:https?://[^/\s<>"\']+)?/?(?:store|uploads|storage|public)/[^<>"\'\r\n]+)#iu',
         ];
 
         $protected = $text;
