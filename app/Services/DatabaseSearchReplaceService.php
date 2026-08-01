@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use App\Services\Concerns\ProtectsUrlsFromSearchReplace;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class DatabaseSearchReplaceService
 {
+    use ProtectsUrlsFromSearchReplace;
+
     public const PREVIEW_LIMIT = 200;
 
     /** Tables that must never be scanned or mutated. */
@@ -84,7 +87,6 @@ class DatabaseSearchReplaceService
             }
         }
 
-        // When truncated, recompute a fuller occurrence total for accuracy on shown rows only.
         return [
             'matches' => $matches,
             'total_occurrences' => $totalOccurrences,
@@ -94,11 +96,16 @@ class DatabaseSearchReplaceService
         ];
     }
 
+    /**
+     * @param  array<int, array{table: string, column: string, primary_key: mixed}>|null  $selections
+     *         Null = apply to all matching cells (CLI). Non-empty array = only selected rows (UI).
+     */
     public function apply(
         string $search,
         string $replace,
         bool $caseSensitive = true,
-        bool $wholeWord = false
+        bool $wholeWord = false,
+        ?array $selections = null
     ): array {
         $updatedRecords = 0;
         $totalOccurrences = 0;
@@ -108,18 +115,19 @@ class DatabaseSearchReplaceService
             $replace,
             $caseSensitive,
             $wholeWord,
+            $selections,
             &$updatedRecords,
             &$totalOccurrences
         ) {
-            foreach ($this->getScannableColumns() as $target) {
-                // Fast SQL path for simple case-sensitive substring replace.
-                if ($caseSensitive && !$wholeWord) {
-                    $result = $this->applySqlReplace($target['table'], $target['column'], $search, $replace);
-                    $updatedRecords += $result['updated_records'];
-                    $totalOccurrences += $result['total_occurrences'];
-                    continue;
-                }
+            if ($selections !== null) {
+                $result = $this->applySelections($selections, $search, $replace, $caseSensitive, $wholeWord);
+                $updatedRecords = $result['updated_records'];
+                $totalOccurrences = $result['total_occurrences'];
 
+                return;
+            }
+
+            foreach ($this->getScannableColumns() as $target) {
                 $result = $this->applyPhpReplace(
                     $target['table'],
                     $target['column'],
@@ -133,6 +141,91 @@ class DatabaseSearchReplaceService
                 $totalOccurrences += $result['total_occurrences'];
             }
         });
+
+        return [
+            'updated_records' => $updatedRecords,
+            'total_occurrences' => $totalOccurrences,
+        ];
+    }
+
+    /**
+     * @param  array<int, array{table: string, column: string, primary_key: mixed}>  $selections
+     */
+    private function applySelections(
+        array $selections,
+        string $search,
+        string $replace,
+        bool $caseSensitive,
+        bool $wholeWord
+    ): array {
+        $updatedRecords = 0;
+        $totalOccurrences = 0;
+        $seen = [];
+
+        foreach ($selections as $selection) {
+            $table = (string) ($selection['table'] ?? '');
+            $column = (string) ($selection['column'] ?? '');
+            $primaryKeyValue = $selection['primary_key'] ?? null;
+
+            if ($table === '' || $column === '' || $primaryKeyValue === null || $primaryKeyValue === '') {
+                continue;
+            }
+
+            if (!$this->isSafeIdentifier($table) || !$this->isSafeIdentifier($column)) {
+                continue;
+            }
+
+            if ($this->isExcludedTable($table) || $this->isExcludedColumn($column) || $this->isUrlRelatedColumnName($column)) {
+                continue;
+            }
+
+            $primaryKey = $this->resolvePrimaryKey($table);
+
+            if (!$primaryKey || !$this->isSafeIdentifier($primaryKey)) {
+                continue;
+            }
+
+            $dedupeKey = $table . '|' . $column . '|' . (string) $primaryKeyValue;
+
+            if (isset($seen[$dedupeKey])) {
+                continue;
+            }
+
+            $seen[$dedupeKey] = true;
+
+            try {
+                $row = DB::table($table)->where($primaryKey, $primaryKeyValue)->first([$column, $primaryKey]);
+            } catch (\Throwable $e) {
+                continue;
+            }
+
+            if (!$row) {
+                continue;
+            }
+
+            $value = (string) ($row->{$column} ?? '');
+
+            if ($this->isUrlOnlyValue($value)) {
+                continue;
+            }
+
+            $result = $this->replaceInStringProtectingUrls($value, $search, $replace, $caseSensitive, $wholeWord, false);
+
+            if ($result['count'] <= 0) {
+                continue;
+            }
+
+            try {
+                DB::table($table)
+                    ->where($primaryKey, $primaryKeyValue)
+                    ->update([$column => $result['text']]);
+
+                $updatedRecords++;
+                $totalOccurrences += $result['count'];
+            } catch (\Throwable $e) {
+                continue;
+            }
+        }
 
         return [
             'updated_records' => $updatedRecords,
@@ -163,7 +256,7 @@ class DatabaseSearchReplaceService
             foreach ($columns as $column) {
                 $columnName = $column->Field;
 
-                if ($this->isExcludedColumn($columnName)) {
+                if ($this->isExcludedColumn($columnName) || $this->isUrlRelatedColumnName($columnName)) {
                     continue;
                 }
 
@@ -199,7 +292,6 @@ class DatabaseSearchReplaceService
             return true;
         }
 
-        // Telescope / debug tooling prefixes.
         if (str_starts_with($lower, 'telescope_')) {
             return true;
         }
@@ -268,7 +360,7 @@ class DatabaseSearchReplaceService
         bool $wholeWord,
         int $limit
     ): array {
-        if ($limit <= 0 || $search === '') {
+        if ($limit <= 0 || $search === '' || !$primaryKey) {
             return [];
         }
 
@@ -283,19 +375,19 @@ class DatabaseSearchReplaceService
                 $query->where($column, 'like', '%' . $this->escapeLike($search) . '%');
             }
 
-            $select = [$column];
-            if ($primaryKey) {
-                $select[] = $primaryKey;
-            }
-
-            $rows = $query->limit($limit * 3)->get($select);
+            $rows = $query->limit($limit * 5)->get([$column, $primaryKey]);
         } catch (\Throwable $e) {
             return [];
         }
 
         foreach ($rows as $row) {
             $value = (string) ($row->{$column} ?? '');
-            $result = $this->replaceInString($value, $search, '', $caseSensitive, $wholeWord, true);
+
+            if ($this->isUrlOnlyValue($value)) {
+                continue;
+            }
+
+            $result = $this->replaceInStringProtectingUrls($value, $search, '', $caseSensitive, $wholeWord, true);
 
             if ($result['count'] <= 0) {
                 continue;
@@ -304,7 +396,7 @@ class DatabaseSearchReplaceService
             $matches[] = [
                 'table' => $table,
                 'column' => $column,
-                'primary_key' => $primaryKey ? ($row->{$primaryKey} ?? null) : null,
+                'primary_key' => $row->{$primaryKey} ?? null,
                 'occurrences' => $result['count'],
                 'snippet' => $this->buildSnippet($value, 120),
             ];
@@ -315,38 +407,6 @@ class DatabaseSearchReplaceService
         }
 
         return $matches;
-    }
-
-    private function applySqlReplace(string $table, string $column, string $search, string $replace): array
-    {
-        try {
-            $countQuery = DB::table($table)
-                ->whereNotNull($column)
-                ->whereRaw("`{$column}` LIKE BINARY ?", ['%' . $this->escapeLike($search) . '%']);
-
-            $rows = $countQuery->pluck($column);
-            $totalOccurrences = 0;
-
-            foreach ($rows as $value) {
-                $totalOccurrences += substr_count((string) $value, $search);
-            }
-
-            if ($totalOccurrences === 0) {
-                return ['updated_records' => 0, 'total_occurrences' => 0];
-            }
-
-            $updated = DB::update(
-                "UPDATE `{$table}` SET `{$column}` = REPLACE(`{$column}`, ?, ?) WHERE `{$column}` LIKE BINARY ?",
-                [$search, $replace, '%' . $this->escapeLike($search) . '%']
-            );
-
-            return [
-                'updated_records' => (int) $updated,
-                'total_occurrences' => $totalOccurrences,
-            ];
-        } catch (\Throwable $e) {
-            return ['updated_records' => 0, 'total_occurrences' => 0];
-        }
     }
 
     private function applyPhpReplace(
@@ -382,7 +442,12 @@ class DatabaseSearchReplaceService
 
         foreach ($rows as $row) {
             $value = (string) ($row->{$column} ?? '');
-            $result = $this->replaceInString($value, $search, $replace, $caseSensitive, $wholeWord, false);
+
+            if ($this->isUrlOnlyValue($value)) {
+                continue;
+            }
+
+            $result = $this->replaceInStringProtectingUrls($value, $search, $replace, $caseSensitive, $wholeWord, false);
 
             if ($result['count'] <= 0) {
                 continue;
@@ -394,7 +459,6 @@ class DatabaseSearchReplaceService
                         ->where($primaryKey, $row->{$primaryKey})
                         ->update([$column => $result['text']]);
                 } else {
-                    // Fallback when no primary key: update matching original value only.
                     DB::table($table)
                         ->where($column, $value)
                         ->limit(1)
@@ -417,76 +481,6 @@ class DatabaseSearchReplaceService
     private function escapeLike(string $value): string
     {
         return str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $value);
-    }
-
-    private function replaceInString(
-        string $text,
-        string $search,
-        string $replace,
-        bool $caseSensitive,
-        bool $wholeWord,
-        bool $previewOnly
-    ): array {
-        if ($search === '') {
-            return ['text' => $text, 'count' => 0];
-        }
-
-        if ($wholeWord) {
-            $pattern = '/\b' . preg_quote($search, '/') . '\b/u';
-
-            if (!$caseSensitive) {
-                $pattern .= 'i';
-            }
-
-            $count = 0;
-            $newText = preg_replace($pattern, $replace, $text, -1, $count);
-
-            if ($previewOnly) {
-                return ['text' => $text, 'count' => (int) $count];
-            }
-
-            return ['text' => $newText, 'count' => (int) $count];
-        }
-
-        if ($caseSensitive) {
-            $count = substr_count($text, $search);
-
-            return [
-                'text' => $previewOnly ? $text : str_replace($search, $replace, $text),
-                'count' => $count,
-            ];
-        }
-
-        $count = 0;
-        $searchLength = mb_strlen($search);
-        $offset = 0;
-        $result = '';
-
-        while (true) {
-            $position = mb_stripos($text, $search, $offset);
-
-            if ($position === false) {
-                break;
-            }
-
-            $count++;
-            $result .= mb_substr($text, $offset, $position - $offset);
-
-            if (!$previewOnly) {
-                $result .= $replace;
-            } else {
-                $result .= mb_substr($text, $position, $searchLength);
-            }
-
-            $offset = $position + $searchLength;
-        }
-
-        $result .= mb_substr($text, $offset);
-
-        return [
-            'text' => $previewOnly ? $text : $result,
-            'count' => $count,
-        ];
     }
 
     private function buildSnippet(string $value, int $maxLength): string

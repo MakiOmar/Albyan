@@ -19,7 +19,7 @@
                         <div class="card-body">
                             <p class="text-muted">{{ trans('admin/main.page_search_replace_hint') }}</p>
 
-                            <form id="js-page-search-replace-form" action="{{ getAdminPanelUrl() }}/tools/pages-search-replace/apply" method="post">
+                            <form id="js-page-search-replace-form" onsubmit="return false;">
                                 {{ csrf_field() }}
 
                                 <div class="row">
@@ -90,11 +90,8 @@
                                 </div>
 
                                 <div class="d-flex flex-wrap">
-                                    <button type="button" class="btn btn-outline-primary mr-2 mb-2" id="js-page-search-replace-preview">
+                                    <button type="button" class="btn btn-primary mb-2" id="js-page-search-replace-preview">
                                         {{ trans('admin/main.page_search_replace_preview') }}
-                                    </button>
-                                    <button type="button" class="btn btn-danger mb-2" id="js-page-search-replace-apply">
-                                        {{ trans('admin/main.page_search_replace_apply') }}
                                     </button>
                                 </div>
                             </form>
@@ -102,8 +99,11 @@
                     </div>
 
                     <div class="card d-none" id="js-page-search-replace-results-card">
-                        <div class="card-header">
-                            <h4 class="mb-0">{{ trans('admin/main.page_search_replace_results') }}</h4>
+                        <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
+                            <h4 class="mb-2 mb-md-0">{{ trans('admin/main.page_search_replace_results') }}</h4>
+                            <button type="button" class="btn btn-danger btn-sm mb-2 mb-md-0" id="js-page-search-replace-apply" disabled>
+                                {{ trans('admin/main.page_search_replace_apply_selected') }}
+                            </button>
                         </div>
                         <div class="card-body">
                             <p class="font-weight-bold mb-3" id="js-page-search-replace-summary"></p>
@@ -111,6 +111,12 @@
                                 <table class="table table-striped font-14">
                                     <thead>
                                         <tr>
+                                            <th class="text-center" style="width: 40px;">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="js-page-select-all" />
+                                                    <label class="custom-control-label" for="js-page-select-all"></label>
+                                                </div>
+                                            </th>
                                             <th>{{ trans('admin/main.name') }}</th>
                                             <th>{{ trans('admin/main.link') }}</th>
                                             <th>{{ trans('auth.language') }}</th>
@@ -139,7 +145,10 @@
             var $resultsCard = $('#js-page-search-replace-results-card');
             var $resultsBody = $('#js-page-search-replace-results-body');
             var $summary = $('#js-page-search-replace-summary');
+            var $applyBtn = $('#js-page-search-replace-apply');
+            var $selectAll = $('#js-page-select-all');
             var previewUrl = '{{ getAdminPanelUrl() }}/tools/pages-search-replace/preview';
+            var applyUrl = '{{ getAdminPanelUrl() }}/tools/pages-search-replace/apply';
             var summaryTemplate = @json(trans('admin/main.page_search_replace_summary'));
             var noMatchesText = @json(trans('admin/main.page_search_replace_no_matches'));
             var applyTitle = @json(trans('admin/main.page_search_replace_apply_title'));
@@ -147,6 +156,7 @@
             var applyConfirm = @json(trans('admin/main.page_search_replace_apply_confirm'));
             var cancelText = @json(trans('public.cancel'));
             var allLanguagesText = @json(trans('admin/main.page_search_replace_all_languages'));
+            var selectRequiredText = @json(trans('admin/main.page_search_replace_select_required'));
 
             function getFormPayload() {
                 var fields = [];
@@ -162,6 +172,7 @@
                     locale: $form.find('[name="locale"]').val() || '',
                     case_sensitive: $form.find('[name="case_sensitive"]').is(':checked') ? 1 : 0,
                     whole_word: $form.find('[name="whole_word"]').is(':checked') ? 1 : 0,
+                    _token: $form.find('[name="_token"]').val(),
                 };
             }
 
@@ -195,8 +206,35 @@
                 return true;
             }
 
+            function getSelectedMatches() {
+                var selections = [];
+
+                $resultsBody.find('.js-page-match-check:checked').each(function () {
+                    selections.push({
+                        page_id: $(this).data('page-id'),
+                        locale: $(this).data('locale') || '',
+                        field: $(this).data('field'),
+                    });
+                });
+
+                return selections;
+            }
+
+            function syncApplyButton() {
+                $applyBtn.prop('disabled', getSelectedMatches().length === 0);
+            }
+
+            function resetPreviewState() {
+                $resultsCard.addClass('d-none');
+                $resultsBody.empty();
+                $selectAll.prop('checked', false);
+                $applyBtn.prop('disabled', true);
+            }
+
             function renderResults(data) {
                 $resultsBody.empty();
+                $selectAll.prop('checked', false);
+                $applyBtn.prop('disabled', true);
 
                 if (!data.matches || !data.matches.length) {
                     $summary.text(noMatchesText);
@@ -210,9 +248,21 @@
                         .replace(':records', data.affected_records)
                 );
 
-                data.matches.forEach(function (match) {
+                data.matches.forEach(function (match, index) {
+                    var checkboxId = 'page-match-' + index;
+                    var locale = match.locale || '';
+
                     $resultsBody.append(
                         '<tr>' +
+                        '<td class="text-center">' +
+                        '<div class="custom-control custom-checkbox">' +
+                        '<input type="checkbox" class="custom-control-input js-page-match-check" id="' + checkboxId + '" ' +
+                        'data-page-id="' + match.page_id + '" ' +
+                        'data-locale="' + $('<div>').text(locale).html() + '" ' +
+                        'data-field="' + $('<div>').text(match.field).html() + '" />' +
+                        '<label class="custom-control-label" for="' + checkboxId + '"></label>' +
+                        '</div>' +
+                        '</td>' +
                         '<td>' + $('<div>').text(match.page_name).html() + '</td>' +
                         '<td>' + $('<div>').text(match.page_link).html() + '</td>' +
                         '<td>' + $('<div>').text(match.locale || allLanguagesText).html() + '</td>' +
@@ -225,6 +275,22 @@
 
                 $resultsCard.removeClass('d-none');
             }
+
+            $form.find('input, select').on('change input', function () {
+                resetPreviewState();
+            });
+
+            $selectAll.on('change', function () {
+                $resultsBody.find('.js-page-match-check').prop('checked', $(this).is(':checked'));
+                syncApplyButton();
+            });
+
+            $resultsBody.on('change', '.js-page-match-check', function () {
+                var total = $resultsBody.find('.js-page-match-check').length;
+                var checked = $resultsBody.find('.js-page-match-check:checked').length;
+                $selectAll.prop('checked', total > 0 && total === checked);
+                syncApplyButton();
+            });
 
             $('#js-page-search-replace-preview').on('click', function () {
                 var payload = getFormPayload();
@@ -261,10 +327,24 @@
                     });
             });
 
-            $('#js-page-search-replace-apply').on('click', function () {
+            $applyBtn.on('click', function () {
                 var payload = getFormPayload();
+                var selections = getSelectedMatches();
 
                 if (!validateForm(payload)) {
+                    return;
+                }
+
+                if (!selections.length) {
+                    $.toast({
+                        heading: @json(trans('public.request_failed')),
+                        text: selectRequiredText,
+                        bgColor: '#f63c3c',
+                        textColor: 'white',
+                        hideAfter: 5000,
+                        position: 'bottom-right',
+                        icon: 'error'
+                    });
                     return;
                 }
 
@@ -276,9 +356,45 @@
                     confirmButtonText: applyConfirm,
                     cancelButtonText: cancelText,
                 }).then(function (result) {
-                    if (result.isConfirmed) {
-                        $form.trigger('submit');
+                    if (!result.isConfirmed) {
+                        return;
                     }
+
+                    payload.selections = selections;
+                    $('.loading-overlay').css('display', 'flex');
+
+                    $.post(applyUrl, payload)
+                        .done(function (response) {
+                            $.toast({
+                                heading: @json(trans('public.success')),
+                                text: response.message || @json(trans('public.success')),
+                                bgColor: '#43d477',
+                                textColor: 'white',
+                                hideAfter: 5000,
+                                position: 'bottom-right',
+                                icon: 'success'
+                            });
+
+                            $('#js-page-search-replace-preview').trigger('click');
+                        })
+                        .fail(function (xhr) {
+                            var message = xhr.responseJSON && xhr.responseJSON.message
+                                ? xhr.responseJSON.message
+                                : @json(trans('public.request_failed'));
+
+                            $.toast({
+                                heading: @json(trans('public.request_failed')),
+                                text: message,
+                                bgColor: '#f63c3c',
+                                textColor: 'white',
+                                hideAfter: 5000,
+                                position: 'bottom-right',
+                                icon: 'error'
+                            });
+                        })
+                        .always(function () {
+                            $('.loading-overlay').hide();
+                        });
                 });
             });
         })(jQuery);

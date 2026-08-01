@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Models\Page;
-use App\Models\Translation\PageTranslation;
+use App\Services\Concerns\ProtectsUrlsFromSearchReplace;
 use Illuminate\Support\Facades\DB;
 
 class PageSearchReplaceService
 {
+    use ProtectsUrlsFromSearchReplace;
+
     public const TRANSLATED_FIELDS = [
         'title',
         'seo_description',
@@ -57,7 +59,7 @@ class PageSearchReplaceService
                 }
 
                 $value = (string) ($page->{$field} ?? '');
-                $result = $this->replaceInString($value, $search, $replace, $caseSensitive, $wholeWord, true);
+                $result = $this->replaceInStringProtectingUrls($value, $search, $replace, $caseSensitive, $wholeWord, true);
 
                 if ($result['count'] > 0) {
                     $matches[] = $this->buildMatchRow($page, null, $field, $result['count'], $value);
@@ -78,7 +80,7 @@ class PageSearchReplaceService
                     }
 
                     $value = (string) ($translation->{$field} ?? '');
-                    $result = $this->replaceInString($value, $search, $replace, $caseSensitive, $wholeWord, true);
+                    $result = $this->replaceInStringProtectingUrls($value, $search, $replace, $caseSensitive, $wholeWord, true);
 
                     if ($result['count'] > 0) {
                         $matches[] = $this->buildMatchRow($page, $translation->locale, $field, $result['count'], $value);
@@ -95,38 +97,60 @@ class PageSearchReplaceService
         ];
     }
 
+    /**
+     * @param  array<int, array{page_id: int, locale?: string|null, field: string}>  $selections
+     */
     public function apply(
         string $search,
         string $replace,
-        array $fields,
-        array $pageIds,
         bool $caseSensitive,
         bool $wholeWord,
-        ?string $locale = null
+        array $selections
     ): array {
-        $fields = $this->normalizeFields($fields);
         $updatedRecords = 0;
         $totalOccurrences = 0;
+        $allowedFields = array_merge(self::PAGE_FIELDS, self::TRANSLATED_FIELDS);
 
         DB::transaction(function () use (
             $search,
             $replace,
-            $fields,
-            $pageIds,
             $caseSensitive,
             $wholeWord,
-            $locale,
+            $selections,
+            $allowedFields,
             &$updatedRecords,
             &$totalOccurrences
         ) {
-            foreach ($this->getPages($pageIds) as $page) {
-                foreach (self::PAGE_FIELDS as $field) {
-                    if (!in_array($field, $fields, true)) {
-                        continue;
-                    }
+            $seen = [];
 
+            foreach ($selections as $selection) {
+                $pageId = (int) ($selection['page_id'] ?? 0);
+                $field = (string) ($selection['field'] ?? '');
+                $locale = isset($selection['locale']) && $selection['locale'] !== ''
+                    ? mb_strtolower((string) $selection['locale'])
+                    : null;
+
+                if ($pageId <= 0 || !in_array($field, $allowedFields, true)) {
+                    continue;
+                }
+
+                $dedupeKey = $pageId . '|' . ($locale ?? '-') . '|' . $field;
+
+                if (isset($seen[$dedupeKey])) {
+                    continue;
+                }
+
+                $seen[$dedupeKey] = true;
+
+                $page = Page::with('translations')->find($pageId);
+
+                if (!$page) {
+                    continue;
+                }
+
+                if (in_array($field, self::PAGE_FIELDS, true)) {
                     $value = (string) ($page->{$field} ?? '');
-                    $result = $this->replaceInString($value, $search, $replace, $caseSensitive, $wholeWord, false);
+                    $result = $this->replaceInStringProtectingUrls($value, $search, $replace, $caseSensitive, $wholeWord, false);
 
                     if ($result['count'] > 0) {
                         $page->{$field} = $result['text'];
@@ -134,36 +158,28 @@ class PageSearchReplaceService
                         $updatedRecords++;
                         $totalOccurrences += $result['count'];
                     }
+
+                    continue;
                 }
 
-                $translations = $page->translations;
-
-                if (!empty($locale)) {
-                    $translations = $translations->where('locale', mb_strtolower($locale));
+                if ($locale === null) {
+                    continue;
                 }
 
-                foreach ($translations as $translation) {
-                    $translationDirty = false;
+                $translation = $page->translations->firstWhere('locale', $locale);
 
-                    foreach (self::TRANSLATED_FIELDS as $field) {
-                        if (!in_array($field, $fields, true)) {
-                            continue;
-                        }
+                if (!$translation) {
+                    continue;
+                }
 
-                        $value = (string) ($translation->{$field} ?? '');
-                        $result = $this->replaceInString($value, $search, $replace, $caseSensitive, $wholeWord, false);
+                $value = (string) ($translation->{$field} ?? '');
+                $result = $this->replaceInStringProtectingUrls($value, $search, $replace, $caseSensitive, $wholeWord, false);
 
-                        if ($result['count'] > 0) {
-                            $translation->{$field} = $result['text'];
-                            $translationDirty = true;
-                            $totalOccurrences += $result['count'];
-                        }
-                    }
-
-                    if ($translationDirty) {
-                        $translation->save();
-                        $updatedRecords++;
-                    }
+                if ($result['count'] > 0) {
+                    $translation->{$field} = $result['text'];
+                    $translation->save();
+                    $updatedRecords++;
+                    $totalOccurrences += $result['count'];
                 }
             }
         });
@@ -190,76 +206,6 @@ class PageSearchReplaceService
         $allowed = array_merge(self::PAGE_FIELDS, self::TRANSLATED_FIELDS);
 
         return array_values(array_intersect($fields, $allowed));
-    }
-
-    private function replaceInString(
-        string $text,
-        string $search,
-        string $replace,
-        bool $caseSensitive,
-        bool $wholeWord,
-        bool $previewOnly
-    ): array {
-        if ($search === '') {
-            return ['text' => $text, 'count' => 0];
-        }
-
-        if ($wholeWord) {
-            $pattern = '/\b' . preg_quote($search, '/') . '\b/u';
-
-            if (!$caseSensitive) {
-                $pattern .= 'i';
-            }
-
-            $count = 0;
-            $newText = preg_replace($pattern, $replace, $text, -1, $count);
-
-            if ($previewOnly) {
-                return ['text' => $text, 'count' => (int) $count];
-            }
-
-            return ['text' => $newText, 'count' => (int) $count];
-        }
-
-        if ($caseSensitive) {
-            $count = substr_count($text, $search);
-
-            return [
-                'text' => $previewOnly ? $text : str_replace($search, $replace, $text),
-                'count' => $count,
-            ];
-        }
-
-        $count = 0;
-        $searchLength = mb_strlen($search);
-        $offset = 0;
-        $result = '';
-
-        while (true) {
-            $position = mb_stripos($text, $search, $offset);
-
-            if ($position === false) {
-                break;
-            }
-
-            $count++;
-            $result .= mb_substr($text, $offset, $position - $offset);
-
-            if (!$previewOnly) {
-                $result .= $replace;
-            } else {
-                $result .= mb_substr($text, $position, $searchLength);
-            }
-
-            $offset = $position + $searchLength;
-        }
-
-        $result .= mb_substr($text, $offset);
-
-        return [
-            'text' => $previewOnly ? $text : $result,
-            'count' => $count,
-        ];
     }
 
     private function buildMatchRow(Page $page, ?string $locale, string $field, int $occurrences, string $value): array

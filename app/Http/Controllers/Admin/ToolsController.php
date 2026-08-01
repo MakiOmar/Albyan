@@ -49,28 +49,24 @@ class ToolsController extends Controller
     {
         $this->authorize('admin_settings');
 
-        $data = $this->validatePagesSearchReplaceRequest($request);
+        $data = $this->validatePagesSearchReplaceApplyRequest($request);
 
         $result = $searchReplaceService->apply(
             $data['search'],
             $data['replace'] ?? '',
-            $data['fields'],
-            $data['page_ids'] ?? [],
             !empty($data['case_sensitive']),
             !empty($data['whole_word']),
-            $data['locale'] ?? null
+            $data['selections']
         );
 
-        $toastData = [
-            'title' => trans('public.success'),
-            'msg' => trans('admin/main.page_search_replace_applied', [
+        return response()->json([
+            'success' => true,
+            'message' => trans('admin/main.page_search_replace_applied', [
                 'occurrences' => $result['total_occurrences'],
                 'records' => $result['updated_records'],
             ]),
-            'status' => 'success',
-        ];
-
-        return redirect(getAdminPanelUrl() . '/tools/pages-search-replace')->with(['toast' => $toastData]);
+            'data' => $result,
+        ]);
     }
 
     public function databaseSearchReplace()
@@ -107,25 +103,24 @@ class ToolsController extends Controller
     {
         $this->authorize('admin_settings');
 
-        $data = $this->validateDatabaseSearchReplaceRequest($request);
+        $data = $this->validateDatabaseSearchReplaceApplyRequest($request);
 
         $result = $searchReplaceService->apply(
             $data['search'],
             $data['replace'] ?? '',
             !empty($data['case_sensitive']),
-            !empty($data['whole_word'])
+            !empty($data['whole_word']),
+            $data['selections']
         );
 
-        $toastData = [
-            'title' => trans('public.success'),
-            'msg' => trans('admin/main.db_search_replace_applied', [
+        return response()->json([
+            'success' => true,
+            'message' => trans('admin/main.db_search_replace_applied', [
                 'occurrences' => $result['total_occurrences'],
                 'records' => $result['updated_records'],
             ]),
-            'status' => 'success',
-        ];
-
-        return redirect(getAdminPanelUrl() . '/tools/database-search-replace')->with(['toast' => $toastData]);
+            'data' => $result,
+        ]);
     }
 
     private function validatePagesSearchReplaceRequest(Request $request): array
@@ -146,6 +141,23 @@ class ToolsController extends Controller
         ]);
     }
 
+    private function validatePagesSearchReplaceApplyRequest(Request $request): array
+    {
+        return $request->validate([
+            'search' => 'required|string|min:1',
+            'replace' => 'nullable|string',
+            'case_sensitive' => 'nullable|in:0,1',
+            'whole_word' => 'nullable|in:0,1',
+            'selections' => 'required|array|min:1',
+            'selections.*.page_id' => 'required|integer|exists:pages,id',
+            'selections.*.field' => 'required|string|in:' . implode(',', array_merge(
+                PageSearchReplaceService::PAGE_FIELDS,
+                PageSearchReplaceService::TRANSLATED_FIELDS
+            )),
+            'selections.*.locale' => 'nullable|string|max:10',
+        ]);
+    }
+
     private function validateDatabaseSearchReplaceRequest(Request $request): array
     {
         return $request->validate([
@@ -153,6 +165,20 @@ class ToolsController extends Controller
             'replace' => 'nullable|string',
             'case_sensitive' => 'nullable|in:0,1',
             'whole_word' => 'nullable|in:0,1',
+        ]);
+    }
+
+    private function validateDatabaseSearchReplaceApplyRequest(Request $request): array
+    {
+        return $request->validate([
+            'search' => 'required|string|min:1',
+            'replace' => 'nullable|string',
+            'case_sensitive' => 'nullable|in:0,1',
+            'whole_word' => 'nullable|in:0,1',
+            'selections' => 'required|array|min:1',
+            'selections.*.table' => 'required|string|max:64',
+            'selections.*.column' => 'required|string|max:64',
+            'selections.*.primary_key' => 'required',
         ]);
     }
 }

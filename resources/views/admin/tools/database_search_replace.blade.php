@@ -17,12 +17,13 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
+                            {{-- Hint: preview first, then select rows to apply --}}
                             <p class="text-muted">{{ trans('admin/main.db_search_replace_hint') }}</p>
                             <div class="alert alert-warning">
                                 {{ trans('admin/main.db_search_replace_warning') }}
                             </div>
 
-                            <form id="js-db-search-replace-form" action="{{ getAdminPanelUrl() }}/tools/database-search-replace/apply" method="post">
+                            <form id="js-db-search-replace-form" onsubmit="return false;">
                                 {{ csrf_field() }}
 
                                 <div class="row">
@@ -52,11 +53,8 @@
                                 </div>
 
                                 <div class="d-flex flex-wrap">
-                                    <button type="button" class="btn btn-outline-primary mr-2 mb-2" id="js-db-search-replace-preview">
+                                    <button type="button" class="btn btn-primary mb-2" id="js-db-search-replace-preview">
                                         {{ trans('admin/main.page_search_replace_preview') }}
-                                    </button>
-                                    <button type="button" class="btn btn-danger mb-2" id="js-db-search-replace-apply" disabled>
-                                        {{ trans('admin/main.page_search_replace_apply') }}
                                     </button>
                                 </div>
                             </form>
@@ -64,8 +62,11 @@
                     </div>
 
                     <div class="card d-none" id="js-db-search-replace-results-card">
-                        <div class="card-header">
-                            <h4 class="mb-0">{{ trans('admin/main.page_search_replace_results') }}</h4>
+                        <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
+                            <h4 class="mb-2 mb-md-0">{{ trans('admin/main.page_search_replace_results') }}</h4>
+                            <button type="button" class="btn btn-danger btn-sm mb-2 mb-md-0" id="js-db-search-replace-apply" disabled>
+                                {{ trans('admin/main.page_search_replace_apply_selected') }}
+                            </button>
                         </div>
                         <div class="card-body">
                             <p class="font-weight-bold mb-1" id="js-db-search-replace-summary"></p>
@@ -74,6 +75,12 @@
                                 <table class="table table-striped font-14">
                                     <thead>
                                         <tr>
+                                            <th class="text-center" style="width: 40px;">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="js-db-select-all" />
+                                                    <label class="custom-control-label" for="js-db-select-all"></label>
+                                                </div>
+                                            </th>
                                             <th>{{ trans('admin/main.db_search_replace_table') }}</th>
                                             <th>{{ trans('admin/main.db_search_replace_column') }}</th>
                                             <th>{{ trans('admin/main.db_search_replace_record_id') }}</th>
@@ -103,8 +110,9 @@
             var $summary = $('#js-db-search-replace-summary');
             var $truncated = $('#js-db-search-replace-truncated');
             var $applyBtn = $('#js-db-search-replace-apply');
+            var $selectAll = $('#js-db-select-all');
             var previewUrl = '{{ getAdminPanelUrl() }}/tools/database-search-replace/preview';
-            var previewDone = false;
+            var applyUrl = '{{ getAdminPanelUrl() }}/tools/database-search-replace/apply';
             var summaryTemplate = @json(trans('admin/main.db_search_replace_summary'));
             var truncatedTemplate = @json(trans('admin/main.db_search_replace_truncated'));
             var noMatchesText = @json(trans('admin/main.page_search_replace_no_matches'));
@@ -112,7 +120,7 @@
             var applyText = @json(trans('admin/main.db_search_replace_apply_warning'));
             var applyConfirm = @json(trans('admin/main.page_search_replace_apply_confirm'));
             var cancelText = @json(trans('public.cancel'));
-            var previewRequiredText = @json(trans('admin/main.db_search_replace_preview_required'));
+            var selectRequiredText = @json(trans('admin/main.page_search_replace_select_required'));
 
             function getFormPayload() {
                 return {
@@ -120,6 +128,7 @@
                     replace: $form.find('[name="replace"]').val(),
                     case_sensitive: $form.find('[name="case_sensitive"]').is(':checked') ? 1 : 0,
                     whole_word: $form.find('[name="whole_word"]').is(':checked') ? 1 : 0,
+                    _token: $form.find('[name="_token"]').val(),
                 };
             }
 
@@ -140,22 +149,41 @@
                 return true;
             }
 
+            function getSelectedMatches() {
+                var selections = [];
+
+                $resultsBody.find('.js-db-match-check:checked').each(function () {
+                    selections.push({
+                        table: $(this).data('table'),
+                        column: $(this).data('column'),
+                        primary_key: $(this).data('primary-key'),
+                    });
+                });
+
+                return selections;
+            }
+
+            function syncApplyButton() {
+                $applyBtn.prop('disabled', getSelectedMatches().length === 0);
+            }
+
             function resetPreviewState() {
-                previewDone = false;
-                $applyBtn.prop('disabled', true);
                 $resultsCard.addClass('d-none');
                 $truncated.addClass('d-none').text('');
+                $resultsBody.empty();
+                $selectAll.prop('checked', false);
+                $applyBtn.prop('disabled', true);
             }
 
             function renderResults(data) {
                 $resultsBody.empty();
                 $truncated.addClass('d-none').text('');
+                $selectAll.prop('checked', false);
+                $applyBtn.prop('disabled', true);
 
                 if (!data.matches || !data.matches.length) {
                     $summary.text(noMatchesText);
                     $resultsCard.removeClass('d-none');
-                    previewDone = true;
-                    $applyBtn.prop('disabled', false);
                     return;
                 }
 
@@ -171,13 +199,28 @@
                         .removeClass('d-none');
                 }
 
-                data.matches.forEach(function (match) {
+                data.matches.forEach(function (match, index) {
                     var recordId = match.primary_key === null || match.primary_key === undefined
-                        ? '—'
+                        ? ''
                         : match.primary_key;
+                    var checkboxId = 'db-match-' + index;
+
+                    // Skip rows without a primary key — they cannot be applied safely.
+                    if (recordId === '') {
+                        return;
+                    }
 
                     $resultsBody.append(
                         '<tr>' +
+                        '<td class="text-center">' +
+                        '<div class="custom-control custom-checkbox">' +
+                        '<input type="checkbox" class="custom-control-input js-db-match-check" id="' + checkboxId + '" ' +
+                        'data-table="' + $('<div>').text(match.table).html() + '" ' +
+                        'data-column="' + $('<div>').text(match.column).html() + '" ' +
+                        'data-primary-key="' + $('<div>').text(String(recordId)).html() + '" />' +
+                        '<label class="custom-control-label" for="' + checkboxId + '"></label>' +
+                        '</div>' +
+                        '</td>' +
                         '<td>' + $('<div>').text(match.table).html() + '</td>' +
                         '<td>' + $('<div>').text(match.column).html() + '</td>' +
                         '<td>' + $('<div>').text(String(recordId)).html() + '</td>' +
@@ -188,12 +231,22 @@
                 });
 
                 $resultsCard.removeClass('d-none');
-                previewDone = true;
-                $applyBtn.prop('disabled', false);
             }
 
             $form.find('[name="search"], [name="replace"], [name="case_sensitive"], [name="whole_word"]').on('change input', function () {
                 resetPreviewState();
+            });
+
+            $selectAll.on('change', function () {
+                $resultsBody.find('.js-db-match-check').prop('checked', $(this).is(':checked'));
+                syncApplyButton();
+            });
+
+            $resultsBody.on('change', '.js-db-match-check', function () {
+                var total = $resultsBody.find('.js-db-match-check').length;
+                var checked = $resultsBody.find('.js-db-match-check:checked').length;
+                $selectAll.prop('checked', total > 0 && total === checked);
+                syncApplyButton();
             });
 
             $('#js-db-search-replace-preview').on('click', function () {
@@ -233,15 +286,16 @@
 
             $applyBtn.on('click', function () {
                 var payload = getFormPayload();
+                var selections = getSelectedMatches();
 
                 if (!validateForm(payload)) {
                     return;
                 }
 
-                if (!previewDone) {
+                if (!selections.length) {
                     $.toast({
                         heading: @json(trans('public.request_failed')),
-                        text: previewRequiredText,
+                        text: selectRequiredText,
                         bgColor: '#f63c3c',
                         textColor: 'white',
                         hideAfter: 5000,
@@ -259,9 +313,46 @@
                     confirmButtonText: applyConfirm,
                     cancelButtonText: cancelText,
                 }).then(function (result) {
-                    if (result.isConfirmed) {
-                        $form.trigger('submit');
+                    if (!result.isConfirmed) {
+                        return;
                     }
+
+                    payload.selections = selections;
+                    $('.loading-overlay').css('display', 'flex');
+
+                    $.post(applyUrl, payload)
+                        .done(function (response) {
+                            $.toast({
+                                heading: @json(trans('public.success')),
+                                text: response.message || @json(trans('public.success')),
+                                bgColor: '#43d477',
+                                textColor: 'white',
+                                hideAfter: 5000,
+                                position: 'bottom-right',
+                                icon: 'success'
+                            });
+
+                            // Refresh preview so applied rows disappear from results.
+                            $('#js-db-search-replace-preview').trigger('click');
+                        })
+                        .fail(function (xhr) {
+                            var message = xhr.responseJSON && xhr.responseJSON.message
+                                ? xhr.responseJSON.message
+                                : @json(trans('public.request_failed'));
+
+                            $.toast({
+                                heading: @json(trans('public.request_failed')),
+                                text: message,
+                                bgColor: '#f63c3c',
+                                textColor: 'white',
+                                hideAfter: 5000,
+                                position: 'bottom-right',
+                                icon: 'error'
+                            });
+                        })
+                        .always(function () {
+                            $('.loading-overlay').hide();
+                        });
                 });
             });
         })(jQuery);
