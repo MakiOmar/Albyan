@@ -827,13 +827,30 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/', 'PagesController@index');
             Route::get('/create', 'PagesController@create');
             Route::post('/store', 'PagesController@store');
-            Route::get('/tools/search-replace', 'PagesController@searchReplace');
-            Route::post('/tools/search-replace/preview', 'PagesController@searchReplacePreview');
-            Route::post('/tools/search-replace/apply', 'PagesController@searchReplaceApply');
+            // Legacy bookmarks → Tools pages search & replace
+            Route::get('/tools/search-replace', function () {
+                return redirect(getAdminPanelUrl() . '/tools/pages-search-replace');
+            });
+            Route::post('/tools/search-replace/preview', function () {
+                return redirect(getAdminPanelUrl() . '/tools/pages-search-replace');
+            });
+            Route::post('/tools/search-replace/apply', function () {
+                return redirect(getAdminPanelUrl() . '/tools/pages-search-replace');
+            });
             Route::get('/{id}/edit', 'PagesController@edit');
             Route::post('/{id}/update', 'PagesController@update');
             Route::get('/{id}/delete', 'PagesController@delete');
             Route::get('/{id}/toggle', 'PagesController@statusTaggle');
+        });
+
+        // Admin tools (search & replace)
+        Route::group(['prefix' => 'tools'], function () {
+            Route::get('/pages-search-replace', 'ToolsController@pagesSearchReplace');
+            Route::post('/pages-search-replace/preview', 'ToolsController@pagesSearchReplacePreview');
+            Route::post('/pages-search-replace/apply', 'ToolsController@pagesSearchReplaceApply');
+            Route::get('/database-search-replace', 'ToolsController@databaseSearchReplace');
+            Route::post('/database-search-replace/preview', 'ToolsController@databaseSearchReplacePreview');
+            Route::post('/database-search-replace/apply', 'ToolsController@databaseSearchReplaceApply');
         });
 
         Route::group(['prefix' => 'agora_history'], function () {

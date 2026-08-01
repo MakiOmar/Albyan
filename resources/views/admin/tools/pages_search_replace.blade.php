@@ -1,14 +1,14 @@
 @extends('admin.layouts.app')
 
 @section('content')
+    {{-- Pages search & replace under Tools --}}
     <section class="section">
         <div class="section-header">
             <h1>{{ $pageTitle }}</h1>
             <div class="section-header-breadcrumb">
                 <div class="breadcrumb-item active"><a href="{{ getAdminPanelUrl() }}">{{ trans('admin/main.dashboard') }}</a></div>
-                <div class="breadcrumb-item"><a href="{{ getAdminPanelUrl() }}/pages">{{ trans('admin/main.pages') }}</a></div>
                 <div class="breadcrumb-item">{{ trans('admin/main.tools') }}</div>
-                <div class="breadcrumb-item">{{ trans('admin/main.page_tools_search_replace') }}</div>
+                <div class="breadcrumb-item">{{ trans('admin/main.tools_pages_search_replace') }}</div>
             </div>
         </div>
 
@@ -19,7 +19,7 @@
                         <div class="card-body">
                             <p class="text-muted">{{ trans('admin/main.page_search_replace_hint') }}</p>
 
-                            <form id="js-page-search-replace-form" action="{{ getAdminPanelUrl() }}/pages/tools/search-replace/apply" method="post">
+                            <form id="js-page-search-replace-form" action="{{ getAdminPanelUrl() }}/tools/pages-search-replace/apply" method="post">
                                 {{ csrf_field() }}
 
                                 <div class="row">
@@ -139,7 +139,7 @@
             var $resultsCard = $('#js-page-search-replace-results-card');
             var $resultsBody = $('#js-page-search-replace-results-body');
             var $summary = $('#js-page-search-replace-summary');
-            var previewUrl = '{{ getAdminPanelUrl() }}/pages/tools/search-replace/preview';
+            var previewUrl = '{{ getAdminPanelUrl() }}/tools/pages-search-replace/preview';
             var summaryTemplate = @json(trans('admin/main.page_search_replace_summary'));
             var noMatchesText = @json(trans('admin/main.page_search_replace_no_matches'));
             var applyTitle = @json(trans('admin/main.page_search_replace_apply_title'));

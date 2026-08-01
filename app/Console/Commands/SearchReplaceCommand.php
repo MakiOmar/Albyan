@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Services\DatabaseSearchReplaceService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class SearchReplaceCommand extends Command
 {
@@ -26,36 +26,20 @@ class SearchReplaceCommand extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(DatabaseSearchReplaceService $searchReplaceService)
     {
         $search = $this->argument('search');
         $replace = $this->argument('replace');
 
-        $tables = DB::select('SHOW TABLES');
-        $database = config('database.connections.mysql.database');
-        $key = 'Tables_in_' . $database;
+        // Case-sensitive substring replace (same default as the admin DB tool fast path).
+        $result = $searchReplaceService->apply($search, $replace, true, false);
 
-        foreach ($tables as $table) {
-            $tableName = $table->$key;
-            $columns = DB::select("SHOW COLUMNS FROM `$tableName`");
+        $this->info(sprintf(
+            'Search and replace completed. Replaced %d occurrence(s) in %d record(s).',
+            $result['total_occurrences'],
+            $result['updated_records']
+        ));
 
-            foreach ($columns as $column) {
-                $columnName = $column->Field;
-
-                try {
-                    DB::statement("
-                        UPDATE `$tableName`
-                        SET `$columnName` = REPLACE(`$columnName`, ?, ?)
-                        WHERE `$columnName` LIKE ?
-                    ", [$search, $replace, "%$search%"]);
-                } catch (\Exception $e) {
-                    // Skip non-text columns or other issues
-                    $this->warn("Skipped $tableName.$columnName: " . $e->getMessage());
-                }
-            }
-        }
-
-        $this->info('Search and replace completed.');
         return 0;
     }
 }

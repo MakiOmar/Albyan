@@ -965,13 +965,6 @@
                                 <a class="nav-link" href="{{ getAdminPanelUrl() }}/pages/create">{{ trans('admin/main.new_page') }}</a>
                             </li>
                         @endcan()
-
-                        @can('admin_pages_edit')
-                            <li class="menu-header">{{ trans('admin/main.tools') }}</li>
-                            <li class="{{ (request()->is(getAdminPanelUrl('/pages/tools/search-replace', false))) ? 'active' : '' }}">
-                                <a class="nav-link" href="{{ getAdminPanelUrl() }}/pages/tools/search-replace">{{ trans('admin/main.page_tools_search_replace') }}</a>
-                            </li>
-                        @endcan
                     </ul>
                 </li>
             @endcan
@@ -1776,6 +1769,24 @@
             @if($authUser->can('admin_settings'))
                 <li class="menu-header">{{ trans('admin/main.settings') }}</li>
             @endif
+
+            {{-- Tools: search & replace utilities --}}
+            @can('admin_settings')
+                <li class="nav-item dropdown {{ (request()->is(getAdminPanelUrl('/tools*', false))) ? 'active' : '' }}">
+                    <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
+                        <i class="fas fa-tools"></i>
+                        <span>{{ trans('admin/main.tools') }}</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="{{ (request()->is(getAdminPanelUrl('/tools/pages-search-replace', false))) ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ getAdminPanelUrl() }}/tools/pages-search-replace">{{ trans('admin/main.tools_pages_search_replace') }}</a>
+                        </li>
+                        <li class="{{ (request()->is(getAdminPanelUrl('/tools/database-search-replace', false))) ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ getAdminPanelUrl() }}/tools/database-search-replace">{{ trans('admin/main.tools_database_search_replace') }}</a>
+                        </li>
+                    </ul>
+                </li>
+            @endcan
 
             @can('admin_translator')
                 <li class="nav-item {{ (request()->is(getAdminPanelUrl('/translator*', false))) ? 'active' : '' }}">

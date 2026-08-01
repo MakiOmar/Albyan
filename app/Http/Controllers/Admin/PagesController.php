@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Page;
 use App\Models\Translation\PageTranslation;
-use App\Services\PageSearchReplaceService;
 use Illuminate\Http\Request;
 
 class PagesController extends Controller
@@ -181,86 +180,5 @@ class PagesController extends Controller
         ]);
 
         return redirect(getAdminPanelUrl().'/pages');
-    }
-
-    public function searchReplace(PageSearchReplaceService $searchReplaceService)
-    {
-        $this->authorize('admin_pages_edit');
-
-        $data = [
-            'pageTitle' => trans('admin/main.page_tools_search_replace'),
-            'pages' => Page::orderBy('name')->get(['id', 'name', 'link']),
-            'fieldOptions' => $searchReplaceService->getFieldOptions(),
-        ];
-
-        return view('admin.pages.tools.search_replace', $data);
-    }
-
-    public function searchReplacePreview(Request $request, PageSearchReplaceService $searchReplaceService)
-    {
-        $this->authorize('admin_pages_edit');
-
-        $data = $this->validateSearchReplaceRequest($request);
-
-        $result = $searchReplaceService->preview(
-            $data['search'],
-            $data['replace'] ?? '',
-            $data['fields'],
-            $data['page_ids'] ?? [],
-            !empty($data['case_sensitive']),
-            !empty($data['whole_word']),
-            $data['locale'] ?? null
-        );
-
-        return response()->json([
-            'success' => true,
-            'data' => $result,
-        ]);
-    }
-
-    public function searchReplaceApply(Request $request, PageSearchReplaceService $searchReplaceService)
-    {
-        $this->authorize('admin_pages_edit');
-
-        $data = $this->validateSearchReplaceRequest($request);
-
-        $result = $searchReplaceService->apply(
-            $data['search'],
-            $data['replace'] ?? '',
-            $data['fields'],
-            $data['page_ids'] ?? [],
-            !empty($data['case_sensitive']),
-            !empty($data['whole_word']),
-            $data['locale'] ?? null
-        );
-
-        $toastData = [
-            'title' => trans('public.success'),
-            'msg' => trans('admin/main.page_search_replace_applied', [
-                'occurrences' => $result['total_occurrences'],
-                'records' => $result['updated_records'],
-            ]),
-            'status' => 'success',
-        ];
-
-        return redirect(getAdminPanelUrl() . '/pages/tools/search-replace')->with(['toast' => $toastData]);
-    }
-
-    private function validateSearchReplaceRequest(Request $request): array
-    {
-        return $request->validate([
-            'search' => 'required|string|min:1',
-            'replace' => 'nullable|string',
-            'fields' => 'required|array|min:1',
-            'fields.*' => 'string|in:' . implode(',', array_merge(
-                PageSearchReplaceService::PAGE_FIELDS,
-                PageSearchReplaceService::TRANSLATED_FIELDS
-            )),
-            'page_ids' => 'nullable|array',
-            'page_ids.*' => 'integer|exists:pages,id',
-            'locale' => 'nullable|string|max:10',
-            'case_sensitive' => 'nullable|in:0,1',
-            'whole_word' => 'nullable|in:0,1',
-        ]);
     }
 }
