@@ -182,9 +182,18 @@ class DatabaseSearchReplaceService
         return $targets;
     }
 
+    private function isSafeIdentifier(string $name): bool
+    {
+        return (bool) preg_match('/^[A-Za-z0-9_]+$/', $name);
+    }
+
     private function isExcludedTable(string $tableName): bool
     {
         $lower = mb_strtolower($tableName);
+
+        if (!$this->isSafeIdentifier($tableName)) {
+            return true;
+        }
 
         if (in_array($lower, self::EXCLUDED_TABLES, true)) {
             return true;
@@ -200,6 +209,10 @@ class DatabaseSearchReplaceService
 
     private function isExcludedColumn(string $columnName): bool
     {
+        if (!$this->isSafeIdentifier($columnName)) {
+            return true;
+        }
+
         return in_array(mb_strtolower($columnName), self::EXCLUDED_COLUMNS, true);
     }
 
