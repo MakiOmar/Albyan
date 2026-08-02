@@ -1227,8 +1227,10 @@ return [
 'help_cta_map' => 'خريطة فرع دبي',
 'help_cta_classes_url' => 'رابط جميع البرامج',
 'wp_blog_section_title' => 'أحدث المقالات',
-'wp_blog_section_hint' => 'سيتم جلب المقالات من ووردبريس عبر واجهة API.',
+'wp_blog_section_hint' => 'رؤى وتحديثات من مدونة المعهد.',
 'wp_blog_section_empty' => 'لا توجد مقالات للعرض حالياً.',
+'wp_blog_section_all' => 'جميع المقالات',
+'wp_blog_members_only' => 'للأعضاء فقط',
 'all_categories_page_title' => 'أقسام التدريب',
 'all_categories_page_hint' => 'استعرض جميع مجالات وبرامج التدريب.',
 

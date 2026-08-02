@@ -1228,8 +1228,10 @@ return [
 'help_cta_map' => 'Dubai branch map',
 'help_cta_classes_url' => 'All programs URL',
 'wp_blog_section_title' => 'Latest articles',
-'wp_blog_section_hint' => 'Articles will load from WordPress via API.',
+'wp_blog_section_hint' => 'Insights and updates from our institute blog.',
 'wp_blog_section_empty' => 'No articles to display yet.',
+'wp_blog_section_all' => 'All articles',
+'wp_blog_members_only' => 'Members Only',
 'all_categories_page_title' => 'Training categories',
 'all_categories_page_hint' => 'Browse all training fields and programs.',
 

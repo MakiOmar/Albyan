@@ -22,6 +22,7 @@ use App\Models\TrendCategory;
 use App\Models\UpcomingCourse;
 use App\Models\Webinar;
 use App\Models\Testimonial;
+use App\Services\WpFeaturedBlogService;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -77,6 +78,7 @@ class HomeController extends Controller
         }
 
         Cache::forget('home.default_statistics');
+        WpFeaturedBlogService::clearCache();
     }
 
     /**
@@ -106,6 +108,7 @@ class HomeController extends Controller
                 Cache::forget('home.html.' . $locale);
             }
             Cache::forget('home.default_statistics');
+            WpFeaturedBlogService::clearCache();
         }
 
         $previousLocale = app()->getLocale();
@@ -530,7 +533,23 @@ class HomeController extends Controller
             }
         }
 
+        // WordPress featured articles (cached separately so live homepage mode still avoids per-request API hits).
+        $wpBlogSection = [
+            'enabled' => false,
+            'title' => '',
+            'archive_url' => '',
+        ];
         $wpBlogPosts = collect();
+
+        if (in_array(HomeSection::$wp_blog, $selectedSectionsName, true)) {
+            $wpFeatured = app(WpFeaturedBlogService::class)->getFeatured();
+            $wpBlogSection = [
+                'enabled' => (bool) $wpFeatured['enabled'],
+                'title' => (string) $wpFeatured['title'],
+                'archive_url' => (string) $wpFeatured['archive_url'],
+            ];
+            $wpBlogPosts = $wpFeatured['posts'];
+        }
 
         return [
             'pageTitle' => $pageTitle,
@@ -567,6 +586,7 @@ class HomeController extends Controller
             'categorySectionData' => $categorySectionData,
             'siteFaqs' => $siteFaqs,
             'trainingDomainCategories' => $trainingDomainCategories,
+            'wpBlogSection' => $wpBlogSection,
             'wpBlogPosts' => $wpBlogPosts,
         ];
     }
