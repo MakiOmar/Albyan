@@ -2038,19 +2038,13 @@ function gtmIsEnabledForRequest(): bool
 }
 
 /**
- * Normalize a homepage exclude token (underscores/hyphens, aliases).
- * Examples: hero → slider-container, about_text → blockquote, featured_classes → featured-classes.
+ * Canonical exclude keys for layout chrome (not in home_sections table).
+ *
+ * @return array<string, string> alias => canonical
  */
-function normalizeHomeExcludeKey(string $key): string
+function getHomeLayoutExcludeAliases(): array
 {
-    $key = strtolower(trim($key));
-    if ($key === '') {
-        return '';
-    }
-
-    $key = str_replace('_', '-', $key);
-
-    static $aliases = [
+    return [
         'hero' => 'slider-container',
         'slider' => 'slider-container',
         'slider-hero' => 'slider-container',
@@ -2067,6 +2061,96 @@ function normalizeHomeExcludeKey(string $key): string
         'categories-nav' => 'category-sub-nav',
         'category-nav' => 'category-sub-nav',
     ];
+}
+
+/**
+ * Distinct DOM/CSS class aliases → registered HomeSection names (hyphenated).
+ *
+ * @return array<string, string>
+ */
+function getHomeSectionCssExcludeAliases(): array
+{
+    return [
+        'testimonials-container' => 'testimonials',
+        'subscribes-container' => 'subscribes',
+        'home-faq-section' => 'faq-section',
+        'home-faq' => 'faq-section',
+        'category-courses-home-section' => 'category-courses',
+        'reward-program-section' => 'reward-program',
+        'trust-hero-section' => 'trust-badges',
+        'trust-hero' => 'trust-badges',
+        'training-modality-section' => 'training-modality',
+        'why-albyan-box' => 'why-albyan',
+        'trending-categories' => 'trend-categories',
+        'home-video-container' => 'video-or-image-section',
+        'home-video-or-image' => 'video-or-image-section',
+        'wp-blog-section' => 'wp-blog',
+    ];
+}
+
+/**
+ * All tokens that ?exclude= understands (layout + every HomeSection::$names + CSS aliases).
+ *
+ * @return list<string>
+ */
+function getHomeExcludeableSectionKeys(): array
+{
+    static $keys = null;
+    if ($keys !== null) {
+        return $keys;
+    }
+
+    $keys = [];
+
+    foreach (array_values(getHomeLayoutExcludeAliases()) as $canonical) {
+        $keys[$canonical] = true;
+    }
+
+    foreach (\App\Models\HomeSection::$names as $name) {
+        $keys[str_replace('_', '-', (string) $name)] = true;
+    }
+
+    foreach (array_keys(getHomeSectionCssExcludeAliases()) as $alias) {
+        $keys[$alias] = true;
+    }
+
+    // Friendly layout tokens also listed for discoverability
+    foreach (array_keys(getHomeLayoutExcludeAliases()) as $alias) {
+        $keys[$alias] = true;
+    }
+
+    $keys = array_keys($keys);
+    sort($keys);
+
+    return $keys;
+}
+
+/**
+ * Normalize a homepage exclude token (underscores/hyphens, aliases).
+ * Accepts layout chrome (hero, blockquote, category-sub-nav), every HomeSection::$names
+ * value (featured_classes / featured-classes), and common CSS class aliases.
+ */
+function normalizeHomeExcludeKey(string $key): string
+{
+    $key = strtolower(trim($key));
+    if ($key === '') {
+        return '';
+    }
+
+    $key = str_replace('_', '-', $key);
+
+    static $aliases = null;
+    if ($aliases === null) {
+        $aliases = getHomeLayoutExcludeAliases();
+
+        // Register every admin home section so hyphen + underscore forms resolve the same.
+        foreach (\App\Models\HomeSection::$names as $name) {
+            $canonical = str_replace('_', '-', (string) $name);
+            $aliases[$canonical] = $canonical;
+        }
+
+        $aliases = array_merge($aliases, getHomeSectionCssExcludeAliases());
+    }
 
     return $aliases[$key] ?? $key;
 }
@@ -2107,7 +2191,7 @@ function getHomeExcludedSections(): array
 
 /**
  * True when any of the given section keys is listed in ?exclude=.
- * Pass CSS class, HomeSection name, or alias (e.g. slider-container, featured_classes, hero).
+ * Pass a HomeSection name, layout key, or CSS alias (see getHomeExcludeableSectionKeys()).
  */
 function isHomeSectionExcluded(string ...$keys): bool
 {

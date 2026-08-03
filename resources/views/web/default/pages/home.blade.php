@@ -179,7 +179,7 @@
         @include('web.default.pages.includes.about_text', ['layout' => 'home_blockquote'])
     @endunless
     @foreach($homeSections as $homeSection)
-        {{-- ?exclude=featured_classes,wp_blog (hyphens or underscores both work) --}}
+        {{-- ?exclude= uses HomeSection::$names + layout aliases (see getHomeExcludeableSectionKeys) --}}
         @if(isHomeSectionExcluded((string) $homeSection->name))
             @continue
         @endif
