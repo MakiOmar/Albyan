@@ -2038,6 +2038,89 @@ function gtmIsEnabledForRequest(): bool
 }
 
 /**
+ * Normalize a homepage exclude token (underscores/hyphens, aliases).
+ * Examples: hero → slider-container, about_text → blockquote, featured_classes → featured-classes.
+ */
+function normalizeHomeExcludeKey(string $key): string
+{
+    $key = strtolower(trim($key));
+    if ($key === '') {
+        return '';
+    }
+
+    $key = str_replace('_', '-', $key);
+
+    static $aliases = [
+        'hero' => 'slider-container',
+        'slider' => 'slider-container',
+        'slider-hero' => 'slider-container',
+        'home-blockquote' => 'blockquote',
+        'about' => 'blockquote',
+        'about-text' => 'blockquote',
+        'institute-about' => 'blockquote',
+        'statistics' => 'home-statistics',
+        'home-stats' => 'home-statistics',
+    ];
+
+    return $aliases[$key] ?? $key;
+}
+
+/**
+ * Tokens from ?exclude=slider-container,blockquote,featured_classes (request-time; not cached).
+ *
+ * @return array<string, true> Normalized keys as set
+ */
+function getHomeExcludedSections(): array
+{
+    static $parsed = null;
+    if ($parsed !== null) {
+        return $parsed;
+    }
+
+    $parsed = [];
+
+    try {
+        $raw = (string) request()->query('exclude', '');
+    } catch (\Throwable $e) {
+        return $parsed;
+    }
+
+    if (trim($raw) === '') {
+        return $parsed;
+    }
+
+    foreach (preg_split('/[,\s]+/', $raw) ?: [] as $token) {
+        $normalized = normalizeHomeExcludeKey((string) $token);
+        if ($normalized !== '') {
+            $parsed[$normalized] = true;
+        }
+    }
+
+    return $parsed;
+}
+
+/**
+ * True when any of the given section keys is listed in ?exclude=.
+ * Pass CSS class, HomeSection name, or alias (e.g. slider-container, featured_classes, hero).
+ */
+function isHomeSectionExcluded(string ...$keys): bool
+{
+    $excluded = getHomeExcludedSections();
+    if ($excluded === []) {
+        return false;
+    }
+
+    foreach ($keys as $key) {
+        $normalized = normalizeHomeExcludeKey($key);
+        if ($normalized !== '' && isset($excluded[$normalized])) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
  * Lab / Lighthouse mode: skip idle auto-load of deferred assets (GTM/vendors/feather).
  * Scroll/wheel are never unlock gestures site-wide; mousemove still unlocks.
  * Enable with ?lab=1 or ?strict_interaction=1.

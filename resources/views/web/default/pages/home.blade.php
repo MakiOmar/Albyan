@@ -48,7 +48,7 @@
         }
     </style>
     {{-- LCP: poster discoverable in initial HTML + high fetch priority (video#homeHeroVideoBackground) --}}
-    @if(!empty($heroSectionData) && !empty($heroSectionData['is_video_background']))
+    @if(!empty($heroSectionData) && !empty($heroSectionData['is_video_background']) && !isHomeSectionExcluded('slider-container', 'hero'))
         @php
             $__homeHeroPoster = trim((string) ($heroSectionData['hero_video_poster'] ?? ''));
         @endphp
@@ -60,7 +60,7 @@
 @endpush
 
 @section('content')
-    @if(!empty($heroSectionData))
+    @if(!empty($heroSectionData) && !isHomeSectionExcluded('slider-container', 'hero'))
 
         @if(!empty($heroSectionData['has_lottie']) and $heroSectionData['has_lottie'] == "1")
             @push('scripts_bottom')
@@ -175,8 +175,14 @@
     {{-- Statistics 
     @include('web.default.pages.includes.home_statistics')
     --}}
-    @include('web.default.pages.includes.about_text', ['layout' => 'home_blockquote'])
+    @unless(isHomeSectionExcluded('blockquote', 'home_blockquote', 'about_text'))
+        @include('web.default.pages.includes.about_text', ['layout' => 'home_blockquote'])
+    @endunless
     @foreach($homeSections as $homeSection)
+        {{-- ?exclude=featured_classes,wp_blog (hyphens or underscores both work) --}}
+        @if(isHomeSectionExcluded((string) $homeSection->name))
+            @continue
+        @endif
         @if($homeSection->name == \App\Models\HomeSection::$featured_classes and !empty($featureWebinars) and !$featureWebinars->isEmpty())
        
             <section class="home-sections position-relative home-sections-swiper">
