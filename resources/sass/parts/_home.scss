@@ -516,8 +516,14 @@
     }
 
 
+    .testimonials-swiper {
+        overflow: hidden;
+        min-height: 420px;
+    }
+
     .testimonials-card {
         margin-top: 105px;
+        min-height: 275px;
         pointer-events: none;
 
         .bottom-gradient {
@@ -534,8 +540,18 @@
         .testimonials-user-avatar {
             position: absolute;
             top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
             width: 80px;
             height: 80px;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+
+        /* Keep comment block height stable across cards (CLS) */
+        > p.mt-25 {
+            min-height: 84px;
+            overflow: hidden;
         }
 
         .show-more-btn {

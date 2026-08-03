@@ -224,6 +224,76 @@
         i[data-feather][width="24"] { width: 24px; height: 24px; }
     </style>
 
+    {{-- Testimonials CLS: Swiper init + absolute avatar/CSS load used to resize the whole block (~cards stack then collapse). --}}
+    <style id="critical-testimonials-cls">
+        .testimonials-container {
+            overflow-x: hidden;
+        }
+        .testimonials-container .testimonials-swiper {
+            overflow: hidden;
+            /* Title + avatar overhang + card + pagination */
+            min-height: 420px;
+        }
+        .testimonials-container .testimonials-swiper > .swiper-wrapper {
+            display: flex;
+            flex-direction: row;
+            min-height: 380px;
+        }
+        .testimonials-container .testimonials-swiper .swiper-slide {
+            flex-shrink: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        @media (min-width: 660px) {
+            .testimonials-container .testimonials-swiper .swiper-slide {
+                width: calc((100% - 16px) / 2);
+            }
+        }
+        @media (min-width: 991px) {
+            .testimonials-container .testimonials-swiper .swiper-slide {
+                width: calc((100% - 32px) / 3);
+            }
+        }
+        .testimonials-container .testimonials-card {
+            position: relative;
+            margin-top: 105px;
+            min-height: 275px;
+            box-sizing: border-box;
+        }
+        .testimonials-container .testimonials-user-avatar {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+        .testimonials-container .testimonials-user-avatar img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        /* Google badge is absolute in later CSS — keep it out of flow on first paint */
+        .testimonials-container .testimonials-card > img.google-icon {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 24px;
+            height: 24px;
+        }
+        /* Truncated comments still vary in line count — lock text block height */
+        .testimonials-container .testimonials-card > p.mt-25 {
+            min-height: 84px;
+            overflow: hidden;
+        }
+        .testimonials-container .testimonials-swiper-pagination {
+            min-height: 24px;
+        }
+    </style>
+
     <!-- General CSS File -->
     <link rel="stylesheet" href="{{ asset_v('/assets/default/css/app.css') }}">
 
@@ -495,10 +565,12 @@
             line-height: 30px;
             text-align: justify;
             }
-            .testimonials-card img{
+            .testimonials-card > img.google-icon{
             position: absolute;
             top: 10px;
             left: 10px;
+            width: 24px;
+            height: 24px;
             }
             .home-sections-swiper .swiper-wrapper,
             .home-sections .swiper-wrapper {
