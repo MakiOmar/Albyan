@@ -357,6 +357,9 @@ class SettingsController extends Controller
         );
 
         cache()->forget('settings.' . $name);
+        cache()->forget('llms_txt.ar');
+        cache()->forget('llms_txt.en');
+        cache()->forget('llms_txt.es');
 
         return redirect(getAdminPanelUrl() . '/settings/seo?locale=' . urlencode($locale) . '#schema');
     }

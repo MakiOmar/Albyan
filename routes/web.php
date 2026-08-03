@@ -39,6 +39,11 @@ Route::get('/sitemap-blog-page-{page}.xml', [SitemapController::class, 'blogPagi
 Route::get('/sitemap-upcoming-courses-page-{page}.xml', [SitemapController::class, 'upcomingCoursesPaginated'])->where('page', '[0-9]+')->name('sitemap.upcoming.paginated');
 
 /*
+| llms.txt — machine-readable institute summary for AI agents (root URL, not under /{locale}/).
+*/
+Route::get('/llms.txt', \App\Http\Controllers\Web\LlmsTxtController::class)->name('llms.txt');
+
+/*
 | Public JSON for course category sub-nav (WordPress zskeleton, external widgets).
 | No API key required. If you use route caching, run route:clear && route:cache after deploy.
 */

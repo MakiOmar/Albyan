@@ -24,22 +24,55 @@
 # RIGHTS UNDER ARTICLE 4 OF THE EUROPEAN UNION DIRECTIVE 2019/790 ON COPYRIGHT
 # AND RELATED RIGHTS IN THE DIGITAL SINGLE MARKET.
 
-# BEGIN Cloudflare Managed content
+# BEGIN AI search / citation crawlers (allowed)
+# Keep Bytespider / CCBot blocked below — training scrapers, not citation bots.
 
 User-agent: *
 Allow: /
 
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
 User-agent: OAI-SearchBot
 Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
+
 User-agent: Amazonbot
 Allow: /
+
 User-agent: Applebot-Extended
 Allow: /
-User-agent: Bytespider
-Allow: /
-User-agent: CCBot
 
-# END Cloudflare Managed Content
+User-agent: FacebookBot
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: meta-externalfetcher
+Allow: /
+
+# END AI search / citation crawlers
 
 
 # Block admin and private areas
@@ -88,11 +121,10 @@ User-agent: Googlebot-Image
 Allow: /public/uploads/all/
 User-agent: AdsBot-Google
 Allow: /
-User-agent: ChatGPT-User
-Allow: /public/uploads/all/
 
 
 # Sitemap location
+Sitemap: https://albyan.institute/sitemap_index.xml
 Sitemap: https://albyan.institute/sitemap.xml
 Sitemap: https://albyan.institute/sitemap-courses.xml
 Sitemap: https://albyan.institute/sitemap-blog.xml
@@ -1374,15 +1406,9 @@ Disallow:/
 
 User-agent: AI2Bot
 Disallow: /
-User-agent: Amazonbot
-Disallow: /
 User-agent: amazon-kendra
 Disallow: /
-User-agent: anthropic-ai
-Disallow: /
 User-agent: Applebot
-Disallow: /
-User-agent: Applebot-Extended
 Disallow: /
 User-agent: AwarioRssBot
 Disallow: /
@@ -1392,17 +1418,9 @@ User-agent: Brightbot
 Disallow: /
 User-agent: Bytespider
 Disallow: /
-User-agent: ClaudeBot
-Disallow: /
 User-agent: Diffbot
 Disallow: /
-User-agent: DuckAssistBot
-Disallow: /
-User-agent: FacebookBot
-Disallow: /
 User-agent: FriendlyCrawler
-Disallow: /
-User-agent: Google-Extended
 Disallow: /
 User-agent: iaskspider/2.0
 Disallow: /
@@ -1418,10 +1436,6 @@ User-agent: MachineLearningForPeaceBot
 Disallow: /
 User-agent: Meltwater
 Disallow: /
-User-agent: meta-externalagent
-Disallow: /
-User-agent: meta-externalfetcher
-Disallow: /
 User-agent: Nicecrawler
 Disallow: /
 User-agent: omgili
@@ -1429,10 +1443,6 @@ Disallow: /
 User-agent: omgilibot
 Disallow: /
 User-agent: PanguBot
-Disallow: /
-User-agent: PerplexityBot
-Disallow: /
-User-agent: Perplexity-User
 Disallow: /
 User-agent: PetalBot
 Disallow: /
