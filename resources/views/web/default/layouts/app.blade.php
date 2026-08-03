@@ -1343,7 +1343,14 @@
                 @if(!empty($socials) && count($socials))
                     @foreach($socials as $social)
                         <a href="{{ $social['link'] }}" target="_blank" class="mobile-social-link">
-                            <img src="{{ $social['image'] }}" alt="{{ $social['title'] }}" width="24" height="24">
+                            {{-- Eager: visible in mobile header; avoid lazy 1x1 PSI false positive --}}
+                            <img src="{{ $social['image'] }}"
+                                 alt="{{ $social['title'] }}"
+                                 width="24"
+                                 height="24"
+                                 loading="eager"
+                                 decoding="async"
+                                 data-no-lazy="true">
                         </a>
                     @endforeach
                 @endif

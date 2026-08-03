@@ -246,10 +246,19 @@ class ImageLazyLoader {
                 return false;
             }
 
+            // Top-bar / mobile-header social icons are tiny and above the fold —
+            // swapping to a 1x1 placeholder triggers PSI "Serves images with low resolution".
+            if (img.closest && img.closest('.top-navbar .footer-social, .mobile-social-link, #mobileMenu .mobile-social-link')) {
+                return false;
+            }
+
             // Skip logos - check for logo-related classes, alt text, or src patterns
             const alt = (img.alt || '').toLowerCase();
             const src = (img.getAttribute('src') || img.dataset.src || '').toLowerCase();
             const id = (img.id || '').toLowerCase();
+            if (src.includes('/socials/') && (parseInt(img.getAttribute('width') || '0', 10) <= 32 || parseInt(img.getAttribute('height') || '0', 10) <= 32)) {
+                return false;
+            }
             const isLogo = img.classList.contains('logo') ||
                           img.classList.contains('navbar-logo') ||
                           img.classList.contains('footer-logo') ||

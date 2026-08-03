@@ -112,7 +112,15 @@
             @if(!empty($socials) && count($socials))
                 @foreach($socials as $social)
                     <a href="{{ $social['link'] }}" target="_blank" class="mr-15 border border-white rounded-circle m-1 p-1" style="min-width: 40px; min-height: 40px; display: flex; align-items: center; justify-content: center;">
-                        <img src="{{ $social['image'] }}" alt="{{ $social['title'] }}" width="24" height="24" style="display: block;">
+                        {{-- Eager: above-the-fold 24px icons; lazy 1x1 placeholder triggers PSI "low resolution" --}}
+                        <img src="{{ $social['image'] }}"
+                             alt="{{ $social['title'] }}"
+                             width="24"
+                             height="24"
+                             style="display: block;"
+                             loading="eager"
+                             decoding="async"
+                             data-no-lazy="true">
                     </a>
                 @endforeach
             @endif
