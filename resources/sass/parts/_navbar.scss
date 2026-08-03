@@ -112,6 +112,19 @@
     width: 170px;
     height: 50px;
 
+    @media (min-width: 992px) {
+        /* Desktop center logo matches 47x40 webp asset */
+        width: 47px;
+        min-width: 47px;
+        height: 40px;
+
+        img {
+            width: 47px !important;
+            height: 40px !important;
+            max-width: 47px !important;
+        }
+    }
+
     @media (max-width: $screen-sm-max) {
         width: 88px;
         max-width: 88px;

@@ -78,6 +78,61 @@
         }
     </style>
 
+    {{-- Desktop RTL CLS lock: first paint was shrink-wrapped (~1058px) and right-packed, then jumped to full width (~0.22 CLS). --}}
+    <style id="critical-shell-cls">
+        html {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            scrollbar-gutter: stable;
+        }
+        body {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            margin: 0 !important;
+        }
+        #app {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        main#main-content,
+        nav#navbar,
+        .top-navbar,
+        #categorySubNav.category-sub-nav {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            box-sizing: border-box !important;
+        }
+        #categorySubNav.category-sub-nav {
+            overflow-x: hidden !important;
+        }
+        /* Scrollport is the inner track only — keep category chips from expanding the page */
+        #categorySubNav .category-sub-nav-scroll {
+            min-width: 0 !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+        }
+        /* Desktop center logo: real asset is 47x40; false 136 + width:auto caused nav jank */
+        @media (min-width: 992px) {
+            .navbar-brand {
+                width: 47px;
+                min-width: 47px;
+                height: 40px;
+            }
+            .navbar-brand img {
+                width: 47px !important;
+                height: 40px !important;
+                max-width: 47px !important;
+            }
+        }
+    </style>
+
     {{-- Card grid CLS lock: reserve image + icon slots before feather/app paint (desktop grids sit in-viewport) --}}
     <style id="critical-card-cls">
         /* Lazy 1x1 placeholders must fill a fixed box — do not let HTML width/height attrs size the layout */
@@ -467,11 +522,21 @@
             .home-sections {
                 margin-top: 50px;
             }
+            /* Keep brand slot stable — do not let late rules collapse to height/width:auto */
             .navbar-brand {
-                height: auto;
+                height: 50px;
             }
-            .navbar-brand  img{
-                width: auto;
+            @media (min-width: 992px) {
+                .navbar-brand {
+                    width: 47px;
+                    min-width: 47px;
+                    height: 40px;
+                }
+                .navbar-brand img {
+                    width: 47px !important;
+                    height: 40px !important;
+                    max-width: 47px !important;
+                }
             }
             .footer .footer-logo {
 

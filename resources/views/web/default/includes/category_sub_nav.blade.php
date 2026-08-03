@@ -26,6 +26,10 @@
             border-bottom: 1px solid #e2e8f0;
             z-index: 490;
             min-height: 56px;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            box-sizing: border-box;
         }
         #categorySubNav .category-sub-nav-bar {
             display: flex !important;
@@ -34,10 +38,15 @@
             align-items: center !important;
             gap: 8px;
             padding: 10px 0;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
         }
         #categorySubNav .category-sub-nav-scroll {
             flex: 1 1 auto;
             min-width: 0;
+            max-width: 100%;
             display: flex;
             flex-wrap: nowrap;
             align-items: stretch;

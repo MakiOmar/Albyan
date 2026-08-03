@@ -109,8 +109,14 @@
                                 <li class="nav-item m-1 px-3 d-none d-lg-flex align-items-center">
                                     <a class="navbar-brand d-flex justify-content-center m-0" href="/">
                                         @if(!empty($generalSettings['logo']))
-                                            {{-- Same aspect ratio as brand logo, height 40px in CSS --}}
-                                            <img src="{{ $generalSettings['logo'] }}" class="img-cover" width="136" height="40" style="height: 40px;width:auto" alt="site logo">
+                                            {{-- Intrinsic size matches albyan-institute-logo-40.webp (47x40) --}}
+                                            <img src="{{ $generalSettings['logo'] }}"
+                                                 class="img-cover"
+                                                 width="47"
+                                                 height="40"
+                                                 alt="site logo"
+                                                 decoding="async"
+                                                 data-no-lazy="true">
                                         @endif
                                     </a>
                                 </li>
