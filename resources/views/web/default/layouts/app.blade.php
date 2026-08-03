@@ -78,6 +78,74 @@
         }
     </style>
 
+    {{-- Card grid CLS lock: reserve image + icon slots before feather/app paint (desktop grids sit in-viewport) --}}
+    <style id="critical-card-cls">
+        /* Lazy 1x1 placeholders must fill a fixed box — do not let HTML width/height attrs size the layout */
+        .img-cover {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: 50% 50%;
+        }
+        .webinar-card .image-box,
+        .blog-grid-card .blog-grid-image {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+        }
+        .webinar-card .image-box > a,
+        .blog-grid-card .blog-grid-image > a {
+            display: block;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .webinar-card .image-box img.img-cover,
+        .blog-grid-card .blog-grid-image img.img-cover {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: 50% 50%;
+            max-width: none;
+        }
+        /* Badge hangs below the image; reserve early so it is not in normal flow first */
+        .blog-grid-card .blog-grid-image {
+            overflow: visible;
+            margin-bottom: 16px;
+        }
+        .blog-grid-card .blog-grid-image .created-at {
+            position: absolute;
+            bottom: -16px;
+            z-index: 2;
+        }
+        .webinar-card .webinar-title {
+            height: 48px;
+            overflow: hidden;
+        }
+        .blog-grid-card .blog-grid-desc {
+            height: 85px;
+            overflow: hidden;
+        }
+        .stars-card {
+            min-height: 20px;
+        }
+        /* Feather is deferred (idle/interaction); empty <i> must already own the final SVG box */
+        i[data-feather] {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            flex-shrink: 0;
+            line-height: 0;
+        }
+        i[data-feather][width="16"] { width: 16px; height: 16px; }
+        i[data-feather][width="18"] { width: 18px; height: 18px; }
+        i[data-feather][width="24"] { width: 24px; height: 24px; }
+    </style>
+
     <!-- General CSS File -->
     <link rel="stylesheet" href="{{ asset_v('/assets/default/css/app.css') }}">
 

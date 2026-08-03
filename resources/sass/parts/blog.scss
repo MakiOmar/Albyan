@@ -8,9 +8,28 @@
         position: relative;
         width: 100%;
         height: 250px;
+        /* Badge sits slightly below the image; keep space so layout does not jump */
+        overflow: visible;
+        margin-bottom: 16px;
+
+        > a {
+            display: block;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 15px 15px 0 0;
+        }
 
         img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: 50% 50%;
             border-radius: 15px 15px 0 0;
+            max-width: none;
         }
 
         &::after {

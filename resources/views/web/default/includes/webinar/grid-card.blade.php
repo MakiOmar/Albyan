@@ -152,11 +152,14 @@
     .image-box {
         position: relative;
         overflow: hidden;
+        height: 250px;
     }
     
     .image-box a {
         position: relative;
         display: block;
+        width: 100%;
+        height: 100%;
     }
     
     /* Dark Overlay Style */
@@ -179,7 +182,8 @@
     }
     
     .course-card-dark-overlay .image-box img {
-        position: relative;
+        position: absolute;
+        inset: 0;
         z-index: 0;
     }
     
@@ -203,7 +207,8 @@
     }
     
     .course-card-white-overlay .image-box img {
-        position: relative;
+        position: absolute;
+        inset: 0;
         z-index: 0;
     }
     
@@ -211,7 +216,8 @@
     .course-card-gray-hover .image-box img {
         filter: grayscale({{ getCourseCardStyleSettings()['gray_filter_intensity'] ?? 100 }}%) brightness({{ getCourseCardStyleSettings()['brightness'] ?? 0.8 }});
         transition: filter {{ getCourseCardStyleSettings()['transition_duration'] ?? 0.3 }}s ease;
-        position: relative;
+        position: absolute;
+        inset: 0;
         z-index: 0;
     }
     
@@ -219,9 +225,15 @@
         filter: grayscale(0%) brightness(1);
     }
     
-    /* Common styles */
+    /* Cover fill inside reserved 250px box (avoids CLS from 1x1 lazy placeholders) */
     .image-box img {
-        position: relative;
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 50%;
+        max-width: none;
         z-index: 0;
     }
 </style>

@@ -60,8 +60,8 @@
                                  alt="{{ $thumbAlt }}"
                                  loading="lazy"
                                  decoding="async"
-                                 width="768"
-                                 height="432">
+                                 width="400"
+                                 height="250">
                         </a>
 
                         @if($postDate !== '')
