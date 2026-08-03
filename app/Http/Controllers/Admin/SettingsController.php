@@ -87,6 +87,27 @@ class SettingsController extends Controller
             }
         }
 
+        if ($page == 'seo') {
+            $schemaLocale = mb_strtolower((string) $request->get('locale', app()->getLocale()));
+            $schemaValues = [];
+            $schemaSetting = Setting::where('name', Setting::$schemaSettingsName)->first();
+            if (!empty($schemaSetting)) {
+                $translation = SettingTranslation::where('setting_id', $schemaSetting->id)
+                    ->where('locale', $schemaLocale)
+                    ->first();
+                if (!empty($translation) && !empty($translation->value)) {
+                    $decoded = json_decode($translation->value, true);
+                    if (is_array($decoded)) {
+                        $schemaValues = $decoded;
+                    }
+                }
+            }
+            $data['schemaValues'] = $schemaValues;
+            $data['schemaLocale'] = $schemaLocale;
+            $data['schemaDefaults'] = config('schema.defaults.' . $schemaLocale)
+                ?? config('schema.defaults.en', []);
+        }
+
         return view('admin.settings.' . $page, $data);
     }
 
@@ -278,6 +299,66 @@ class SettingsController extends Controller
         cache()->forget('settings.' . $name);
 
         return back();
+    }
+
+    public function storeSchemaSettings(Request $request)
+    {
+        $name = Setting::$schemaSettingsName;
+
+        $this->authorize('admin_settings_seo');
+
+        $locale = mb_strtolower((string) $request->get('locale', app()->getLocale()));
+        $newValues = $request->input('value', []);
+        if (!is_array($newValues)) {
+            $newValues = [];
+        }
+
+        // Keep only known schema copy keys as trimmed strings.
+        $allowed = [
+            'legal_name',
+            'alternate_names',
+            'org_description',
+            'logo_caption',
+            'place_name',
+            'admissions_contact_type',
+            'whatsapp_contact_type',
+            'home_webpage_name',
+            'home_webpage_description',
+            'breadcrumb_home_name',
+            'online_instance_name_suffix',
+            'onsite_instance_name_suffix',
+            'course_workload_template',
+            'learning_resource_type',
+        ];
+
+        $values = [];
+        foreach ($allowed as $key) {
+            if (array_key_exists($key, $newValues)) {
+                $values[$key] = is_string($newValues[$key]) ? trim($newValues[$key]) : '';
+            }
+        }
+
+        $settings = Setting::updateOrCreate(
+            ['name' => $name],
+            [
+                'page' => 'seo',
+                'updated_at' => time(),
+            ]
+        );
+
+        SettingTranslation::updateOrCreate(
+            [
+                'setting_id' => $settings->id,
+                'locale' => $locale,
+            ],
+            [
+                'value' => json_encode($values, JSON_UNESCAPED_UNICODE),
+            ]
+        );
+
+        cache()->forget('settings.' . $name);
+
+        return redirect(getAdminPanelUrl() . '/settings/seo?locale=' . urlencode($locale) . '#schema');
     }
 
     public function editSocials($social_key)

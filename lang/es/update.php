@@ -1059,6 +1059,28 @@ return [
 'extra_meta_tags_hint3' => '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">',
 'extra_meta_tags_hint4' => 'or other meta tags',
 
+'schema_settings' => 'Schema (JSON-LD)',
+'schema_org_section' => 'Organization',
+'schema_home_section' => 'Homepage WebPage',
+'schema_course_section' => 'Course page templates',
+'schema_legal_name' => 'Legal name',
+'schema_alternate_names' => 'Alternate names',
+'schema_alternate_names_hint' => 'One name per line.',
+'schema_org_description' => 'Organization description',
+'schema_logo_caption' => 'Logo caption',
+'schema_place_name' => 'Onsite place name',
+'schema_admissions_contact_type' => 'Admissions contact type label',
+'schema_whatsapp_contact_type' => 'WhatsApp contact type label',
+'schema_home_webpage_name' => 'Homepage schema title',
+'schema_home_webpage_description' => 'Homepage schema description',
+'schema_breadcrumb_home_name' => 'Breadcrumb: Home label',
+'schema_online_instance_name_suffix' => 'Online instance name suffix',
+'schema_onsite_instance_name_suffix' => 'Onsite instance name suffix',
+'schema_course_workload_template' => 'Course workload template',
+'schema_course_workload_template_hint' => 'Use {hours} and/or {minutes} placeholders.',
+'schema_learning_resource_type' => 'Learning resource type',
+'schema_logo_fixed_hint' => 'Schema logo URL is fixed to /store/1/Logos/albyan-institute-logo-512.png',
+
 
 // New Course Data
 'learning_materials' => 'Learning materials',

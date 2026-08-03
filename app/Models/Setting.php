@@ -39,7 +39,7 @@ class Setting extends Model implements TranslatableContract
         $themeColors, $themeFonts, $forumHomeSection, $cookieSettings, $mobileAppSettings, $remindersSettings, $generalSecuritySettings, $advertisingModal,
         $othersPersonalization, $homeContentBlocks, $installmentsSettings, $installmentsTermsSettings, $registrationBonusSettings, $registrationBonusTermsSettings, $statisticsSettings,
         $maintenanceSettings, $restrictionSettings, $generalOptions, $giftsGeneralSettings, $aiContentsSettings, $certificateSettings, $abandonedCartSettings, $smsChannelsSettings,
-        $commissionSettings, $performanceSettings;
+        $commissionSettings, $performanceSettings, $schemaSettings;
 
     // settings name , Using these keys, values are taken from the settings table
     static $seoMetasName = 'seo_metas';
@@ -91,6 +91,7 @@ class Setting extends Model implements TranslatableContract
     static $restrictionSettingsName = 'restriction_settings';
     static $generalOptionsName = 'general_options';
     static $performanceSettingsName = 'performance';
+    static $schemaSettingsName = 'schema_settings';
     static $giftsGeneralSettingsName = 'gifts_general_settings';
     static $aiContentsSettingsName = 'ai_contents_settings';
     static $abandonedCartSettingsName = 'abandoned_cart_settings';
@@ -506,6 +507,17 @@ class Setting extends Model implements TranslatableContract
     static function getPerformanceSettings($key = null)
     {
         return self::getSetting(self::$performanceSettings, self::$performanceSettingsName, $key);
+    }
+
+    /**
+     * Multilingual Schema.org copy (Admin → SEO → Schema).
+     *
+     * @param string|null $key
+     * @return array|string|null
+     */
+    static function getSchemaSettings($key = null)
+    {
+        return self::getSetting(self::$schemaSettings, self::$schemaSettingsName, $key);
     }
 
     static function getSMSChannelsSettings($key = null)

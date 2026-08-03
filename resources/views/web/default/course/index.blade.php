@@ -1,5 +1,8 @@
 @extends(getTemplate().'.layouts.app')
 
+@push('head_content')
+    @include('web.default.course.includes.course_page_schema')
+@endpush
 @push('styles_top')
     <link rel="stylesheet" href="/assets/default/css/css-stars.css">
     <link rel="stylesheet" href="/assets/default/vendors/video/video-js.min.css">

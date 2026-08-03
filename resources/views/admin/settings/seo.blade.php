@@ -28,6 +28,13 @@
                                        aria-selected="true">{{ trans('update.extra_meta_tags') }}</a>
                                 </li>
 
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                       id="schema-tab" data-toggle="tab" href="#schema"
+                                       role="tab" aria-controls="schema"
+                                       aria-selected="false">{{ trans('update.schema_settings') }}</a>
+                                </li>
+
                                 @foreach(\App\Models\Setting::$pagesSeoMetas as $page)
                                     <li class="nav-item">
                                         <a class="nav-link"
@@ -73,6 +80,123 @@
                                                     </label>
                                                     <small class="text-muted d-block mt-1">When enabled, all pages output <code>noindex,nofollow</code> regardless of per-page SEO settings.</small>
                                                 </div>
+
+                                                <button type="submit" class="btn btn-primary">{{ trans('admin/main.submit') }}</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Schema.org copy (per locale) --}}
+                                @php
+                                    $schemaValues = $schemaValues ?? [];
+                                    $schemaDefaults = $schemaDefaults ?? [];
+                                    $schemaLocale = $schemaLocale ?? app()->getLocale();
+                                    $schemaField = function (string $key) use ($schemaValues, $schemaDefaults) {
+                                        if (array_key_exists($key, $schemaValues) && $schemaValues[$key] !== '') {
+                                            return $schemaValues[$key];
+                                        }
+                                        return $schemaDefaults[$key] ?? '';
+                                    };
+                                @endphp
+                                <div class="tab-pane mt-3 fade" id="schema" role="tabpanel" aria-labelledby="schema-tab">
+                                    <div class="row">
+                                        <div class="col-12 col-md-8">
+                                            <form action="{{ getAdminPanelUrl() }}/settings/schema_settings/store" method="post">
+                                                {{ csrf_field() }}
+
+                                                @if(!empty(getGeneralSettings('content_translate')))
+                                                    <div class="form-group">
+                                                        <label class="input-label">{{ trans('auth.language') }}</label>
+                                                        <select name="locale" class="form-control js-schema-locale">
+                                                            @foreach(getUserLanguagesLists() as $lang => $language)
+                                                                <option value="{{ mb_strtolower($lang) }}" @if(mb_strtolower($schemaLocale) == mb_strtolower($lang)) selected @endif>{{ $language }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                @else
+                                                    <input type="hidden" name="locale" value="{{ mb_strtolower($schemaLocale) }}">
+                                                @endif
+
+                                                <h6 class="font-weight-bold mt-3">{{ trans('update.schema_org_section') }}</h6>
+
+                                                <div class="form-group">
+                                                    <label>{{ trans('update.schema_legal_name') }}</label>
+                                                    <input type="text" name="value[legal_name]" class="form-control" value="{{ $schemaField('legal_name') }}">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>{{ trans('update.schema_alternate_names') }}</label>
+                                                    <textarea name="value[alternate_names]" rows="3" class="form-control">{{ $schemaField('alternate_names') }}</textarea>
+                                                    <small class="text-muted">{{ trans('update.schema_alternate_names_hint') }}</small>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>{{ trans('update.schema_org_description') }}</label>
+                                                    <textarea name="value[org_description]" rows="4" class="form-control">{{ $schemaField('org_description') }}</textarea>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>{{ trans('update.schema_logo_caption') }}</label>
+                                                    <input type="text" name="value[logo_caption]" class="form-control" value="{{ $schemaField('logo_caption') }}">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>{{ trans('update.schema_place_name') }}</label>
+                                                    <input type="text" name="value[place_name]" class="form-control" value="{{ $schemaField('place_name') }}">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>{{ trans('update.schema_admissions_contact_type') }}</label>
+                                                    <input type="text" name="value[admissions_contact_type]" class="form-control" value="{{ $schemaField('admissions_contact_type') }}">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>{{ trans('update.schema_whatsapp_contact_type') }}</label>
+                                                    <input type="text" name="value[whatsapp_contact_type]" class="form-control" value="{{ $schemaField('whatsapp_contact_type') }}">
+                                                </div>
+
+                                                <h6 class="font-weight-bold mt-4">{{ trans('update.schema_home_section') }}</h6>
+
+                                                <div class="form-group">
+                                                    <label>{{ trans('update.schema_home_webpage_name') }}</label>
+                                                    <input type="text" name="value[home_webpage_name]" class="form-control" value="{{ $schemaField('home_webpage_name') }}">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>{{ trans('update.schema_home_webpage_description') }}</label>
+                                                    <textarea name="value[home_webpage_description]" rows="3" class="form-control">{{ $schemaField('home_webpage_description') }}</textarea>
+                                                </div>
+
+                                                <h6 class="font-weight-bold mt-4">{{ trans('update.schema_course_section') }}</h6>
+
+                                                <div class="form-group">
+                                                    <label>{{ trans('update.schema_breadcrumb_home_name') }}</label>
+                                                    <input type="text" name="value[breadcrumb_home_name]" class="form-control" value="{{ $schemaField('breadcrumb_home_name') }}">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>{{ trans('update.schema_online_instance_name_suffix') }}</label>
+                                                    <input type="text" name="value[online_instance_name_suffix]" class="form-control" value="{{ $schemaField('online_instance_name_suffix') }}">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>{{ trans('update.schema_onsite_instance_name_suffix') }}</label>
+                                                    <input type="text" name="value[onsite_instance_name_suffix]" class="form-control" value="{{ $schemaField('onsite_instance_name_suffix') }}">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>{{ trans('update.schema_course_workload_template') }}</label>
+                                                    <input type="text" name="value[course_workload_template]" class="form-control" value="{{ $schemaField('course_workload_template') }}">
+                                                    <small class="text-muted">{{ trans('update.schema_course_workload_template_hint') }}</small>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>{{ trans('update.schema_learning_resource_type') }}</label>
+                                                    <input type="text" name="value[learning_resource_type]" class="form-control" value="{{ $schemaField('learning_resource_type') }}">
+                                                </div>
+
+                                                <p class="text-muted small">{{ trans('update.schema_logo_fixed_hint') }}</p>
 
                                                 <button type="submit" class="btn btn-primary">{{ trans('admin/main.submit') }}</button>
                                             </form>
@@ -155,3 +279,31 @@
     </section>
 
 @endsection
+
+@push('scripts_bottom')
+    <script>
+        (function () {
+            function showSchemaTab() {
+                var tabEl = document.getElementById('schema-tab');
+                if (tabEl && typeof $ !== 'undefined') {
+                    $(tabEl).tab('show');
+                }
+            }
+
+            if (window.location.hash === '#schema') {
+                showSchemaTab();
+            }
+
+            if (typeof $ !== 'undefined') {
+                $('body').on('change', '.js-schema-locale', function () {
+                    var val = $(this).val();
+                    if (!val) {
+                        return;
+                    }
+                    window.location.href = window.location.origin + window.location.pathname
+                        + '?locale=' + encodeURIComponent(val) + '#schema';
+                });
+            }
+        })();
+    </script>
+@endpush

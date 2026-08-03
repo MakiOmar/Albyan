@@ -752,6 +752,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/{page}', 'SettingsController@page');
             Route::post('/{name}', 'SettingsController@store');
             Route::post('/seo_metas/store', 'SettingsController@storeSeoMetas');
+            Route::post('/schema_settings/store', 'SettingsController@storeSchemaSettings');
             Route::post('/notifications/store', 'SettingsController@notificationsMetas');
 
             /* Currency */

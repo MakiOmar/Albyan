@@ -2,6 +2,9 @@
 @php
 
 @endphp
+@push('head_content')
+    @include('web.default.pages.includes.home_page_schema')
+@endpush
 @push('styles_top')
     <style>
         /* CLS: full-width strip + min-height (layout also sets .slider-container .slider-heading) */

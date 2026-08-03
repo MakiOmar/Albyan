@@ -1499,6 +1499,17 @@ function getSeoMetas($page = null)
 }
 
 /**
+ * Schema.org editable copy (Admin → SEO → Schema), current locale.
+ *
+ * @param string|null $key
+ * @return array|string|null
+ */
+function getSchemaSettings($key = null)
+{
+    return App\Models\Setting::getSchemaSettings($key);
+}
+
+/**
  * @return array [title, image, link]
  */
 function getSocials()
