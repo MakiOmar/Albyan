@@ -2060,6 +2060,12 @@ function normalizeHomeExcludeKey(string $key): string
         'institute-about' => 'blockquote',
         'statistics' => 'home-statistics',
         'home-stats' => 'home-statistics',
+        // Category strip under the main navbar
+        'category-sub-nav' => 'category-sub-nav',
+        'category-sub-nav-bar' => 'category-sub-nav',
+        'categorysubnav' => 'category-sub-nav',
+        'categories-nav' => 'category-sub-nav',
+        'category-nav' => 'category-sub-nav',
     ];
 
     return $aliases[$key] ?? $key;

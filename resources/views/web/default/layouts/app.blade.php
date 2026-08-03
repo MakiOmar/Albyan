@@ -795,7 +795,9 @@
     @if(!isset($appHeader))
         @include('web.default.includes.top_nav')
         @include('web.default.includes.navbar')
-        @include('web.default.includes.category_sub_nav')
+        @unless(isHomeSectionExcluded('category-sub-nav', 'category-sub-nav-bar', 'categorySubNav'))
+            @include('web.default.includes.category_sub_nav')
+        @endunless
     @endif
 
     @if(!empty($justMobileApp))
