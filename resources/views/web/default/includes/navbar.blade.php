@@ -26,8 +26,13 @@
 
             <a class="navbar-brand navbar-order d-flex d-lg-none align-items-center justify-content-center mr-0 {{ (empty($navBtnUrl) and empty($navBtnText)) ? 'ml-auto' : '' }}" href="/">
                 @if(!empty($generalSettings['logo']))
-                    {{-- Match .navbar-brand slot (170x50) for CLS; CSS still controls display --}}
-                    <img src="{{ $generalSettings['logo'] }}" class="img-cover" width="170" height="50" alt="site logo">
+                    {{-- No img-cover: object-fit:cover was cropping the logo in the mobile brand slot --}}
+                    <img src="{{ $generalSettings['logo'] }}"
+                         width="47"
+                         height="40"
+                         alt="site logo"
+                         decoding="async"
+                         data-no-lazy="true">
                 @endif
             </a>
 
@@ -111,7 +116,6 @@
                                         @if(!empty($generalSettings['logo']))
                                             {{-- Intrinsic size matches albyan-institute-logo-40.webp (47x40) --}}
                                             <img src="{{ $generalSettings['logo'] }}"
-                                                 class="img-cover"
                                                  width="47"
                                                  height="40"
                                                  alt="site logo"

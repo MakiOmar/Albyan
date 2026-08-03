@@ -119,6 +119,17 @@
             overflow-x: auto !important;
         }
         /* Desktop center logo: real asset is 47x40; false 136 + width:auto caused nav jank */
+        .navbar-brand {
+            overflow: visible;
+        }
+        .navbar-brand img {
+            object-fit: contain !important;
+            object-position: center center !important;
+            width: auto !important;
+            height: auto !important;
+            max-height: 40px !important;
+            max-width: 100% !important;
+        }
         @media (min-width: 992px) {
             .navbar-brand {
                 width: 47px;
@@ -129,6 +140,18 @@
                 width: 47px !important;
                 height: 40px !important;
                 max-width: 47px !important;
+                max-height: 40px !important;
+            }
+        }
+        @media (max-width: 991px) {
+            .navbar-brand {
+                width: auto;
+                min-width: 0;
+                max-width: 120px;
+                height: 40px;
+            }
+            .navbar-brand img {
+                max-height: 40px !important;
             }
         }
     </style>
@@ -440,7 +463,10 @@
             }
             @media (max-width: 991px) {
             .navbar-brand img {
-                max-height: 30px;
+                max-height: 40px !important;
+                width: auto !important;
+                height: auto !important;
+                object-fit: contain !important;
             }
 
             .slider-container, .slider-container.slider-hero-section2 {
@@ -524,7 +550,15 @@
             }
             /* Keep brand slot stable — do not let late rules collapse to height/width:auto */
             .navbar-brand {
-                height: 50px;
+                height: 40px;
+                overflow: visible;
+            }
+            .navbar-brand img {
+                object-fit: contain !important;
+                width: auto !important;
+                height: auto !important;
+                max-height: 40px !important;
+                max-width: 100% !important;
             }
             @media (min-width: 992px) {
                 .navbar-brand {
@@ -536,6 +570,14 @@
                     width: 47px !important;
                     height: 40px !important;
                     max-width: 47px !important;
+                    max-height: 40px !important;
+                }
+            }
+            @media (max-width: 991px) {
+                .navbar-brand {
+                    width: auto;
+                    max-width: 120px;
+                    height: 40px;
                 }
             }
             .footer .footer-logo {
