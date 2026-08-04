@@ -26,9 +26,7 @@
 
 # BEGIN AI search / citation crawlers (allowed)
 # Keep Bytespider / CCBot blocked below — training scrapers, not citation bots.
-
-User-agent: *
-Allow: /
+# Google-Extended is Google's Gemini Apps / grounding control token (not a separate crawler).
 
 User-agent: GPTBot
 Allow: /
@@ -46,6 +44,9 @@ User-agent: anthropic-ai
 Allow: /
 
 User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
 Allow: /
 
 User-agent: PerplexityBot
@@ -72,10 +73,9 @@ Allow: /
 User-agent: meta-externalfetcher
 Allow: /
 
-# END AI search / citation crawlers
-
-
-# Block admin and private areas
+# Default rules (all other bots, including Googlebot group below for images)
+User-agent: *
+Allow: /
 Disallow: /admin/
 Disallow: /panel/
 Disallow: /api/
@@ -88,6 +88,9 @@ Disallow: /resources/
 Disallow: /routes/
 Disallow: /tests/
 Disallow: /update_tmp/
+
+# END AI + default rules
+
 
 # Block Laravel framework files
 Disallow: /.env
