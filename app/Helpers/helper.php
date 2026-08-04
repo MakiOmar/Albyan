@@ -3594,7 +3594,10 @@ if (!function_exists('getAllCityContacts')) {
             })->filter()->values();
         } catch (\Throwable $e) {
             // City contact is used site-wide (navbar/floating bar); never break the page.
-            report($e);
+            try {
+                report($e);
+            } catch (\Throwable $ignored) {
+            }
 
             return collect();
         }
@@ -3610,7 +3613,10 @@ if (!function_exists('getActiveCities')) {
                 ->sortBy('name')
                 ->values();
         } catch (\Throwable $e) {
-            report($e);
+            try {
+                report($e);
+            } catch (\Throwable $ignored) {
+            }
 
             return collect();
         }
@@ -3646,7 +3652,10 @@ if (!function_exists('getCityBySlug')) {
 
             return localizeCityContactCity($city, $locale);
         } catch (\Throwable $e) {
-            report($e);
+            try {
+                report($e);
+            } catch (\Throwable $ignored) {
+            }
 
             return null;
         }
