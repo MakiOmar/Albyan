@@ -3382,7 +3382,11 @@ function customSortArrayNumAndTextIndex($array) {
 if (!function_exists('getCityContactDefaultConfig')) {
     function getCityContactDefaultConfig()
     {
-        $defaultLocale = mb_strtolower(getDefaultLocale());
+        try {
+            $defaultLocale = mb_strtolower(getDefaultLocale());
+        } catch (\Throwable $e) {
+            $defaultLocale = mb_strtolower((string) config('app.locale', 'en'));
+        }
 
         return [
             'cities' => [
@@ -3414,8 +3418,13 @@ if (!function_exists('resolveCityContactLocaleValue')) {
      */
     function resolveCityContactLocaleValue($value, $locale = null, $fallback = true)
     {
-        $locale = mb_strtolower($locale ?? app()->getLocale());
-        $defaultLocale = mb_strtolower(getDefaultLocale());
+        try {
+            $locale = mb_strtolower($locale ?? app()->getLocale());
+            $defaultLocale = mb_strtolower(function_exists('getDefaultLocale') ? getDefaultLocale() : config('app.locale', 'en'));
+        } catch (\Throwable $e) {
+            $locale = mb_strtolower($locale ?? (string) config('app.locale', 'en'));
+            $defaultLocale = mb_strtolower((string) config('app.locale', 'en'));
+        }
 
         // Legacy plain string (pre-multilingual JSON)
         if (!is_array($value)) {
@@ -3563,41 +3572,18 @@ if (!function_exists('getAllCityContacts')) {
      */
     function getAllCityContacts($locale = null, $localize = true, $fallback = true)
     {
-        $cities = getCityContactConfig('cities') ?? [];
+        try {
+            $cities = getCityContactConfig('cities') ?? [];
 
-        return collect($cities)->map(function ($city) use ($locale, $localize, $fallback) {
-            if ($localize) {
-                return localizeCityContactCity($city, $locale, $fallback);
-            }
+            return collect($cities)->map(function ($city) use ($locale, $localize, $fallback) {
+                if (!is_array($city)) {
+                    return null;
+                }
 
-            return array_merge([
-                'phone' => null,
-                'whatsapp' => null,
-                'latitude' => null,
-                'longitude' => null,
-                'address' => null,
-            ], $city);
-        })->values();
-    }
-}
+                if ($localize) {
+                    return localizeCityContactCity($city, $locale, $fallback);
+                }
 
-if (!function_exists('getActiveCities')) {
-    function getActiveCities($locale = null)
-    {
-        return getAllCityContacts($locale, true)
-            ->where('is_active', true)
-            ->sortBy('name')
-            ->values();
-    }
-}
-
-if (!function_exists('getCityBySlug')) {
-    function getCityBySlug($slug, $locale = null)
-    {
-        $cities = getCityContactConfig('cities') ?? [];
-
-        $city = collect($cities)
-            ->map(function ($city) {
                 return array_merge([
                     'phone' => null,
                     'whatsapp' => null,
@@ -3605,16 +3591,65 @@ if (!function_exists('getCityBySlug')) {
                     'longitude' => null,
                     'address' => null,
                 ], $city);
-            })
-            ->where('slug', $slug)
-            ->where('is_active', true)
-            ->first();
+            })->filter()->values();
+        } catch (\Throwable $e) {
+            // City contact is used site-wide (navbar/floating bar); never break the page.
+            report($e);
 
-        if (!$city) {
+            return collect();
+        }
+    }
+}
+
+if (!function_exists('getActiveCities')) {
+    function getActiveCities($locale = null)
+    {
+        try {
+            return getAllCityContacts($locale, true)
+                ->where('is_active', true)
+                ->sortBy('name')
+                ->values();
+        } catch (\Throwable $e) {
+            report($e);
+
+            return collect();
+        }
+    }
+}
+
+if (!function_exists('getCityBySlug')) {
+    function getCityBySlug($slug, $locale = null)
+    {
+        try {
+            $cities = getCityContactConfig('cities') ?? [];
+
+            $city = collect($cities)
+                ->filter(function ($city) {
+                    return is_array($city);
+                })
+                ->map(function ($city) {
+                    return array_merge([
+                        'phone' => null,
+                        'whatsapp' => null,
+                        'latitude' => null,
+                        'longitude' => null,
+                        'address' => null,
+                    ], $city);
+                })
+                ->where('slug', $slug)
+                ->where('is_active', true)
+                ->first();
+
+            if (!$city) {
+                return null;
+            }
+
+            return localizeCityContactCity($city, $locale);
+        } catch (\Throwable $e) {
+            report($e);
+
             return null;
         }
-
-        return localizeCityContactCity($city, $locale);
     }
 }
 
