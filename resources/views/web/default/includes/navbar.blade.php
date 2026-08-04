@@ -140,7 +140,7 @@
                     @if(!empty($cities) && count($cities) > 0)
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="citiesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                فروع البيان
+                                {{ trans('public.albyan_branches') }}
                             </a>
                             <div class="dropdown-menu" aria-labelledby="citiesDropdown">
                                 @foreach($cities as $city)

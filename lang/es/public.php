@@ -367,4 +367,11 @@ return [
     'how_zoom_jwt_token' => 'Cómo crear token Zoom JWT',
     'instructor_is_not_available' => 'El formador no está disponible temporalmente.',
     'our_branches' => 'Nuestras Sucursales',
+    'albyan_branches' => 'Sucursales AlByan',
+    'city_branch' => 'Sucursal :name',
+    'albyan_branch_in' => 'Sucursal AlByan en :name',
+    'send_message_to_branch' => 'Enviar un mensaje a la sucursal :name',
+    'choose_city_to_contact' => 'Elige una ciudad para contactar una sucursal AlByan',
+    'contact_information' => 'Información de contacto',
+    'contact_city' => 'Contactar :name',
 ];

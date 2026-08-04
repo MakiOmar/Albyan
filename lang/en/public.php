@@ -409,5 +409,12 @@ return [
     'Thursday'  => 'Thursday',
     'Friday'    => 'Friday',
     'our_branches' => 'Our Branches',
+    'albyan_branches' => 'AlByan Branches',
+    'city_branch' => ':name Branch',
+    'albyan_branch_in' => 'AlByan branch in :name',
+    'send_message_to_branch' => 'Send a message to :name branch',
+    'choose_city_to_contact' => 'Choose a city to contact an AlByan branch',
+    'contact_information' => 'Contact Information',
+    'contact_city' => 'Contact :name',
 
 ];

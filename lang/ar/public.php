@@ -372,4 +372,11 @@ return [
     'Thursday'  => 'الخميس',
     'Friday'    => 'الجمعة',
     'our_branches' => 'فروعنا',
+    'albyan_branches' => 'فروع البيان',
+    'city_branch' => 'فرع :name',
+    'albyan_branch_in' => 'فرع البيان في :name',
+    'send_message_to_branch' => 'إرسال رسالة إلى فرع :name',
+    'choose_city_to_contact' => 'اختر المدينة للتواصل مع فرع البيان',
+    'contact_information' => 'معلومات الاتصال',
+    'contact_city' => 'التواصل مع :name',
 ];

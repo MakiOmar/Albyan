@@ -28,7 +28,7 @@
                         <img src="{{ url($city['flag']) }}" alt="{{ $city['name'] }}" class="city-flag">
                     </div>
                 @endif
-                <span class="city-name">فرع {{ $city['name'] }}</span>
+                <span class="city-name">{{ trans('public.city_branch', ['name' => $city['name']]) }}</span>
             </a>
         @endforeach
     </div>

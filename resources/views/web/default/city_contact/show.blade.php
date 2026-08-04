@@ -9,8 +9,8 @@
                         @if(!empty($city['flag']))
                             <img src="{{ url($city['flag']) }}" alt="{{ $city['name'] }}" class="city-flag-large">
                         @endif
-                        <h1 class="page-title">فرع {{ $city['name'] }}</h1>
-                        <p class="page-description">فرع البيان في {{ $city['name'] }}</p>
+                        <h1 class="page-title">{{ trans('public.city_branch', ['name' => $city['name']]) }}</h1>
+                        <p class="page-description">{{ trans('public.albyan_branch_in', ['name' => $city['name']]) }}</p>
                     </div>
                 </div>
             </div>
@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="contact-info-section">
-                    <h3>معلومات الاتصال</h3>
+                    <h3>{{ trans('public.contact_information') }}</h3>
                     
                     <div class="contact-details">
                         @if(!empty($city['phone']))
@@ -113,7 +113,7 @@
                     <div class="contact-actions mt-4">
                         <a href="{{ route('city.contact.form', $city['slug']) }}" class="btn btn-primary">
                             <i class="fas fa-envelope"></i>
-                            إرسال رسالة إلى فرع {{ $city['name'] }}
+                            {{ trans('public.send_message_to_branch', ['name' => $city['name']]) }}
                         </a>
                     </div>
                 </div>

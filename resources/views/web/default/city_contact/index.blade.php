@@ -5,8 +5,8 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-header">
-                    <h1 class="page-title">فروع البيان</h1>
-                    <p class="page-description">اختر المدينة للتواصل مع فرع البيان</p>
+                    <h1 class="page-title">{{ trans('public.albyan_branches') }}</h1>
+                    <p class="page-description">{{ trans('public.choose_city_to_contact') }}</p>
                 </div>
             </div>
         </div>
@@ -49,7 +49,7 @@
                         </div>
                         <div class="city-card-footer">
                             <a href="{{ route('city.contact.show', $city['slug']) }}" class="btn btn-primary">
-                                التواصل مع {{ $city['name'] }}
+                                {{ trans('public.contact_city', ['name' => $city['name']]) }}
                             </a>
                         </div>
                     </div>
