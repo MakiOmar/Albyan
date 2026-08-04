@@ -139,20 +139,24 @@
                                                                 @endif
                                                             </td>
                                                             <td>
+                                                                {{-- Build payload in PHP so Blade @json does not choke on multiline [ ] --}}
+                                                                @php
+                                                                    $editCityPayload = [
+                                                                        'slug' => $city['slug'],
+                                                                        'name' => $city['name'],
+                                                                        'email' => $city['email'],
+                                                                        'flag' => $city['flag'],
+                                                                        'is_active' => (bool) $city['is_active'],
+                                                                        'phone' => $city['phone'] ?? '',
+                                                                        'whatsapp' => $city['whatsapp'] ?? '',
+                                                                        'latitude' => $city['latitude'] ?? '',
+                                                                        'longitude' => $city['longitude'] ?? '',
+                                                                        'address' => $city['address'] ?? '',
+                                                                    ];
+                                                                @endphp
                                                                 <button type="button"
                                                                         class="btn btn-sm btn-primary js-edit-city"
-                                                                        data-city='@json([
-                                                                            "slug" => $city["slug"],
-                                                                            "name" => $city["name"],
-                                                                            "email" => $city["email"],
-                                                                            "flag" => $city["flag"],
-                                                                            "is_active" => (bool) $city["is_active"],
-                                                                            "phone" => $city["phone"] ?? "",
-                                                                            "whatsapp" => $city["whatsapp"] ?? "",
-                                                                            "latitude" => $city["latitude"] ?? "",
-                                                                            "longitude" => $city["longitude"] ?? "",
-                                                                            "address" => $city["address"] ?? "",
-                                                                        ], JSON_UNESCAPED_UNICODE)'>
+                                                                        data-city="{{ e(json_encode($editCityPayload, JSON_UNESCAPED_UNICODE)) }}">
                                                                     تعديل
                                                                 </button>
                                                                 <a href="{{ route('admin.city-contact.cities.delete', ['index' => $city['_index'], 'locale' => $locale]) }}"
