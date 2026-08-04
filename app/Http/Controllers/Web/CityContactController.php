@@ -21,12 +21,7 @@ class CityContactController extends Controller
             abort(404);
         }
 
-        $formConfig = getCityContactConfig('form') ?? [
-            'title' => 'تواصل معنا',
-            'description' => 'يرجى ملء النموذج أدناه وسنقوم بالرد عليك في أقرب وقت ممكن',
-            'success_message' => 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك قريباً.',
-            'error_message' => 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.'
-        ];
+        $formConfig = getLocalizedCityContactSection('form');
 
         return view('web.default.city_contact.form', [
             'city' => $city,
@@ -46,6 +41,8 @@ class CityContactController extends Controller
             abort(404);
         }
 
+        $formConfig = getLocalizedCityContactSection('form');
+
         // Validate the form data
         $validator = Validator::make($request->all(), array_merge([
             'full_name' => ['required', 'string', 'max:255', new AtLeastTwoWords],
@@ -61,24 +58,22 @@ class CityContactController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => getCityContactConfig('form.error_message') ?? 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.',
+                'message' => $formConfig['error_message'] ?: 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.',
                 'errors' => $validator->errors()
             ], 422);
         }
 
         try {
-            // Send email
             $this->sendContactEmail($city, $request->all());
 
             return response()->json([
                 'success' => true,
-                'message' => getCityContactConfig('form.success_message') ?? 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك قريباً.'
+                'message' => $formConfig['success_message'] ?: 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك قريباً.'
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => getCityContactConfig('form.error_message') ?? 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.'
+                'message' => $formConfig['error_message'] ?: 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.'
             ], 500);
         }
     }
@@ -88,9 +83,14 @@ class CityContactController extends Controller
      */
     private function sendContactEmail($city, $formData)
     {
-        $subject = str_replace(':city', $city['name'], getCityContactConfig('email.subject') ?? 'رسالة جديدة من نموذج الاتصال - :city');
-        
-        Mail::send(getCityContactConfig('email.template') ?? 'emails.city_contact_form', [
+        $emailConfig = getLocalizedCityContactSection('email');
+        $subject = str_replace(
+            ':city',
+            $city['name'],
+            $emailConfig['subject'] ?: 'رسالة جديدة من نموذج الاتصال - :city'
+        );
+
+        Mail::send($emailConfig['template'] ?: 'emails.city_contact_form', [
             'city' => $city,
             'formData' => $formData
         ], function ($message) use ($city, $subject) {
@@ -109,11 +109,23 @@ class CityContactController extends Controller
     }
 
     /**
-     * Get the complete JSON configuration
+     * Get the complete JSON configuration (localized for current locale)
      */
     public function getConfig()
     {
-        $config = getCityContactConfig();
+        $config = getCityContactConfig() ?? getCityContactDefaultConfig();
+        $locale = app()->getLocale();
+
+        $config['cities'] = collect($config['cities'] ?? [])
+            ->map(function ($city) use ($locale) {
+                return localizeCityContactCity($city, $locale);
+            })
+            ->values()
+            ->all();
+
+        $config['form'] = getLocalizedCityContactSection('form', $locale);
+        $config['email'] = getLocalizedCityContactSection('email', $locale);
+
         return response()->json($config);
     }
 
@@ -123,7 +135,7 @@ class CityContactController extends Controller
     public function index()
     {
         $cities = getActiveCities();
-        
+
         return view('web.default.city_contact.index', compact('cities'));
     }
 
@@ -132,22 +144,12 @@ class CityContactController extends Controller
      */
     public function show($slug)
     {
-        $config = getCityContactConfig();
-        $city = null;
-        
-        if (!empty($config['cities'])) {
-            foreach ($config['cities'] as $cityData) {
-                if ($cityData['slug'] === $slug && $cityData['is_active']) {
-                    $city = $cityData;
-                    break;
-                }
-            }
-        }
-        
+        $city = getCityBySlug($slug);
+
         if (!$city) {
             abort(404);
         }
-        
+
         return view('web.default.city_contact.show', compact('city'));
     }
-} 
+}

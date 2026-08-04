@@ -1,12 +1,24 @@
 @extends('admin.layouts.app')
 
 @section('content')
+    {{-- City contact admin: form/email/city content is multilingual when content_translate is enabled --}}
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">إعدادات نموذج الاتصال بالمدن</h3>
+                    <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+                        <h3 class="card-title mb-0">{{ trans('admin/main.city_contact') }}</h3>
+
+                        @if(!empty(getGeneralSettings('content_translate')) && !empty($userLanguages))
+                            <div class="form-group mb-0 mt-2 mt-md-0" style="min-width: 200px;">
+                                <label class="input-label">{{ trans('auth.language') }}</label>
+                                <select name="locale" class="form-control js-edit-content-locale">
+                                    @foreach($userLanguages as $lang => $language)
+                                        <option value="{{ $lang }}" @if(mb_strtolower($locale) == mb_strtolower($lang)) selected @endif>{{ $language }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
                     </div>
                     <div class="card-body">
                         @if(session('success'))
@@ -21,7 +33,7 @@
                             </div>
                         @endif
 
-                        <!-- Form Settings -->
+                        {{-- Form Settings --}}
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="card">
@@ -31,6 +43,7 @@
                                     <div class="card-body">
                                         <form action="{{ route('admin.city-contact.config.update') }}" method="POST">
                                             @csrf
+                                            <input type="hidden" name="locale" value="{{ $locale }}">
                                             <div class="form-group">
                                                 <label>عنوان النموذج</label>
                                                 <input type="text" name="form[title]" class="form-control" value="{{ $formConfig['title'] }}" required>
@@ -61,6 +74,7 @@
                                     <div class="card-body">
                                         <form action="{{ route('admin.city-contact.config.update') }}" method="POST">
                                             @csrf
+                                            <input type="hidden" name="locale" value="{{ $locale }}">
                                             <div class="form-group">
                                                 <label>موضوع البريد الإلكتروني</label>
                                                 <input type="text" name="email[subject]" class="form-control" value="{{ $emailConfig['subject'] }}" required>
@@ -77,7 +91,7 @@
                             </div>
                         </div>
 
-                        <!-- Cities Management -->
+                        {{-- Cities Management --}}
                         <div class="row mt-4">
                             <div class="col-12">
                                 <div class="card">
@@ -103,9 +117,9 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach($cities as $index => $city)
-                                                                                                                <tr>
-                                                            <td>{{ $city['name'] }}</td>
+                                                    @foreach($cities as $city)
+                                                        <tr>
+                                                            <td>{{ $city['name'] !== '' ? $city['name'] : '—' }}</td>
                                                             <td><code>{{ $city['slug'] }}</code></td>
                                                             <td>{{ $city['email'] }}</td>
                                                             <td>{{ $city['phone'] ?? 'لا يوجد' }}</td>
@@ -125,11 +139,23 @@
                                                                 @endif
                                                             </td>
                                                             <td>
-                                                                 <button type="button" class="btn btn-sm btn-primary" 
-                                                                         onclick="editCity('{{ $city['slug'] }}', '{{ $city['name'] }}', '{{ $city['slug'] }}', '{{ $city['email'] }}', '{{ $city['flag'] }}', {{ $city['is_active'] ? 'true' : 'false' }}, '{{ $city['phone'] ?? '' }}', '{{ $city['whatsapp'] ?? '' }}', '{{ $city['latitude'] ?? '' }}', '{{ $city['longitude'] ?? '' }}', '{{ $city['address'] ?? '' }}')">
-                                                                     تعديل
-                                                                 </button>
-                                                                <a href="{{ route('admin.city-contact.cities.delete', $index) }}" 
+                                                                <button type="button"
+                                                                        class="btn btn-sm btn-primary js-edit-city"
+                                                                        data-city='@json([
+                                                                            "slug" => $city["slug"],
+                                                                            "name" => $city["name"],
+                                                                            "email" => $city["email"],
+                                                                            "flag" => $city["flag"],
+                                                                            "is_active" => (bool) $city["is_active"],
+                                                                            "phone" => $city["phone"] ?? "",
+                                                                            "whatsapp" => $city["whatsapp"] ?? "",
+                                                                            "latitude" => $city["latitude"] ?? "",
+                                                                            "longitude" => $city["longitude"] ?? "",
+                                                                            "address" => $city["address"] ?? "",
+                                                                        ], JSON_UNESCAPED_UNICODE)'>
+                                                                    تعديل
+                                                                </button>
+                                                                <a href="{{ route('admin.city-contact.cities.delete', ['index' => $city['_index'], 'locale' => $locale]) }}"
                                                                    class="btn btn-sm btn-danger"
                                                                    onclick="return confirm('هل أنت متأكد من حذف هذه المدينة؟')">
                                                                     حذف
@@ -150,7 +176,7 @@
         </div>
     </div>
 
-    <!-- Add City Modal -->
+    {{-- Add City Modal --}}
     <div class="modal fade" id="addCityModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -162,6 +188,7 @@
                 </div>
                 <form action="{{ route('admin.city-contact.cities.add') }}" method="POST">
                     @csrf
+                    <input type="hidden" name="locale" value="{{ $locale }}">
                     <div class="modal-body">
                         <div class="form-group">
                             <label>اسم المدينة</label>
@@ -177,14 +204,14 @@
                         </div>
                         <div class="form-group">
                             <label>علم المدينة (اختياري)</label>
-                                                <div class="input-group">
-                        <div class="input-group-prepend">
-                            <button type="button" class="input-group-text admin-file-manager" data-input="city_flag" data-preview="city_flag_preview" data-url="{{ getAdminPanelUrl() }}/laravel-filemanager" aria-label="{{ trans('admin/main.upload_file') }}">
-                                <i class="fa fa-arrow-up" class="text-white"></i>
-                            </button>
-                        </div>
-                        <input id="city_flag" type="text" name="flag" class="form-control lfm-input" placeholder="/assets/default/img/flags/sa.png">
-                    </div>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <button type="button" class="input-group-text admin-file-manager" data-input="city_flag" data-preview="city_flag_preview" data-url="{{ getAdminPanelUrl() }}/laravel-filemanager" aria-label="{{ trans('admin/main.upload_file') }}">
+                                        <i class="fa fa-arrow-up text-white"></i>
+                                    </button>
+                                </div>
+                                <input id="city_flag" type="text" name="flag" class="form-control lfm-input" placeholder="/assets/default/img/flags/sa.png">
+                            </div>
                             <div id="city_flag_preview" class="mt-2">
                                 <img src="" alt="Flag Preview" style="max-width: 50px; max-height: 30px; display: none;">
                             </div>
@@ -225,7 +252,7 @@
         </div>
     </div>
 
-    <!-- Edit City Modal -->
+    {{-- Edit City Modal --}}
     <div class="modal fade" id="editCityModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -237,6 +264,7 @@
                 </div>
                 <form id="editCityForm" method="POST">
                     @csrf
+                    <input type="hidden" name="locale" value="{{ $locale }}">
                     <div class="modal-body">
                         <div class="form-group">
                             <label>اسم المدينة</label>
@@ -255,7 +283,7 @@
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <button type="button" class="input-group-text admin-file-manager" data-input="edit_city_flag" data-preview="edit_city_flag_preview" data-url="{{ getAdminPanelUrl() }}/laravel-filemanager" aria-label="{{ trans('admin/main.upload_file') }}">
-                                        <i class="fa fa-arrow-up" class="text-white"></i>
+                                        <i class="fa fa-arrow-up text-white"></i>
                                     </button>
                                 </div>
                                 <input id="edit_city_flag" type="text" name="flag" class="form-control lfm-input">
@@ -309,38 +337,39 @@
 
 @push('scripts_bottom')
 <script>
-function editCity(slug, name, slugValue, email, flag, isActive, phone, whatsapp, latitude, longitude, address) {
-    document.getElementById('edit_city_name').value = name;
-    document.getElementById('edit_city_slug').value = slugValue;
-    document.getElementById('edit_city_email').value = email;
-    document.getElementById('edit_city_flag').value = flag;
-    document.getElementById('edit_city_phone').value = phone;
-    document.getElementById('edit_city_whatsapp').value = whatsapp;
-    document.getElementById('edit_city_latitude').value = latitude;
-    document.getElementById('edit_city_longitude').value = longitude;
-    document.getElementById('edit_city_address').value = address;
-    document.getElementById('edit_city_active').checked = isActive;
-    
-    // Update flag preview
-    var flagPreview = document.querySelector('#edit_city_flag_preview img');
-    if (flag && flag.trim() !== '') {
-        flagPreview.src = flag;
-        flagPreview.style.display = 'block';
-    } else {
-        flagPreview.style.display = 'none';
-    }
-    
-    var actionUrl = '/admin/city-contact/cities/' + slug + '/update';
-    document.getElementById('editCityForm').action = actionUrl;
-    
-    $('#editCityModal').modal('show');
-}
-
-// Handle flag preview for add form
 document.addEventListener('DOMContentLoaded', function() {
+    // Open edit modal from data-city JSON (safer for multilingual names)
+    document.querySelectorAll('.js-edit-city').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var city = JSON.parse(this.getAttribute('data-city'));
+
+            document.getElementById('edit_city_name').value = city.name || '';
+            document.getElementById('edit_city_slug').value = city.slug || '';
+            document.getElementById('edit_city_email').value = city.email || '';
+            document.getElementById('edit_city_flag').value = city.flag || '';
+            document.getElementById('edit_city_phone').value = city.phone || '';
+            document.getElementById('edit_city_whatsapp').value = city.whatsapp || '';
+            document.getElementById('edit_city_latitude').value = city.latitude || '';
+            document.getElementById('edit_city_longitude').value = city.longitude || '';
+            document.getElementById('edit_city_address').value = city.address || '';
+            document.getElementById('edit_city_active').checked = !!city.is_active;
+
+            var flagPreview = document.querySelector('#edit_city_flag_preview img');
+            if (city.flag && String(city.flag).trim() !== '') {
+                flagPreview.src = city.flag;
+                flagPreview.style.display = 'block';
+            } else {
+                flagPreview.style.display = 'none';
+            }
+
+            document.getElementById('editCityForm').action = '/admin/city-contact/cities/' + encodeURIComponent(city.slug) + '/update';
+            $('#editCityModal').modal('show');
+        });
+    });
+
     var cityFlagInput = document.getElementById('city_flag');
     var cityFlagPreview = document.querySelector('#city_flag_preview img');
-    
+
     if (cityFlagInput) {
         cityFlagInput.addEventListener('input', function() {
             if (this.value && this.value.trim() !== '') {
@@ -351,11 +380,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
-    // Handle flag preview for edit form
+
     var editCityFlagInput = document.getElementById('edit_city_flag');
     var editCityFlagPreview = document.querySelector('#edit_city_flag_preview img');
-    
+
     if (editCityFlagInput) {
         editCityFlagInput.addEventListener('input', function() {
             if (this.value && this.value.trim() !== '') {
@@ -366,18 +394,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
-    // Custom file manager initialization for admin panel
+
     $('.admin-file-manager').on('click', function() {
         var inputId = $(this).data('input');
         var previewId = $(this).data('preview');
         var customUrl = $(this).data('url');
-        
-        // Open file manager with custom URL
         var route_prefix = customUrl || '/laravel-filemanager';
         var url = route_prefix + '?type=image&input=' + inputId + '&preview=' + previewId;
         window.open(url, 'FileManager', 'width=900,height=600,scrollbars=yes,resizable=yes');
     });
 });
 </script>
-@endpush 
+@endpush

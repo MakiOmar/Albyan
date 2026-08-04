@@ -90,7 +90,7 @@ class ManageCityContact extends Command
         }
 
         $newCity = [
-            'name' => $name,
+            'name' => setCityContactLocaleValue([], mb_strtolower(getDefaultLocale()), $name),
             'slug' => $slug,
             'email' => $email,
             'flag' => $flag,

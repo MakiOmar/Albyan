@@ -3379,71 +3379,197 @@ function customSortArrayNumAndTextIndex($array) {
     return array_merge($numericKeys, $textualKeys);
 }
 
+if (!function_exists('getCityContactDefaultConfig')) {
+    function getCityContactDefaultConfig()
+    {
+        $defaultLocale = mb_strtolower(getDefaultLocale());
+
+        return [
+            'cities' => [
+                [
+                    'name' => [$defaultLocale => 'الرياض'],
+                    'slug' => 'riyadh',
+                    'email' => 'riyadh@example.com',
+                    'flag' => '/assets/default/img/flags/sa.png',
+                    'is_active' => true
+                ]
+            ],
+            'form' => [
+                'title' => [$defaultLocale => 'تواصل معنا'],
+                'description' => [$defaultLocale => 'يرجى ملء النموذج أدناه وسنقوم بالرد عليك في أقرب وقت ممكن'],
+                'success_message' => [$defaultLocale => 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك قريباً.'],
+                'error_message' => [$defaultLocale => 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.']
+            ],
+            'email' => [
+                'subject' => [$defaultLocale => 'رسالة جديدة من نموذج الاتصال - :city'],
+                'template' => 'emails.city_contact_form'
+            ]
+        ];
+    }
+}
+
+if (!function_exists('resolveCityContactLocaleValue')) {
+    /**
+     * Resolve a city-contact field that may be a legacy string or a locale map.
+     */
+    function resolveCityContactLocaleValue($value, $locale = null, $fallback = true)
+    {
+        $locale = mb_strtolower($locale ?? app()->getLocale());
+        $defaultLocale = mb_strtolower(getDefaultLocale());
+
+        // Legacy plain string (pre-multilingual JSON)
+        if (!is_array($value)) {
+            if (!$fallback && $locale !== $defaultLocale) {
+                return '';
+            }
+
+            return $value ?? '';
+        }
+
+        if (array_key_exists($locale, $value) && $value[$locale] !== null && $value[$locale] !== '') {
+            return $value[$locale];
+        }
+
+        if (!$fallback) {
+            return array_key_exists($locale, $value) ? (string) ($value[$locale] ?? '') : '';
+        }
+
+        if (!empty($value[$defaultLocale])) {
+            return $value[$defaultLocale];
+        }
+
+        foreach ($value as $translated) {
+            if (is_string($translated) && $translated !== '') {
+                return $translated;
+            }
+        }
+
+        return '';
+    }
+}
+
+if (!function_exists('setCityContactLocaleValue')) {
+    /**
+     * Store a translated value under a locale key, preserving legacy strings.
+     */
+    function setCityContactLocaleValue($existing, $locale, $newValue)
+    {
+        $locale = mb_strtolower($locale);
+        $defaultLocale = mb_strtolower(getDefaultLocale());
+
+        if (!is_array($existing)) {
+            $map = [];
+
+            if ($existing !== null && $existing !== '' && $locale !== $defaultLocale) {
+                $map[$defaultLocale] = $existing;
+            }
+
+            $existing = $map;
+        }
+
+        $existing[$locale] = $newValue;
+
+        return $existing;
+    }
+}
+
+if (!function_exists('localizeCityContactCity')) {
+    /**
+     * Resolve multilingual city fields for display.
+     */
+    function localizeCityContactCity(array $city, $locale = null, $fallback = true)
+    {
+        $city = array_merge([
+            'phone' => null,
+            'whatsapp' => null,
+            'latitude' => null,
+            'longitude' => null,
+            'address' => null,
+        ], $city);
+
+        $city['name'] = resolveCityContactLocaleValue($city['name'] ?? '', $locale, $fallback);
+        $city['address'] = resolveCityContactLocaleValue($city['address'] ?? '', $locale, $fallback);
+
+        return $city;
+    }
+}
+
+if (!function_exists('getLocalizedCityContactSection')) {
+    /**
+     * Get form/email section fields resolved for a locale.
+     */
+    function getLocalizedCityContactSection($section, $locale = null, $fallback = true)
+    {
+        $config = getCityContactConfig($section) ?? [];
+        $locale = mb_strtolower($locale ?? app()->getLocale());
+
+        if ($section === 'email') {
+            return [
+                'subject' => resolveCityContactLocaleValue($config['subject'] ?? '', $locale, $fallback),
+                'template' => $config['template'] ?? 'emails.city_contact_form',
+            ];
+        }
+
+        $fields = ['title', 'description', 'success_message', 'error_message'];
+        $localized = [];
+
+        foreach ($fields as $field) {
+            $localized[$field] = resolveCityContactLocaleValue($config[$field] ?? '', $locale, $fallback);
+        }
+
+        return $localized;
+    }
+}
+
 if (!function_exists('getCityContactConfig')) {
     function getCityContactConfig($key = null)
     {
         $jsonPath = storage_path('app/city_contact.json');
-        
+
         if (!file_exists($jsonPath)) {
-            // Create default configuration if file doesn't exist
-            $defaultConfig = [
-                'cities' => [
-                    [
-                        'name' => 'الرياض',
-                        'slug' => 'riyadh',
-                        'email' => 'riyadh@example.com',
-                        'flag' => '/assets/default/img/flags/sa.png',
-                        'is_active' => true
-                    ]
-                ],
-                'form' => [
-                    'title' => 'تواصل معنا',
-                    'description' => 'يرجى ملء النموذج أدناه وسنقوم بالرد عليك في أقرب وقت ممكن',
-                    'success_message' => 'تم إرسال رسالتك بنجاح! سنقوم بالرد عليك قريباً.',
-                    'error_message' => 'حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.'
-                ],
-                'email' => [
-                    'subject' => 'رسالة جديدة من نموذج الاتصال - :city',
-                    'template' => 'emails.city_contact_form'
-                ]
-            ];
-            
+            $defaultConfig = getCityContactDefaultConfig();
             saveCityContactConfig($defaultConfig);
+
             return $key ? ($defaultConfig[$key] ?? null) : $defaultConfig;
         }
-        
+
         try {
             $fileContent = file_get_contents($jsonPath);
-            
+
             if ($fileContent === false) {
                 return null;
             }
-            
+
             $data = json_decode($fileContent, true);
-            
+
             if (json_last_error() !== JSON_ERROR_NONE) {
                 return null;
             }
-            
+
             if ($key) {
                 return $data[$key] ?? null;
             }
-            
+
             return $data;
-            
         } catch (\Exception $e) {
             return null;
         }
     }
 }
 
-if (!function_exists('getActiveCities')) {
-    function getActiveCities()
+if (!function_exists('getAllCityContacts')) {
+    /**
+     * Get all cities (including inactive). Optionally localize name/address.
+     */
+    function getAllCityContacts($locale = null, $localize = true, $fallback = true)
     {
         $cities = getCityContactConfig('cities') ?? [];
-        
-        // Ensure backward compatibility by adding missing fields to existing cities
-        $cities = collect($cities)->map(function ($city) {
+
+        return collect($cities)->map(function ($city) use ($locale, $localize, $fallback) {
+            if ($localize) {
+                return localizeCityContactCity($city, $locale, $fallback);
+            }
+
             return array_merge([
                 'phone' => null,
                 'whatsapp' => null,
@@ -3451,9 +3577,14 @@ if (!function_exists('getActiveCities')) {
                 'longitude' => null,
                 'address' => null,
             ], $city);
-        });
-        
-        return $cities
+        })->values();
+    }
+}
+
+if (!function_exists('getActiveCities')) {
+    function getActiveCities($locale = null)
+    {
+        return getAllCityContacts($locale, true)
             ->where('is_active', true)
             ->sortBy('name')
             ->values();
@@ -3461,25 +3592,29 @@ if (!function_exists('getActiveCities')) {
 }
 
 if (!function_exists('getCityBySlug')) {
-    function getCityBySlug($slug)
+    function getCityBySlug($slug, $locale = null)
     {
         $cities = getCityContactConfig('cities') ?? [];
-        
-        // Ensure backward compatibility by adding missing fields to existing cities
-        $cities = collect($cities)->map(function ($city) {
-            return array_merge([
-                'phone' => null,
-                'whatsapp' => null,
-                'latitude' => null,
-                'longitude' => null,
-                'address' => null,
-            ], $city);
-        });
-        
-        return $cities
+
+        $city = collect($cities)
+            ->map(function ($city) {
+                return array_merge([
+                    'phone' => null,
+                    'whatsapp' => null,
+                    'latitude' => null,
+                    'longitude' => null,
+                    'address' => null,
+                ], $city);
+            })
             ->where('slug', $slug)
             ->where('is_active', true)
             ->first();
+
+        if (!$city) {
+            return null;
+        }
+
+        return localizeCityContactCity($city, $locale);
     }
 }
 
@@ -3487,14 +3622,14 @@ if (!function_exists('saveCityContactConfig')) {
     function saveCityContactConfig($data)
     {
         $jsonPath = storage_path('app/city_contact.json');
-        
+
         try {
             $result = file_put_contents($jsonPath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-            
+
             if ($result === false) {
                 return false;
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             return false;
