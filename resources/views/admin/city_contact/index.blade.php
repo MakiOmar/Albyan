@@ -156,7 +156,7 @@
                                                                 @endphp
                                                                 <button type="button"
                                                                         class="btn btn-sm btn-primary js-edit-city"
-                                                                        data-city="{{ e(json_encode($editCityPayload, JSON_UNESCAPED_UNICODE)) }}">
+                                                                        data-city="{{ json_encode($editCityPayload, JSON_UNESCAPED_UNICODE) }}">
                                                                     تعديل
                                                                 </button>
                                                                 <a href="{{ route('admin.city-contact.cities.delete', ['index' => $city['_index'], 'locale' => $locale]) }}"
@@ -345,7 +345,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Open edit modal from data-city JSON (safer for multilingual names)
     document.querySelectorAll('.js-edit-city').forEach(function(button) {
         button.addEventListener('click', function() {
-            var city = JSON.parse(this.getAttribute('data-city'));
+            var raw = this.getAttribute('data-city') || '';
+            var city;
+
+            try {
+                city = JSON.parse(raw);
+            } catch (err) {
+                console.error('Invalid city payload', raw, err);
+                return;
+            }
 
             document.getElementById('edit_city_name').value = city.name || '';
             document.getElementById('edit_city_slug').value = city.slug || '';
