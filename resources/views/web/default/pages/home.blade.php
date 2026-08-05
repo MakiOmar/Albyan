@@ -1269,7 +1269,13 @@
         })();
     </script>
     <script>
-        /* Used by testimonial "show more" buttons; labels follow current Laravel locale */
+        /* Used by testimonial "show more" buttons; labels follow current Laravel locale / admin settings */
+        @php
+            $reviewToggleLabels = [
+                'more' => getHomeSectionCopy('testimonials', 'show_more', 'site.show_more_ellipsis'),
+                'less' => getHomeSectionCopy('testimonials', 'show_less', 'site.show_less_ellipsis'),
+            ];
+        @endphp
         (function (reviewToggleLabels) {
             window.toggleText = function (button) {
                 var hiddenText = button.previousElementSibling;
@@ -1281,10 +1287,7 @@
                     button.textContent = reviewToggleLabels.more;
                 }
             };
-        })(@json([
-            'more' => getHomeSectionCopy('testimonials', 'show_more', 'site.show_more_ellipsis'),
-            'less' => getHomeSectionCopy('testimonials', 'show_less', 'site.show_less_ellipsis'),
-        ]));
+        })(@json($reviewToggleLabels));
         (function () {
             /* Carousel chain only — parallax loads separately when its nodes approach the viewport. */
             var carouselUrls = [
