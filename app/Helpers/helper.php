@@ -2282,6 +2282,17 @@ function isLaravelPublicBlogDisabled(): bool
     return !empty(getGeneralOptionsSettings('disable_laravel_public_blog'));
 }
 
+/**
+ * Homepage WP blog section visibility by locale.
+ * Hidden for English until the WordPress blog is multilingual.
+ */
+function isWpBlogSectionVisibleForLocale(?string $locale = null): bool
+{
+    $locale = mb_strtolower((string) ($locale ?? app()->getLocale()));
+
+    return !str_starts_with($locale, 'en');
+}
+
 function getGiftsGeneralSettings($key = null)
 {
     return App\Models\Setting::getGiftsGeneralSettings($key);

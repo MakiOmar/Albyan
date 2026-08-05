@@ -541,7 +541,7 @@ class HomeController extends Controller
         ];
         $wpBlogPosts = collect();
 
-        if (in_array(HomeSection::$wp_blog, $selectedSectionsName, true)) {
+        if (in_array(HomeSection::$wp_blog, $selectedSectionsName, true) && isWpBlogSectionVisibleForLocale()) {
             $wpFeatured = app(WpFeaturedBlogService::class)->getFeatured();
             $wpBlogSection = [
                 'enabled' => (bool) $wpFeatured['enabled'],

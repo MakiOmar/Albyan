@@ -1225,7 +1225,8 @@
             @include('web.default.pages.includes.home_sections.help_cta_band')
         @endif
 
-        @if($homeSection->name == \App\Models\HomeSection::$wp_blog)
+        {{-- WP blog homepage section: hidden for English until multilingual WordPress blog is enabled --}}
+        @if($homeSection->name == \App\Models\HomeSection::$wp_blog && isWpBlogSectionVisibleForLocale())
             @include('web.default.pages.includes.home_sections.wp_blog')
         @endif
 
