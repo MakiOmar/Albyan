@@ -1168,6 +1168,9 @@ return [
 
 // Homepage content blocks (Al-Byan)
 'home_content_blocks_hint' => 'Configure copy for optional homepage sections. Enable each section from Personalization → Home sections.',
+'home_section_titles' => 'Homepage section titles',
+'home_section_titles_hint' => 'Optional overrides for catalog section titles and hints. Leave empty to use default translations for this language.',
+'help_cta_button_labels' => 'Help CTA button labels',
 'trending_categories_settings_hint' => 'Choose the homepage categories layout and optionally override its translated copy.',
 'trending_categories_layout' => 'Categories layout',
 'trending_categories_layout_rounded' => 'Rounded buttons',

@@ -192,9 +192,9 @@
                 <div class="container position-relative">
 
                 <div class="px-20 px-md-0">
-                    <h2 class="section-title">{{ trans('home.featured_classes') }}</h2>
+                    <h2 class="section-title">{{ getHomeSectionCopy('featured_classes', 'title', 'home.featured_classes') }}</h2>
                     {{--
-                    <p class="section-hint">{{ trans('home.featured_classes_hint') }}</p>
+                    <p class="section-hint">{{ getHomeSectionCopy('featured_classes', 'hint', 'home.featured_classes_hint') }}</p>
                     --}}
                 </div>
 
@@ -277,7 +277,7 @@
                             
                         </div>
                         <div class="d-flex align-items-center justify-content-center p-10 mt-10">
-                                <a href="/classes?sort=newest" class="btn btn-border-white">{{ trans('home.view_all') }}</a>
+                                <a href="/classes?sort=newest" class="btn btn-border-white">{{ getHomeSectionCopy('featured_classes', 'view_all', 'home.view_all') }}</a>
                             </div>
                     </div>
                     {{--
@@ -297,11 +297,11 @@
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between ">
                     <div>
-                        <h2 class="section-title">{{ trans('update.latest_bundles') }}</h2>
-                        <p class="section-hint">{{ trans('update.latest_bundles_hint') }}</p>
+                        <h2 class="section-title">{{ getHomeSectionCopy('latest_bundles', 'title', 'update.latest_bundles') }}</h2>
+                        <p class="section-hint">{{ getHomeSectionCopy('latest_bundles', 'hint', 'update.latest_bundles_hint') }}</p>
                     </div>
 
-                    <a href="/classes?type[]=bundle" class="btn btn-border-white">{{ trans('home.view_all') }}</a>
+                    <a href="/classes?type[]=bundle" class="btn btn-border-white">{{ getHomeSectionCopy('latest_bundles', 'view_all', 'home.view_all') }}</a>
                 </div>
 
                 <div class="mt-10 position-relative">
@@ -328,11 +328,11 @@
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between ">
                     <div>
-                        <h2 class="section-title">{{ trans('update.upcoming_courses') }}</h2>
-                        <p class="section-hint">{{ trans('update.upcoming_courses_home_section_hint') }}</p>
+                        <h2 class="section-title">{{ getHomeSectionCopy('upcoming_courses', 'title', 'update.upcoming_courses') }}</h2>
+                        <p class="section-hint">{{ getHomeSectionCopy('upcoming_courses', 'hint', 'update.upcoming_courses_home_section_hint') }}</p>
                     </div>
 
-                    <a href="/upcoming_courses?sort=newest" class="btn btn-border-white">{{ trans('home.view_all') }}</a>
+                    <a href="/upcoming_courses?sort=newest" class="btn btn-border-white">{{ getHomeSectionCopy('upcoming_courses', 'view_all', 'home.view_all') }}</a>
                 </div>
 
                 <div class="mt-10 position-relative">
@@ -387,7 +387,7 @@
         {{-- Site FAQs section: accordions --}}
         @if($homeSection->name == \App\Models\HomeSection::$faq_section && !empty($siteFaqs) && !$siteFaqs->isEmpty())
             <section class="home-sections container mb-5 home-faq-section">
-                <h2 class="section-title">{{ trans('home.faq_section_title') }}</h2>
+                <h2 class="section-title">{{ getHomeSectionCopy('faq_section', 'title', 'home.faq_section_title') }}</h2>
                 <div class="accordion mt-4" id="homeFaqAccordion">
                     @foreach($siteFaqs as $index => $siteFaq)
                         <div class="card border rounded-sm mb-2">
@@ -412,12 +412,12 @@
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between ">
                     <div>
-                        <h2 class="section-title">{{ trans('home.best_rates') }}</h2>
+                        <h2 class="section-title">{{ getHomeSectionCopy('latest_classes', 'title', 'home.latest_webinars') }}</h2>
 
-                        <p class="section-hint">{{ trans('home.latest_webinars_hint') }}</p>
+                        <p class="section-hint">{{ getHomeSectionCopy('latest_classes', 'hint', 'home.latest_webinars_hint') }}</p>
                     </div>
 
-                    <a href="/classes?sort=newest" class="btn btn-border-white top-view-all">{{ trans('home.view_all') }}</a>
+                    <a href="/classes?sort=newest" class="btn btn-border-white top-view-all">{{ getHomeSectionCopy('latest_classes', 'view_all', 'home.view_all') }}</a>
                 </div>
 
                 <div class="mt-10 position-relative">
@@ -447,7 +447,7 @@
 
                         </div>
                         <div class="d-flex align-items-center justify-content-center">
-                            <a href="/classes?sort=newest" class="btn btn-border-white bottom-view-all">{{ trans('home.view_all') }}</a>
+                            <a href="/classes?sort=newest" class="btn btn-border-white bottom-view-all">{{ getHomeSectionCopy('latest_classes', 'view_all', 'home.view_all') }}</a>
                         </div>
                     </div>
                 </div>
@@ -458,11 +458,11 @@
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h2 class="section-title">{{ trans('home.best_rates') }}</h2>
-                        <p class="section-hint">{{ trans('home.best_rates_hint') }}</p>
+                        <h2 class="section-title">{{ getHomeSectionCopy('best_rates', 'title', 'home.best_rates') }}</h2>
+                        <p class="section-hint">{{ getHomeSectionCopy('best_rates', 'hint', 'home.best_rates_hint') }}</p>
                     </div>
 
-                    <a href="/classes?sort=best_rates" class="btn btn-border-white">{{ trans('home.view_all') }}</a>
+                    <a href="/classes?sort=best_rates" class="btn btn-border-white">{{ getHomeSectionCopy('best_rates', 'view_all', 'home.view_all') }}</a>
                 </div>
 
                 <div class="mt-10 position-relative">
@@ -525,11 +525,11 @@
             <section class="home-sections container">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h2 class="section-title">{{ trans('home.best_sellers') }}</h2>
-                        <p class="section-hint">{{ trans('home.best_sellers_hint') }}</p>
+                        <h2 class="section-title">{{ getHomeSectionCopy('best_sellers', 'title', 'home.best_sellers') }}</h2>
+                        <p class="section-hint">{{ getHomeSectionCopy('best_sellers', 'hint', 'home.best_sellers_hint') }}</p>
                     </div>
 
-                    <a href="/classes?sort=bestsellers" class="btn btn-border-white">{{ trans('home.view_all') }}</a>
+                    <a href="/classes?sort=bestsellers" class="btn btn-border-white">{{ getHomeSectionCopy('best_sellers', 'view_all', 'home.view_all') }}</a>
                 </div>
 
                 <div class="mt-10 position-relative">
@@ -556,11 +556,11 @@
             <section class="home-sections container">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h2 class="section-title">{{ trans('home.discount_classes') }}</h2>
-                        <p class="section-hint">{{ trans('home.discount_classes_hint') }}</p>
+                        <h2 class="section-title">{{ getHomeSectionCopy('discount_classes', 'title', 'home.discount_classes') }}</h2>
+                        <p class="section-hint">{{ getHomeSectionCopy('discount_classes', 'hint', 'home.discount_classes_hint') }}</p>
                     </div>
 
-                    <a href="/classes?discount=on" class="btn btn-border-white">{{ trans('home.view_all') }}</a>
+                    <a href="/classes?discount=on" class="btn btn-border-white">{{ getHomeSectionCopy('discount_classes', 'view_all', 'home.view_all') }}</a>
                 </div>
 
                 <div class="mt-10 position-relative">
@@ -585,11 +585,11 @@
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h2 class="section-title">{{ trans('home.free_classes') }}</h2>
-                        <p class="section-hint">{{ trans('home.free_classes_hint') }}</p>
+                        <h2 class="section-title">{{ getHomeSectionCopy('free_classes', 'title', 'home.free_classes') }}</h2>
+                        <p class="section-hint">{{ getHomeSectionCopy('free_classes', 'hint', 'home.free_classes_hint') }}</p>
                     </div>
 
-                    <a href="/classes?free=on" class="btn btn-border-white">{{ trans('home.view_all') }}</a>
+                    <a href="/classes?free=on" class="btn btn-border-white">{{ getHomeSectionCopy('free_classes', 'view_all', 'home.view_all') }}</a>
                 </div>
 
                 <div class="mt-10 position-relative">
@@ -616,8 +616,8 @@
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h2 class="section-title">{{ trans('update.store_products') }}</h2>
-                        <p class="section-hint">{{ trans('update.store_products_hint') }}</p>
+                        <h2 class="section-title">{{ getHomeSectionCopy('store_products', 'title', 'update.store_products') }}</h2>
+                        <p class="section-hint">{{ getHomeSectionCopy('store_products', 'hint', 'update.store_products_hint') }}</p>
                     </div>
 
                     <a href="/products" class="btn btn-border-white">{{ trans('update.all_products') }}</a>
@@ -652,9 +652,9 @@
 
                 <section class="container home-sections home-sections-swiper">
                     <div>
-                        <h2 class="section-title">{{ trans('home.testimonials') }}</h2>
+                        <h2 class="section-title">{{ getHomeSectionCopy('testimonials', 'title', 'home.testimonials') }}</h2>
                         {{--
-                        <p class="section-hint">{{ trans('home.testimonials_hint') }}</p>
+                        <p class="section-hint">{{ getHomeSectionCopy('testimonials', 'hint', 'home.testimonials_hint') }}</p>
                         --}}
                     </div>
 
@@ -768,8 +768,8 @@
 
                 <section class="container home-sections home-sections-swiper">
                     <div class="text-center">
-                        <h2 class="section-title">{{ trans('home.subscribe_now') }}</h2>
-                        <p class="section-hint">{{ trans('home.subscribe_now_hint') }}</p>
+                        <h2 class="section-title">{{ getHomeSectionCopy('subscribes', 'title', 'home.subscribe_now') }}</h2>
+                        <p class="section-hint">{{ getHomeSectionCopy('subscribes', 'hint', 'home.subscribe_now_hint') }}</p>
                     </div>
 
                     <div class="position-relative mt-30">
@@ -1063,11 +1063,11 @@
                 <div class="container">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h2 class="section-title">{{ trans('home.instructors') }}</h2>
-                            <p class="section-hint">{{ trans('home.instructors_hint') }}</p>
+                            <h2 class="section-title">{{ getHomeSectionCopy('instructors', 'title', 'home.instructors') }}</h2>
+                            <p class="section-hint">{{ getHomeSectionCopy('instructors', 'hint', 'home.instructors_hint') }}</p>
                         </div>
 
-                        <a href="/instructors" class="btn btn-border-white">{{ trans('home.all_instructors') }}</a>
+                        <a href="/instructors" class="btn btn-border-white">{{ getHomeSectionCopy('instructors', 'view_all', 'home.all_instructors') }}</a>
                     </div>
 
                     <div class="position-relative mt-20 ltr">
@@ -1146,11 +1146,11 @@
             <section class="home-sections home-sections-swiper container">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h2 class="section-title">{{ trans('home.organizations') }}</h2>
-                        <p class="section-hint">{{ trans('home.organizations_hint') }}</p>
+                        <h2 class="section-title">{{ getHomeSectionCopy('organizations', 'title', 'home.organizations') }}</h2>
+                        <p class="section-hint">{{ getHomeSectionCopy('organizations', 'hint', 'home.organizations_hint') }}</p>
                     </div>
 
-                    <a href="/organizations" class="btn btn-border-white">{{ trans('home.all_organizations') }}</a>
+                    <a href="/organizations" class="btn btn-border-white">{{ getHomeSectionCopy('organizations', 'view_all', 'home.all_organizations') }}</a>
                 </div>
 
                 <div class="position-relative mt-20">
@@ -1185,11 +1185,11 @@
             <section class="home-sections container">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h2 class="section-title">{{ trans('home.blog') }}</h2>
-                        <p class="section-hint">{{ trans('home.blog_hint') }}</p>
+                        <h2 class="section-title">{{ getHomeSectionCopy('blog', 'title', 'home.blog') }}</h2>
+                        <p class="section-hint">{{ getHomeSectionCopy('blog', 'hint', 'home.blog_hint') }}</p>
                     </div>
 
-                    <a href="/blog" class="btn btn-border-white">{{ trans('home.all_blog') }}</a>
+                    <a href="/blog" class="btn btn-border-white">{{ getHomeSectionCopy('blog', 'view_all', 'home.all_blog') }}</a>
                 </div>
 
                 <div class="row mt-35">

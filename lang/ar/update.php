@@ -1177,6 +1177,9 @@ return [
 
 // Homepage content blocks (Al-Byan)
 'home_content_blocks_hint' => 'اضبط نصوص أقسام الصفحة الرئيسية الاختيارية. فعّل كل قسم من التخصيص → أقسام الصفحة الرئيسية.',
+'home_section_titles' => 'عناوين أقسام الصفحة الرئيسية',
+'home_section_titles_hint' => 'تجاوز اختياري لعناوين ووصف أقسام الكتالوج. اترك الحقل فارغاً لاستخدام الترجمة الافتراضية لهذه اللغة.',
+'help_cta_button_labels' => 'نصوص أزرار شريط المساعدة',
 'trending_categories_settings_hint' => 'اختر تصميم قسم التصنيفات في الصفحة الرئيسية ويمكنك تخصيص نصوصه لكل لغة.',
 'trending_categories_layout' => 'تصميم قسم التصنيفات',
 'trending_categories_layout_rounded' => 'أزرار دائرية',

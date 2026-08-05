@@ -27,6 +27,77 @@
 
         <p class="text-muted font-14 mb-4">{{ trans('update.home_content_blocks_hint') }}</p>
 
+        {{-- Catalog / LMS section titles & hints (translatable per locale) --}}
+        @php
+            $sectionTitleKeys = [
+                'featured_classes' => ['title' => 'home.featured_classes', 'hint' => 'home.featured_classes_hint', 'view_all' => 'home.view_all'],
+                'latest_classes' => ['title' => 'home.latest_webinars', 'hint' => 'home.latest_webinars_hint', 'view_all' => 'home.view_all'],
+                'latest_bundles' => ['title' => 'update.latest_bundles', 'hint' => 'update.latest_bundles_hint', 'view_all' => 'home.view_all'],
+                'upcoming_courses' => ['title' => 'update.upcoming_courses', 'hint' => 'update.upcoming_courses_home_section_hint', 'view_all' => 'home.view_all'],
+                'best_rates' => ['title' => 'home.best_rates', 'hint' => 'home.best_rates_hint', 'view_all' => 'home.view_all'],
+                'best_sellers' => ['title' => 'home.best_sellers', 'hint' => 'home.best_sellers_hint', 'view_all' => 'home.view_all'],
+                'discount_classes' => ['title' => 'home.discount_classes', 'hint' => 'home.discount_classes_hint', 'view_all' => 'home.view_all'],
+                'free_classes' => ['title' => 'home.free_classes', 'hint' => 'home.free_classes_hint', 'view_all' => 'home.view_all'],
+                'store_products' => ['title' => 'update.store_products', 'hint' => 'update.store_products_hint', 'view_all' => 'home.view_all'],
+                'testimonials' => ['title' => 'home.testimonials', 'hint' => 'home.testimonials_hint'],
+                'subscribes' => ['title' => 'home.subscribe_now', 'hint' => 'home.subscribe_now_hint'],
+                'instructors' => ['title' => 'home.instructors', 'hint' => 'home.instructors_hint', 'view_all' => 'home.all_instructors'],
+                'organizations' => ['title' => 'home.organizations', 'hint' => 'home.organizations_hint', 'view_all' => 'home.all_organizations'],
+                'blog' => ['title' => 'home.blog', 'hint' => 'home.blog_hint', 'view_all' => 'home.all_blog'],
+                'faq_section' => ['title' => 'home.faq_section_title'],
+            ];
+            $st = $iv['section_titles'] ?? [];
+        @endphp
+
+        <h5 class="font-16 font-weight-bold">{{ trans('update.home_section_titles') }}</h5>
+        <p class="font-12 text-gray">{{ trans('update.home_section_titles_hint') }}</p>
+
+        <div class="accordion mb-3" id="homeSectionTitlesAccordion">
+            @foreach($sectionTitleKeys as $sectionKey => $fields)
+                <div class="card">
+                    <div class="card-header p-2" id="heading_{{ $sectionKey }}">
+                        <h6 class="mb-0">
+                            <button class="btn btn-link btn-block text-left font-14" type="button"
+                                    data-toggle="collapse" data-target="#collapse_{{ $sectionKey }}"
+                                    aria-expanded="false" aria-controls="collapse_{{ $sectionKey }}">
+                                {{ trans($fields['title']) }}
+                            </button>
+                        </h6>
+                    </div>
+                    <div id="collapse_{{ $sectionKey }}" class="collapse" aria-labelledby="heading_{{ $sectionKey }}" data-parent="#homeSectionTitlesAccordion">
+                        <div class="card-body py-2">
+                            <div class="row">
+                                <div class="form-group col-md-{{ !empty($fields['hint']) ? '4' : (!empty($fields['view_all']) ? '6' : '12') }}">
+                                    <label>{{ trans('admin/main.title') }}</label>
+                                    <input type="text" name="value[section_titles][{{ $sectionKey }}][title]" class="form-control"
+                                           value="{{ $st[$sectionKey]['title'] ?? '' }}"
+                                           placeholder="{{ trans($fields['title']) }}">
+                                </div>
+                                @if(!empty($fields['hint']))
+                                    <div class="form-group col-md-{{ !empty($fields['view_all']) ? '4' : '8' }}">
+                                        <label>{{ trans('public.description') }}</label>
+                                        <input type="text" name="value[section_titles][{{ $sectionKey }}][hint]" class="form-control"
+                                               value="{{ $st[$sectionKey]['hint'] ?? '' }}"
+                                               placeholder="{{ trans($fields['hint']) }}">
+                                    </div>
+                                @endif
+                                @if(!empty($fields['view_all']))
+                                    <div class="form-group col-md-{{ !empty($fields['hint']) ? '4' : '6' }}">
+                                        <label>{{ trans('home.view_all') }}</label>
+                                        <input type="text" name="value[section_titles][{{ $sectionKey }}][view_all]" class="form-control"
+                                               value="{{ $st[$sectionKey]['view_all'] ?? '' }}"
+                                               placeholder="{{ trans($fields['view_all']) }}">
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <hr class="my-4">
+
         {{-- Trending categories --}}
         <h5 class="font-16 font-weight-bold">{{ trans('admin/main.trend_categories') }}</h5>
         <p class="font-12 text-gray">{{ trans('update.trending_categories_settings_hint') }}</p>
@@ -371,6 +442,41 @@
                 <label>{{ trans('update.help_cta_classes_url') }}</label>
                 <input type="text" name="value[help_cta_band][classes_url]" class="form-control"
                        value="{{ $iv['help_cta_band']['classes_url'] ?? '/classes' }}">
+            </div>
+        </div>
+
+        {{-- Help CTA button labels (translatable; empty uses lang defaults) --}}
+        <h6 class="mt-3">{{ trans('update.help_cta_button_labels') }}</h6>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label>{{ trans('site.contact_training_advisor') }}</label>
+                <input type="text" name="value[help_cta_band][advisor_button]" class="form-control"
+                       value="{{ $iv['help_cta_band']['advisor_button'] ?? '' }}"
+                       placeholder="{{ trans('site.contact_training_advisor') }}">
+            </div>
+            <div class="form-group col-md-4">
+                <label>{{ trans('site.explore_courses_diplomas') }}</label>
+                <input type="text" name="value[help_cta_band][classes_button]" class="form-control"
+                       value="{{ $iv['help_cta_band']['classes_button'] ?? '' }}"
+                       placeholder="{{ trans('site.explore_courses_diplomas') }}">
+            </div>
+            <div class="form-group col-md-4">
+                <label>{{ trans('update.help_cta_whatsapp') }}</label>
+                <input type="text" name="value[help_cta_band][whatsapp_button]" class="form-control"
+                       value="{{ $iv['help_cta_band']['whatsapp_button'] ?? '' }}"
+                       placeholder="{{ trans('update.help_cta_whatsapp') }}">
+            </div>
+            <div class="form-group col-md-4">
+                <label>{{ trans('update.help_cta_call_us') }}</label>
+                <input type="text" name="value[help_cta_band][call_button]" class="form-control"
+                       value="{{ $iv['help_cta_band']['call_button'] ?? '' }}"
+                       placeholder="{{ trans('update.help_cta_call_us') }}">
+            </div>
+            <div class="form-group col-md-4">
+                <label>{{ trans('update.help_cta_map') }}</label>
+                <input type="text" name="value[help_cta_band][map_button]" class="form-control"
+                       value="{{ $iv['help_cta_band']['map_button'] ?? '' }}"
+                       placeholder="{{ trans('update.help_cta_map') }}">
             </div>
         </div>
 

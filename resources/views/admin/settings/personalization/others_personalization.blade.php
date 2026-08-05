@@ -21,7 +21,19 @@
         <input type="hidden" name="page" value="personalization">
         <input type="hidden" name="others_personalization" value="others_personalization">
 
-
+        {{-- Locale selector so institute about copy can be managed per language --}}
+        @if(!empty(getGeneralSettings('content_translate')))
+            <div class="form-group col-md-6 px-0">
+                <label class="input-label">{{ trans('auth.language') }}</label>
+                <select name="locale" class="form-control js-edit-content-locale">
+                    @foreach($userLanguages as $lang => $language)
+                        <option value="{{ $lang }}" @if(mb_strtolower(request()->get('locale', (!empty($iv) and !empty($iv['locale'])) ? $iv['locale'] : app()->getLocale())) == mb_strtolower($lang)) selected @endif>{{ $language }}</option>
+                    @endforeach
+                </select>
+            </div>
+        @else
+            <input type="hidden" name="locale" value="{{ getDefaultLocale() }}">
+        @endif
 
         <div class="row">
             <div class="col-12 col-md-6">
@@ -69,7 +81,7 @@
                     </select>
                 </div>
 
-                {{-- Institute intro: home, about, and contact pages --}}
+                {{-- Institute intro: home, about, and contact pages (translatable per locale) --}}
                 <h5 class="text-dark font-20 mt-5">{{ trans('update.institute_about_section') }}</h5>
                 <p class="text-gray font-14">{{ trans('update.institute_about_section_hint') }}</p>
 

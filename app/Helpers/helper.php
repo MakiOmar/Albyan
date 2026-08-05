@@ -1640,6 +1640,25 @@ function getHomeContentBlocksSettings($key = null)
     return \App\Models\Setting::getHomeContentBlocksSettings($key);
 }
 
+/**
+ * Resolve homepage section chrome (title/hint/view_all) from admin settings with trans() fallback.
+ */
+function getHomeSectionCopy(string $sectionKey, string $field, string $fallbackTransKey): string
+{
+    $titles = getHomeContentBlocksSettings('section_titles');
+    $value = '';
+
+    if (is_array($titles) && !empty($titles[$sectionKey][$field])) {
+        $value = trim((string) $titles[$sectionKey][$field]);
+    }
+
+    if ($value !== '') {
+        return $value;
+    }
+
+    return trans($fallbackTransKey);
+}
+
 function getSMSChannelsSettings($key = null)
 {
     return App\Models\Setting::getSMSChannelsSettings($key);

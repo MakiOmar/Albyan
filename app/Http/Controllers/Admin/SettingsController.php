@@ -124,7 +124,7 @@ class SettingsController extends Controller
         if (!empty($settings)) {
             $defaultLocal = getDefaultLocale();
 
-            if (in_array($name, [Setting::$pageBackgroundName, Setting::$homeSectionsName, Setting::$themeFontsName, Setting::$themeColorsName, Setting::$othersPersonalizationName])) {
+            if (in_array($name, [Setting::$pageBackgroundName, Setting::$homeSectionsName, Setting::$themeFontsName, Setting::$themeColorsName])) {
                 $defaultLocal = Setting::$defaultSettingsLocale;
             }
 
