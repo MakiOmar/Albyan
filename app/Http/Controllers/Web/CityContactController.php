@@ -26,7 +26,9 @@ class CityContactController extends Controller
         return view('web.default.city_contact.form', [
             'city' => $city,
             'formConfig' => $formConfig,
-            'pageRobot' => getPageRobotNoIndex(),
+            // Respect Admin → SEO → Contact index/noindex (was hardcoded noindex).
+            'pageRobot' => getPageRobot('contact'),
+            'pageTitle' => $city['name'] ?? null,
         ]);
     }
 
@@ -136,7 +138,10 @@ class CityContactController extends Controller
     {
         $cities = getActiveCities();
 
-        return view('web.default.city_contact.index', compact('cities'));
+        return view('web.default.city_contact.index', [
+            'cities' => $cities,
+            'pageRobot' => getPageRobot('contact'),
+        ]);
     }
 
     /**
@@ -150,6 +155,10 @@ class CityContactController extends Controller
             abort(404);
         }
 
-        return view('web.default.city_contact.show', compact('city'));
+        return view('web.default.city_contact.show', [
+            'city' => $city,
+            'pageRobot' => getPageRobot('contact'),
+            'pageTitle' => $city['name'] ?? null,
+        ]);
     }
 }
