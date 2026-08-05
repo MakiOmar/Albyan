@@ -60,8 +60,9 @@
                                 </div>
 
                                 <h3 class="trending-soft-title">{{ $trend->category->title }}</h3>
+                                {{-- Keep description in DOM for SEO; visually clipped (not display:none) --}}
                                 @if(!empty($trend->category->description))
-                                    <p class="trending-soft-description mb-0">{{ $trend->category->description }}</p>
+                                    <p class="trending-soft-description trending-category-seo-description mb-0">{{ $trend->category->description }}</p>
                                 @endif
                             </a>
                         </div>
@@ -135,13 +136,17 @@
             text-align: center;
         }
 
-        .trending-soft-description {
-            margin-top: 8px;
-            font-size: 12px;
-            line-height: 1.5;
-            color: #7c8698;
-            text-align: center;
-            padding: 0 8px;
+        /* Visually hide description but keep it crawlable / readable by assistive tech */
+        .trending-category-seo-description {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
         }
 
         .trending-soft-link:hover .trending-soft-card {

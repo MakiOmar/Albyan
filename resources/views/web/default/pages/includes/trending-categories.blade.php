@@ -39,8 +39,9 @@
                                     <div class="item-count px-10 px-lg-20 py-5 py-lg-10">{{ $trend->category->webinars_count }} {{ settingOrTrans(getHomeContentBlocksSettings('trending_categories')['course_label'] ?? '', 'product.course') }}</div>
 
                                     <h3>{{ $trend->category->title }}</h3>
+                                    {{-- Keep description in DOM for SEO; visually clipped (not display:none) --}}
                                     @if(!empty($trend->category->description))
-                                        <p class="trending-card-description font-12 text-gray mt-10 mb-0 text-center">{{ $trend->category->description }}</p>
+                                        <p class="trending-card-description trending-category-seo-description mb-0">{{ $trend->category->description }}</p>
                                     @endif
                                 </div>
                             </a>
@@ -70,6 +71,19 @@
         /* Match swiper-wrapper py-20 so the CTA aligns with category cards */
         .trending-all-categories-col {
             padding-top: 20px;
+        }
+
+        /* Visually hide description but keep it crawlable / readable by assistive tech */
+        .trending-category-seo-description {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
         }
     </style>
 @endpush
