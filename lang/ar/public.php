@@ -32,7 +32,7 @@ return [
     'available_for_meetings' => 'متاح للدبلومات مباشرة',
     'meeting' => 'محاضرة',
     'meetings' => 'محاضرات',
-    'link' => 'نهاية لهذه الغاية',
+    'link' => 'الرابط',
     'duration' => 'مدة',
     'the_duration' => 'المدة',
     'interval_1' => 'يومياً',

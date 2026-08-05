@@ -20,6 +20,16 @@
 
                             <div class="row">
                                 <div class="col-12 col-md-8 col-lg-6">
+                                    {{-- Tip when selected locale has no row but another locale still has live navbar links --}}
+                                    @if(!empty($items) && !empty($itemsSourceLocale) && mb_strtolower($itemsSourceLocale) !== mb_strtolower($selectedLocal))
+                                        <div class="alert alert-warning">
+                                            {{-- HTML comment: list is showing fall-back locale items for editing visibility --}}
+                                            Showing links saved for <strong>{{ strtoupper($itemsSourceLocale) }}</strong>
+                                            (none found for <strong>{{ strtoupper($selectedLocal) }}</strong>).
+                                            Switch language and save translations for each locale, or edit then save to store them under the selected language.
+                                        </div>
+                                    @endif
+
                                     <form action="{{ getAdminPanelUrl() }}/additional_page/navbar_links/store" method="post">
                                         {{ csrf_field() }}
 
@@ -55,7 +65,8 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label>{{ trans('public.link') }}</label>
+                                            {{-- Use admin/main.link — public.link Arabic string was a bad machine translation --}}
+                                            <label>{{ trans('admin/main.link') }}</label>
                                             <input type="text" name="value[link]" value="{{ (!empty($navbar_link)) ? $navbar_link->link : old('value.link') }}" class="form-control  @error('value.link') is-invalid @enderror"/>
                                             @error('value.link')
                                             <div class="invalid-feedback">
@@ -91,15 +102,16 @@
                                     @if(!empty($items))
                                         @foreach($items as $key => $val)
                                             <tr>
-                                                <td>{{ $val['title'] }}</td>
-                                                <td>{{ $val['link'] }}</td>
-                                                <td>{{ $val['order'] }}</td>
+                                                <td>{{ $val['title'] ?? '' }}</td>
+                                                <td>{{ $val['link'] ?? '' }}</td>
+                                                <td>{{ $val['order'] ?? '' }}</td>
                                                 <td>
-                                                    <a href="{{ getAdminPanelUrl() }}/additional_page/navbar_links/{{ $key }}/edit" class="btn-sm" data-toggle="tooltip" data-placement="top" title="{{ trans('admin/main.edit') }}">
+                                                    {{-- Keep locale on edit/delete so the correct translation row is targeted --}}
+                                                    <a href="{{ getAdminPanelUrl() }}/additional_page/navbar_links/{{ $key }}/edit?locale={{ urlencode($selectedLocal) }}" class="btn-sm" data-toggle="tooltip" data-placement="top" title="{{ trans('admin/main.edit') }}">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
 
-                                                    @include('admin.includes.delete_button',['url' => getAdminPanelUrl().'/additional_page/navbar_links/'. $key .'/delete','btnClass' => 'btn-sm'])
+                                                    @include('admin.includes.delete_button',['url' => getAdminPanelUrl().'/additional_page/navbar_links/'. $key .'/delete?locale='.urlencode($selectedLocal),'btnClass' => 'btn-sm'])
                                                 </td>
                                             </tr>
                                         @endforeach
