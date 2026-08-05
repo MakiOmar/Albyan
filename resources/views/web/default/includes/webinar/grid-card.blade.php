@@ -95,8 +95,8 @@
                 @if(!empty($homeFeaturedDualCta))
                     {{-- Homepage featured: Details + Inquire (PDF dual CTAs) --}}
                     <div class="d-flex align-items-center flex-wrap" style="gap: 8px;">
-                        <a href="{{ $webinar->getUrl() }}" class="btn btn-outline-primary btn-sm">{{ trans('site.program_details') }}</a>
-                        <a href="{{ getCourseLeadGenerationUrl((string) $webinar->title) }}" class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">{{ trans('site.inquire_now') }}</a>
+                        <a href="{{ $webinar->getUrl() }}" class="btn btn-outline-primary btn-sm">{{ getHomeSectionCopy('featured_classes', 'details_cta', 'site.program_details') }}</a>
+                        <a href="{{ getCourseLeadGenerationUrl((string) $webinar->title) }}" class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">{{ getHomeSectionCopy('featured_classes', 'inquire_cta', 'site.inquire_now') }}</a>
                     </div>
                 @elseif($canSale and !empty($webinar->price) and $webinar->price > 0)
                 <div class="d-flex align-items-center">

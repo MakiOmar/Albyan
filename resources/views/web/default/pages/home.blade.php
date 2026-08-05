@@ -80,8 +80,8 @@
         @endphp
         {{-- Inline min-height reserves space before CSS; desktop 600px comes from critical/layout CSS --}}
         <section class="{{ ($heroSection == "2") ? 'slider-hero-section2 ' : '' }}slider-container" style="{{ $__heroSectionStyle }}">
-            {{-- Hero title: respects active locale (language switcher) --}}
-            <h2 class="slider-heading">{{ trans('site.graduation_celebration_title') }}</h2>
+            {{-- Hero title: from Personalization → Home hero (locale-aware), with lang-file fallback --}}
+            <h2 class="slider-heading">{{ settingOrTrans($heroSectionData['title'] ?? '', 'site.graduation_celebration_title') }}</h2>
             @if($heroSection == "1")
                 @if(!empty($heroSectionData['is_video_background']))
                     @php
@@ -365,7 +365,7 @@
                     <div>
                         <h2 class="section-title">{{ $catCategory->title }}</h2>
                     </div>
-                    <a href="{{ $catCategory->getUrl() }}" class="btn btn-border-white">{{ trans('home.view_all') }}</a>
+                    <a href="{{ $catCategory->getUrl() }}" class="btn btn-border-white">{{ getHomeSectionCopy('category_courses', 'view_all', 'home.view_all') }}</a>
                 </div>
                 <div class="mt-10 position-relative">
                     <div class="swiper-container category-courses-swiper px-12">
@@ -620,7 +620,7 @@
                         <p class="section-hint">{{ getHomeSectionCopy('store_products', 'hint', 'update.store_products_hint') }}</p>
                     </div>
 
-                    <a href="/products" class="btn btn-border-white">{{ trans('update.all_products') }}</a>
+                    <a href="/products" class="btn btn-border-white">{{ getHomeSectionCopy('store_products', 'view_all', 'update.all_products') }}</a>
                 </div>
 
                 <div class="mt-10 position-relative">
@@ -706,7 +706,7 @@
                                                 {!! e($visibleText) !!}
                                                 @if(!empty($hiddenText))
                                                     <span class="hidden-text d-none">{!! e($hiddenText) !!}</span>
-                                                    <button type="button" class="show-more-btn" onclick="toggleText(this)">{{ trans('site.show_more_ellipsis') }}</button>
+                                                    <button type="button" class="show-more-btn" onclick="toggleText(this)">{{ getHomeSectionCopy('testimonials', 'show_more', 'site.show_more_ellipsis') }}</button>
                                                 @endif
                                             </p>
 
@@ -736,7 +736,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card text-center p-4 shadow-lg">
-                            <h2 class="fw-bold">{{ trans('site.albyan_institute_full_name') }}</h2>
+                            <h2 class="fw-bold">{{ getHomeGoogleRatingCopy('title', 'site.albyan_institute_full_name') }}</h2>
                         
                             <div class="d-flex justify-content-center align-items-center">
                                 <div class="ms-2 d-flex">
@@ -746,12 +746,16 @@
                                 </div>
                             </div>
                         
-                            <p class="text-muted mb-2">{{ trans_choice('site.google_rating_based_on_reviews', $rating_reviews['reviews'], ['count' => $rating_reviews['reviews']]) }}</p>
+                            @php
+                                $basedOnTemplate = getHomeGoogleRatingCopy('based_on', 'update.home_google_rating_based_on_default');
+                                $basedOnText = str_replace(':count', (string) ($rating_reviews['reviews'] ?? 0), $basedOnTemplate);
+                            @endphp
+                            <p class="text-muted mb-2">{{ $basedOnText }}</p>
                             @php
                             $plac_id = env('GOOGLE_PLACE_ID');
                             @endphp
                             <a href="https://g.page/r/CbrkDak1U-1ZEAE/review" target="_blank" style="width: 170px;margin: auto;" class="btn btn-primary">
-                                <i class="fab fa-google"></i> {{ trans('site.rate_us_on_google') }}
+                                <i class="fab fa-google"></i> {{ getHomeGoogleRatingCopy('cta', 'site.rate_us_on_google') }}
                             </a>
                         </div>
                         
@@ -1277,7 +1281,10 @@
                     button.textContent = reviewToggleLabels.more;
                 }
             };
-        })(@json(['more' => trans('site.show_more_ellipsis'), 'less' => trans('site.show_less_ellipsis')]));
+        })(@json([
+            'more' => getHomeSectionCopy('testimonials', 'show_more', 'site.show_more_ellipsis'),
+            'less' => getHomeSectionCopy('testimonials', 'show_less', 'site.show_less_ellipsis'),
+        ]));
         (function () {
             /* Carousel chain only — parallax loads separately when its nodes approach the viewport. */
             var carouselUrls = [

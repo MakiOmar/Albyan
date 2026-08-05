@@ -27,10 +27,16 @@
 
         <p class="text-muted font-14 mb-4">{{ trans('update.home_content_blocks_hint') }}</p>
 
-        {{-- Catalog / LMS section titles & hints (translatable per locale) --}}
+        {{-- Catalog / LMS section titles & hints (translatable per locale; defaults prefilled from lang) --}}
         @php
             $sectionTitleKeys = [
-                'featured_classes' => ['title' => 'home.featured_classes', 'hint' => 'home.featured_classes_hint', 'view_all' => 'home.view_all'],
+                'featured_classes' => [
+                    'title' => 'home.featured_classes',
+                    'hint' => 'home.featured_classes_hint',
+                    'view_all' => 'home.view_all',
+                    'details_cta' => 'site.program_details',
+                    'inquire_cta' => 'site.inquire_now',
+                ],
                 'latest_classes' => ['title' => 'home.latest_webinars', 'hint' => 'home.latest_webinars_hint', 'view_all' => 'home.view_all'],
                 'latest_bundles' => ['title' => 'update.latest_bundles', 'hint' => 'update.latest_bundles_hint', 'view_all' => 'home.view_all'],
                 'upcoming_courses' => ['title' => 'update.upcoming_courses', 'hint' => 'update.upcoming_courses_home_section_hint', 'view_all' => 'home.view_all'],
@@ -38,8 +44,14 @@
                 'best_sellers' => ['title' => 'home.best_sellers', 'hint' => 'home.best_sellers_hint', 'view_all' => 'home.view_all'],
                 'discount_classes' => ['title' => 'home.discount_classes', 'hint' => 'home.discount_classes_hint', 'view_all' => 'home.view_all'],
                 'free_classes' => ['title' => 'home.free_classes', 'hint' => 'home.free_classes_hint', 'view_all' => 'home.view_all'],
-                'store_products' => ['title' => 'update.store_products', 'hint' => 'update.store_products_hint', 'view_all' => 'home.view_all'],
-                'testimonials' => ['title' => 'home.testimonials', 'hint' => 'home.testimonials_hint'],
+                'store_products' => ['title' => 'update.store_products', 'hint' => 'update.store_products_hint', 'view_all' => 'update.all_products'],
+                'category_courses' => ['view_all' => 'home.view_all'],
+                'testimonials' => [
+                    'title' => 'home.testimonials',
+                    'hint' => 'home.testimonials_hint',
+                    'show_more' => 'site.show_more_ellipsis',
+                    'show_less' => 'site.show_less_ellipsis',
+                ],
                 'subscribes' => ['title' => 'home.subscribe_now', 'hint' => 'home.subscribe_now_hint'],
                 'instructors' => ['title' => 'home.instructors', 'hint' => 'home.instructors_hint', 'view_all' => 'home.all_instructors'],
                 'organizations' => ['title' => 'home.organizations', 'hint' => 'home.organizations_hint', 'view_all' => 'home.all_organizations'],
@@ -47,6 +59,8 @@
                 'faq_section' => ['title' => 'home.faq_section_title'],
             ];
             $st = $iv['section_titles'] ?? [];
+            $googleRating = $iv['google_rating'] ?? [];
+            $wpBlog = $iv['wp_blog'] ?? [];
         @endphp
 
         <h5 class="font-16 font-weight-bold">{{ trans('update.home_section_titles') }}</h5>
@@ -60,33 +74,60 @@
                             <button class="btn btn-link btn-block text-left font-14" type="button"
                                     data-toggle="collapse" data-target="#collapse_{{ $sectionKey }}"
                                     aria-expanded="false" aria-controls="collapse_{{ $sectionKey }}">
-                                {{ trans($fields['title']) }}
+                                {{ trans($fields['title'] ?? ($fields['view_all'] ?? $sectionKey)) }}
                             </button>
                         </h6>
                     </div>
                     <div id="collapse_{{ $sectionKey }}" class="collapse" aria-labelledby="heading_{{ $sectionKey }}" data-parent="#homeSectionTitlesAccordion">
                         <div class="card-body py-2">
                             <div class="row">
-                                <div class="form-group col-md-{{ !empty($fields['hint']) ? '4' : (!empty($fields['view_all']) ? '6' : '12') }}">
-                                    <label>{{ trans('admin/main.title') }}</label>
-                                    <input type="text" name="value[section_titles][{{ $sectionKey }}][title]" class="form-control"
-                                           value="{{ $st[$sectionKey]['title'] ?? '' }}"
-                                           placeholder="{{ trans($fields['title']) }}">
-                                </div>
+                                @if(!empty($fields['title']))
+                                    <div class="form-group col-md-4">
+                                        <label>{{ trans('admin/main.title') }}</label>
+                                        <input type="text" name="value[section_titles][{{ $sectionKey }}][title]" class="form-control"
+                                               value="{{ settingOrTrans($st[$sectionKey]['title'] ?? '', $fields['title']) }}">
+                                    </div>
+                                @endif
                                 @if(!empty($fields['hint']))
-                                    <div class="form-group col-md-{{ !empty($fields['view_all']) ? '4' : '8' }}">
+                                    <div class="form-group col-md-4">
                                         <label>{{ trans('public.description') }}</label>
                                         <input type="text" name="value[section_titles][{{ $sectionKey }}][hint]" class="form-control"
-                                               value="{{ $st[$sectionKey]['hint'] ?? '' }}"
-                                               placeholder="{{ trans($fields['hint']) }}">
+                                               value="{{ settingOrTrans($st[$sectionKey]['hint'] ?? '', $fields['hint']) }}">
                                     </div>
                                 @endif
                                 @if(!empty($fields['view_all']))
-                                    <div class="form-group col-md-{{ !empty($fields['hint']) ? '4' : '6' }}">
-                                        <label>{{ trans('home.view_all') }}</label>
+                                    <div class="form-group col-md-4">
+                                        <label>{{ trans($fields['view_all']) }}</label>
                                         <input type="text" name="value[section_titles][{{ $sectionKey }}][view_all]" class="form-control"
-                                               value="{{ $st[$sectionKey]['view_all'] ?? '' }}"
-                                               placeholder="{{ trans($fields['view_all']) }}">
+                                               value="{{ settingOrTrans($st[$sectionKey]['view_all'] ?? '', $fields['view_all']) }}">
+                                    </div>
+                                @endif
+                                @if(!empty($fields['details_cta']))
+                                    <div class="form-group col-md-4">
+                                        <label>{{ trans('site.program_details') }}</label>
+                                        <input type="text" name="value[section_titles][{{ $sectionKey }}][details_cta]" class="form-control"
+                                               value="{{ settingOrTrans($st[$sectionKey]['details_cta'] ?? '', $fields['details_cta']) }}">
+                                    </div>
+                                @endif
+                                @if(!empty($fields['inquire_cta']))
+                                    <div class="form-group col-md-4">
+                                        <label>{{ trans('site.inquire_now') }}</label>
+                                        <input type="text" name="value[section_titles][{{ $sectionKey }}][inquire_cta]" class="form-control"
+                                               value="{{ settingOrTrans($st[$sectionKey]['inquire_cta'] ?? '', $fields['inquire_cta']) }}">
+                                    </div>
+                                @endif
+                                @if(!empty($fields['show_more']))
+                                    <div class="form-group col-md-4">
+                                        <label>{{ trans('site.show_more_ellipsis') }}</label>
+                                        <input type="text" name="value[section_titles][{{ $sectionKey }}][show_more]" class="form-control"
+                                               value="{{ settingOrTrans($st[$sectionKey]['show_more'] ?? '', $fields['show_more']) }}">
+                                    </div>
+                                @endif
+                                @if(!empty($fields['show_less']))
+                                    <div class="form-group col-md-4">
+                                        <label>{{ trans('site.show_less_ellipsis') }}</label>
+                                        <input type="text" name="value[section_titles][{{ $sectionKey }}][show_less]" class="form-control"
+                                               value="{{ settingOrTrans($st[$sectionKey]['show_less'] ?? '', $fields['show_less']) }}">
                                     </div>
                                 @endif
                             </div>
@@ -94,6 +135,59 @@
                     </div>
                 </div>
             @endforeach
+        </div>
+
+        <hr class="my-4">
+
+        {{-- Google rating card under testimonials --}}
+        <h5 class="font-16 font-weight-bold">{{ trans('update.home_google_rating') }}</h5>
+        <p class="font-12 text-gray">{{ trans('update.home_google_rating_hint') }}</p>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label>{{ trans('admin/main.title') }}</label>
+                <input type="text" name="value[google_rating][title]" class="form-control"
+                       value="{{ settingOrTrans($googleRating['title'] ?? '', 'site.albyan_institute_full_name') }}">
+            </div>
+            <div class="form-group col-md-4">
+                <label>{{ trans('update.home_google_rating_based_on') }}</label>
+                <input type="text" name="value[google_rating][based_on]" class="form-control"
+                       value="{{ settingOrTrans($googleRating['based_on'] ?? '', 'update.home_google_rating_based_on_default') }}"
+                       placeholder=":count">
+                <div class="text-muted font-12 mt-1">{{ trans('update.home_google_rating_based_on_hint') }}</div>
+            </div>
+            <div class="form-group col-md-4">
+                <label>{{ trans('site.rate_us_on_google') }}</label>
+                <input type="text" name="value[google_rating][cta]" class="form-control"
+                       value="{{ settingOrTrans($googleRating['cta'] ?? '', 'site.rate_us_on_google') }}">
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        {{-- WP blog section chrome (shown when WP blog home section is enabled) --}}
+        <h5 class="font-16 font-weight-bold">{{ trans('admin/main.wp_blog') }}</h5>
+        <p class="font-12 text-gray">{{ trans('update.home_wp_blog_settings_hint') }}</p>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label>{{ trans('admin/main.title') }}</label>
+                <input type="text" name="value[wp_blog][title]" class="form-control"
+                       value="{{ settingOrTrans($wpBlog['title'] ?? '', 'update.wp_blog_section_title') }}">
+            </div>
+            <div class="form-group col-md-4">
+                <label>{{ trans('public.description') }}</label>
+                <input type="text" name="value[wp_blog][hint]" class="form-control"
+                       value="{{ settingOrTrans($wpBlog['hint'] ?? '', 'update.wp_blog_section_hint') }}">
+            </div>
+            <div class="form-group col-md-4">
+                <label>{{ trans('update.wp_blog_section_all') }}</label>
+                <input type="text" name="value[wp_blog][view_all]" class="form-control"
+                       value="{{ settingOrTrans($wpBlog['view_all'] ?? '', 'update.wp_blog_section_all') }}">
+            </div>
+            <div class="form-group col-md-4">
+                <label>{{ trans('update.wp_blog_members_only') }}</label>
+                <input type="text" name="value[wp_blog][members_only]" class="form-control"
+                       value="{{ settingOrTrans($wpBlog['members_only'] ?? '', 'update.wp_blog_members_only') }}">
+            </div>
         </div>
 
         <hr class="my-4">
@@ -120,29 +214,31 @@
             <div class="form-group col-md-4">
                 <label>{{ trans('admin/main.title') }}</label>
                 <input type="text" name="value[trending_categories][title]" class="form-control"
-                       value="{{ $iv['trending_categories']['title'] ?? '' }}"
-                       placeholder="{{ trans('home.trending_categories') }}">
+                       value="{{ settingOrTrans($iv['trending_categories']['title'] ?? '', 'home.trending_categories') }}">
             </div>
             <div class="form-group col-md-4">
                 <label>{{ trans('public.description') }}</label>
                 <input type="text" name="value[trending_categories][hint]" class="form-control"
-                       value="{{ $iv['trending_categories']['hint'] ?? '' }}"
-                       placeholder="{{ trans('home.trending_categories_hint') }}">
+                       value="{{ settingOrTrans($iv['trending_categories']['hint'] ?? '', 'home.trending_categories_hint') }}">
             </div>
         </div>
 
         <div class="row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-4">
                 <label>{{ trans('update.trending_categories_all_button') }}</label>
                 <input type="text" name="value[trending_categories][all_button_title]" class="form-control"
-                       value="{{ $iv['trending_categories']['all_button_title'] ?? '' }}"
-                       placeholder="{{ trans('public.all_categories') }}">
+                       value="{{ settingOrTrans($iv['trending_categories']['all_button_title'] ?? '', 'public.all_categories') }}">
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-4">
                 <label>{{ trans('admin/main.link') }}</label>
                 <input type="text" name="value[trending_categories][all_button_link]" class="form-control"
                        value="{{ $iv['trending_categories']['all_button_link'] ?? '/categories' }}"
                        placeholder="/categories">
+            </div>
+            <div class="form-group col-md-4">
+                <label>{{ trans('update.trending_categories_course_label') }}</label>
+                <input type="text" name="value[trending_categories][course_label]" class="form-control"
+                       value="{{ settingOrTrans($iv['trending_categories']['course_label'] ?? '', 'product.course') }}">
             </div>
         </div>
 
@@ -229,7 +325,7 @@
             <div class="form-group col-md-3">
                 <label>{{ trans('update.button') }} 1 - {{ trans('admin/main.title') }}</label>
                 <input type="text" name="value[trust_badges][button1][title]" class="form-control"
-                       value="{{ $iv['trust_badges']['button1']['title'] ?? '' }}">
+                       value="{{ settingOrTrans($iv['trust_badges']['button1']['title'] ?? '', 'site.contact_training_advisor') }}">
             </div>
             <div class="form-group col-md-3">
                 <label>{{ trans('update.button') }} 1 - {{ trans('admin/main.link') }}</label>
@@ -239,7 +335,7 @@
             <div class="form-group col-md-3">
                 <label>{{ trans('update.button') }} 2 - {{ trans('admin/main.title') }}</label>
                 <input type="text" name="value[trust_badges][button2][title]" class="form-control"
-                       value="{{ $iv['trust_badges']['button2']['title'] ?? '' }}">
+                       value="{{ settingOrTrans($iv['trust_badges']['button2']['title'] ?? '', 'site.explore_courses_diplomas') }}">
             </div>
             <div class="form-group col-md-3">
                 <label>{{ trans('update.button') }} 2 - {{ trans('admin/main.link') }}</label>
@@ -249,12 +345,21 @@
         </div>
 
         <h6 class="mt-3">{{ trans('update.trust_badges_items') }}</h6>
+        @php
+            $trustBadgeDefaults = [
+                1 => 'update.trust_badge_licensed',
+                2 => 'update.trust_badge_hybrid',
+                3 => 'update.trust_badge_specialties',
+                4 => 'update.trust_badge_trainers',
+                5 => 'update.trust_badge_certificate',
+            ];
+        @endphp
         @for($i = 1; $i <= 5; $i++)
             <div class="row">
                 <div class="form-group col-md-4">
                     <label>{{ trans('admin/main.title') }} #{{ $i }}</label>
                     <input type="text" name="value[trust_badges][{{ $i }}][title]" class="form-control"
-                           value="{{ $iv['trust_badges'][$i]['title'] ?? '' }}">
+                           value="{{ settingOrTrans($iv['trust_badges'][$i]['title'] ?? '', $trustBadgeDefaults[$i]) }}">
                 </div>
                 <div class="form-group col-md-4">
                     <label>{{ trans('update.trust_badge_subtitle') }} #{{ $i }}</label>
@@ -283,8 +388,19 @@
         <div class="form-group">
             <label>{{ trans('update.training_domains_title') }}</label>
             <input type="text" name="value[training_domains][title]" class="form-control"
-                   value="{{ $iv['training_domains']['title'] ?? '' }}"
-                   placeholder="{{ trans('update.training_domains_title_default') }}">
+                   value="{{ settingOrTrans($iv['training_domains']['title'] ?? '', 'update.training_domains_title_default') }}">
+        </div>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label>{{ trans('update.trending_categories_all_button') }}</label>
+                <input type="text" name="value[training_domains][all_button_title]" class="form-control"
+                       value="{{ settingOrTrans($iv['training_domains']['all_button_title'] ?? '', 'public.all_categories') }}">
+            </div>
+            <div class="form-group col-md-6">
+                <label>{{ trans('update.training_domains_empty') }}</label>
+                <input type="text" name="value[training_domains][empty_message]" class="form-control"
+                       value="{{ settingOrTrans($iv['training_domains']['empty_message'] ?? '', 'update.training_domains_empty') }}">
+            </div>
         </div>
         <div class="form-group">
             <label>{{ trans('update.training_domains_category_ids') }}</label>
@@ -301,16 +417,15 @@
         <div class="form-group">
             <label>{{ trans('admin/main.title') }}</label>
             <input type="text" name="value[training_modality][title]" class="form-control"
-                   value="{{ $iv['training_modality']['title'] ?? '' }}"
-                   placeholder="{{ trans('update.training_modality_title_default') }}">
+                   value="{{ settingOrTrans($iv['training_modality']['title'] ?? '', 'update.training_modality_title_default') }}">
         </div>
-        @foreach(['in_person' => trans('update.modality_in_person'), 'online' => trans('update.modality_online')] as $key => $label)
-            <h6 class="mt-3">{{ $label }}</h6>
+        @foreach(['in_person' => 'update.modality_in_person', 'online' => 'update.modality_online'] as $key => $labelKey)
+            <h6 class="mt-3">{{ trans($labelKey) }}</h6>
             <div class="row">
                 <div class="form-group col-md-4">
                     <label>{{ trans('admin/main.title') }}</label>
                     <input type="text" name="value[training_modality][{{ $key }}][title]" class="form-control"
-                           value="{{ $iv['training_modality'][$key]['title'] ?? '' }}">
+                           value="{{ settingOrTrans($iv['training_modality'][$key]['title'] ?? '', $labelKey) }}">
                 </div>
                 <div class="form-group col-md-4">
                     <label>{{ trans('admin/main.link') }}</label>
@@ -363,8 +478,7 @@
         <div class="form-group">
             <label>{{ trans('admin/main.title') }}</label>
             <input type="text" name="value[why_albyan][title]" class="form-control"
-                   value="{{ $iv['why_albyan']['title'] ?? '' }}"
-                   placeholder="{{ trans('update.why_albyan_title_default') }}">
+                   value="{{ settingOrTrans($iv['why_albyan']['title'] ?? '', 'update.why_albyan_title_default') }}">
         </div>
         <div class="row">
             <div class="form-group col-md-6">
@@ -403,8 +517,18 @@
         </div>
         <div class="form-group">
             <label>{{ trans('update.why_albyan_items') }}</label>
+            @php
+                $whyItemsDefault = trans('update.why_albyan_default_items');
+                if (is_array($whyItemsDefault)) {
+                    $whyItemsDefault = implode("\n", $whyItemsDefault);
+                }
+                $whyItemsValue = trim((string) ($iv['why_albyan']['items'] ?? ''));
+                if ($whyItemsValue === '') {
+                    $whyItemsValue = (string) $whyItemsDefault;
+                }
+            @endphp
             <textarea name="value[why_albyan][items]" rows="8" class="form-control"
-                      placeholder="{{ trans('update.why_albyan_items_hint') }}">{{ $iv['why_albyan']['items'] ?? '' }}</textarea>
+                      placeholder="{{ trans('update.why_albyan_items_hint') }}">{{ $whyItemsValue }}</textarea>
         </div>
 
         <hr class="my-4">
@@ -414,8 +538,7 @@
         <div class="form-group">
             <label>{{ trans('admin/main.title') }}</label>
             <input type="text" name="value[help_cta_band][title]" class="form-control"
-                   value="{{ $iv['help_cta_band']['title'] ?? '' }}"
-                   placeholder="{{ trans('update.help_cta_band_title_default') }}">
+                   value="{{ settingOrTrans($iv['help_cta_band']['title'] ?? '', 'update.help_cta_band_title_default') }}">
         </div>
         <div class="row">
             <div class="form-group col-md-4">
@@ -451,32 +574,27 @@
             <div class="form-group col-md-4">
                 <label>{{ trans('site.contact_training_advisor') }}</label>
                 <input type="text" name="value[help_cta_band][advisor_button]" class="form-control"
-                       value="{{ $iv['help_cta_band']['advisor_button'] ?? '' }}"
-                       placeholder="{{ trans('site.contact_training_advisor') }}">
+                       value="{{ settingOrTrans($iv['help_cta_band']['advisor_button'] ?? '', 'site.contact_training_advisor') }}">
             </div>
             <div class="form-group col-md-4">
                 <label>{{ trans('site.explore_courses_diplomas') }}</label>
                 <input type="text" name="value[help_cta_band][classes_button]" class="form-control"
-                       value="{{ $iv['help_cta_band']['classes_button'] ?? '' }}"
-                       placeholder="{{ trans('site.explore_courses_diplomas') }}">
+                       value="{{ settingOrTrans($iv['help_cta_band']['classes_button'] ?? '', 'site.explore_courses_diplomas') }}">
             </div>
             <div class="form-group col-md-4">
                 <label>{{ trans('update.help_cta_whatsapp') }}</label>
                 <input type="text" name="value[help_cta_band][whatsapp_button]" class="form-control"
-                       value="{{ $iv['help_cta_band']['whatsapp_button'] ?? '' }}"
-                       placeholder="{{ trans('update.help_cta_whatsapp') }}">
+                       value="{{ settingOrTrans($iv['help_cta_band']['whatsapp_button'] ?? '', 'update.help_cta_whatsapp') }}">
             </div>
             <div class="form-group col-md-4">
                 <label>{{ trans('update.help_cta_call_us') }}</label>
                 <input type="text" name="value[help_cta_band][call_button]" class="form-control"
-                       value="{{ $iv['help_cta_band']['call_button'] ?? '' }}"
-                       placeholder="{{ trans('update.help_cta_call_us') }}">
+                       value="{{ settingOrTrans($iv['help_cta_band']['call_button'] ?? '', 'update.help_cta_call_us') }}">
             </div>
             <div class="form-group col-md-4">
                 <label>{{ trans('update.help_cta_map') }}</label>
                 <input type="text" name="value[help_cta_band][map_button]" class="form-control"
-                       value="{{ $iv['help_cta_band']['map_button'] ?? '' }}"
-                       placeholder="{{ trans('update.help_cta_map') }}">
+                       value="{{ settingOrTrans($iv['help_cta_band']['map_button'] ?? '', 'update.help_cta_map') }}">
             </div>
         </div>
 

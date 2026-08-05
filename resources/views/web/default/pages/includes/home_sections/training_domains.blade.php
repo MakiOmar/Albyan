@@ -11,11 +11,11 @@
 <section class="home-sections container mt-40">
     <div class="d-flex justify-content-between align-items-center flex-wrap mb-20">
         <h2 class="section-title mb-0">{{ $domainsTitle }}</h2>
-        <a href="{{ url('/categories') }}" class="btn btn-border-white mt-10 mt-md-0">{{ trans('public.all_categories') }}</a>
+        <a href="{{ url('/categories') }}" class="btn btn-border-white mt-10 mt-md-0">{{ settingOrTrans($domainsSettings['all_button_title'] ?? '', 'public.all_categories') }}</a>
     </div>
 
     @if($domainCategories->isEmpty())
-        <p class="text-gray font-14">{{ trans('update.training_domains_empty') }}</p>
+        <p class="text-gray font-14">{{ settingOrTrans($domainsSettings['empty_message'] ?? '', 'update.training_domains_empty') }}</p>
     @else
         <div class="row">
             @foreach($domainCategories as $category)

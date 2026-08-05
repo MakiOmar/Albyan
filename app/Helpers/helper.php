@@ -1659,6 +1659,60 @@ function getHomeSectionCopy(string $sectionKey, string $field, string $fallbackT
     return trans($fallbackTransKey);
 }
 
+/**
+ * Prefer a saved setting value; otherwise return the translation default.
+ * Used so admin forms can display (and save) hardcoded homepage defaults into settings.
+ */
+function settingOrTrans($value, string $transKey): string
+{
+    if (is_string($value)) {
+        $value = trim($value);
+        if ($value !== '') {
+            return $value;
+        }
+    }
+
+    return (string) trans($transKey);
+}
+
+/**
+ * Homepage google-rating / testimonial chrome from home_content_blocks.
+ */
+function getHomeGoogleRatingCopy(string $field, string $fallbackTransKey): string
+{
+    $block = getHomeContentBlocksSettings('google_rating');
+    $value = '';
+
+    if (is_array($block) && !empty($block[$field])) {
+        $value = trim((string) $block[$field]);
+    }
+
+    if ($value !== '') {
+        return $value;
+    }
+
+    return (string) trans($fallbackTransKey);
+}
+
+/**
+ * Homepage WP blog chrome overrides from home_content_blocks.
+ */
+function getHomeWpBlogCopy(string $field, string $fallbackTransKey): string
+{
+    $block = getHomeContentBlocksSettings('wp_blog');
+    $value = '';
+
+    if (is_array($block) && !empty($block[$field])) {
+        $value = trim((string) $block[$field]);
+    }
+
+    if ($value !== '') {
+        return $value;
+    }
+
+    return (string) trans($fallbackTransKey);
+}
+
 function getSMSChannelsSettings($key = null)
 {
     return App\Models\Setting::getSMSChannelsSettings($key);

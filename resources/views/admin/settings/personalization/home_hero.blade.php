@@ -26,7 +26,8 @@
 
                 <div class="form-group">
                     <label>{{ trans('admin/main.title') }}</label>
-                    <input type="text" name="value[title]" value="{{ (!empty($itemValue) and !empty($itemValue['title'])) ? $itemValue['title'] : old('title') }}" class="form-control " required/>
+                    <input type="text" name="value[title]" value="{{ settingOrTrans((!empty($itemValue) and !empty($itemValue['title'])) ? $itemValue['title'] : '', 'site.graduation_celebration_title') }}" class="form-control " required/>
+                    <div class="text-muted font-12 mt-1">{{ trans('update.home_hero_title_hint') }}</div>
                 </div>
 
                 <div class="form-group">

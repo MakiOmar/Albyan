@@ -101,6 +101,18 @@
                     <div class="text-muted font-12 mt-1">{{ trans('update.institute_about_home_footer_hint') }}</div>
                 </div>
 
+                {{-- Homepage dual CTAs under institute about --}}
+                <div class="form-group">
+                    <label class="input-label">{{ trans('site.explore_courses_diplomas') }}</label>
+                    <input type="text" name="value[institute_about_cta_classes]" class="form-control"
+                           value="{{ settingOrTrans($iv['institute_about_cta_classes'] ?? '', 'site.explore_courses_diplomas') }}"/>
+                </div>
+                <div class="form-group">
+                    <label class="input-label">{{ trans('site.contact_training_advisor') }}</label>
+                    <input type="text" name="value[institute_about_cta_advisor]" class="form-control"
+                           value="{{ settingOrTrans($iv['institute_about_cta_advisor'] ?? '', 'site.contact_training_advisor') }}"/>
+                </div>
+
             </div>
         </div>
 

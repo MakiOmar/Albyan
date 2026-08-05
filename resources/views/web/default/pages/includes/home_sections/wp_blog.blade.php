@@ -5,8 +5,10 @@
     $wpBlogEnabled = !empty($wpBlogSection['enabled']) && $wpBlogPosts->isNotEmpty();
     $wpBlogTitle = trim((string) ($wpBlogSection['title'] ?? ''));
     if ($wpBlogTitle === '') {
-        $wpBlogTitle = trans('update.wp_blog_section_title');
+        $wpBlogTitle = getHomeWpBlogCopy('title', 'update.wp_blog_section_title');
     }
+    $wpBlogHint = getHomeWpBlogCopy('hint', 'update.wp_blog_section_hint');
+    $wpBlogViewAll = getHomeWpBlogCopy('view_all', 'update.wp_blog_section_all');
     $wpBlogArchiveUrl = trim((string) ($wpBlogSection['archive_url'] ?? ''));
 @endphp
 
@@ -14,14 +16,14 @@
 <section class="home-sections container mt-40" aria-labelledby="wp-blog-section-heading">
     <div class="d-flex justify-content-between align-items-center">
         <div>
-            {{-- Section heading: prefer API title, fall back to translation --}}
+            {{-- Section heading: prefer API title, then admin setting / translation --}}
             <h2 id="wp-blog-section-heading" class="section-title">{{ $wpBlogTitle }}</h2>
-            <p class="section-hint">{{ trans('update.wp_blog_section_hint') }}</p>
+            <p class="section-hint">{{ $wpBlogHint }}</p>
         </div>
 
         @if($wpBlogArchiveUrl !== '')
             <a href="{{ $wpBlogArchiveUrl }}" class="btn btn-border-white">
-                {{ trans('update.wp_blog_section_all') }}
+                {{ $wpBlogViewAll }}
             </a>
         @endif
     </div>
@@ -36,7 +38,7 @@
                 $thumbUrl = (string) ($post['thumbnail_url'] ?? '');
                 $thumbAlt = (string) ($post['thumbnail_alt'] ?? $postTitle);
                 $isLocked = !empty($post['is_locked']);
-                $membersLabel = (string) ($post['members_only_label'] ?? trans('update.wp_blog_members_only'));
+                $membersLabel = (string) ($post['members_only_label'] ?? getHomeWpBlogCopy('members_only', 'update.wp_blog_members_only'));
                 $category = is_array($post['category'] ?? null) ? $post['category'] : null;
                 $showViews = !empty($post['show_views']);
                 $viewsDisplay = (string) ($post['views_display'] ?? '0');

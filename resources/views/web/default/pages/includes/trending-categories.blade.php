@@ -36,7 +36,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="item-count px-10 px-lg-20 py-5 py-lg-10">{{ $trend->category->webinars_count }} {{ trans('product.course') }}</div>
+                                    <div class="item-count px-10 px-lg-20 py-5 py-lg-10">{{ $trend->category->webinars_count }} {{ settingOrTrans(getHomeContentBlocksSettings('trending_categories')['course_label'] ?? '', 'product.course') }}</div>
 
                                     <h3>{{ $trend->category->title }}</h3>
                                     @if(!empty($trend->category->description))

@@ -1,13 +1,14 @@
 @php
-    /* Institute intro: Admin → Settings → Personalization → Other (others_personalization). No copy defaults here — configure in dashboard. */
+    /* Institute intro: Admin → Settings → Personalization → Other (others_personalization). */
     $layout = $layout ?? 'default';
     $aboutTitle = trim((string) (getOthersPersonalizationSettings('institute_about_title') ?? ''));
     $aboutBody = trim((string) (getOthersPersonalizationSettings('institute_about_text') ?? ''));
     $rawFooter = getOthersPersonalizationSettings('institute_about_footer');
     $aboutFooter = !is_null($rawFooter) ? trim((string) $rawFooter) : null;
     $showInstituteBlock = ($aboutTitle !== '' || $aboutBody !== '');
-    // Homepage dual CTAs from PDF (explore courses + advisor lead form)
     $advisorLeadUrl = getLeadGenerationFormUrl();
+    $ctaClasses = settingOrTrans(getOthersPersonalizationSettings('institute_about_cta_classes') ?? '', 'site.explore_courses_diplomas');
+    $ctaAdvisor = settingOrTrans(getOthersPersonalizationSettings('institute_about_cta_advisor') ?? '', 'site.contact_training_advisor');
 @endphp
 
 @if($showInstituteBlock)
@@ -25,10 +26,10 @@
             @if(!is_null($aboutFooter) && $aboutFooter !== '')
                 <footer class="blockquote-footer mt-2" style="margin-top: 1rem !important;">{{ $aboutFooter }}</footer>
             @endif
-            {{-- PDF: dual CTAs under institute intro --}}
+            {{-- Dual CTAs under institute intro (admin-translatable) --}}
             <div class="d-flex flex-wrap justify-content-center align-items-center mt-4" style="gap: 12px;">
-                <a href="/classes" class="btn btn-primary">{{ trans('site.explore_courses_diplomas') }}</a>
-                <a href="{{ $advisorLeadUrl }}" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer">{{ trans('site.contact_training_advisor') }}</a>
+                <a href="/classes" class="btn btn-primary">{{ $ctaClasses }}</a>
+                <a href="{{ $advisorLeadUrl }}" class="btn btn-outline-primary" target="_blank" rel="noopener noreferrer">{{ $ctaAdvisor }}</a>
             </div>
         </blockquote>
     @else

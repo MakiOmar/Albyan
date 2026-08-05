@@ -54,7 +54,7 @@
 
                                         {{-- Count pill overlaid on the bottom edge of the media area --}}
                                         <span class="trending-soft-count">
-                                            {{ $trend->category->webinars_count }} {{ trans('product.course') }}
+                                            {{ $trend->category->webinars_count }} {{ settingOrTrans(getHomeContentBlocksSettings('trending_categories')['course_label'] ?? '', 'product.course') }}
                                         </span>
                                     </div>
                                 </div>
