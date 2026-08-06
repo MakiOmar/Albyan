@@ -202,14 +202,50 @@ trait HasLocalizedSlug
 
     /**
      * Persist slug on a translation and mirror default locale onto parent.
+     * Uses the query builder so Astrotomic/Sluggable cannot create slug-only translation rows
+     * (title and other required columns have no DB defaults).
      */
     public function saveLocalizedSlug(string $locale, string $slug): void
     {
         $locale = mb_strtolower($locale);
         $slug = trim($slug);
 
-        $this->translateOrNew($locale)->slug = $slug;
-        $this->save();
+        $translationTable = app()->make($this->getTranslationModelName())->getTable();
+        $foreignKey = $this->getTranslationRelationKey();
+
+        $existing = DB::table($translationTable)
+            ->where($foreignKey, $this->getKey())
+            ->where('locale', $locale)
+            ->first();
+
+        if ($existing) {
+            DB::table($translationTable)
+                ->where('id', $existing->id)
+                ->update(['slug' => $slug]);
+        } else {
+            $fallback = DB::table($translationTable)
+                ->where($foreignKey, $this->getKey())
+                ->orderByRaw('CASE WHEN locale = ? THEN 0 ELSE 1 END', [
+                    function_exists('getDefaultLocaleCode') ? getDefaultLocaleCode() : 'ar',
+                ])
+                ->first();
+
+            $payload = [
+                $foreignKey => $this->getKey(),
+                'locale' => $locale,
+                'slug' => $slug,
+                'title' => $fallback->title ?? '',
+            ];
+
+            // Copy optional translated columns when present on the table/fallback row.
+            foreach (['description', 'seo_description', 'seo_title', 'summary', 'meta_description', 'content'] as $column) {
+                if ($fallback && property_exists($fallback, $column)) {
+                    $payload[$column] = $fallback->{$column};
+                }
+            }
+
+            DB::table($translationTable)->insert($payload);
+        }
 
         $default = function_exists('getDefaultLocaleCode') ? getDefaultLocaleCode() : 'ar';
         if ($locale === $default) {

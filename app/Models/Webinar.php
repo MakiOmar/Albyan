@@ -265,7 +265,10 @@ class Webinar extends Model implements TranslatableContract
     {
         return [
             'slug' => [
-                'source' => 'title'
+                'source' => 'title',
+                // Localized slugs are written on webinar_translations explicitly.
+                // Regenerating on update routes through Astrotomic and can insert slug-only rows.
+                'onUpdate' => false,
             ]
         ];
     }

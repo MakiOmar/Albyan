@@ -740,8 +740,9 @@ class WebinarController extends Controller
         $locale = mb_strtolower((string) ($data['locale'] ?? app()->getLocale()));
         $slug = $data['slug'];
 
-        // Never put slug in Eloquent update — Astrotomic would write the wrong locale.
-        $webinar->update([
+        // Use query builder — Eloquent update runs Sluggable, which sets slug via Astrotomic
+        // and can INSERT a translation row with only slug (title has no DB default).
+        DB::table('webinars')->where('id', $webinar->id)->update([
             'creator_id' => $newCreatorId,
             'teacher_id' => $data['teacher_id'],
             'type' => $data['type'],
@@ -770,23 +771,21 @@ class WebinarController extends Controller
             'message_for_reviewer' => $data['message_for_reviewer'] ?? null,
             'status' => $data['status'],
             'updated_at' => time(),
+            // Mirror parent slug only for the default site locale.
+            ...(($locale === getDefaultLocaleCode()) ? ['slug' => $slug] : []),
         ]);
 
-        if ($webinar) {
-            WebinarTranslation::updateOrCreate([
-                'webinar_id' => $webinar->id,
-                'locale' => $locale,
-            ], [
-                'title' => $data['title'],
-                'slug' => $slug,
-                'description' => $data['description'],
-                'seo_description' => $data['seo_description'],
-            ]);
+        $webinar->refresh();
 
-            if ($locale === getDefaultLocaleCode()) {
-                DB::table('webinars')->where('id', $webinar->id)->update(['slug' => $slug]);
-            }
-        }
+        WebinarTranslation::updateOrCreate([
+            'webinar_id' => $webinar->id,
+            'locale' => $locale,
+        ], [
+            'title' => $data['title'],
+            'slug' => $slug,
+            'description' => $data['description'],
+            'seo_description' => $data['seo_description'],
+        ]);
 
         if ($publish) {
             sendNotification('course_approve', ['[c.title]' => $webinar->title], $webinar->teacher_id);
