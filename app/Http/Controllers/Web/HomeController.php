@@ -341,7 +341,7 @@ class HomeController extends Controller
                 'category' => function ($query) {
                     $query->withCount([
                         'webinars' => function ($query) {
-                            $query->where('status', 'active');
+                            $query->where('status', 'active')->forCurrentLocale();
                         }
                     ]);
                 }
@@ -352,6 +352,7 @@ class HomeController extends Controller
         $blog = [];
         if (in_array(HomeSection::$blog, $selectedSectionsName) && !isLaravelPublicBlogDisabled()) {
             $blog = Blog::where('status', 'publish')
+                ->forCurrentLocale()
                 ->with(['category', 'author' => function ($query) {
                     $query->select('id', 'full_name');
                 }])->orderBy('updated_at', 'desc')
