@@ -36,6 +36,21 @@ trait HasLocalizedSlug
     }
 
     /**
+     * Limit query to rows that have a non-empty title translation for the active locale.
+     * Used by homepage sections so /en only shows EN-translated content, etc.
+     */
+    public function scopeForCurrentLocale($query)
+    {
+        $locale = mb_strtolower((string) app()->getLocale());
+
+        return $query->whereHas('translations', function ($q) use ($locale) {
+            $q->where('locale', $locale)
+                ->whereNotNull('title')
+                ->where('title', '!=', '');
+        });
+    }
+
+    /**
      * Find model by translation slug for a locale (with any-locale + parent fallbacks).
      */
     public static function findByLocalizedSlug(string $slug, ?string $locale = null)

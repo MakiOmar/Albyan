@@ -173,7 +173,8 @@ class HomeController extends Controller
             $featureWebinars = FeatureWebinar::whereIn('page', ['home', 'home_categories'])
                 ->where('status', 'publish')
                 ->whereHas('webinar', function ($query) {
-                    $query->where('status', Webinar::$active);
+                    $query->where('status', Webinar::$active)
+                        ->forCurrentLocale();
                 })
                 ->with([
                     'webinar' => function ($query) {
@@ -197,6 +198,7 @@ class HomeController extends Controller
         if (in_array(HomeSection::$latest_classes, $selectedSectionsName)) {
             $latestWebinars = Webinar::where('status', Webinar::$active)
                 ->where('private', false)
+                ->forCurrentLocale()
                 ->orderBy('updated_at', 'desc')
                 ->with([
                     'teacher' => function ($qu) {
@@ -215,6 +217,7 @@ class HomeController extends Controller
         $latestBundles = [];
         if (in_array(HomeSection::$latest_bundles, $selectedSectionsName)) {
             $latestBundles = Bundle::where('status', Webinar::$active)
+                ->forCurrentLocale()
                 ->orderBy('updated_at', 'desc')
                 ->with([
                     'teacher' => function ($qu) {
@@ -232,6 +235,7 @@ class HomeController extends Controller
         $upcomingCourses = [];
         if (in_array(HomeSection::$upcoming_courses, $selectedSectionsName)) {
             $upcomingCourses = UpcomingCourse::where('status', Webinar::$active)
+                ->forCurrentLocale()
                 ->orderBy('created_at', 'desc')
                 ->with([
                     'teacher' => function ($qu) {
@@ -255,6 +259,7 @@ class HomeController extends Controller
             $bestSaleWebinars = Webinar::whereIn('id', $bestSaleWebinarsIds)
                 ->where('status', Webinar::$active)
                 ->where('private', false)
+                ->forCurrentLocale()
                 ->with([
                     'teacher' => function ($qu) {
                         $qu->select('id', 'full_name', 'avatar');
@@ -275,6 +280,7 @@ class HomeController extends Controller
                 ->where('webinars.status', 'active')
                 ->where('webinars.private', false)
                 ->where('webinar_reviews.status', 'active')
+                ->forCurrentLocale()
                 ->groupBy('teacher_id')
                 ->orderBy('avg_rates', 'desc')
                 ->with([
@@ -295,6 +301,7 @@ class HomeController extends Controller
         if (in_array(HomeSection::$free_classes, $selectedSectionsName)) {
             $freeWebinars = Webinar::where('status', Webinar::$active)
                 ->where('private', false)
+                ->forCurrentLocale()
                 ->where(function ($query) {
                     $query->whereNull('price')
                         ->orWhere('price', '0');
@@ -317,6 +324,7 @@ class HomeController extends Controller
         $newProducts = [];
         if (in_array(HomeSection::$store_products, $selectedSectionsName)) {
             $newProducts = Product::where('status', Product::$active)
+                ->forCurrentLocale()
                 ->orderBy('updated_at', 'desc')
                 ->with([
                     'creator' => function ($qu) {
@@ -439,6 +447,7 @@ class HomeController extends Controller
                     ->where('category_id', $section->category_id)
                     ->where('status', Webinar::$active)
                     ->where('private', false)
+                    ->forCurrentLocale()
                     ->with([
                         'teacher' => function ($qu) {
                             $qu->select('id', 'full_name', 'avatar');
@@ -456,6 +465,7 @@ class HomeController extends Controller
                 $webinars = Webinar::where('category_id', $section->category_id)
                     ->where('status', Webinar::$active)
                     ->where('private', false)
+                    ->forCurrentLocale()
                     ->orderBy('updated_at', 'desc')
                     ->with([
                         'teacher' => function ($qu) {
@@ -523,7 +533,9 @@ class HomeController extends Controller
                 $trainingDomainCategories = Category::query()
                     ->whereIn('id', $categoryIds)
                     ->withCount(['webinars' => function ($query) {
-                        $query->where('status', Webinar::$active)->where('private', false);
+                        $query->where('status', Webinar::$active)
+                            ->where('private', false)
+                            ->forCurrentLocale();
                     }])
                     ->get()
                     ->sortBy(function ($category) use ($categoryIds) {
@@ -627,6 +639,7 @@ class HomeController extends Controller
         return Webinar::whereIn('id', $webinarIdsHasDiscount)
             ->where('status', Webinar::$active)
             ->where('private', false)
+            ->forCurrentLocale()
             ->with([
                 'teacher' => function ($qu) {
                     $qu->select('id', 'full_name', 'avatar');
