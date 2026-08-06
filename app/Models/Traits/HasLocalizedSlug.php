@@ -101,7 +101,8 @@ trait HasLocalizedSlug
     {
         $locale = mb_strtolower($locale);
         $instance = new static();
-        $translationTable = $instance->getTranslationsTable();
+        // Use Astrotomic's public API (avoid colliding with its protected getTranslationsTable).
+        $translationTable = app()->make($instance->getTranslationModelName())->getTable();
         $foreignKey = $instance->getTranslationRelationKey();
 
         $query = DB::table($translationTable)
@@ -144,14 +145,6 @@ trait HasLocalizedSlug
         $slug = preg_replace('/[^\p{L}\p{N}\-_]+/u', '', $slug);
 
         return trim((string) $slug, '-');
-    }
-
-    /**
-     * Resolve Astrotomic translation table name.
-     */
-    public function getTranslationsTable(): string
-    {
-        return (new ($this->getTranslationModelName()))->getTable();
     }
 
     /**

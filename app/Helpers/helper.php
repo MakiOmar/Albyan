@@ -4015,9 +4015,7 @@ if (!function_exists('resolveLocaleForContentSlug')) {
 
         try {
             $instance = new $modelClass();
-            $translationTable = method_exists($instance, 'getTranslationsTable')
-                ? $instance->getTranslationsTable()
-                : (new ($instance->getTranslationModelName()))->getTable();
+            $translationTable = app()->make($instance->getTranslationModelName())->getTable();
 
             $row = \Illuminate\Support\Facades\DB::table($translationTable)->where('slug', $slug)->first();
             if ($row && !empty($row->locale)) {
