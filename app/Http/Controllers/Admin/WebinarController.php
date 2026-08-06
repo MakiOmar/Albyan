@@ -537,7 +537,9 @@ class WebinarController extends Controller
             abort(404);
         }
 
-        $locale = $request->get('locale', getDefaultLocale());
+        // Match the content-locale dropdown (uses app locale when ?locale= is missing).
+        // Previously defaulted to getDefaultLocale() (often AR), so EN admin saw Arabic fields.
+        $locale = $request->get('locale', app()->getLocale());
         storeContentLocale($locale, $webinar->getTable(), $webinar->id);
 
         $categories = Category::where('parent_id', null)
