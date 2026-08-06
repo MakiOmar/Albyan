@@ -21,11 +21,13 @@ class CourseCategoryNavController extends Controller
 
         $categories = Category::getCategories()
             ->map(function ($category) {
+                $locale = app()->getLocale();
+
                 return [
                     'id' => $category->id,
                     'title' => $category->title,
-                    'slug' => $category->slug,
-                    'url' => url($category->getUrl()),
+                    'slug' => $category->localizedSlug($locale),
+                    'url' => $category->getUrl($locale),
                     'icon' => !empty($category->icon) ? url($category->icon) : null,
                     'order' => (int) ($category->order ?? 0),
                 ];
