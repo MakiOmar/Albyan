@@ -158,7 +158,7 @@ class UpcomingCoursesController extends Controller
         }
 
         $upcomingCourse = UpcomingCourse::query()
-            ->where('slug', $slug)
+            ->whereLocalizedSlug($slug)
             ->where('status', UpcomingCourse::$active)
             ->with([
                 'tags',
@@ -248,7 +248,7 @@ class UpcomingCoursesController extends Controller
     {
         $user = auth()->user();
         $upcomingCourse = UpcomingCourse::query()
-            ->where('slug', $slug)
+            ->whereLocalizedSlug($slug)
             ->where('status', UpcomingCourse::$active)
             ->first();
 
@@ -301,7 +301,7 @@ class UpcomingCoursesController extends Controller
     {
         $user = auth()->user();
         $upcomingCourse = UpcomingCourse::query()
-            ->where('slug', $slug)
+            ->whereLocalizedSlug($slug)
             ->where('status', UpcomingCourse::$active)
             ->first();
 

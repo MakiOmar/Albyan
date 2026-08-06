@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Traits\CascadeDeletes;
+use App\Models\Traits\HasLocalizedSlug;
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
 use Cviebrock\EloquentSluggable\Services\SlugService;
@@ -16,6 +17,7 @@ class UpcomingCourse extends Model implements TranslatableContract
     use Translatable;
     use Sluggable;
     use CascadeDeletes;
+    use HasLocalizedSlug;
 
     protected $table = "upcoming_courses";
     public $timestamps = false;
@@ -32,11 +34,21 @@ class UpcomingCourse extends Model implements TranslatableContract
     static $course = 'course';
     static $textLesson = 'text_lesson';
 
-    public $translatedAttributes = ['title', 'description', 'seo_description'];
+    public $translatedAttributes = ['title', 'description', 'seo_description', 'slug'];
 
     public function getTitleAttribute()
     {
         return getTranslateAttributeValue($this, 'title');
+    }
+
+    public function getSlugAttribute()
+    {
+        $translated = getTranslateAttributeValue($this, 'slug');
+        if (!empty($translated)) {
+            return $translated;
+        }
+
+        return $this->attributes['slug'] ?? '';
     }
 
     public function getDescriptionAttribute()
@@ -156,9 +168,11 @@ class UpcomingCourse extends Model implements TranslatableContract
         return $this->thumbnail;
     }
 
-    public function getUrl()
+    public function getUrl(?string $locale = null)
     {
-        return url('/upcoming_courses/' . $this->slug);
+        $locale = mb_strtolower($locale ?: app()->getLocale());
+
+        return localizedUrl('/upcoming_courses/' . $this->localizedSlug($locale), $locale);
     }
 
     public function addToCalendarLink()

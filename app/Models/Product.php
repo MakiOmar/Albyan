@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Traits\CascadeDeletes;
+use App\Models\Traits\HasLocalizedSlug;
 use App\User;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -17,6 +18,7 @@ class Product extends Model implements TranslatableContract
     use Translatable;
     use Sluggable;
     use CascadeDeletes;
+    use HasLocalizedSlug;
 
     protected $table = 'products';
     public $timestamps = false;
@@ -35,11 +37,21 @@ class Product extends Model implements TranslatableContract
     static $inactive = 'inactive';
 
 
-    public $translatedAttributes = ['title', 'seo_description', 'summary', 'description'];
+    public $translatedAttributes = ['title', 'seo_description', 'summary', 'description', 'slug'];
 
     public function getTitleAttribute()
     {
         return getTranslateAttributeValue($this, 'title');
+    }
+
+    public function getSlugAttribute()
+    {
+        $translated = getTranslateAttributeValue($this, 'slug');
+        if (!empty($translated)) {
+            return $translated;
+        }
+
+        return $this->attributes['slug'] ?? '';
     }
 
     public function getSeoDescriptionAttribute()
@@ -300,9 +312,11 @@ class Product extends Model implements TranslatableContract
         return $this->availabilityCount;
     }
 
-    public function getUrl()
+    public function getUrl(?string $locale = null)
     {
-        return url('/products/' . $this->slug);
+        $locale = mb_strtolower($locale ?: app()->getLocale());
+
+        return localizedUrl('/products/' . $this->localizedSlug($locale), $locale);
     }
 
     public function getShareLink($social)

@@ -11,7 +11,7 @@ class FavoriteController extends Controller
     public function toggle($slug)
     {
         $userId = auth()->id();
-        $webinar = Webinar::where('slug', $slug)
+        $webinar = Webinar::whereLocalizedSlug($slug)
             ->where('status', 'active')
             ->first();
 

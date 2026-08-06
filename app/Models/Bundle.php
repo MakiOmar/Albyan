@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Mixins\Certificate\MakeCertificate;
 use App\Models\Traits\CascadeDeletes;
+use App\Models\Traits\HasLocalizedSlug;
 use App\User;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +19,7 @@ class Bundle extends Model implements TranslatableContract
     use Translatable;
     use Sluggable;
     use CascadeDeletes;
+    use HasLocalizedSlug;
 
     protected $table = 'bundles';
     public $timestamps = false;
@@ -37,11 +39,21 @@ class Bundle extends Model implements TranslatableContract
 
     static $videoDemoSource = ['upload', 'youtube', 'vimeo', 'external_link'];
 
-    public $translatedAttributes = ['title', 'description', 'seo_description'];
+    public $translatedAttributes = ['title', 'description', 'seo_description', 'slug'];
 
     public function getTitleAttribute()
     {
         return getTranslateAttributeValue($this, 'title');
+    }
+
+    public function getSlugAttribute()
+    {
+        $translated = getTranslateAttributeValue($this, 'slug');
+        if (!empty($translated)) {
+            return $translated;
+        }
+
+        return $this->attributes['slug'] ?? '';
     }
 
     public function getDescriptionAttribute()
@@ -164,9 +176,11 @@ class Bundle extends Model implements TranslatableContract
         return false;
     }
 
-    public function getUrl()
+    public function getUrl(?string $locale = null)
     {
-        return url('/bundles/' . $this->slug);
+        $locale = mb_strtolower($locale ?: app()->getLocale());
+
+        return localizedUrl('/bundles/' . $this->localizedSlug($locale), $locale);
     }
 
     public function getImageCover()

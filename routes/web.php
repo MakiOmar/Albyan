@@ -157,52 +157,66 @@ Route::group([
     Route::get('/cities', 'CityContactController@index')->name('city.contact.index');
     Route::get('/city/{slug}', 'CityContactController@show')->name('city.contact.show');
 
+    // Root always goes to default locale home (e.g. /ar).
+    Route::get('/', function () {
+        return redirect('/' . getDefaultLocaleCode(), 302);
+    });
+
     // set Locale
     Route::post('/locale', 'LocaleController@setLocale')->name('appLocaleRoute');
 
     // set Locale
     Route::post('/set-currency', 'SetCurrencyController@setCurrency');
 
-    Route::get('/', 'HomeController@index');
-
     Route::get('/getDefaultAvatar', 'DefaultAvatarController@make');
 
+    // Legacy unprefixed content URLs → /{locale}/...
+    Route::get('/course/{any}', 'LegacyLocaleRedirectController')->where('any', '.*');
+    Route::get('/categories/{any?}', 'LegacyLocaleRedirectController')->where('any', '.*');
+    Route::get('/blog/{any?}', 'LegacyLocaleRedirectController')->where('any', '.*');
+    Route::get('/products/{any?}', 'LegacyLocaleRedirectController')->where('any', '.*');
+    Route::get('/bundles/{any?}', 'LegacyLocaleRedirectController')->where('any', '.*');
+    Route::get('/upcoming_courses/{any?}', 'LegacyLocaleRedirectController')->where('any', '.*');
+    Route::get('/classes', 'LegacyLocaleRedirectController');
+    Route::get('/reward-courses', 'LegacyLocaleRedirectController');
+    Route::get('/reward-products', 'LegacyLocaleRedirectController');
+    Route::get('/instructors', 'LegacyLocaleRedirectController');
+    Route::get('/organizations', 'LegacyLocaleRedirectController');
+    Route::get('/about', 'LegacyLocaleRedirectController');
+    Route::get('/contact', 'LegacyLocaleRedirectController');
+    Route::get('/search', 'LegacyLocaleRedirectController');
+    Route::get('/pages/{link}', 'LegacyLocaleRedirectController');
+    Route::get('/users/{id}/profile', 'LegacyLocaleRedirectController');
+    Route::get('/instructor-finder/{any?}', 'LegacyLocaleRedirectController')->where('any', '.*');
+    Route::get('/our-instructors', 'LegacyLocaleRedirectController');
+    Route::get('/Reviews', 'LegacyLocaleRedirectController');
+    Route::get('/landing/{any?}', 'LegacyLocaleRedirectController')->where('any', '.*');
+    Route::get('/forms/{url}', 'LegacyLocaleRedirectController');
+    Route::get('/certificate_validation', 'LegacyLocaleRedirectController');
+    Route::get('/gift/{item_type}/{item_slug}', 'LegacyLocaleRedirectController');
+    Route::get('/tags/{type}/{tag}', 'LegacyLocaleRedirectController');
+    Route::get('/load_more/{role}', 'LegacyLocaleRedirectController');
+
     Route::group(['prefix' => 'course'], function () {
-        Route::get('/{slug}', 'WebinarController@course');
-        Route::get('/{slug}/file/{file_id}/download', 'WebinarController@downloadFile');
-        Route::get('/{slug}/file/{file_id}/showHtml', 'WebinarController@showHtmlFile');
-        Route::get('/{slug}/lessons/{lesson_id}/read', 'WebinarController@getLesson');
         Route::post('/getFilePath', 'WebinarController@getFilePath');
-        Route::get('/{slug}/file/{file_id}/play', 'WebinarController@playFile');
-        Route::get('/{slug}/free', 'WebinarController@free');
-        Route::get('/{slug}/points/apply', 'WebinarController@buyWithPoint');
         Route::post('/{id}/report', 'WebinarController@reportWebinar');
         Route::post('/{id}/learningStatus', 'WebinarController@learningStatus');
 
         Route::group(['middleware' => 'web.auth'], function () {
-            Route::get('/{slug}/installments', 'WebinarController@getInstallmentsByCourse');
-
             Route::post('/learning/itemInfo', 'LearningPageController@getItemInfo');
             Route::post('/learning/personalNotes', 'LearningPageController@personalNotes');
-            Route::get('/learning/{slug}', 'LearningPageController@index');
-            Route::get('/learning/{slug}/noticeboards', 'LearningPageController@noticeboards');
             Route::get('/assignment/{assignmentId}/download/{id}/attach', 'LearningPageController@downloadAssignment');
             Route::post('/assignment/{assignmentId}/history/{historyId}/message', 'AssignmentHistoryController@storeMessage');
             Route::post('/assignment/{assignmentId}/history/{historyId}/setGrade', 'AssignmentHistoryController@setGrade');
             Route::get('/assignment/{assignmentId}/history/{historyId}/message/{messageId}/downloadAttach', 'AssignmentHistoryController@downloadAttach');
 
-            Route::group(['prefix' => '/learning/{slug}/forum'], function () { // LearningPageForumTrait
-                Route::get('/', 'LearningPageController@forum');
+            Route::group(['prefix' => '/learning/{slug}/forum'], function () {
                 Route::post('/store', 'LearningPageController@forumStoreNewQuestion');
-                Route::get('/{forumId}/edit', 'LearningPageController@getForumForEdit');
                 Route::post('/{forumId}/update', 'LearningPageController@updateForum');
                 Route::post('/{forumId}/pinToggle', 'LearningPageController@forumPinToggle');
-                Route::get('/{forumId}/downloadAttach', 'LearningPageController@forumDownloadAttach');
 
                 Route::group(['prefix' => '/{forumId}/answers'], function () {
-                    Route::get('/', 'LearningPageController@getForumAnswers');
                     Route::post('/', 'LearningPageController@storeForumAnswers');
-                    Route::get('/{answerId}/edit', 'LearningPageController@answerEdit');
                     Route::post('/{answerId}/update', 'LearningPageController@answerUpdate');
                     Route::post('/{answerId}/{togglePinOrResolved}', 'LearningPageController@answerTogglePinOrResolved');
                 });
@@ -217,7 +231,6 @@ Route::group([
     });
 
     Route::group(['prefix' => 'certificate_validation'], function () {
-        Route::get('/', 'CertificateValidationController@index');
         Route::post('/validate', 'CertificateValidationController@checkValidate');
     });
 
@@ -282,7 +295,6 @@ Route::group([
     });
 
     Route::group(['prefix' => 'users'], function () {
-        Route::get('/{id}/profile', 'UserController@profile');
         Route::post('/{id}/availableTimes', 'UserController@availableTimes');
         Route::post('/{id}/send-message', 'UserController@sendMessage');
     });
@@ -300,49 +312,8 @@ Route::group([
         Route::get('/apply/bundle/{bundleSlug}', 'SubscribeController@bundleApply');
     });
 
-    Route::group(['prefix' => 'search'], function () {
-        Route::get('/', 'SearchController@index');
-    });
-
-    Route::group(['prefix' => 'tags'], function () {
-        Route::get('/{type}/{tag}', 'TagsController@index');
-    });
-
-    Route::group(['prefix' => 'categories'], function () {
-        // All-categories hub (must be registered before the slug route)
-        Route::get('/', 'CategoriesController@all')->name('categories.all');
-        Route::get('/{categoryTitle}/{subCategoryTitle?}', 'CategoriesController@index');
-    });
-
-    Route::get('/classes', 'ClassesController@index');
-
-    Route::get('/reward-courses', 'RewardCoursesController@index');
-
-    Route::group(['prefix' => 'blog'], function () {
-        Route::get('/', 'BlogController@index');
-        Route::get('/categories/{category}', 'BlogController@index');
-        Route::get('/{slug}', 'BlogController@show');
-    });
-
     Route::group(['prefix' => 'contact'], function () {
-        Route::get('/', 'ContactController@index');
         Route::post('/store', 'ContactController@store');
-    });
-
-    Route::group(['prefix' => 'instructors'], function () {
-        Route::get('/', 'UserController@instructors');
-    });
-
-    Route::group(['prefix' => 'organizations'], function () {
-        Route::get('/', 'UserController@organizations');
-    });
-
-    Route::group(['prefix' => 'load_more'], function () {
-        Route::get('/{role}', 'UserController@handleInstructorsOrOrganizationsPage');
-    });
-
-    Route::group(['prefix' => 'pages'], function () {
-        Route::get('/{link}', 'PagesController@index');
     });
 
     // Captcha
@@ -368,14 +339,7 @@ Route::group([
         Route::get('/districtsByCity/{cityId}', 'RegionController@districtsByCity');
     });
 
-    Route::group(['prefix' => 'instructor-finder'], function () {
-        Route::get('/', 'InstructorFinderController@index');
-        Route::get('/wizard', 'InstructorFinderController@wizard');
-    });
-
     Route::group(['prefix' => 'products'], function () {
-        Route::get('/', 'ProductController@searchLists');
-        Route::get('/{slug}', 'ProductController@show');
         Route::post('/{slug}/points/apply', 'ProductController@buyWithPoint');
 
         Route::group(['prefix' => 'reviews'], function () {
@@ -386,21 +350,12 @@ Route::group([
         });
 
         Route::group(['middleware' => 'web.auth'], function () {
-            Route::get('/{slug}/installments', 'ProductController@getInstallmentsByProduct');
             Route::post('/direct-payment', 'ProductController@directPayment');
         });
     });
 
-    Route::get('/reward-products', 'RewardProductsController@index');
-
     Route::group(['prefix' => 'bundles'], function () {
-        Route::get('/{slug}', 'BundleController@index');
-        Route::get('/{slug}/free', 'BundleController@free');
-
         Route::group(['middleware' => 'web.auth'], function () {
-            Route::get('/{slug}/favorite', 'BundleController@favoriteToggle');
-            Route::get('/{slug}/points/apply', 'BundleController@buyWithPoint');
-
             Route::group(['prefix' => 'reviews'], function () {
                 Route::post('/store', 'BundleReviewController@store');
                 Route::post('/store-reply-comment', 'BundleReviewController@storeReplyComment');
@@ -442,10 +397,6 @@ Route::group([
 
 
     Route::group(['prefix' => 'upcoming_courses'], function () {
-        Route::get('/', 'UpcomingCoursesController@index');
-        Route::get('{slug}', 'UpcomingCoursesController@show');
-        Route::get('{slug}/toggleFollow', 'UpcomingCoursesController@toggleFollow');
-        Route::get('{slug}/favorite', 'UpcomingCoursesController@favorite');
         Route::post('{id}/report', 'UpcomingCoursesController@report');
     });
 
@@ -464,54 +415,17 @@ Route::group([
 
     Route::group(['prefix' => 'gift'], function () {
         Route::group(['middleware' => 'web.auth'], function () {
-            Route::get('/{item_type}/{item_slug}', 'GiftController@index');
             Route::post('/{item_type}/{item_slug}', 'GiftController@store');
         });
     });
 
     /* Forms */
-    Route::get('/forms/{url}', 'FormsController@index');
     Route::post('/forms/{url}/store', 'FormsController@store');
-
-    /* Landing page (form ID from config LANDING_FORM_ID) */
-    Route::get('/landing', 'FormsController@landing');
     Route::post('/landing/store', 'FormsController@landingStore');
-
-    /* Cyber Security Diploma landing (CYBER_SECURITY_LANDING_FORM_ID) */
-    Route::get('/landing/cyber-security', 'FormsController@cyberSecurityLanding');
     Route::post('/landing/cyber-security/store', 'FormsController@cyberSecurityLandingStore');
-
-    /* Business Administration Diploma landing (BUSINESS_ADMIN_LANDING_FORM_ID) */
-    Route::get('/landing/business-admin', 'FormsController@businessAdminLanding');
     Route::post('/landing/business-admin/store', 'FormsController@businessAdminLandingStore');
-
-    /* Diploma courses landing (DIPLOMA_LANDING_FORM_ID) */
-    Route::get('/landing/diplomas', 'DiplomaLandingController@show');
     Route::post('/landing/diplomas/store', 'DiplomaLandingController@store');
 
-    Route::get('/our-instructors', 'InstructorsCustomController@index');
-    Route::get('/Reviews', function () {
-        $cacheKey = 'google_reviews';
-        $cacheDuration = now()->addDays(3); // Store for 3 days
-    
-        $data = Cache::remember($cacheKey, $cacheDuration, function () {
-            $apiKey = env('GOOGLE_API_KEY');
-            $placeId = env('GOOGLE_PLACE_ID'); // Your actual Place ID
-        
-            $url = "https://maps.googleapis.com/maps/api/place/details/json?place_id={$placeId}&fields=rating,user_ratings_total&key={$apiKey}";
-        
-            $response = Http::get($url);
-            return $response->json();
-        });
-        $rating_reviews = [
-            'rating' => $data['result']['rating'] ?? 0,
-            'reviews' => $data['result']['user_ratings_total'] ?? 0,
-        ];
-        $testimonials = Testimonial::where('status', 'active')->get();
-        return view('web.default.pages.reviews', compact(  'testimonials', 'rating_reviews'));
-    });
-
-    Route::get('/about', 'AboutController@index');
     Route::post('/certificates/search', [WebinarCertificateController::class, 'search'])->name('certificates.search');
 
     // Must be last in this group so real routes (and admin routes registered separately) match first.
@@ -521,44 +435,14 @@ Route::group([
 
 });
 
-// Locale-prefixed SEO routes for content that does NOT have a language-specific slug in the URL.
-// Keep courses/blog detail URLs without locale because they already use per-language slugs.
+// Locale-prefixed public front routes (all content pages).
 Route::group([
     'prefix' => '{locale}',
     'where' => ['locale' => '^[A-Za-z]{2}$'],
     'namespace' => 'Web',
     'middleware' => ['check_mobile_app', 'impersonate', 'share', 'check_maintenance', 'check_restriction'],
 ], function () {
-    Route::get('/', 'HomeController@index');
-
-    Route::get('/classes', 'ClassesController@index');
-    Route::get('/reward-courses', 'RewardCoursesController@index');
-
-    Route::group(['prefix' => 'blog'], function () {
-        Route::get('/', 'BlogController@index');
-    });
-
-    Route::group(['prefix' => 'instructors'], function () {
-        Route::get('/', 'UserController@instructors');
-    });
-
-    Route::group(['prefix' => 'organizations'], function () {
-        Route::get('/', 'UserController@organizations');
-    });
-
-    Route::group(['prefix' => 'contact'], function () {
-        Route::get('/', 'ContactController@index');
-    });
-
-    Route::group(['prefix' => 'pages'], function () {
-        Route::get('/{link}', 'PagesController@index');
-    });
-
-    Route::group(['prefix' => 'users'], function () {
-        Route::get('/{id}/profile', 'UserController@profile');
-    });
-
-    Route::get('/about', 'AboutController@index');
+    require __DIR__ . '/web_localized_content.php';
 
     // Crawlers sometimes request sitemaps under /{locale}/ — redirect to canonical root URLs
     Route::redirect('sitemap-index.xml', '/sitemap_index.xml', 301);

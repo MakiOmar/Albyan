@@ -32,7 +32,7 @@ class ClassesController extends Controller
 
         if (!empty($categorySlug)) {
             // Find category by slug
-            $category = Category::where('slug', $categorySlug)->first();
+            $category = Category::whereLocalizedSlug($categorySlug)->first();
 
             if ($category) {
                 // Get all related category IDs (including subcategories)

@@ -52,15 +52,19 @@ class CategoriesController extends Controller
         ]);
     }
 
-    public function index(Request $request, $categorySlug, $subCategorySlug = null)
+    public function index(Request $request, $categoryTitle, $subCategoryTitle = null)
     {
+
+        // Locale may be present as a route param; resolve slugs from named params.
+        $categorySlug = $categoryTitle;
+        $subCategorySlug = $subCategoryTitle;
 
         if (!empty($categorySlug)) {
 
-            $categoryQuery = Category::query()->where('slug', $categorySlug);
+            $categoryQuery = Category::query()->whereLocalizedSlug($categorySlug);
 
             if (!empty($subCategorySlug)) {
-                $categoryQuery = Category::query()->where('slug', $subCategorySlug);
+                $categoryQuery = Category::query()->whereLocalizedSlug($subCategorySlug);
             }
 
             $category = $categoryQuery->withCount('webinars')

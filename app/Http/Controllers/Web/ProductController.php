@@ -202,7 +202,7 @@ class ProductController extends Controller
         }
 
         $product = Product::where('status', Product::$active)
-            ->where('slug', $slug)
+            ->whereLocalizedSlug($slug)
             ->with([
                 'selectedSpecifications' => function ($query) {
                     $query->where('status', ProductSelectedSpecification::$Active);
@@ -332,7 +332,7 @@ class ProductController extends Controller
             $user = auth()->user();
             $data = $request->all();
 
-            $product = Product::where('slug', $slug)
+            $product = Product::whereLocalizedSlug($slug)
                 ->where('status', 'active')
                 ->first();
 

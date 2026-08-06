@@ -73,7 +73,7 @@
 <meta property='og:locale' content='{{ url(!empty($generalSettings['locale']) ? $generalSettings['locale'] : 'en_US') }}'>
 <meta property='og:type' content='website'>
 
-{{-- Multilingual SEO: canonical + hreflang (only when URL is locale-prefixed) --}}
+{{-- Multilingual SEO: canonical + hreflang (locale-prefixed front URLs) --}}
 <link rel="canonical" href="{{ url()->current() }}">
 @php
     $supportedLocalesMap = getUserLanguagesLists();
@@ -84,28 +84,14 @@
     $firstSegment = mb_strtolower((string) request()->segment(1));
     $isLocalePrefixed = !empty($firstSegment) && in_array($firstSegment, $supportedLocaleCodes, true);
 
-    $hreflangUrlByLocale = [];
-    if ($isLocalePrefixed) {
-        $pathSegments = array_values(array_filter(explode('/', request()->path())));
-
-        // Remove existing locale prefix segment so we can re-apply it for each hreflang.
-        if (!empty($pathSegments) && in_array(mb_strtolower($pathSegments[0]), $supportedLocaleCodes, true)) {
-            array_shift($pathSegments);
-        }
-
-        $buildUrlForLocale = function ($localeCode) use ($pathSegments) {
-            $segments = array_merge([$localeCode], $pathSegments);
-            return url('/') . '/' . implode('/', $segments);
-        };
-
-        foreach ($supportedLocaleCodes as $localeCode) {
-            $hreflangUrlByLocale[$localeCode] = $buildUrlForLocale($localeCode);
-        }
-    }
+    $hreflangUrlByLocale = $isLocalePrefixed ? buildLocalizedHreflangUrls() : [];
 @endphp
 @foreach($hreflangUrlByLocale as $localeCode => $href)
     <link rel="alternate" hreflang="{{ $localeCode }}" href="{{ $href }}">
 @endforeach
+@if(!empty($hreflangUrlByLocale))
+    <link rel="alternate" hreflang="x-default" href="{{ $hreflangUrlByLocale[getDefaultLocaleCode()] ?? reset($hreflangUrlByLocale) }}">
+@endif
 
 
 {!! getSeoMetas('extra_meta_tags') !!}

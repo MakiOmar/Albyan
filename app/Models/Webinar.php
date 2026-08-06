@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Mixins\Certificate\MakeCertificate;
 use App\Models\Traits\CascadeDeletes;
+use App\Models\Traits\HasLocalizedSlug;
 use App\User;
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
@@ -19,6 +20,7 @@ class Webinar extends Model implements TranslatableContract
     use Translatable;
     use Sluggable;
     use CascadeDeletes;
+    use HasLocalizedSlug;
 
     protected $table = 'webinars';
     public $timestamps = false;
@@ -42,11 +44,21 @@ class Webinar extends Model implements TranslatableContract
 
     static $videoDemoSource = ['upload', 'youtube', 'vimeo', 'external_link', 'secure_host'];
 
-    public $translatedAttributes = ['title', 'description', 'seo_description'];
+    public $translatedAttributes = ['title', 'description', 'seo_description', 'slug'];
 
     public function getTitleAttribute()
     {
         return getTranslateAttributeValue($this, 'title');
+    }
+
+    public function getSlugAttribute()
+    {
+        $translated = getTranslateAttributeValue($this, 'slug');
+        if (!empty($translated)) {
+            return $translated;
+        }
+
+        return $this->attributes['slug'] ?? '';
     }
 
     public function getDescriptionAttribute()
@@ -773,14 +785,18 @@ class Webinar extends Model implements TranslatableContract
         return $this->thumbnail;
     }
 
-    public function getUrl()
+    public function getUrl(?string $locale = null)
     {
-        return url('/course/' . $this->slug);
+        $locale = mb_strtolower($locale ?: app()->getLocale());
+
+        return localizedUrl('/course/' . $this->localizedSlug($locale), $locale);
     }
 
-    public function getLearningPageUrl()
+    public function getLearningPageUrl(?string $locale = null)
     {
-        return url('/course/learning/' . $this->slug);
+        $locale = mb_strtolower($locale ?: app()->getLocale());
+
+        return localizedUrl('/course/learning/' . $this->localizedSlug($locale), $locale);
     }
 
     public function getNoticeboardsPageUrl()

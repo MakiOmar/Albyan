@@ -16,7 +16,7 @@ class SubscribeController extends Controller
 {
     public function apply(Request $request, $webinarSlug)
     {
-        $webinar = Webinar::where('slug', $webinarSlug)
+        $webinar = Webinar::whereLocalizedSlug($webinarSlug)
             ->where('status', 'active')
             ->where('subscribe', true)
             ->first();
@@ -30,7 +30,7 @@ class SubscribeController extends Controller
 
     public function bundleApply($bundleSlug)
     {
-        $bundle = Bundle::where('slug', $bundleSlug)
+        $bundle = Bundle::whereLocalizedSlug($bundleSlug)
             ->where('subscribe', true)
             ->first();
 

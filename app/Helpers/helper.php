@@ -3907,3 +3907,264 @@ if (!function_exists('newsletter_form_non_empty_submit_attribute')) {
         return 'onsubmit="var i=this.querySelector(\'input[name=newsletter_email]\');return !!(i&&String(i.value||\'\').trim().length);"';
     }
 }
+
+if (!function_exists('getSupportedLocaleCodes')) {
+    /**
+     * Two-letter locale codes from general settings (e.g. ['ar', 'en']).
+     *
+     * @return array<int, string>
+     */
+    function getSupportedLocaleCodes(): array
+    {
+        $generalSettings = getGeneralSettings();
+        $userLanguages = $generalSettings['user_languages'] ?? [];
+        $codes = [];
+
+        $candidates = array_merge(
+            is_array($userLanguages) ? array_keys($userLanguages) : [],
+            is_array($userLanguages) ? array_values($userLanguages) : []
+        );
+
+        foreach ($candidates as $candidate) {
+            $candidate = mb_strtolower((string) $candidate);
+            if (preg_match('/^[a-z]{2}$/', $candidate)) {
+                $codes[] = $candidate;
+            }
+        }
+
+        $codes = array_values(array_unique($codes));
+
+        if (empty($codes)) {
+            $codes = ['ar', 'en'];
+        }
+
+        return $codes;
+    }
+}
+
+if (!function_exists('getDefaultLocaleCode')) {
+    /**
+     * Default front locale as two-letter lowercase (site_language).
+     */
+    function getDefaultLocaleCode(): string
+    {
+        return mb_strtolower((string) getDefaultLocale());
+    }
+}
+
+if (!function_exists('localizedPath')) {
+    /**
+     * Prefix a path with /{locale}. Path may be absolute or start without slash.
+     */
+    function localizedPath(string $path, ?string $locale = null): string
+    {
+        $locale = mb_strtolower($locale ?: app()->getLocale());
+        $supported = getSupportedLocaleCodes();
+        if (!in_array($locale, $supported, true)) {
+            $locale = getDefaultLocaleCode();
+        }
+
+        $path = '/' . ltrim($path, '/');
+        // Strip an existing locale prefix so we never double-prefix.
+        $segments = array_values(array_filter(explode('/', $path)));
+        if (!empty($segments) && in_array(mb_strtolower($segments[0]), $supported, true)) {
+            $segments = array_slice($segments, 1);
+            $path = '/' . implode('/', $segments);
+            $path = ($path === '/') ? '/' : (rtrim($path, '/') ?: '/');
+        }
+
+        if ($path === '/' || $path === '') {
+            return '/' . $locale;
+        }
+
+        return '/' . $locale . $path;
+    }
+}
+
+if (!function_exists('localizedUrl')) {
+    /**
+     * Absolute URL with locale prefix.
+     */
+    function localizedUrl(string $path, ?string $locale = null): string
+    {
+        return url(localizedPath($path, $locale));
+    }
+}
+
+if (!function_exists('resolveLocaleForContentSlug')) {
+    /**
+     * Detect which locale a content slug belongs to (translation table), else default.
+     *
+     * @param class-string $modelClass
+     */
+    function resolveLocaleForContentSlug(string $modelClass, string $slug): string
+    {
+        $default = getDefaultLocaleCode();
+
+        if (!class_exists($modelClass) || !method_exists($modelClass, 'getTranslationModelNameDefault') && !method_exists($modelClass, 'getTranslationModelName')) {
+            // Try parent table match as default locale.
+            if (class_exists($modelClass)) {
+                $hit = $modelClass::query()->where('slug', $slug)->exists();
+                if ($hit) {
+                    return $default;
+                }
+            }
+
+            return $default;
+        }
+
+        try {
+            $instance = new $modelClass();
+            $translationTable = method_exists($instance, 'getTranslationsTable')
+                ? $instance->getTranslationsTable()
+                : (new ($instance->getTranslationModelName()))->getTable();
+
+            $row = \Illuminate\Support\Facades\DB::table($translationTable)->where('slug', $slug)->first();
+            if ($row && !empty($row->locale)) {
+                return mb_strtolower((string) $row->locale);
+            }
+        } catch (\Throwable $e) {
+            // fall through
+        }
+
+        if (class_exists($modelClass) && $modelClass::query()->where('slug', $slug)->exists()) {
+            return $default;
+        }
+
+        return $default;
+    }
+}
+
+if (!function_exists('stripLocalePrefixFromPath')) {
+    /**
+     * Remove leading /{locale} from a path when present.
+     */
+    function stripLocalePrefixFromPath(string $path): string
+    {
+        $path = '/' . ltrim($path, '/');
+        $segments = array_values(array_filter(explode('/', $path)));
+        $supported = getSupportedLocaleCodes();
+
+        if (!empty($segments) && in_array(mb_strtolower($segments[0]), $supported, true)) {
+            $segments = array_slice($segments, 1);
+            $path = '/' . implode('/', $segments);
+        }
+
+        return $path === '/' || $path === '' ? '/' : (rtrim($path, '/') ?: '/');
+    }
+}
+
+if (!function_exists('buildLocalizedSwitchPath')) {
+    /**
+     * Rebuild a front path for another locale, swapping translated slugs when possible.
+     * $path must be WITHOUT locale prefix (e.g. /course/foo).
+     */
+    function buildLocalizedSwitchPath(string $path, string $fromLocale, string $toLocale): string
+    {
+        $fromLocale = mb_strtolower($fromLocale);
+        $toLocale = mb_strtolower($toLocale);
+        $path = '/' . ltrim($path, '/');
+        $segments = array_values(array_filter(explode('/', $path)));
+
+        if (empty($segments)) {
+            return '/' . $toLocale;
+        }
+
+        $type = $segments[0];
+
+        if ($type === 'course' && !empty($segments[1])) {
+            $slugIndex = ($segments[1] === 'learning' && !empty($segments[2])) ? 2 : 1;
+            $course = \App\Models\Webinar::findByLocalizedSlug($segments[$slugIndex], $fromLocale);
+            if ($course) {
+                $segments[$slugIndex] = $course->localizedSlug($toLocale);
+                return '/' . $toLocale . '/' . implode('/', $segments);
+            }
+        }
+
+        if ($type === 'categories' && !empty($segments[1])) {
+            $parent = \App\Models\Category::findByLocalizedSlug($segments[1], $fromLocale);
+            if ($parent) {
+                $segments[1] = $parent->localizedSlug($toLocale);
+                if (!empty($segments[2])) {
+                    $child = \App\Models\Category::findByLocalizedSlug($segments[2], $fromLocale);
+                    if ($child) {
+                        $segments[2] = $child->localizedSlug($toLocale);
+                    }
+                }
+                return '/' . $toLocale . '/' . implode('/', $segments);
+            }
+        }
+
+        if ($type === 'blog' && isset($segments[1]) && $segments[1] === 'categories' && !empty($segments[2])) {
+            $cat = \App\Models\BlogCategory::findByLocalizedSlug($segments[2], $fromLocale);
+            if ($cat) {
+                $segments[2] = $cat->localizedSlug($toLocale);
+                return '/' . $toLocale . '/' . implode('/', $segments);
+            }
+        }
+
+        if ($type === 'blog' && !empty($segments[1]) && $segments[1] !== 'categories') {
+            $post = \App\Models\Blog::findByLocalizedSlug($segments[1], $fromLocale);
+            if ($post) {
+                $segments[1] = $post->localizedSlug($toLocale);
+                return '/' . $toLocale . '/' . implode('/', $segments);
+            }
+        }
+
+        if ($type === 'products' && !empty($segments[1])) {
+            $product = \App\Models\Product::findByLocalizedSlug($segments[1], $fromLocale);
+            if ($product) {
+                $segments[1] = $product->localizedSlug($toLocale);
+                return '/' . $toLocale . '/' . implode('/', $segments);
+            }
+        }
+
+        if ($type === 'bundles' && !empty($segments[1])) {
+            $bundle = \App\Models\Bundle::findByLocalizedSlug($segments[1], $fromLocale);
+            if ($bundle) {
+                $segments[1] = $bundle->localizedSlug($toLocale);
+                return '/' . $toLocale . '/' . implode('/', $segments);
+            }
+        }
+
+        if ($type === 'upcoming_courses' && !empty($segments[1])) {
+            $item = \App\Models\UpcomingCourse::findByLocalizedSlug($segments[1], $fromLocale);
+            if ($item) {
+                $segments[1] = $item->localizedSlug($toLocale);
+                return '/' . $toLocale . '/' . implode('/', $segments);
+            }
+        }
+
+        if ($path === '/' || $path === '') {
+            return '/' . $toLocale;
+        }
+
+        return '/' . $toLocale . $path;
+    }
+}
+
+if (!function_exists('buildLocalizedHreflangUrls')) {
+    /**
+     * Absolute hreflang URLs for the current request path (all supported locales).
+     *
+     * @return array<string, string> locale => url
+     */
+    function buildLocalizedHreflangUrls(): array
+    {
+        $supported = getSupportedLocaleCodes();
+        $path = '/' . ltrim(request()->path(), '/');
+        $fromLocale = getDefaultLocaleCode();
+        $segments = array_values(array_filter(explode('/', $path)));
+        if (!empty($segments) && in_array(mb_strtolower($segments[0]), $supported, true)) {
+            $fromLocale = mb_strtolower($segments[0]);
+        }
+
+        $barePath = stripLocalePrefixFromPath($path);
+        $urls = [];
+        foreach ($supported as $toLocale) {
+            $urls[$toLocale] = url(buildLocalizedSwitchPath($barePath, $fromLocale, $toLocale));
+        }
+
+        return $urls;
+    }
+}

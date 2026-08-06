@@ -31,7 +31,7 @@ class BlogController extends Controller
             ->orderBy('created_at', 'desc');
 
         if (!empty($category)) {
-            $blogCategory = $blogCategories->where('slug', $category)->first();
+            $blogCategory = BlogCategory::whereLocalizedSlug($category)->first();
             if (!empty($blogCategory)) {
                 $query->where('category_id', $blogCategory->id);
                 $pageTitle .= ' ' . $blogCategory->title;
@@ -80,7 +80,7 @@ class BlogController extends Controller
         }
 
         if (!empty($slug)) {
-            $post = Blog::where('slug', $slug)
+            $post = Blog::whereLocalizedSlug($slug)
                 ->where('status', 'publish')
                 ->with([
                     'category',

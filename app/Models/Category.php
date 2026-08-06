@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasLocalizedSlug;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,7 @@ class Category extends Model implements TranslatableContract
 {
     use Translatable;
     use Sluggable;
+    use HasLocalizedSlug;
 
     protected $table = 'categories';
     public $timestamps = false;
@@ -20,11 +22,22 @@ class Category extends Model implements TranslatableContract
 
     static $cacheKey = 'categories';
 
-    public $translatedAttributes = ['title', 'description', 'seo_title', 'seo_description'];
+    public $translatedAttributes = ['title', 'description', 'seo_title', 'seo_description', 'slug'];
 
     public function getTitleAttribute()
     {
         return getTranslateAttributeValue($this, 'title');
+    }
+
+    public function getSlugAttribute()
+    {
+        // Prefer translated slug for the active content locale (admin edits + front).
+        $translated = getTranslateAttributeValue($this, 'slug');
+        if (!empty($translated)) {
+            return $translated;
+        }
+
+        return $this->attributes['slug'] ?? '';
     }
 
     public function getDescriptionAttribute()
@@ -89,17 +102,18 @@ class Category extends Model implements TranslatableContract
         return $this->hasMany('App\Models\UserOccupation', 'category_id', 'id');
     }
 
-    public function getUrl()
+    public function getUrl(?string $locale = null)
     {
+        $locale = mb_strtolower($locale ?: app()->getLocale());
         $url = '/categories/';
 
         if (!empty($this->category)) {
-            $url .= $this->category->slug . '/';
+            $url .= $this->category->localizedSlug($locale) . '/';
         }
 
-        $url .= $this->slug;
+        $url .= $this->localizedSlug($locale);
 
-        return $url;
+        return localizedUrl($url, $locale);
     }
 
     static function getCategories()

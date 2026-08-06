@@ -66,7 +66,7 @@ class WebinarController extends Controller
             }
         }
 
-        $course = Webinar::where('slug', $slug)
+        $course = Webinar::whereLocalizedSlug($slug)
             ->with(
                 array(
                     'quizzes'                 => function ($query) {
@@ -541,7 +541,7 @@ class WebinarController extends Controller
 
     public function downloadFile($slug, $file_id)
     {
-        $webinar = Webinar::where('slug', $slug)
+        $webinar = Webinar::whereLocalizedSlug($slug)
             ->where('status', 'active')
             ->first();
 
@@ -593,7 +593,7 @@ class WebinarController extends Controller
 
     public function showHtmlFile($slug, $file_id)
     {
-        $webinar = Webinar::where('slug', $slug)
+        $webinar = Webinar::whereLocalizedSlug($slug)
             ->where('status', 'active')
             ->first();
 
@@ -700,7 +700,7 @@ class WebinarController extends Controller
         // this methode linked from video modal for play local video
         // and linked from file.blade for show google_drive,dropbox,iframe
 
-        $webinar = Webinar::where('slug', $slug)
+        $webinar = Webinar::whereLocalizedSlug($slug)
             ->where('status', 'active')
             ->first();
 
@@ -744,7 +744,7 @@ class WebinarController extends Controller
             $user = auth()->user();
         }
 
-        $course = Webinar::where('slug', $slug)
+        $course = Webinar::whereLocalizedSlug($slug)
             ->where('status', 'active')
             ->with(
                 array(
@@ -827,7 +827,7 @@ class WebinarController extends Controller
         if (auth()->check()) {
             $user = auth()->user();
 
-            $course = Webinar::where('slug', $slug)
+            $course = Webinar::whereLocalizedSlug($slug)
                 ->where('status', 'active')
                 ->first();
 
@@ -992,7 +992,7 @@ class WebinarController extends Controller
         if (auth()->check()) {
             $user = auth()->user();
 
-            $course = Webinar::where('slug', $slug)
+            $course = Webinar::whereLocalizedSlug($slug)
                 ->where('status', 'active')
                 ->first();
 

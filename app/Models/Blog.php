@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Traits\CascadeDeletes;
+use App\Models\Traits\HasLocalizedSlug;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -15,6 +16,7 @@ class Blog extends Model implements TranslatableContract
     use Translatable;
     use Sluggable;
     use CascadeDeletes;
+    use HasLocalizedSlug;
 
     protected $table = 'blog';
     public $timestamps = false;
@@ -22,7 +24,7 @@ class Blog extends Model implements TranslatableContract
     protected $guarded = ['id'];
 
     public $morphsFunctions = ['productBadgeContent', 'deleteRequest'];
-    public $translatedAttributes = ['title', 'description', 'meta_description', 'content'];
+    public $translatedAttributes = ['title', 'description', 'meta_description', 'content', 'slug'];
 
     /**
      * Return the sluggable configuration array for this model.
@@ -41,6 +43,16 @@ class Blog extends Model implements TranslatableContract
     public static function makeSlug($title)
     {
         return SlugService::createSlug(self::class, 'slug', $title);
+    }
+
+    public function getSlugAttribute()
+    {
+        $translated = getTranslateAttributeValue($this, 'slug');
+        if (!empty($translated)) {
+            return $translated;
+        }
+
+        return $this->attributes['slug'] ?? '';
     }
 
     public function category()
@@ -69,9 +81,11 @@ class Blog extends Model implements TranslatableContract
     }
 
 
-    public function getUrl()
+    public function getUrl(?string $locale = null)
     {
-        return '/blog/' . $this->slug;
+        $locale = mb_strtolower($locale ?: app()->getLocale());
+
+        return localizedUrl('/blog/' . $this->localizedSlug($locale), $locale);
     }
 
     public function getTitleAttribute()

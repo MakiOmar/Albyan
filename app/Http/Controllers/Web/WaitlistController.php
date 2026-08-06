@@ -35,7 +35,7 @@ class WaitlistController extends Controller
             ], 422);
         }
 
-        $webinar = Webinar::query()->where('slug', $data['slug'])->first();
+        $webinar = Webinar::query()->whereLocalizedSlug($data['slug'])->first();
 
         if (!empty($webinar)) {
             $userId = !empty($user) ? $user->id : null;

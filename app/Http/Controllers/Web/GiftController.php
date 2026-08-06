@@ -213,11 +213,11 @@ class GiftController extends Controller
     private function getItem($itemType, $itemSlug)
     {
         if ($itemType == 'course') {
-            return Webinar::query()->where('slug', $itemSlug)->first();
+            return Webinar::query()->whereLocalizedSlug($itemSlug)->first();
         } else if ($itemType == 'bundle') {
-            return Bundle::query()->where('slug', $itemSlug)->first();
+            return Bundle::query()->whereLocalizedSlug($itemSlug)->first();
         } else if ($itemType == 'product') {
-            $product = Product::query()->where('slug', $itemSlug)->first();
+            $product = Product::query()->whereLocalizedSlug($itemSlug)->first();
 
             if ($product->isVirtual()) {
                 return $product;

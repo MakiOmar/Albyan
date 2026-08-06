@@ -196,15 +196,18 @@ class SitemapController extends Controller
     {
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
+        $locales = $this->getSupportedLocaleCodes();
 
-        $this->webinarSitemapQuery()->chunk(100, function ($courses) use (&$urls, $baseUrl) {
+        $this->webinarSitemapQuery()->with('translations')->chunk(100, function ($courses) use (&$urls, $baseUrl, $locales) {
             foreach ($courses as $course) {
-                $urls[] = [
-                    'loc' => $baseUrl . '/course/' . $course->slug,
-                    'lastmod' => $course->updated_at ? Carbon::parse($course->updated_at)->toAtomString() : now()->toAtomString(),
-                    'priority' => 0.8,
-                    'changefreq' => 'weekly',
-                ];
+                foreach ($locales as $localeCode) {
+                    $urls[] = [
+                        'loc' => $baseUrl . '/' . $localeCode . '/course/' . $course->localizedSlug($localeCode),
+                        'lastmod' => $course->updated_at ? Carbon::parse($course->updated_at)->toAtomString() : now()->toAtomString(),
+                        'priority' => 0.8,
+                        'changefreq' => 'weekly',
+                    ];
+                }
             }
         });
 
@@ -215,22 +218,31 @@ class SitemapController extends Controller
     {
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
+        $locales = $this->getSupportedLocaleCodes();
+        $localeCount = max(1, count($locales));
+
+        // Slice is in "entity" rows; expand to locale URLs afterwards.
+        $entityOffset = (int) floor($offset / $localeCount);
+        $entityLimit = (int) ceil($limit / $localeCount);
 
         $courses = $this->webinarSitemapQuery()
-            ->skip($offset)
-            ->take($limit)
+            ->with('translations')
+            ->skip($entityOffset)
+            ->take($entityLimit)
             ->get();
 
         foreach ($courses as $course) {
-            $urls[] = [
-                'loc' => $baseUrl . '/course/' . $course->slug,
-                'lastmod' => $course->updated_at ? Carbon::parse($course->updated_at)->toAtomString() : now()->toAtomString(),
-                'priority' => 0.8,
-                'changefreq' => 'weekly',
-            ];
+            foreach ($locales as $localeCode) {
+                $urls[] = [
+                    'loc' => $baseUrl . '/' . $localeCode . '/course/' . $course->localizedSlug($localeCode),
+                    'lastmod' => $course->updated_at ? Carbon::parse($course->updated_at)->toAtomString() : now()->toAtomString(),
+                    'priority' => 0.8,
+                    'changefreq' => 'weekly',
+                ];
+            }
         }
 
-        return $urls;
+        return array_slice($urls, 0, $limit);
     }
 
     private function blogSitemapQuery()
@@ -242,15 +254,18 @@ class SitemapController extends Controller
     {
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
+        $locales = $this->getSupportedLocaleCodes();
 
-        $this->blogSitemapQuery()->chunk(100, function ($blogPosts) use (&$urls, $baseUrl) {
+        $this->blogSitemapQuery()->with('translations')->chunk(100, function ($blogPosts) use (&$urls, $baseUrl, $locales) {
             foreach ($blogPosts as $post) {
-                $urls[] = [
-                    'loc' => $baseUrl . '/blog/' . $post->slug,
-                    'lastmod' => $post->updated_at ? Carbon::parse($post->updated_at)->toAtomString() : now()->toAtomString(),
-                    'priority' => 0.7,
-                    'changefreq' => 'monthly',
-                ];
+                foreach ($locales as $localeCode) {
+                    $urls[] = [
+                        'loc' => $baseUrl . '/' . $localeCode . '/blog/' . $post->localizedSlug($localeCode),
+                        'lastmod' => $post->updated_at ? Carbon::parse($post->updated_at)->toAtomString() : now()->toAtomString(),
+                        'priority' => 0.7,
+                        'changefreq' => 'monthly',
+                    ];
+                }
             }
         });
 
@@ -261,22 +276,29 @@ class SitemapController extends Controller
     {
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
+        $locales = $this->getSupportedLocaleCodes();
+        $localeCount = max(1, count($locales));
+        $entityOffset = (int) floor($offset / $localeCount);
+        $entityLimit = (int) ceil($limit / $localeCount);
 
         $posts = $this->blogSitemapQuery()
-            ->skip($offset)
-            ->take($limit)
+            ->with('translations')
+            ->skip($entityOffset)
+            ->take($entityLimit)
             ->get();
 
         foreach ($posts as $post) {
-            $urls[] = [
-                'loc' => $baseUrl . '/blog/' . $post->slug,
-                'lastmod' => $post->updated_at ? Carbon::parse($post->updated_at)->toAtomString() : now()->toAtomString(),
-                'priority' => 0.7,
-                'changefreq' => 'monthly',
-            ];
+            foreach ($locales as $localeCode) {
+                $urls[] = [
+                    'loc' => $baseUrl . '/' . $localeCode . '/blog/' . $post->localizedSlug($localeCode),
+                    'lastmod' => $post->updated_at ? Carbon::parse($post->updated_at)->toAtomString() : now()->toAtomString(),
+                    'priority' => 0.7,
+                    'changefreq' => 'monthly',
+                ];
+            }
         }
 
-        return $urls;
+        return array_slice($urls, 0, $limit);
     }
 
     private function upcomingSitemapQuery()
@@ -289,15 +311,18 @@ class SitemapController extends Controller
     {
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
+        $locales = $this->getSupportedLocaleCodes();
 
-        $this->upcomingSitemapQuery()->chunk(100, function ($upcomingCourses) use (&$urls, $baseUrl) {
+        $this->upcomingSitemapQuery()->with('translations')->chunk(100, function ($upcomingCourses) use (&$urls, $baseUrl, $locales) {
             foreach ($upcomingCourses as $course) {
-                $urls[] = [
-                    'loc' => $baseUrl . '/upcoming-course/' . $course->slug,
-                    'lastmod' => $course->created_at ? Carbon::parse($course->created_at)->toAtomString() : now()->toAtomString(),
-                    'priority' => 0.6,
-                    'changefreq' => 'weekly',
-                ];
+                foreach ($locales as $localeCode) {
+                    $urls[] = [
+                        'loc' => $baseUrl . '/' . $localeCode . '/upcoming_courses/' . $course->localizedSlug($localeCode),
+                        'lastmod' => $course->created_at ? Carbon::parse($course->created_at)->toAtomString() : now()->toAtomString(),
+                        'priority' => 0.6,
+                        'changefreq' => 'weekly',
+                    ];
+                }
             }
         });
 
@@ -308,38 +333,54 @@ class SitemapController extends Controller
     {
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
+        $locales = $this->getSupportedLocaleCodes();
+        $localeCount = max(1, count($locales));
+        $entityOffset = (int) floor($offset / $localeCount);
+        $entityLimit = (int) ceil($limit / $localeCount);
 
         $items = $this->upcomingSitemapQuery()
-            ->skip($offset)
-            ->take($limit)
+            ->with('translations')
+            ->skip($entityOffset)
+            ->take($entityLimit)
             ->get();
 
         foreach ($items as $course) {
-            $urls[] = [
-                'loc' => $baseUrl . '/upcoming-course/' . $course->slug,
-                'lastmod' => $course->created_at ? Carbon::parse($course->created_at)->toAtomString() : now()->toAtomString(),
-                'priority' => 0.6,
-                'changefreq' => 'weekly',
-            ];
+            foreach ($locales as $localeCode) {
+                $urls[] = [
+                    'loc' => $baseUrl . '/' . $localeCode . '/upcoming_courses/' . $course->localizedSlug($localeCode),
+                    'lastmod' => $course->created_at ? Carbon::parse($course->created_at)->toAtomString() : now()->toAtomString(),
+                    'priority' => 0.6,
+                    'changefreq' => 'weekly',
+                ];
+            }
         }
 
-        return $urls;
+        return array_slice($urls, 0, $limit);
     }
 
     private function getCategories()
     {
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
+        $locales = $this->getSupportedLocaleCodes();
 
-        $categories = Category::all();
+        $categories = Category::with(['translations', 'category.translations'])->get();
 
         foreach ($categories as $category) {
-            $urls[] = [
-                'loc' => $baseUrl . '/category/' . $category->slug,
-                'lastmod' => now()->toAtomString(),
-                'priority' => 0.6,
-                'changefreq' => 'weekly',
-            ];
+            foreach ($locales as $localeCode) {
+                if (!empty($category->parent_id) && !empty($category->category)) {
+                    $path = '/categories/' . $category->category->localizedSlug($localeCode) . '/' . $category->localizedSlug($localeCode);
+                } else {
+                    $path = '/categories/' . $category->localizedSlug($localeCode);
+                }
+
+                $urls[] = [
+                    'loc' => $baseUrl . '/' . $localeCode . $path,
+                    'lastmod' => now()->toAtomString(),
+                    'priority' => 0.6,
+                    'changefreq' => 'weekly',
+                ];
+            }
         }
 
         return $urls;
@@ -349,16 +390,19 @@ class SitemapController extends Controller
     {
         $urls = [];
         $baseUrl = config('app.url', request()->getSchemeAndHttpHost());
+        $locales = $this->getSupportedLocaleCodes();
 
-        $blogCategories = BlogCategory::all();
+        $blogCategories = BlogCategory::with('translations')->get();
 
         foreach ($blogCategories as $category) {
-            $urls[] = [
-                'loc' => $baseUrl . '/blog/category/' . $category->slug,
-                'lastmod' => now()->toAtomString(),
-                'priority' => 0.5,
-                'changefreq' => 'weekly',
-            ];
+            foreach ($locales as $localeCode) {
+                $urls[] = [
+                    'loc' => $baseUrl . '/' . $localeCode . '/blog/categories/' . $category->localizedSlug($localeCode),
+                    'lastmod' => now()->toAtomString(),
+                    'priority' => 0.5,
+                    'changefreq' => 'weekly',
+                ];
+            }
         }
 
         return $urls;
@@ -406,7 +450,7 @@ class SitemapController extends Controller
 
         $entries[] = ['loc' => $base . '/sitemap-pages.xml', 'lastmod' => $now];
 
-        $courseCount = $this->webinarSitemapQuery()->count();
+        $courseCount = $this->webinarSitemapQuery()->count() * max(1, count($this->getSupportedLocaleCodes()));
         if ($courseCount <= self::MAX_URLS_PER_SITEMAP) {
             $entries[] = ['loc' => $base . '/sitemap-courses.xml', 'lastmod' => $now];
         } else {
@@ -417,7 +461,7 @@ class SitemapController extends Controller
         }
 
         if (!isLaravelPublicBlogDisabled()) {
-            $blogCount = $this->blogSitemapQuery()->count();
+            $blogCount = $this->blogSitemapQuery()->count() * max(1, count($this->getSupportedLocaleCodes()));
             if ($blogCount <= self::MAX_URLS_PER_SITEMAP) {
                 $entries[] = ['loc' => $base . '/sitemap-blog.xml', 'lastmod' => $now];
             } else {
@@ -428,7 +472,7 @@ class SitemapController extends Controller
             }
         }
 
-        $upcomingCount = $this->upcomingSitemapQuery()->count();
+        $upcomingCount = $this->upcomingSitemapQuery()->count() * max(1, count($this->getSupportedLocaleCodes()));
         if ($upcomingCount <= self::MAX_URLS_PER_SITEMAP) {
             $entries[] = ['loc' => $base . '/sitemap-upcoming-courses.xml', 'lastmod' => $now];
         } else {
@@ -645,18 +689,7 @@ class SitemapController extends Controller
 
     private function getSupportedLocaleCodes(): array
     {
-        $supportedLocalesMap = getUserLanguagesLists();
-
-        $codes = array_values(array_unique(array_map(function ($code) {
-            return mb_strtolower($code);
-        }, array_keys($supportedLocalesMap))));
-
-        if (!empty($codes)) {
-            return $codes;
-        }
-
-        $default = mb_strtolower(getDefaultLocale());
-        return !empty($default) ? [$default] : ['en'];
+        return getSupportedLocaleCodes();
     }
 
     /**

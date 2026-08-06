@@ -36,7 +36,7 @@ class BundleController extends Controller
             return $contentLimitation;
         }
 
-        $bundle = Bundle::where('slug', $slug)
+        $bundle = Bundle::whereLocalizedSlug($slug)
             ->with([
                 'tickets' => function ($query) {
                     $query->orderBy('order', 'asc');
@@ -184,7 +184,7 @@ class BundleController extends Controller
     public function favoriteToggle($slug)
     {
         $userId = auth()->id();
-        $bundle = Bundle::where('slug', $slug)
+        $bundle = Bundle::whereLocalizedSlug($slug)
             ->where('status', 'active')
             ->first();
 
@@ -213,7 +213,7 @@ class BundleController extends Controller
         if (auth()->check()) {
             $user = auth()->user();
 
-            $bundle = Bundle::where('slug', $slug)
+            $bundle = Bundle::whereLocalizedSlug($slug)
                 ->where('status', 'active')
                 ->first();
 
@@ -276,7 +276,7 @@ class BundleController extends Controller
         if (auth()->check()) {
             $user = auth()->user();
 
-            $bundle = Bundle::where('slug', $slug)
+            $bundle = Bundle::whereLocalizedSlug($slug)
                 ->where('status', 'active')
                 ->first();
 
