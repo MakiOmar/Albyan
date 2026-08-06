@@ -23,6 +23,7 @@ class Kernel extends ConsoleKernel
         Commands\OptimizeHomeImagesCommand::class,
         Commands\ReplaceAcademyWithInstituteCommand::class,
         Commands\RegenerateHomePageCacheCommand::class,
+        Commands\RestoreCategorySlugsCommand::class,
     ];
 
     /**
