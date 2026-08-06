@@ -4076,7 +4076,7 @@ if (!function_exists('buildLocalizedSwitchPath')) {
 
         if ($type === 'course' && !empty($segments[1])) {
             $slugIndex = ($segments[1] === 'learning' && !empty($segments[2])) ? 2 : 1;
-            $course = \App\Models\Webinar::findByLocalizedSlug($segments[$slugIndex], $fromLocale);
+            $course = \App\Models\Webinar::findByLocalizedSlug(rawurldecode($segments[$slugIndex]), $fromLocale);
             if ($course) {
                 $segments[$slugIndex] = $course->localizedSlug($toLocale);
                 return '/' . $toLocale . '/' . implode('/', $segments);
@@ -4084,11 +4084,11 @@ if (!function_exists('buildLocalizedSwitchPath')) {
         }
 
         if ($type === 'categories' && !empty($segments[1])) {
-            $parent = \App\Models\Category::findByLocalizedSlug($segments[1], $fromLocale);
+            $parent = \App\Models\Category::findByLocalizedSlug(rawurldecode($segments[1]), $fromLocale);
             if ($parent) {
                 $segments[1] = $parent->localizedSlug($toLocale);
                 if (!empty($segments[2])) {
-                    $child = \App\Models\Category::findByLocalizedSlug($segments[2], $fromLocale);
+                    $child = \App\Models\Category::findByLocalizedSlug(rawurldecode($segments[2]), $fromLocale);
                     if ($child) {
                         $segments[2] = $child->localizedSlug($toLocale);
                     }
@@ -4098,7 +4098,7 @@ if (!function_exists('buildLocalizedSwitchPath')) {
         }
 
         if ($type === 'blog' && isset($segments[1]) && $segments[1] === 'categories' && !empty($segments[2])) {
-            $cat = \App\Models\BlogCategory::findByLocalizedSlug($segments[2], $fromLocale);
+            $cat = \App\Models\BlogCategory::findByLocalizedSlug(rawurldecode($segments[2]), $fromLocale);
             if ($cat) {
                 $segments[2] = $cat->localizedSlug($toLocale);
                 return '/' . $toLocale . '/' . implode('/', $segments);
@@ -4106,7 +4106,7 @@ if (!function_exists('buildLocalizedSwitchPath')) {
         }
 
         if ($type === 'blog' && !empty($segments[1]) && $segments[1] !== 'categories') {
-            $post = \App\Models\Blog::findByLocalizedSlug($segments[1], $fromLocale);
+            $post = \App\Models\Blog::findByLocalizedSlug(rawurldecode($segments[1]), $fromLocale);
             if ($post) {
                 $segments[1] = $post->localizedSlug($toLocale);
                 return '/' . $toLocale . '/' . implode('/', $segments);
@@ -4114,7 +4114,7 @@ if (!function_exists('buildLocalizedSwitchPath')) {
         }
 
         if ($type === 'products' && !empty($segments[1])) {
-            $product = \App\Models\Product::findByLocalizedSlug($segments[1], $fromLocale);
+            $product = \App\Models\Product::findByLocalizedSlug(rawurldecode($segments[1]), $fromLocale);
             if ($product) {
                 $segments[1] = $product->localizedSlug($toLocale);
                 return '/' . $toLocale . '/' . implode('/', $segments);
@@ -4122,7 +4122,7 @@ if (!function_exists('buildLocalizedSwitchPath')) {
         }
 
         if ($type === 'bundles' && !empty($segments[1])) {
-            $bundle = \App\Models\Bundle::findByLocalizedSlug($segments[1], $fromLocale);
+            $bundle = \App\Models\Bundle::findByLocalizedSlug(rawurldecode($segments[1]), $fromLocale);
             if ($bundle) {
                 $segments[1] = $bundle->localizedSlug($toLocale);
                 return '/' . $toLocale . '/' . implode('/', $segments);
@@ -4130,7 +4130,7 @@ if (!function_exists('buildLocalizedSwitchPath')) {
         }
 
         if ($type === 'upcoming_courses' && !empty($segments[1])) {
-            $item = \App\Models\UpcomingCourse::findByLocalizedSlug($segments[1], $fromLocale);
+            $item = \App\Models\UpcomingCourse::findByLocalizedSlug(rawurldecode($segments[1]), $fromLocale);
             if ($item) {
                 $segments[1] = $item->localizedSlug($toLocale);
                 return '/' . $toLocale . '/' . implode('/', $segments);

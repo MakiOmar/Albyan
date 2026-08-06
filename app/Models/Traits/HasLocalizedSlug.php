@@ -11,64 +11,102 @@ use Illuminate\Support\Str;
 trait HasLocalizedSlug
 {
     /**
-     * Translated slug for a locale (falls back to parent slug).
+     * Translated slug for a locale (falls back to parent slug only).
+     * Does not fall back to another language's translation slug.
      */
     public function localizedSlug(?string $locale = null): string
     {
         $locale = mb_strtolower($locale ?: app()->getLocale());
 
-        $translated = null;
-        try {
-            $translated = $this->translate($locale);
-        } catch (\Throwable $e) {
-            $translated = null;
+        // Fresh DB read avoids stale in-memory translation collections after admin saves.
+        $translationTable = app()->make($this->getTranslationModelName())->getTable();
+        $foreignKey = $this->getTranslationRelationKey();
+
+        $slug = DB::table($translationTable)
+            ->where($foreignKey, $this->getKey())
+            ->where('locale', $locale)
+            ->value('slug');
+
+        if (!empty($slug)) {
+            return (string) $slug;
         }
 
-        if (!empty($translated) && !empty($translated->slug)) {
-            return (string) $translated->slug;
-        }
-
-        // Fall back to any translation slug, then parent column.
-        if (method_exists($this, 'translations')) {
-            $any = $this->translations->first(function ($row) {
-                return !empty($row->slug);
-            });
-            if ($any) {
-                return (string) $any->slug;
-            }
-        }
-
+        // Parent column = default-locale mirror.
         return (string) ($this->getAttributes()['slug'] ?? $this->attributes['slug'] ?? '');
     }
 
     /**
-     * Find model by translation slug for a locale (with parent-slug fallback).
+     * Find model by translation slug for a locale (with any-locale + parent fallbacks).
      */
     public static function findByLocalizedSlug(string $slug, ?string $locale = null)
     {
         $locale = mb_strtolower($locale ?: app()->getLocale());
+        $candidates = static::slugLookupCandidates($slug);
 
-        $model = static::whereTranslation('slug', $slug, $locale)->first();
-        if ($model) {
-            return $model;
+        foreach ($candidates as $candidate) {
+            $model = static::whereTranslation('slug', $candidate, $locale)->first();
+            if ($model) {
+                return $model;
+            }
         }
 
-        // Fallback: parent-table slug (pre-migration / default-locale mirror).
-        return static::query()->where('slug', $slug)->first();
+        // Slug may belong to another locale (language switcher uses the current URL slug).
+        foreach ($candidates as $candidate) {
+            $model = static::whereTranslation('slug', $candidate)->first();
+            if ($model) {
+                return $model;
+            }
+        }
+
+        foreach ($candidates as $candidate) {
+            $model = static::query()->where('slug', $candidate)->first();
+            if ($model) {
+                return $model;
+            }
+        }
+
+        return null;
     }
 
     /**
-     * Query scope: match translated slug for locale, or parent slug fallback.
+     * Query scope: match translated slug (any/ decoded variants) or parent slug.
      */
     public function scopeWhereLocalizedSlug($query, string $slug, ?string $locale = null)
     {
-        $locale = mb_strtolower($locale ?: app()->getLocale());
         $table = $this->getTable();
+        $candidates = static::slugLookupCandidates($slug);
 
-        return $query->where(function ($q) use ($slug, $locale, $table) {
-            $q->whereTranslation('slug', $slug, $locale)
-                ->orWhere($table . '.slug', $slug);
+        return $query->where(function ($q) use ($candidates, $table) {
+            foreach ($candidates as $candidate) {
+                $q->orWhere(function ($inner) use ($candidate, $table) {
+                    $inner->whereTranslation('slug', $candidate)
+                        ->orWhere($table . '.slug', $candidate);
+                });
+            }
         });
+    }
+
+    /**
+     * Decode / normalize URL slug variants for DB lookup.
+     *
+     * @return array<int, string>
+     */
+    protected static function slugLookupCandidates(string $slug): array
+    {
+        $slug = trim($slug);
+        $candidates = [$slug];
+
+        $decoded = rawurldecode($slug);
+        if ($decoded !== $slug) {
+            $candidates[] = $decoded;
+        }
+
+        $decoded2 = urldecode($slug);
+        if ($decoded2 !== $slug && $decoded2 !== $decoded) {
+            $candidates[] = $decoded2;
+        }
+
+        return array_values(array_unique(array_filter($candidates, fn ($v) => $v !== '')));
     }
 
     /**
