@@ -157,9 +157,10 @@ class CategoryController extends Controller
             : Category::makeLocalizedSlug($data['title'], $locale, $category->id);
 
         // Never put slug in Eloquent update — Astrotomic would write the wrong locale.
-        $category->update([
+        // Use query builder so Sluggable / translation accessors cannot dirty parent columns.
+        DB::table('categories')->where('id', $category->id)->update([
             'icon' => !empty($data['icon']) ? $data['icon'] : null,
-            'order' => $data['order'] ?? $category->order,
+            'order' => $data['order'] ?? $category->getAttributes()['order'] ?? null,
         ]);
 
         CategoryTranslation::updateOrCreate([
@@ -264,7 +265,7 @@ class CategoryController extends Controller
                     }
 
                     if (!empty($check)) {
-                        $check->update([
+                        DB::table('categories')->where('id', $check->id)->update([
                             'order' => $order,
                             'icon' => $subCategory['icon'] ?? null,
                         ]);

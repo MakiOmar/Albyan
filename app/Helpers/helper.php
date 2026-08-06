@@ -3073,7 +3073,11 @@ function getTranslateAttributeValue($model, $key, $loca = null)
             $locale = \App\Models\Setting::$defaultSettingsLocale;
         }
 
-        $model->locale = $locale;
+        // Use Astrotomic's in-memory default locale — never set $model->locale as an
+        // Eloquent attribute (that writes a non-existent `locale` column on parent tables).
+        if (method_exists($model, 'setDefaultLocale')) {
+            $model->setDefaultLocale(mb_strtolower($locale));
+        }
 
         return $model->translate(mb_strtolower($locale))->{$key};
     } catch (\Exception $e) {
