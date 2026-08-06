@@ -2,18 +2,24 @@
 @if(!empty($categories) && count($categories))
     @php
         $activeTopCategorySlug = null;
+        $currentLocale = app()->getLocale();
 
         if (!empty($category)) {
             $activeTopCategorySlug = !empty($category->parent_id)
-                ? (optional($category->category)->slug ?? $category->slug)
-                : $category->slug;
+                ? (optional($category->category)->localizedSlug($currentLocale) ?? $category->localizedSlug($currentLocale))
+                : $category->localizedSlug($currentLocale);
         } elseif (!empty($course) && !empty($course->category)) {
             $webinarCategory = $course->category;
             $activeTopCategorySlug = !empty($webinarCategory->parent_id)
-                ? (optional($webinarCategory->category)->slug ?? $webinarCategory->slug)
-                : $webinarCategory->slug;
-        } elseif (request()->is('categories/*')) {
-            $activeTopCategorySlug = request()->segment(2);
+                ? (optional($webinarCategory->category)->localizedSlug($currentLocale) ?? $webinarCategory->localizedSlug($currentLocale))
+                : $webinarCategory->localizedSlug($currentLocale);
+        } else {
+            // Support both /categories/{slug} and /{locale}/categories/{slug}
+            $pathSegments = request()->segments();
+            $categoriesIdx = array_search('categories', $pathSegments, true);
+            if ($categoriesIdx !== false && !empty($pathSegments[$categoriesIdx + 1])) {
+                $activeTopCategorySlug = rawurldecode($pathSegments[$categoriesIdx + 1]);
+            }
         }
 
         $categorySubNavRtl = web_layout_is_rtl($generalSettings ?? null);
@@ -91,6 +97,9 @@
             line-height: 1.4;
             text-decoration: none;
             box-sizing: border-box;
+            pointer-events: auto;
+            position: relative;
+            z-index: 1;
         }
         #categorySubNav .category-sub-nav-link:hover {
             color: #01477d;
@@ -113,6 +122,7 @@
             height: 20px;
             object-fit: contain;
             flex-shrink: 0;
+            pointer-events: none;
         }
         #categorySubNav .category-sub-nav-btn {
             flex: 0 0 36px;
@@ -194,9 +204,13 @@
 
                 <div class="category-sub-nav-scroll" tabindex="0" @if($categorySubNavRtl) dir="rtl" @endif>
                     @foreach($categories as $topCategory)
+                        @php
+                            $topCategorySlug = $topCategory->localizedSlug($currentLocale);
+                            $topCategoryUrl = $topCategory->getUrl($currentLocale);
+                        @endphp
                         <div class="category-sub-nav-item">
-                            <a href="{{ $topCategory->getUrl() }}"
-                               class="category-sub-nav-link {{ $activeTopCategorySlug === $topCategory->slug ? 'active' : '' }}"
+                            <a href="{{ $topCategoryUrl }}"
+                               class="category-sub-nav-link {{ $activeTopCategorySlug === $topCategorySlug ? 'active' : '' }}"
                                title="{{ $topCategory->title }}">
                                 @if(!empty($topCategory->icon))
                                     {{-- Always gated on user interaction (data-lazy-until), even when global mode is viewport --}}
@@ -363,17 +377,21 @@
                     window.addEventListener('load', updateButtons);
 
                     (function bindDragScroll(el) {
+                        // Arm drag only after a small movement threshold so plain clicks on <a> still navigate.
+                        var pending = false;
                         var dragging = false;
                         var startX = 0;
                         var startScrollLeft = 0;
-                        var moved = false;
                         var activePointer = null;
+                        var DRAG_THRESHOLD = 6;
 
                         function endDrag(e) {
-                            if (!dragging || (e && activePointer !== null && e.pointerId !== activePointer)) {
+                            if ((!pending && !dragging) || (e && activePointer !== null && e.pointerId !== activePointer)) {
                                 return;
                             }
 
+                            var wasDragging = dragging;
+                            pending = false;
                             dragging = false;
                             activePointer = null;
                             el.classList.remove('is-dragging');
@@ -384,7 +402,8 @@
                                 } catch (err) {}
                             }
 
-                            if (moved) {
+                            // Suppress the synthetic click only when the user actually dragged.
+                            if (wasDragging) {
                                 el.dataset.suppressClick = '1';
                                 window.setTimeout(function () {
                                     delete el.dataset.suppressClick;
@@ -399,26 +418,33 @@
                                 return;
                             }
 
-                            dragging = true;
-                            moved = false;
+                            // Do not capture yet — allow default link click behavior until threshold is crossed.
+                            pending = true;
+                            dragging = false;
                             activePointer = e.pointerId;
                             startX = e.clientX;
                             startScrollLeft = el.scrollLeft;
-                            el.classList.add('is-dragging');
-
-                            if (el.setPointerCapture) {
-                                el.setPointerCapture(e.pointerId);
-                            }
                         });
 
                         el.addEventListener('pointermove', function (e) {
-                            if (!dragging || e.pointerId !== activePointer) {
+                            if ((!pending && !dragging) || e.pointerId !== activePointer) {
                                 return;
                             }
 
                             var dx = e.clientX - startX;
-                            if (Math.abs(dx) > 3) {
-                                moved = true;
+
+                            if (!dragging) {
+                                if (Math.abs(dx) < DRAG_THRESHOLD) {
+                                    return;
+                                }
+
+                                dragging = true;
+                                pending = false;
+                                el.classList.add('is-dragging');
+
+                                if (el.setPointerCapture) {
+                                    el.setPointerCapture(e.pointerId);
+                                }
                             }
 
                             el.scrollLeft = startScrollLeft - dx;
@@ -427,7 +453,7 @@
                         el.addEventListener('pointerup', endDrag);
                         el.addEventListener('pointercancel', endDrag);
                         el.addEventListener('lostpointercapture', function () {
-                            if (dragging) {
+                            if (dragging || pending) {
                                 endDrag(null);
                             }
                         });
