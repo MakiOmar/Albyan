@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Translation\CategoryTranslation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
@@ -46,9 +48,15 @@ class CategoryController extends Controller
     {
         $this->authorize('admin_categories_create');
 
+        $locale = mb_strtolower((string) $request->input('locale', app()->getLocale()));
+
         $this->validate($request, [
             'title' => 'required|min:3|max:128',
-            'slug' => 'nullable|max:255|unique:categories,slug',
+            'slug' => [
+                'nullable',
+                'max:255',
+                Rule::unique('category_translations', 'slug')->where(fn ($q) => $q->where('locale', $locale)),
+            ],
             'description' => 'nullable|string|max:1000',
             'seo_title' => 'nullable|string|max:255',
             'seo_description' => 'nullable|string|max:500',
@@ -62,24 +70,36 @@ class CategoryController extends Controller
             $order = Category::whereNull('parent_id')->count() + 1;
         }
 
-        $category = Category::create([
-            'slug' => $data['slug'] ?? Category::makeSlug($data['title']),
-            'icon' => !empty($data['icon']) ? $data['icon'] : null,
-            'order' => $order,
-        ]);
+        $slug = !empty($data['slug'])
+            ? $data['slug']
+            : Category::makeLocalizedSlug($data['title'], $locale);
+
+        // Do not put slug in Eloquent fill — it is a translated attribute (Astrotomic).
+        $category = new Category();
+        $category->icon = !empty($data['icon']) ? $data['icon'] : null;
+        $category->order = $order;
+        // Parent column is NOT NULL; write via attributes to bypass Astrotomic translation mapping.
+        $category->attributes['slug'] = $slug;
+        $category->save();
 
         CategoryTranslation::updateOrCreate([
             'category_id' => $category->id,
-            'locale' => mb_strtolower($data['locale']),
+            'locale' => $locale,
         ], [
             'title' => $data['title'],
+            'slug' => $slug,
             'description' => $data['description'] ?? null,
             'seo_title' => $data['seo_title'] ?? null,
             'seo_description' => $data['seo_description'] ?? null,
         ]);
 
+        // Mirror parent slug only for the default site locale.
+        if ($locale === getDefaultLocaleCode()) {
+            DB::table('categories')->where('id', $category->id)->update(['slug' => $slug]);
+        }
+
         $hasSubCategories = (!empty($request->get('has_sub')) and $request->get('has_sub') == 'on');
-        $this->setSubCategory($category, $request->get('sub_categories'), $hasSubCategories, $data['locale']);
+        $this->setSubCategory($category, $request->get('sub_categories'), $hasSubCategories, $locale);
 
         cache()->forget(Category::$cacheKey);
 
@@ -114,10 +134,17 @@ class CategoryController extends Controller
         $this->authorize('admin_categories_edit');
 
         $category = Category::findOrFail($id);
+        $locale = mb_strtolower((string) $request->input('locale', app()->getLocale()));
 
         $this->validate($request, [
             'title' => 'required|min:3|max:255',
-            'slug' => 'nullable|max:255|unique:categories,slug,' . $category->id,
+            'slug' => [
+                'nullable',
+                'max:255',
+                Rule::unique('category_translations', 'slug')
+                    ->where(fn ($q) => $q->where('locale', $locale))
+                    ->ignore($category->id, 'category_id'),
+            ],
             'description' => 'nullable|string|max:1000',
             'seo_title' => 'nullable|string|max:255',
             'seo_description' => 'nullable|string|max:500',
@@ -125,24 +152,33 @@ class CategoryController extends Controller
 
         $data = $request->all();
 
+        $slug = !empty($data['slug'])
+            ? $data['slug']
+            : Category::makeLocalizedSlug($data['title'], $locale, $category->id);
+
+        // Never put slug in Eloquent update — Astrotomic would write the wrong locale.
         $category->update([
             'icon' => !empty($data['icon']) ? $data['icon'] : null,
-            'slug' => $data['slug'] ?? Category::makeSlug($data['title']),
             'order' => $data['order'] ?? $category->order,
         ]);
 
         CategoryTranslation::updateOrCreate([
             'category_id' => $category->id,
-            'locale' => mb_strtolower($data['locale']),
+            'locale' => $locale,
         ], [
             'title' => $data['title'],
+            'slug' => $slug,
             'description' => $data['description'] ?? null,
             'seo_title' => $data['seo_title'] ?? null,
             'seo_description' => $data['seo_description'] ?? null,
         ]);
 
+        if ($locale === getDefaultLocaleCode()) {
+            DB::table('categories')->where('id', $category->id)->update(['slug' => $slug]);
+        }
+
         $hasSubCategories = (!empty($request->get('has_sub')) and $request->get('has_sub') == 'on');
-        $this->setSubCategory($category, $request->get('sub_categories'), $hasSubCategories, $data['locale']);
+        $this->setSubCategory($category, $request->get('sub_categories'), $hasSubCategories, $locale);
 
 
         cache()->forget(Category::$cacheKey);
@@ -206,6 +242,8 @@ class CategoryController extends Controller
     {
         $order = 1;
         $oldIds = [];
+        $locale = mb_strtolower((string) $locale);
+        $defaultLocale = getDefaultLocaleCode();
 
         if ($hasSubCategories and !empty($subCategories) and count($subCategories)) {
             foreach ($subCategories as $key => $subCategory) {
@@ -216,41 +254,52 @@ class CategoryController extends Controller
                 }
 
                 if (!empty($subCategory['title'])) {
-                    $checkSlug = 0;
-                    if (!empty($subCategory['slug'])) {
-                        $checkSlug = Category::query()->where('slug', $subCategory['slug'])->count();
-                    }
+                    $exceptId = !empty($check) ? $check->id : null;
+                    $requestedSlug = !empty($subCategory['slug']) ? $subCategory['slug'] : null;
 
-                    $slug = (!empty($subCategory['slug']) and ($checkSlug == 0 or ($checkSlug == 1 and $check->slug == $subCategory['slug']))) ? $subCategory['slug'] : Category::makeSlug($subCategory['title']);
+                    if (!empty($requestedSlug) && !Category::localizedSlugExists($requestedSlug, $locale, $exceptId)) {
+                        $slug = $requestedSlug;
+                    } else {
+                        $slug = Category::makeLocalizedSlug($subCategory['title'], $locale, $exceptId);
+                    }
 
                     if (!empty($check)) {
                         $check->update([
                             'order' => $order,
                             'icon' => $subCategory['icon'] ?? null,
-                            'slug' => $slug,
                         ]);
 
                         CategoryTranslation::updateOrCreate([
                             'category_id' => $check->id,
-                            'locale' => mb_strtolower($locale),
+                            'locale' => $locale,
                         ], [
                             'title' => $subCategory['title'],
-                        ]);
-                    } else {
-
-                        $new = Category::create([
-                            'parent_id' => $category->id,
                             'slug' => $slug,
-                            'icon' => $subCategory['icon'] ?? null,
-                            'order' => $order,
                         ]);
+
+                        if ($locale === $defaultLocale) {
+                            DB::table('categories')->where('id', $check->id)->update(['slug' => $slug]);
+                        }
+                    } else {
+                        $new = new Category();
+                        $new->parent_id = $category->id;
+                        $new->icon = $subCategory['icon'] ?? null;
+                        $new->order = $order;
+                        // Parent column is NOT NULL; bypass Astrotomic for the physical slug column.
+                        $new->attributes['slug'] = $slug;
+                        $new->save();
 
                         CategoryTranslation::updateOrCreate([
                             'category_id' => $new->id,
-                            'locale' => mb_strtolower($locale),
+                            'locale' => $locale,
                         ], [
                             'title' => $subCategory['title'],
+                            'slug' => $slug,
                         ]);
+
+                        if ($locale === $defaultLocale) {
+                            DB::table('categories')->where('id', $new->id)->update(['slug' => $slug]);
+                        }
 
                         $oldIds[] = $new->id;
                     }

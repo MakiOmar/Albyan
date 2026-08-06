@@ -15,6 +15,8 @@ use App\Models\UpcomingCourseFilterOption;
 use App\Models\UpcomingCourseFollower;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 
 class UpcomingCoursesController extends Controller
@@ -143,6 +145,12 @@ class UpcomingCoursesController extends Controller
         $rules = [
             'type' => 'required|in:webinar,course,text_lesson',
             'title' => 'required|max:255',
+            'slug' => [
+                'nullable',
+                'max:255',
+                Rule::unique('upcoming_course_translations', 'slug')
+                    ->where(fn ($q) => $q->where('locale', mb_strtolower((string) $request->input('locale', app()->getLocale())))),
+            ],
             'thumbnail' => 'required',
             'image_cover' => 'required',
             'description' => 'required',
@@ -165,7 +173,16 @@ class UpcomingCoursesController extends Controller
         $storeData['status'] = UpcomingCourse::$pending;
         $storeData['created_at'] = time();
 
-        $upcomingCourse = UpcomingCourse::query()->create($storeData);
+        $upcomingCourse = new UpcomingCourse();
+        foreach ($storeData as $key => $value) {
+            if ($key === 'slug') {
+                continue;
+            }
+            $upcomingCourse->{$key} = $value;
+        }
+        // Parent slug is NOT NULL; bypass Astrotomic translation mapping.
+        $upcomingCourse->attributes['slug'] = $storeData['slug'];
+        $upcomingCourse->save();
 
         if (!empty($upcomingCourse)) {
             $this->storePublicItems($request, $upcomingCourse);
@@ -244,10 +261,18 @@ class UpcomingCoursesController extends Controller
         $upcomingCourse = UpcomingCourse::query()->where('id', $id)->first();
 
         if (!empty($upcomingCourse)) {
+            $locale = mb_strtolower((string) $request->input('locale', app()->getLocale()));
+
             $rules = [
                 'type' => 'required|in:webinar,course,text_lesson',
                 'title' => 'required|max:255',
-                'slug' => 'max:255|unique:upcoming_courses,slug,' . $upcomingCourse->id,
+                'slug' => [
+                    'nullable',
+                    'max:255',
+                    Rule::unique('upcoming_course_translations', 'slug')
+                        ->where(fn ($q) => $q->where('locale', $locale))
+                        ->ignore($upcomingCourse->id, 'upcoming_course_id'),
+                ],
                 'thumbnail' => 'required',
                 'image_cover' => 'required',
                 'description' => 'required',
@@ -273,13 +298,15 @@ class UpcomingCoursesController extends Controller
             // Product Badge
             $this->handleProductBadges($upcomingCourse, $data);
 
-            $storeData = $this->makeStoreData($request, $data);
+            $storeData = $this->makeStoreData($request, $data, $upcomingCourse->id);
             $storeData['status'] = $publish ? UpcomingCourse::$active : ($reject ? UpcomingCourse::$inactive : ($isDraft ? UpcomingCourse::$isDraft : UpcomingCourse::$pending));
 
+            // Never put slug in Eloquent update — Astrotomic would write the wrong locale.
+            $slug = $storeData['slug'];
+            unset($storeData['slug']);
             $upcomingCourse->update($storeData);
 
-            $this->storePublicItems($request, $upcomingCourse);
-
+            $this->storePublicItems($request, $upcomingCourse, $slug);
 
             return redirect(getAdminPanelUrl("/upcoming_courses/{$upcomingCourse->id}/edit"));
         }
@@ -287,18 +314,23 @@ class UpcomingCoursesController extends Controller
         abort(404);
     }
 
-    private function makeStoreData(Request $request, $data): array
+    private function makeStoreData(Request $request, $data, ?int $exceptId = null): array
     {
         $startDate = convertTimeToUTCzone($data['publish_date'], $data['timezone']);
         $data['price'] = !empty($data['price']) ? convertPriceToDefaultCurrency($data['price']) : null;
+        $locale = mb_strtolower((string) ($data['locale'] ?? app()->getLocale()));
 
         $data = $this->handleVideoDemoData($request, $data, "upcoming_course_demo_" . time());
+
+        $slug = !empty($data['slug'])
+            ? $data['slug']
+            : UpcomingCourse::makeLocalizedSlug($data['title'], $locale, $exceptId);
 
         return [
             'creator_id' => $data['teacher_id'],
             'teacher_id' => $data['teacher_id'],
             'category_id' => $data['category_id'],
-            'slug' => !empty($data['slug']) ? $data['slug'] : UpcomingCourse::makeSlug($data['title']),
+            'slug' => $slug,
             'type' => $data['type'],
             'thumbnail' => $data['thumbnail'],
             'image_cover' => $data['image_cover'],
@@ -321,18 +353,30 @@ class UpcomingCoursesController extends Controller
         ];
     }
 
-    private function storePublicItems(Request $request, $upcomingCourse)
+    private function storePublicItems(Request $request, $upcomingCourse, ?string $slug = null)
     {
         $data = $request->all();
+        $locale = mb_strtolower((string) ($data['locale'] ?? app()->getLocale()));
+
+        if ($slug === null) {
+            $slug = !empty($data['slug'])
+                ? $data['slug']
+                : UpcomingCourse::makeLocalizedSlug($data['title'], $locale, $upcomingCourse->id);
+        }
 
         UpcomingCourseTranslation::query()->updateOrCreate([
             'upcoming_course_id' => $upcomingCourse->id,
-            'locale' => mb_strtolower($data['locale']),
+            'locale' => $locale,
         ], [
             'title' => $data['title'],
+            'slug' => $slug,
             'description' => $data['description'],
             'seo_description' => $data['seo_description'],
         ]);
+
+        if ($locale === getDefaultLocaleCode()) {
+            DB::table('upcoming_courses')->where('id', $upcomingCourse->id)->update(['slug' => $slug]);
+        }
 
         UpcomingCourseFilterOption::where('upcoming_course_id', $upcomingCourse->id)->delete();
         Tag::where('upcoming_course_id', $upcomingCourse->id)->delete();

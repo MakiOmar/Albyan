@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BlogCategory;
 use App\Models\Translation\BlogCategoryTranslation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BlogCategoriesController extends Controller
 {
@@ -33,17 +34,25 @@ class BlogCategoriesController extends Controller
         ]);
 
         $data = $request->all();
+        $locale = mb_strtolower((string) ($data['locale'] ?? app()->getLocale()));
+        $slug = BlogCategory::makeLocalizedSlug($data['title'], $locale);
 
-        $category = BlogCategory::create([
-            'slug' => BlogCategory::makeSlug($data['title']),
-        ]);
+        $category = new BlogCategory();
+        // Parent slug is NOT NULL; bypass Astrotomic translation mapping.
+        $category->attributes['slug'] = $slug;
+        $category->save();
 
         BlogCategoryTranslation::query()->updateOrCreate([
             'blog_category_id' => $category->id,
-            'locale' => mb_strtolower($data['locale']),
+            'locale' => $locale,
         ], [
             'title' => $data['title'],
+            'slug' => $slug,
         ]);
+
+        if ($locale === getDefaultLocaleCode()) {
+            DB::table('blog_categories')->where('id', $category->id)->update(['slug' => $slug]);
+        }
 
         return redirect(getAdminPanelUrl() . '/blog/categories');
     }
@@ -76,13 +85,28 @@ class BlogCategoriesController extends Controller
         $category = BlogCategory::findOrFail($category_id);
 
         $data = $request->all();
+        $locale = mb_strtolower((string) ($data['locale'] ?? app()->getLocale()));
+
+        $existingSlug = BlogCategoryTranslation::query()
+            ->where('blog_category_id', $category->id)
+            ->where('locale', $locale)
+            ->value('slug');
+
+        $slug = !empty($existingSlug)
+            ? $existingSlug
+            : BlogCategory::makeLocalizedSlug($data['title'], $locale, $category->id);
 
         BlogCategoryTranslation::query()->updateOrCreate([
             'blog_category_id' => $category->id,
-            'locale' => mb_strtolower($data['locale']),
+            'locale' => $locale,
         ], [
             'title' => $data['title'],
+            'slug' => $slug,
         ]);
+
+        if ($locale === getDefaultLocaleCode()) {
+            DB::table('blog_categories')->where('id', $category->id)->update(['slug' => $slug]);
+        }
 
         return redirect(getAdminPanelUrl() . '/blog/categories');
     }

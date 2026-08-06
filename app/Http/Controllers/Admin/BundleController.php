@@ -25,6 +25,7 @@ use App\Models\Webinar;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class BundleController extends Controller
 {
@@ -248,9 +249,15 @@ class BundleController extends Controller
     {
         $this->authorize('admin_bundles_create');
 
+        $locale = mb_strtolower((string) $request->input('locale', app()->getLocale()));
+
         $this->validate($request, [
             'title' => 'required|max:255',
-            'slug' => 'max:255|unique:bundles,slug',
+            'slug' => [
+                'nullable',
+                'max:255',
+                Rule::unique('bundle_translations', 'slug')->where(fn ($q) => $q->where('locale', $locale)),
+            ],
             'thumbnail' => 'required',
             'image_cover' => 'required',
             'description' => 'required',
@@ -260,41 +267,47 @@ class BundleController extends Controller
 
         $data = $request->all();
 
-        if (empty($data['slug'])) {
-            $data['slug'] = Bundle::makeSlug($data['title']);
-        }
+        $slug = !empty($data['slug'])
+            ? $data['slug']
+            : Bundle::makeLocalizedSlug($data['title'], $locale);
 
         $data = $this->handleVideoDemoData($request, $data, "bundle_demo_" . time());
 
-        $bundle = Bundle::create([
-            'slug' => $data['slug'],
-            'teacher_id' => $data['teacher_id'],
-            'creator_id' => $data['teacher_id'],
-            'thumbnail' => $data['thumbnail'],
-            'image_cover' => $data['image_cover'],
-            'video_demo' => $data['video_demo'],
-            'video_demo_source' => $data['video_demo'] ? $data['video_demo_source'] : null,
-            'subscribe' => !empty($data['subscribe']) ? true : false,
-            'certificate' => !empty($data['certificate']) ? true : false,
-            'points' => $data['points'] ?? null,
-            'price' => $data['price'],
-            'access_days' => $data['access_days'] ?? null,
-            'category_id' => $data['category_id'],
-            'message_for_reviewer' => $data['message_for_reviewer'] ?? null,
-            'status' => Bundle::$pending,
-            'created_at' => time(),
-            'updated_at' => time(),
-        ]);
+        $bundle = new Bundle();
+        $bundle->teacher_id = $data['teacher_id'];
+        $bundle->creator_id = $data['teacher_id'];
+        $bundle->thumbnail = $data['thumbnail'];
+        $bundle->image_cover = $data['image_cover'];
+        $bundle->video_demo = $data['video_demo'];
+        $bundle->video_demo_source = $data['video_demo'] ? $data['video_demo_source'] : null;
+        $bundle->subscribe = !empty($data['subscribe']) ? true : false;
+        $bundle->certificate = !empty($data['certificate']) ? true : false;
+        $bundle->points = $data['points'] ?? null;
+        $bundle->price = $data['price'];
+        $bundle->access_days = $data['access_days'] ?? null;
+        $bundle->category_id = $data['category_id'];
+        $bundle->message_for_reviewer = $data['message_for_reviewer'] ?? null;
+        $bundle->status = Bundle::$pending;
+        $bundle->created_at = time();
+        $bundle->updated_at = time();
+        // Parent slug is NOT NULL; bypass Astrotomic translation mapping.
+        $bundle->attributes['slug'] = $slug;
+        $bundle->save();
 
         if ($bundle) {
             BundleTranslation::updateOrCreate([
                 'bundle_id' => $bundle->id,
-                'locale' => mb_strtolower($data['locale']),
+                'locale' => $locale,
             ], [
                 'title' => $data['title'],
+                'slug' => $slug,
                 'description' => $data['description'],
                 'seo_description' => $data['seo_description'],
             ]);
+
+            if ($locale === getDefaultLocaleCode()) {
+                DB::table('bundles')->where('id', $bundle->id)->update(['slug' => $slug]);
+            }
         }
 
         $filters = $request->get('filters', null);
@@ -382,7 +395,13 @@ class BundleController extends Controller
 
         $rules = [
             'title' => 'required|max:255',
-            'slug' => 'max:255|unique:bundles,slug,' . $bundle->id,
+            'slug' => [
+                'nullable',
+                'max:255',
+                Rule::unique('bundle_translations', 'slug')
+                    ->where(fn ($q) => $q->where('locale', mb_strtolower((string) ($data['locale'] ?? app()->getLocale()))))
+                    ->ignore($bundle->id, 'bundle_id'),
+            ],
             'thumbnail' => 'required',
             'image_cover' => 'required',
             'description' => 'required',
@@ -407,9 +426,10 @@ class BundleController extends Controller
         }
 
 
-        if (empty($data['slug'])) {
-            $data['slug'] = Bundle::makeSlug($data['title']);
-        }
+        $locale = mb_strtolower((string) ($data['locale'] ?? app()->getLocale()));
+        $slug = !empty($data['slug'])
+            ? $data['slug']
+            : Bundle::makeLocalizedSlug($data['title'], $locale, $bundle->id);
 
         $data['status'] = $publish ? Bundle::$active : ($reject ? Bundle::$inactive : ($isDraft ? Bundle::$isDraft : Bundle::$pending));
         $data['updated_at'] = time();
@@ -460,8 +480,8 @@ class BundleController extends Controller
 
         $data = $this->handleVideoDemoData($request, $data, "bundle_demo_" . time());
 
+        // Never put slug in Eloquent update — Astrotomic would write the wrong locale.
         $bundle->update([
-            'slug' => $data['slug'],
             'teacher_id' => $data['teacher_id'],
             'thumbnail' => $data['thumbnail'],
             'image_cover' => $data['image_cover'],
@@ -481,12 +501,17 @@ class BundleController extends Controller
         if ($bundle) {
             BundleTranslation::updateOrCreate([
                 'bundle_id' => $bundle->id,
-                'locale' => mb_strtolower($data['locale']),
+                'locale' => $locale,
             ], [
                 'title' => $data['title'],
+                'slug' => $slug,
                 'description' => $data['description'],
                 'seo_description' => $data['seo_description'],
             ]);
+
+            if ($locale === getDefaultLocaleCode()) {
+                DB::table('bundles')->where('id', $bundle->id)->update(['slug' => $slug]);
+            }
         }
 
         $notifyOptions = [

@@ -37,6 +37,7 @@ use App\Models\Webinar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 
 class WebinarController extends Controller
@@ -332,10 +333,16 @@ class WebinarController extends Controller
     {
         $this->authorize('admin_webinars_create');
 
+        $locale = mb_strtolower((string) $request->input('locale', app()->getLocale()));
+
         $this->validate($request, [
             'type' => 'required|in:webinar,course,text_lesson',
             'title' => 'required|max:255',
-            'slug' => 'max:255|unique:webinars,slug',
+            'slug' => [
+                'nullable',
+                'max:255',
+                Rule::unique('webinar_translations', 'slug')->where(fn ($q) => $q->where('locale', $locale)),
+            ],
             'thumbnail' => 'required',
             'image_cover' => 'required',
             'description' => 'required',
@@ -376,57 +383,63 @@ class WebinarController extends Controller
             $data['start_date'] = $startDate->getTimestamp();
         }
 
-        if (empty($data['slug'])) {
-            $data['slug'] = Webinar::makeSlug($data['title']);
-        }
+        $slug = !empty($data['slug'])
+            ? $data['slug']
+            : Webinar::makeLocalizedSlug($data['title'], $locale);
 
         $data = $this->handleVideoDemoData($request, $data, "course_demo_" . time());
 
         $data['price'] = !empty($data['price']) ? convertPriceToDefaultCurrency($data['price']) : null;
         $data['organization_price'] = !empty($data['organization_price']) ? convertPriceToDefaultCurrency($data['organization_price']) : null;
 
-        $webinar = Webinar::create([
-            'type' => $data['type'],
-            'slug' => $data['slug'],
-            'teacher_id' => $data['teacher_id'],
-            'creator_id' => $data['teacher_id'],
-            'thumbnail' => $data['thumbnail'],
-            'image_cover' => $data['image_cover'],
-            'video_demo' => $data['video_demo'],
-            'video_demo_source' => $data['video_demo'] ? $data['video_demo_source'] : null,
-            'sales_count_number' => $data['sales_count_number'] ?? null,
-            'capacity' => $data['capacity'] ?? null,
-            'start_date' => (!empty($data['start_date'])) ? $data['start_date'] : null,
-            'timezone' => $data['timezone'] ?? null,
-            'duration' => $data['duration'] ?? null,
-            'support' => !empty($data['support']) ? true : false,
-            'certificate' => !empty($data['certificate']) ? true : false,
-            'downloadable' => !empty($data['downloadable']) ? true : false,
-            'partner_instructor' => !empty($data['partner_instructor']) ? true : false,
-            'subscribe' => !empty($data['subscribe']) ? true : false,
-            'private' => !empty($data['private']) ? true : false,
-            'forum' => !empty($data['forum']) ? true : false,
-            'enable_waitlist' => (!empty($data['enable_waitlist'])),
-            'access_days' => $data['access_days'] ?? null,
-            'price' => $data['price'],
-            'organization_price' => $data['organization_price'] ?? null,
-            'points' => $data['points'] ?? null,
-            'category_id' => $data['category_id'],
-            'message_for_reviewer' => $data['message_for_reviewer'] ?? null,
-            'status' => Webinar::$pending,
-            'created_at' => time(),
-            'updated_at' => time(),
-        ]);
+        $webinar = new Webinar();
+        $webinar->type = $data['type'];
+        $webinar->teacher_id = $data['teacher_id'];
+        $webinar->creator_id = $data['teacher_id'];
+        $webinar->thumbnail = $data['thumbnail'];
+        $webinar->image_cover = $data['image_cover'];
+        $webinar->video_demo = $data['video_demo'];
+        $webinar->video_demo_source = $data['video_demo'] ? $data['video_demo_source'] : null;
+        $webinar->sales_count_number = $data['sales_count_number'] ?? null;
+        $webinar->capacity = $data['capacity'] ?? null;
+        $webinar->start_date = (!empty($data['start_date'])) ? $data['start_date'] : null;
+        $webinar->timezone = $data['timezone'] ?? null;
+        $webinar->duration = $data['duration'] ?? null;
+        $webinar->support = !empty($data['support']) ? true : false;
+        $webinar->certificate = !empty($data['certificate']) ? true : false;
+        $webinar->downloadable = !empty($data['downloadable']) ? true : false;
+        $webinar->partner_instructor = !empty($data['partner_instructor']) ? true : false;
+        $webinar->subscribe = !empty($data['subscribe']) ? true : false;
+        $webinar->private = !empty($data['private']) ? true : false;
+        $webinar->forum = !empty($data['forum']) ? true : false;
+        $webinar->enable_waitlist = (!empty($data['enable_waitlist']));
+        $webinar->access_days = $data['access_days'] ?? null;
+        $webinar->price = $data['price'];
+        $webinar->organization_price = $data['organization_price'] ?? null;
+        $webinar->points = $data['points'] ?? null;
+        $webinar->category_id = $data['category_id'];
+        $webinar->message_for_reviewer = $data['message_for_reviewer'] ?? null;
+        $webinar->status = Webinar::$pending;
+        $webinar->created_at = time();
+        $webinar->updated_at = time();
+        // Parent slug is NOT NULL; bypass Astrotomic translation mapping.
+        $webinar->attributes['slug'] = $slug;
+        $webinar->save();
 
         if ($webinar) {
             WebinarTranslation::updateOrCreate([
                 'webinar_id' => $webinar->id,
-                'locale' => mb_strtolower($data['locale']),
+                'locale' => $locale,
             ], [
                 'title' => $data['title'],
+                'slug' => $slug,
                 'description' => $data['description'],
                 'seo_description' => $data['seo_description'],
             ]);
+
+            if ($locale === getDefaultLocaleCode()) {
+                DB::table('webinars')->where('id', $webinar->id)->update(['slug' => $slug]);
+            }
         }
 
         $filters = $request->get('filters', null);
@@ -574,7 +587,13 @@ class WebinarController extends Controller
         $rules = [
             'type' => 'required|in:webinar,course,text_lesson',
             'title' => 'required|max:255',
-            'slug' => 'max:255|unique:webinars,slug,' . $webinar->id,
+            'slug' => [
+                'nullable',
+                'max:255',
+                Rule::unique('webinar_translations', 'slug')
+                    ->where(fn ($q) => $q->where('locale', mb_strtolower((string) ($data['locale'] ?? app()->getLocale()))))
+                    ->ignore($webinar->id, 'webinar_id'),
+            ],
             'thumbnail' => 'required',
             'image_cover' => 'required',
             'description' => 'required',
@@ -619,7 +638,11 @@ class WebinarController extends Controller
 
 
         if (empty($data['slug'])) {
-            $data['slug'] = Webinar::makeSlug($data['title']);
+            $data['slug'] = Webinar::makeLocalizedSlug(
+                $data['title'],
+                mb_strtolower((string) ($data['locale'] ?? app()->getLocale())),
+                $webinar->id
+            );
         }
 
         $data['status'] = $publish ? Webinar::$active : ($reject ? Webinar::$inactive : ($isDraft ? Webinar::$isDraft : Webinar::$pending));
@@ -712,8 +735,11 @@ class WebinarController extends Controller
         $data['price'] = !empty($data['price']) ? convertPriceToDefaultCurrency($data['price']) : null;
         $data['organization_price'] = !empty($data['organization_price']) ? convertPriceToDefaultCurrency($data['organization_price']) : null;
 
+        $locale = mb_strtolower((string) ($data['locale'] ?? app()->getLocale()));
+        $slug = $data['slug'];
+
+        // Never put slug in Eloquent update — Astrotomic would write the wrong locale.
         $webinar->update([
-            'slug' => $data['slug'],
             'creator_id' => $newCreatorId,
             'teacher_id' => $data['teacher_id'],
             'type' => $data['type'],
@@ -747,12 +773,17 @@ class WebinarController extends Controller
         if ($webinar) {
             WebinarTranslation::updateOrCreate([
                 'webinar_id' => $webinar->id,
-                'locale' => mb_strtolower($data['locale']),
+                'locale' => $locale,
             ], [
                 'title' => $data['title'],
+                'slug' => $slug,
                 'description' => $data['description'],
                 'seo_description' => $data['seo_description'],
             ]);
+
+            if ($locale === getDefaultLocaleCode()) {
+                DB::table('webinars')->where('id', $webinar->id)->update(['slug' => $slug]);
+            }
         }
 
         if ($publish) {

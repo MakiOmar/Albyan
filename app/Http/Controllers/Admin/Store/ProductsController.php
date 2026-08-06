@@ -20,6 +20,7 @@ use App\Models\Translation\SettingTranslation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProductsController extends Controller
@@ -326,11 +327,17 @@ class ProductsController extends Controller
     {
         $this->authorize('admin_store_new_product');
 
+        $locale = mb_strtolower((string) $request->input('locale', app()->getLocale()));
+
         $rules = [
             'creator_id' => 'required|exists:users,id',
             'type' => 'required|in:' . implode(',', Product::$productTypes),
             'title' => 'required|max:255',
-            'slug' => 'max:255|unique:products,slug',
+            'slug' => [
+                'nullable',
+                'max:255',
+                Rule::unique('product_translations', 'slug')->where(fn ($q) => $q->where('locale', $locale)),
+            ],
             'seo_description' => 'required|max:255',
             'summary' => 'required',
             'description' => 'required',
@@ -343,9 +350,9 @@ class ProductsController extends Controller
 
         $data = $request->all();
 
-        if (empty($data['slug'])) {
-            $data['slug'] = Product::makeSlug($data['title']);
-        }
+        $slug = !empty($data['slug'])
+            ? $data['slug']
+            : Product::makeLocalizedSlug($data['title'], $locale);
 
         $commission = null;
 
@@ -357,38 +364,44 @@ class ProductsController extends Controller
             }
         }
 
-        $product = Product::create([
-            'creator_id' => $data['creator_id'],
-            'type' => $data['type'],
-            'slug' => $data['slug'],
-            'category_id' => null,
-            'price' => null,
-            'unlimited_inventory' => false,
-            'ordering' => (!empty($data['ordering']) and $data['ordering'] == 'on'),
-            'inventory' => null,
-            'inventory_warning' => null,
-            'delivery_fee' => null,
-            'delivery_estimated_time' => null,
-            'message_for_reviewer' => null,
-            'point' => $data['point'] ?? null,
-            'tax' => $data['tax'] ?? null,
-            'commission_type' => $data['commission_type'] ?? 'percent',
-            'commission' => $commission,
-            'status' => Product::$pending,
-            'updated_at' => time(),
-            'created_at' => time(),
-        ]);
+        $product = new Product();
+        $product->creator_id = $data['creator_id'];
+        $product->type = $data['type'];
+        $product->category_id = null;
+        $product->price = null;
+        $product->unlimited_inventory = false;
+        $product->ordering = (!empty($data['ordering']) and $data['ordering'] == 'on');
+        $product->inventory = null;
+        $product->inventory_warning = null;
+        $product->delivery_fee = null;
+        $product->delivery_estimated_time = null;
+        $product->message_for_reviewer = null;
+        $product->point = $data['point'] ?? null;
+        $product->tax = $data['tax'] ?? null;
+        $product->commission_type = $data['commission_type'] ?? 'percent';
+        $product->commission = $commission;
+        $product->status = Product::$pending;
+        $product->updated_at = time();
+        $product->created_at = time();
+        // Parent slug is NOT NULL; bypass Astrotomic translation mapping.
+        $product->attributes['slug'] = $slug;
+        $product->save();
 
         if ($product) {
             ProductTranslation::updateOrCreate([
                 'product_id' => $product->id,
-                'locale' => mb_strtolower($data['locale']),
+                'locale' => $locale,
             ], [
                 'title' => $data['title'],
+                'slug' => $slug,
                 'seo_description' => $data['seo_description'],
                 'summary' => $data['summary'],
                 'description' => $data['description'],
             ]);
+
+            if ($locale === getDefaultLocaleCode()) {
+                DB::table('products')->where('id', $product->id)->update(['slug' => $slug]);
+            }
 
             $url = getAdminPanelUrl('/store/products/' . $product->id . '/edit?locale=' . $data['locale']);
 
@@ -488,7 +501,13 @@ class ProductsController extends Controller
             'creator_id' => 'required|exists:users,id',
             'type' => 'required|in:' . implode(',', Product::$productTypes),
             'title' => 'required|max:255',
-            'slug' => 'max:255|unique:products,slug,' . $product->id,
+            'slug' => [
+                'nullable',
+                'max:255',
+                Rule::unique('product_translations', 'slug')
+                    ->where(fn ($q) => $q->where('locale', mb_strtolower((string) ($data['locale'] ?? app()->getLocale()))))
+                    ->ignore($product->id, 'product_id'),
+            ],
             'seo_description' => 'required|max:255',
             'summary' => 'required',
             'description' => 'required',
@@ -503,9 +522,10 @@ class ProductsController extends Controller
 
         $this->validate($request, $rules);
 
-        if (empty($data['slug'])) {
-            $data['slug'] = Product::makeSlug($data['title']);
-        }
+        $locale = mb_strtolower((string) ($data['locale'] ?? app()->getLocale()));
+        $slug = !empty($data['slug'])
+            ? $data['slug']
+            : Product::makeLocalizedSlug($data['title'], $locale, $product->id);
 
         $data['unlimited_inventory'] = (!empty($data['unlimited_inventory']) and $data['unlimited_inventory'] == 'on');
 
@@ -534,10 +554,10 @@ class ProductsController extends Controller
             }
         }
 
+        // Never put slug in Eloquent update — Astrotomic would write the wrong locale.
         $product->update([
             'creator_id' => $data['creator_id'],
             'type' => $data['type'],
-            'slug' => $data['slug'],
             'category_id' => $data['category_id'],
             'price' => $data['price'],
             'unlimited_inventory' => $data['unlimited_inventory'],
@@ -558,13 +578,18 @@ class ProductsController extends Controller
 
         ProductTranslation::updateOrCreate([
             'product_id' => $product->id,
-            'locale' => mb_strtolower($data['locale']),
+            'locale' => $locale,
         ], [
             'title' => $data['title'],
+            'slug' => $slug,
             'seo_description' => $data['seo_description'],
             'summary' => $data['summary'],
             'description' => $data['description'],
         ]);
+
+        if ($locale === getDefaultLocaleCode()) {
+            DB::table('products')->where('id', $product->id)->update(['slug' => $slug]);
+        }
 
         $this->handleProductImages($product, $data);
 

@@ -12,6 +12,7 @@ use App\Models\Translation\BlogTranslation;
 use App\Models\Role;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BlogController extends Controller
 {
@@ -164,28 +165,38 @@ class BlogController extends Controller
         ]);
 
         $data = $request->all();
+        $locale = mb_strtolower((string) ($data['locale'] ?? app()->getLocale()));
+        $slug = !empty($data['slug'])
+            ? $data['slug']
+            : Blog::makeLocalizedSlug($data['title'], $locale);
 
-        $blog = Blog::create([
-            'slug' => Blog::makeSlug($data['title']),
-            'category_id' => $data['category_id'],
-            'author_id' => !empty($data['author_id']) ? $data['author_id'] : auth()->id(),
-            'image' => $data['image'],
-            'enable_comment' => (!empty($data['enable_comment']) and $data['enable_comment'] == 'on'),
-            'status' => (!empty($data['status']) and $data['status'] == 'on') ? 'publish' : 'pending',
-            'created_at' => time(),
-            'updated_at' => time(),
-        ]);
+        $blog = new Blog();
+        $blog->category_id = $data['category_id'];
+        $blog->author_id = !empty($data['author_id']) ? $data['author_id'] : auth()->id();
+        $blog->image = $data['image'];
+        $blog->enable_comment = (!empty($data['enable_comment']) and $data['enable_comment'] == 'on');
+        $blog->status = (!empty($data['status']) and $data['status'] == 'on') ? 'publish' : 'pending';
+        $blog->created_at = time();
+        $blog->updated_at = time();
+        // Parent slug is NOT NULL; bypass Astrotomic translation mapping.
+        $blog->attributes['slug'] = $slug;
+        $blog->save();
 
         if ($blog) {
             BlogTranslation::updateOrCreate([
                 'blog_id' => $blog->id,
-                'locale' => mb_strtolower($data['locale']),
+                'locale' => $locale,
             ], [
                 'title' => $data['title'],
+                'slug' => $slug,
                 'description' => $data['description'],
                 'meta_description' => $data['meta_description'],
                 'content' => $data['content'],
             ]);
+
+            if ($locale === getDefaultLocaleCode()) {
+                DB::table('blog')->where('id', $blog->id)->update(['slug' => $slug]);
+            }
 
             if ($blog->status == 'publish' and $blog->author_id != auth()->id()) {
                 $notifyOptions = [
@@ -232,6 +243,18 @@ class BlogController extends Controller
 
         $data = $request->all();
         $post = Blog::findOrFail($post_id);
+        $locale = mb_strtolower((string) ($data['locale'] ?? app()->getLocale()));
+
+        $existingSlug = BlogTranslation::query()
+            ->where('blog_id', $post->id)
+            ->where('locale', $locale)
+            ->value('slug');
+
+        $slug = !empty($data['slug'])
+            ? $data['slug']
+            : (!empty($existingSlug)
+                ? $existingSlug
+                : Blog::makeLocalizedSlug($data['title'], $locale, $post->id));
 
         $post->update([
             'category_id' => $data['category_id'],
@@ -245,13 +268,18 @@ class BlogController extends Controller
 
         BlogTranslation::updateOrCreate([
             'blog_id' => $post->id,
-            'locale' => mb_strtolower($data['locale']),
+            'locale' => $locale,
         ], [
             'title' => $data['title'],
+            'slug' => $slug,
             'description' => $data['description'],
             'meta_description' => $data['meta_description'],
             'content' => $data['content'],
         ]);
+
+        if ($locale === getDefaultLocaleCode()) {
+            DB::table('blog')->where('id', $post->id)->update(['slug' => $slug]);
+        }
 
         // Product Badge
         $this->handleProductBadges($post, $data);

@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\DB;
 /**
  * Restore category slugs from the albyan_2026-08-05 backup.
  *
- * Slugs live on `categories` (not translations). Saving an English translation
- * can regenerate the shared slug via Category::makeSlug($title).
+ * Writes Arabic slugs to category_translations.slug (locale=ar) and mirrors
+ * them onto categories.slug (parent / default-locale fallback).
  */
 class RestoreCategorySlugsCommand extends Command
 {
@@ -65,6 +65,7 @@ class RestoreCategorySlugsCommand extends Command
         $updated = 0;
         $unchanged = 0;
         $missing = 0;
+        $locale = 'ar';
 
         foreach (self::SLUG_MAP as $id => $targetSlug) {
             $category = Category::query()->find($id);
@@ -75,19 +76,45 @@ class RestoreCategorySlugsCommand extends Command
                 continue;
             }
 
-            $current = (string) $category->slug;
+            $currentParent = (string) DB::table('categories')->where('id', $id)->value('slug');
+            $currentTranslation = (string) (DB::table('category_translations')
+                ->where('category_id', $id)
+                ->where('locale', $locale)
+                ->value('slug') ?? '');
 
-            if ($current === $targetSlug) {
+            $parentMatches = $currentParent === $targetSlug;
+            $translationMatches = $currentTranslation === $targetSlug;
+
+            if ($parentMatches && $translationMatches) {
                 $unchanged++;
-                $rows[] = [$id, $current, $targetSlug, 'unchanged'];
+                $rows[] = [$id, $currentParent, $targetSlug, 'unchanged'];
                 continue;
             }
 
-            $rows[] = [$id, $current, $targetSlug, $dry ? 'would-update' : 'updated'];
+            $rows[] = [$id, $currentParent ?: $currentTranslation, $targetSlug, $dry ? 'would-update' : 'updated'];
 
             if (!$dry) {
-                // Bypass Sluggable observers; set the exact backup slug.
+                // Bypass Sluggable / Astrotomic; set the exact backup slug on parent + ar translation.
                 DB::table('categories')->where('id', $id)->update(['slug' => $targetSlug]);
+
+                $translationExists = DB::table('category_translations')
+                    ->where('category_id', $id)
+                    ->where('locale', $locale)
+                    ->exists();
+
+                if ($translationExists) {
+                    DB::table('category_translations')
+                        ->where('category_id', $id)
+                        ->where('locale', $locale)
+                        ->update(['slug' => $targetSlug]);
+                } else {
+                    DB::table('category_translations')->insert([
+                        'category_id' => $id,
+                        'locale' => $locale,
+                        'title' => $targetSlug,
+                        'slug' => $targetSlug,
+                    ]);
+                }
             }
 
             $updated++;
