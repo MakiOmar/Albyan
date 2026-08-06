@@ -13,6 +13,18 @@
 
         <div class="section-body">
 
+            {{-- Temporary live diagnostics: enable with ?debug=1 --}}
+            @if(!empty($navbarDebug))
+                <div class="card border-danger mb-3">
+                    <div class="card-header bg-danger text-white">
+                        Navbar links DEBUG (?debug=1) — remove after testing
+                    </div>
+                    <div class="card-body">
+                        <pre style="direction: ltr; text-align: left; white-space: pre-wrap; word-break: break-word; max-height: 520px; overflow: auto; margin: 0; font-size: 12px;">{{ json_encode($navbarDebug, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) }}</pre>
+                    </div>
+                </div>
+            @endif
+
             <div class="row">
                 <div class="col-12">
                     <div class="card">
@@ -30,15 +42,18 @@
                                         </div>
                                     @endif
 
-                                    <form action="{{ getAdminPanelUrl() }}/additional_page/navbar_links/store" method="post">
+                                    <form action="{{ getAdminPanelUrl() }}/additional_page/navbar_links/store{{ request()->query('debug') == '1' ? '?debug=1' : '' }}" method="post">
                                         {{ csrf_field() }}
 
                                         <input type="hidden" name="navbar_link" value="{{ !empty($navbarLinkKey) ? $navbarLinkKey : 'newLink' }}">
+                                        @if(request()->query('debug') == '1')
+                                            <input type="hidden" name="debug" value="1">
+                                        @endif
 
                                         @if(!empty(getGeneralSettings('content_translate')))
                                             <div class="form-group">
                                                 <label class="input-label">{{ trans('auth.language') }}</label>
-                                                <select name="locale" class="form-control js-edit-content-locale">
+                                                <select name="locale" class="form-control js-edit-content-locale js-navbar-links-locale">
                                                     @foreach($userLanguages as $lang => $language)
                                                         <option value="{{ $lang }}" @if(mb_strtolower(request()->get('locale', $selectedLocal)) == mb_strtolower($lang)) selected @endif>{{ $language }}</option>
                                                     @endforeach
@@ -100,18 +115,21 @@
                                     </tr>
 
                                     @if(!empty($items))
+                                        @php
+                                            $debugQs = request()->query('debug') == '1' ? '&debug=1' : '';
+                                        @endphp
                                         @foreach($items as $key => $val)
                                             <tr>
                                                 <td>{{ $val['title'] ?? '' }}</td>
                                                 <td>{{ $val['link'] ?? '' }}</td>
                                                 <td>{{ $val['order'] ?? '' }}</td>
                                                 <td>
-                                                    {{-- Keep locale on edit/delete so the correct translation row is targeted --}}
-                                                    <a href="{{ getAdminPanelUrl() }}/additional_page/navbar_links/{{ $key }}/edit?locale={{ urlencode($selectedLocal) }}" class="btn-sm" data-toggle="tooltip" data-placement="top" title="{{ trans('admin/main.edit') }}">
+                                                    {{-- Keep locale (+ optional debug) on edit/delete --}}
+                                                    <a href="{{ getAdminPanelUrl() }}/additional_page/navbar_links/{{ $key }}/edit?locale={{ urlencode($selectedLocal) }}{{ $debugQs }}" class="btn-sm" data-toggle="tooltip" data-placement="top" title="{{ trans('admin/main.edit') }}">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
 
-                                                    @include('admin.includes.delete_button',['url' => getAdminPanelUrl().'/additional_page/navbar_links/'. $key .'/delete?locale='.urlencode($selectedLocal),'btnClass' => 'btn-sm'])
+                                                    @include('admin.includes.delete_button',['url' => getAdminPanelUrl().'/additional_page/navbar_links/'. $key .'/delete?locale='.urlencode($selectedLocal).$debugQs,'btnClass' => 'btn-sm'])
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -127,3 +145,26 @@
         </div>
     </section>
 @endsection
+
+@push('scripts_bottom')
+    <script>
+        /* Preserve ?debug=1 while switching locale (global handler drops other query params). */
+        (function ($) {
+            $('body').off('change', '.js-navbar-links-locale').on('change', '.js-navbar-links-locale', function (e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                var val = $(this).val();
+                if (!val) {
+                    return;
+                }
+
+                var url = window.location.origin + window.location.pathname + '?locale=' + encodeURIComponent(val);
+                if (window.location.search.indexOf('debug=1') !== -1) {
+                    url += '&debug=1';
+                }
+                window.location.href = url;
+            });
+        })(jQuery);
+    </script>
+@endpush

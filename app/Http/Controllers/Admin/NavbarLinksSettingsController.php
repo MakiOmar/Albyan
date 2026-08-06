@@ -42,6 +42,7 @@ class NavbarLinksSettingsController extends Controller
             'selectedLocal' => $locale,
             'itemsSourceLocale' => $itemsSourceLocale,
             'localesWithItems' => $localesWithItems,
+            'navbarDebug' => $this->buildDebugPayload($request, $settings, $locale, $items, $itemsSourceLocale, $localesWithItems),
         ];
 
         return view('admin.additional_pages.' . $name, $data);
@@ -95,7 +96,7 @@ class NavbarLinksSettingsController extends Controller
         removeContentLocale();
         cache()->forget('settings.' . Setting::$navbarLinkName);
 
-        return redirect(getAdminPanelUrl() . '/additional_page/navbar_links?locale=' . urlencode($locale));
+        return redirect(getAdminPanelUrl() . '/additional_page/navbar_links?locale=' . urlencode($locale) . $this->debugQuerySuffix($request));
     }
 
     public function edit(Request $request, $link_key)
@@ -124,7 +125,23 @@ class NavbarLinksSettingsController extends Controller
             $result = (object) $items[$link_key];
         }
 
-        if (empty($result)) {
+        $navbarDebug = $this->buildDebugPayload(
+            $request,
+            $settings,
+            $locale,
+            $items,
+            $itemsSourceLocale,
+            $localesWithItems,
+            [
+                'action' => 'edit',
+                'link_key' => $link_key,
+                'link_key_found' => !empty($result),
+                'available_keys' => array_keys($items),
+            ]
+        );
+
+        // With ?debug=1, stay on the page instead of 404 so we can inspect keys/locale
+        if (empty($result) && !$this->wantsDebug($request)) {
             abort(404);
         }
 
@@ -136,6 +153,7 @@ class NavbarLinksSettingsController extends Controller
             'selectedLocal' => $locale,
             'itemsSourceLocale' => $itemsSourceLocale,
             'localesWithItems' => $localesWithItems,
+            'navbarDebug' => $navbarDebug,
         ];
 
         return view('admin.additional_pages.navbar_links', $data);
@@ -172,7 +190,7 @@ class NavbarLinksSettingsController extends Controller
 
             cache()->forget('settings.' . Setting::$navbarLinkName);
 
-            return redirect(getAdminPanelUrl() . '/additional_page/navbar_links?locale=' . urlencode($locale));
+            return redirect(getAdminPanelUrl() . '/additional_page/navbar_links?locale=' . urlencode($locale) . $this->debugQuerySuffix($request));
         }
 
         abort(404);
@@ -181,6 +199,93 @@ class NavbarLinksSettingsController extends Controller
     private function resolveLocale(Request $request): string
     {
         return mb_strtolower((string) $request->get('locale', getDefaultLocale()));
+    }
+
+    private function wantsDebug(Request $request): bool
+    {
+        return $request->query('debug') === '1' || $request->query('debug') === 1;
+    }
+
+    private function debugQuerySuffix(Request $request): string
+    {
+        return $this->wantsDebug($request) ? '&debug=1' : '';
+    }
+
+    /**
+     * Temporary live diagnostics for ?debug=1 on this admin page.
+     *
+     * @param  array<string, mixed>  $extra
+     * @return array<string, mixed>|null
+     */
+    private function buildDebugPayload(
+        Request $request,
+        Setting $settings,
+        string $locale,
+        array $items,
+        string $itemsSourceLocale,
+        array $localesWithItems,
+        array $extra = []
+    ): ?array {
+        if (!$this->wantsDebug($request)) {
+            return null;
+        }
+
+        $rows = SettingTranslation::where('setting_id', $settings->id)
+            ->get(['id', 'locale', 'value']);
+
+        $translationRows = [];
+        foreach ($rows as $row) {
+            $decoded = json_decode((string) $row->value, true);
+            $decodedKeys = is_array($decoded) ? array_keys($decoded) : [];
+            $parsedItems = $this->decodeItems($row->value);
+
+            $translationRows[] = [
+                'id' => $row->id,
+                'locale_raw' => $row->locale,
+                'locale_lower' => mb_strtolower((string) $row->locale),
+                'value_bytes' => strlen((string) $row->value),
+                'json_error' => json_last_error_msg(),
+                'top_level_keys' => $decodedKeys,
+                'decoded_item_keys' => array_keys($parsedItems),
+                'decoded_item_count' => count($parsedItems),
+                'value_preview' => mb_substr((string) $row->value, 0, 500),
+            ];
+        }
+
+        $frontHelperCount = 0;
+        $frontHelperError = null;
+        try {
+            $frontLinks = getNavbarLinks();
+            $frontHelperCount = is_array($frontLinks) ? count($frontLinks) : 0;
+        } catch (\Throwable $e) {
+            $frontHelperError = $e->getMessage();
+        }
+
+        $cached = cache()->get('settings.' . Setting::$navbarLinkName);
+
+        return array_merge([
+            'enabled' => true,
+            'route' => $request->path(),
+            'query' => $request->query(),
+            'app_locale' => app()->getLocale(),
+            'default_locale' => getDefaultLocale(),
+            'selected_locale' => $locale,
+            'items_source_locale' => $itemsSourceLocale,
+            'locales_with_items' => $localesWithItems,
+            'setting_id' => $settings->id,
+            'setting_name' => $settings->name,
+            'setting_page' => $settings->page ?? null,
+            'items_count' => count($items),
+            'item_keys' => array_keys($items),
+            'items_snapshot' => $items,
+            'translation_row_count' => count($translationRows),
+            'translation_rows' => $translationRows,
+            'front_getNavbarLinks_count' => $frontHelperCount,
+            'front_getNavbarLinks_error' => $frontHelperError,
+            'cache_settings_navbar_links_present' => $cached !== null,
+            'cache_settings_type' => is_object($cached) ? get_class($cached) : gettype($cached),
+            'content_locale_session' => getContentLocale(),
+        ], $extra);
     }
 
     /**
