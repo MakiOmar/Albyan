@@ -38,7 +38,7 @@ class LearningPageController extends Controller
 
         $webinarController = new WebinarController();
 
-        $data = $webinarController->course($slug, true);
+        $data = $webinarController->loadCourse($slug, true);
 
         $course = $data['course'];
         $user = $data['user'];

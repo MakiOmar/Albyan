@@ -51,7 +51,24 @@ class WebinarController extends Controller
         return $nearest;
     }
 
-    public function course($slug, $justReturnData = false)
+    /**
+     * Public course page under /{locale}/course/{slug}.
+     * Locale is a route param; keep it out of optional args so Laravel does not
+     * shift {locale} into $slug and the real slug into $justReturnData (empty 200).
+     */
+    public function course($locale, $slug)
+    {
+        return $this->loadCourse($slug, false);
+    }
+
+    /**
+     * Load course page data (shared with the learning page).
+     *
+     * @param  string  $slug
+     * @param  bool  $justReturnData
+     * @return array|\Illuminate\Http\RedirectResponse|\Illuminate\View\View|false
+     */
+    public function loadCourse($slug, $justReturnData = false)
     {
         $user = null;
 
@@ -213,7 +230,7 @@ class WebinarController extends Controller
             ->first();
 
         if (empty($course)) {
-            return $justReturnData ? false : back();
+            return $justReturnData ? false : abort(404);
         }
 
         // Marketing/deep links: /course/{slug}?program=apply → diploma application form with course title
