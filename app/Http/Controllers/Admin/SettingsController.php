@@ -135,7 +135,9 @@ class SettingsController extends Controller
             if (!empty($settings->value)) {
                 $values = json_decode($settings->value, true);
 
-                $values['locale'] = mb_strtoupper($settings->locale);
+                // Use the request/content locale — never $settings->locale (Translatable
+                // exposes locale() as a non-relation method and Laravel 11 throws).
+                $values['locale'] = mb_strtoupper($locale);
             }
         }
 
