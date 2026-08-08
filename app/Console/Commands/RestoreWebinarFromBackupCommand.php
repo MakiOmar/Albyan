@@ -16,12 +16,14 @@ class RestoreWebinarFromBackupCommand extends Command
 {
     protected $signature = 'webinars:restore-from-backup
                             {id? : Webinar ID to restore (default: restores built-in 2204 and 2492)}
-                            {--dump= : Path to a .sql mysqldump to extract the webinar from}
+                            {--dump= : Path to a .sql mysqldump (skip interactive backup picker)}
+                            {--backup-dir=/root : Directory to list SQL backups from (SSH root home)}
                             {--force : Update existing row instead of skipping}
                             {--dry-run : Show what would be written without writing}
-                            {--teacher= : Override teacher_id/creator_id if backup teacher is missing}';
+                            {--teacher= : Override teacher_id/creator_id if backup teacher is missing}
+                            {--builtin : Use embedded JSON payloads instead of a dump file}';
 
-    protected $description = 'Recreate a deleted webinar/course from SQL backup data (built-in 2204/2492 or --dump=)';
+    protected $description = 'Recreate a deleted webinar/course from /root SQL backups or built-in payloads';
 
     /** @var array<int, array<string, mixed>> */
     private array $builtinWebinars = [];
@@ -34,23 +36,43 @@ class RestoreWebinarFromBackupCommand extends Command
         $this->loadBuiltinPayloads();
 
         $idArg = $this->argument('id');
-        $dump = $this->option('dump');
+        $dump = trim((string) ($this->option('dump') ?: ''));
         $dry = (bool) $this->option('dry-run');
         $force = (bool) $this->option('force');
+        $useBuiltin = (bool) $this->option('builtin');
 
         $ids = [];
         if ($idArg !== null && $idArg !== '') {
             $ids[] = (int) $idArg;
         } else {
             $ids = array_keys($this->builtinWebinars);
-            $this->comment('No ID given — restoring built-in courses: ' . implode(', ', $ids));
+            if (empty($ids)) {
+                $ids = [2492, 2204];
+            }
+            $this->comment('No ID given — will restore: ' . implode(', ', $ids));
         }
 
-        if (!empty($dump)) {
+        // Interactive backup picker when no dump path was given.
+        if ($dump === '' && !$useBuiltin) {
+            try {
+                $dump = $this->pickDumpInteractively();
+            } catch (\RuntimeException $e) {
+                $this->warn($e->getMessage());
+                return self::FAILURE;
+            }
+            if ($dump === null) {
+                // User chose built-in payloads (or none available).
+                $useBuiltin = true;
+            }
+        }
+
+        if (!$useBuiltin && $dump !== '') {
             if (!is_file($dump)) {
                 $this->error("Dump not found: {$dump}");
                 return self::FAILURE;
             }
+
+            $this->info("Using dump: {$dump}");
             foreach ($ids as $id) {
                 $extracted = $this->extractFromDump($dump, $id);
                 if (empty($extracted['webinar'])) {
@@ -60,6 +82,8 @@ class RestoreWebinarFromBackupCommand extends Command
                 $this->builtinWebinars[$id] = $extracted['webinar'];
                 $this->builtinTranslations[$id] = $extracted['translations'];
             }
+        } elseif ($useBuiltin) {
+            $this->comment('Using embedded JSON payloads (database/data/webinar_restore).');
         }
 
         $ok = 0;
@@ -73,6 +97,84 @@ class RestoreWebinarFromBackupCommand extends Command
         $this->info("Done. Restored/verified {$ok}/" . count($ids) . " course(s).");
 
         return $ok === count($ids) ? self::SUCCESS : self::FAILURE;
+    }
+
+    /**
+     * List SQL files under the backup dir (default /root) and ask which to use.
+     * Returns absolute path, or null to use built-in payloads.
+     */
+    private function pickDumpInteractively(): ?string
+    {
+        $dir = (string) $this->option('backup-dir');
+        $dir = $dir !== '' ? $dir : '/root';
+
+        if (!is_dir($dir)) {
+            $this->warn("Backup directory not found: {$dir}");
+            if (!empty($this->builtinWebinars)) {
+                $this->comment('Falling back to built-in payloads.');
+                return null;
+            }
+            $this->error('No backups and no built-in payloads available.');
+            return null;
+        }
+
+        $files = glob(rtrim($dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . '*.sql') ?: [];
+        // Prefer newest first.
+        usort($files, static fn ($a, $b) => filemtime($b) <=> filemtime($a));
+
+        if (empty($files)) {
+            $this->warn("No *.sql files in {$dir}");
+            return empty($this->builtinWebinars) ? null : null;
+        }
+
+        $this->newLine();
+        $this->info("SQL backups in {$dir}:");
+
+        $choices = [];
+        $labels = [];
+        foreach ($files as $i => $path) {
+            $sizeMb = round(filesize($path) / 1048576, 1);
+            $mtime = date('Y-m-d H:i', filemtime($path));
+            $label = sprintf('%s  (%s MB, %s)', basename($path), $sizeMb, $mtime);
+            $key = (string) ($i + 1);
+            $choices[$key] = $path;
+            $labels[$key] = $label;
+            $this->line(sprintf('  [%s] %s', $key, $label));
+        }
+
+        $builtinKey = 'builtin';
+        if (!empty($this->builtinWebinars)) {
+            $labels[$builtinKey] = 'Use embedded JSON payloads (no dump file)';
+            $this->line(sprintf('  [%s] %s', $builtinKey, $labels[$builtinKey]));
+        }
+
+        $cancelKey = 'cancel';
+        $labels[$cancelKey] = 'Cancel';
+        $this->line(sprintf('  [%s] %s', $cancelKey, $labels[$cancelKey]));
+
+        if (!$this->input->isInteractive()) {
+            // Non-interactive (CI): prefer newest dump when present.
+            $newest = $files[0];
+            $this->warn("Non-interactive mode — using newest dump: {$newest}");
+            return $newest;
+        }
+
+        $picked = $this->choice(
+            'Which backup should be used for restore?',
+            array_values($labels),
+            0
+        );
+
+        // Map label back to key/path.
+        $selectedKey = array_search($picked, $labels, true);
+        if ($selectedKey === false || $selectedKey === $cancelKey) {
+            throw new \RuntimeException('Restore cancelled.');
+        }
+        if ($selectedKey === $builtinKey) {
+            return null;
+        }
+
+        return $choices[$selectedKey] ?? null;
     }
 
     private function loadBuiltinPayloads(): void
