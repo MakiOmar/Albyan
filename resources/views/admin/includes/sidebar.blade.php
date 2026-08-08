@@ -1784,6 +1784,9 @@
                         <li class="{{ (request()->is(getAdminPanelUrl('/tools/database-search-replace', false))) ? 'active' : '' }}">
                             <a class="nav-link" href="{{ getAdminPanelUrl() }}/tools/database-search-replace">{{ trans('admin/main.tools_database_search_replace') }}</a>
                         </li>
+                        <li class="{{ (request()->is(getAdminPanelUrl('/tools/database-backup*', false))) ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ getAdminPanelUrl() }}/tools/database-backup">{{ trans('admin/main.tools_database_backup') }}</a>
+                        </li>
                     </ul>
                 </li>
             @endcan

@@ -844,7 +844,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/{id}/toggle', 'PagesController@statusTaggle');
         });
 
-        // Admin tools (search & replace)
+        // Admin tools (search & replace + database backup)
         Route::group(['prefix' => 'tools'], function () {
             Route::get('/pages-search-replace', 'ToolsController@pagesSearchReplace');
             Route::post('/pages-search-replace/preview', 'ToolsController@pagesSearchReplacePreview');
@@ -852,6 +852,16 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             Route::get('/database-search-replace', 'ToolsController@databaseSearchReplace');
             Route::post('/database-search-replace/preview', 'ToolsController@databaseSearchReplacePreview');
             Route::post('/database-search-replace/apply', 'ToolsController@databaseSearchReplaceApply');
+
+            // Full MySQL dump create / download / delete / restore (admin_settings)
+            Route::get('/database-backup', 'DatabaseBackupController@index');
+            Route::post('/database-backup', 'DatabaseBackupController@store');
+            Route::get('/database-backup/{file}/download', 'DatabaseBackupController@download')
+                ->where('file', '^[A-Za-z0-9._-]+\.sql$');
+            Route::post('/database-backup/{file}/delete', 'DatabaseBackupController@destroy')
+                ->where('file', '^[A-Za-z0-9._-]+\.sql$');
+            Route::post('/database-backup/{file}/restore', 'DatabaseBackupController@restore')
+                ->where('file', '^[A-Za-z0-9._-]+\.sql$');
         });
 
         Route::group(['prefix' => 'agora_history'], function () {
