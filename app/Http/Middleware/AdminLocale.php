@@ -34,6 +34,9 @@ class AdminLocale
         $defaultLocale = getDefaultLocale();
         view()->share('defaultLocale', $defaultLocale);
 
+        // Language switcher needs the current admin URL (including query filters).
+        view()->share('previousUrl', $request->fullUrl());
+
         return $next($request);
     }
 }

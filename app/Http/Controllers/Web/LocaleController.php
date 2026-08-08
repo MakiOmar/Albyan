@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Session;
 
 class LocaleController extends Controller
 {
@@ -37,6 +38,9 @@ class LocaleController extends Controller
             } else {
                 Cookie::queue('user_locale', $locale, 30 * 24 * 60);
             }
+
+            // Admin (and front) UI language is driven by session; keep it in sync.
+            Session::put('locale', mb_strtolower($locale));
         }
 
         $previousUrl = $request->get('previous_url');
@@ -71,6 +75,13 @@ class LocaleController extends Controller
             $segments = array_values(array_slice($segments, 1));
             $path = '/' . implode('/', $segments);
             $path = rtrim($path, '/') ?: '/';
+        }
+
+        // Admin panel lives outside /{locale}/... — never prefix it or filters break as a front 404.
+        $adminPrefix = mb_strtolower((string) getAdminPanelUrlPrefix());
+        $bareSegments = array_values(array_filter(explode('/', $path)));
+        if (!empty($bareSegments) && mb_strtolower($bareSegments[0]) === $adminPrefix) {
+            return redirect($path . $query);
         }
 
         return redirect(buildLocalizedSwitchPath($path, $currentLocale, $localeSegment) . $query);
