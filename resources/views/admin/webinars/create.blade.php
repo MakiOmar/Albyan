@@ -102,8 +102,9 @@
                                             </div>
 
                                             <div class="form-group mt-15">
+                                                {{-- Comment: Class URL / slug field — value uses per-locale slug for the active edit locale --}}
                                                 <label class="input-label">{{ trans('admin/main.class_url') }}</label>
-                                                <input type="text" name="slug" value="{{ !empty($webinar) ? $webinar->slug : old('slug') }}" class="form-control @error('slug')  is-invalid @enderror" placeholder=""/>
+                                                <input type="text" name="slug" value="{{ old('slug', !empty($webinar) ? $webinar->slug : '') }}" class="form-control @error('slug')  is-invalid @enderror" placeholder="" dir="auto"/>
                                                 <div class="text-muted text-small mt-1">{{ trans('admin/main.class_url_hint') }}</div>
                                                 @error('slug')
                                                 <div class="invalid-feedback">

@@ -25,8 +25,17 @@ trait HasLocalizedSlug
 
         $slug = DB::table($translationTable)
             ->where($foreignKey, $this->getKey())
-            ->whereRaw('LOWER(locale) = ?', [$locale])
+            ->where('locale', $locale)
             ->value('slug');
+
+        if ($slug === null || $slug === '') {
+            // Case-insensitive fallback for legacy uppercase locales (AR / EN).
+            $slug = DB::table($translationTable)
+                ->where($foreignKey, $this->getKey())
+                ->whereRaw('LOWER(locale) = ?', [$locale])
+                ->orderByDesc('id')
+                ->value('slug');
+        }
 
         if (!empty($slug)) {
             return (string) $slug;
@@ -67,20 +76,30 @@ trait HasLocalizedSlug
         $translationTable = app()->make($this->getTranslationModelName())->getTable();
         $foreignKey = $this->getTranslationRelationKey();
 
-        $existingId = DB::table($translationTable)
+        $ids = DB::table($translationTable)
             ->where($foreignKey, $this->getKey())
             ->whereRaw('LOWER(locale) = ?', [$locale])
-            ->value('id');
+            ->orderBy('id')
+            ->pluck('id');
 
         $payload = array_merge($attributes, [
             $foreignKey => $this->getKey(),
             'locale' => $locale,
         ]);
 
-        if ($existingId) {
-            DB::table($translationTable)->where('id', $existingId)->update($payload);
-        } else {
+        if ($ids->isEmpty()) {
             DB::table($translationTable)->insert($payload);
+
+            return;
+        }
+
+        // Keep the oldest row, normalize locale, apply attributes, drop case-duplicates.
+        $keepId = (int) $ids->first();
+        DB::table($translationTable)->where('id', $keepId)->update($payload);
+
+        $extras = $ids->slice(1)->values()->all();
+        if (!empty($extras)) {
+            DB::table($translationTable)->whereIn('id', $extras)->delete();
         }
     }
 

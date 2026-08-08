@@ -534,17 +534,10 @@ class WebinarController extends Controller
             abort(404);
         }
 
-        // Prefer admin UI locale when a translation exists; otherwise the site
-        // default (e.g. AR). Prevents saving EN slug while showing AR-only content.
+        // Prefer explicit ?locale=, otherwise the site default (AR). Do not open EN just because
+        // the admin UI language is English — that made AR slug edits land on the EN row.
         $locale = $request->get('locale');
-        if ($locale === null || $locale === '') {
-            $uiLocale = mb_strtolower((string) app()->getLocale());
-            $locale = $webinar->hasLocaleTranslation($uiLocale)
-                ? $uiLocale
-                : getDefaultLocaleCode();
-        } else {
-            $locale = mb_strtolower((string) $locale);
-        }
+        $locale = mb_strtolower((string) (($locale !== null && $locale !== '') ? $locale : getDefaultLocaleCode()));
         storeContentLocale($locale, $webinar->getTable(), $webinar->id);
 
         $categories = Category::where('parent_id', null)
@@ -621,6 +614,12 @@ class WebinarController extends Controller
             'price' => 'nullable|numeric|min:0',
         ];
 
+        // Parent webinars.slug is UNIQUE — validate it when mirroring the default locale.
+        $requestLocale = mb_strtolower((string) ($data['locale'] ?? app()->getLocale()));
+        if ($requestLocale === getDefaultLocaleCode()) {
+            $rules['slug'][] = Rule::unique('webinars', 'slug')->ignore($webinar->id);
+        }
+
         if ($webinar->isWebinar()) {
             $rules['start_date'] = 'required|date';
             $rules['duration'] = 'required';
@@ -656,12 +655,17 @@ class WebinarController extends Controller
         }
 
 
-        if (empty($data['slug'])) {
+        // Only auto-generate when the slug field was omitted/blank — never discard a typed slug.
+        $slugInput = $request->input('slug');
+        if ($slugInput === null || trim((string) $slugInput) === '') {
             $data['slug'] = Webinar::makeLocalizedSlug(
                 $data['title'],
                 mb_strtolower((string) ($data['locale'] ?? app()->getLocale())),
                 $webinar->id
             );
+        } else {
+            // Keep the exact admin-typed value (including consecutive hyphens).
+            $data['slug'] = trim((string) $slugInput);
         }
 
         $data['status'] = $publish ? Webinar::$active : ($reject ? Webinar::$inactive : ($isDraft ? Webinar::$isDraft : Webinar::$pending));
@@ -755,7 +759,7 @@ class WebinarController extends Controller
         $data['organization_price'] = !empty($data['organization_price']) ? convertPriceToDefaultCurrency($data['organization_price']) : null;
 
         $locale = mb_strtolower((string) ($data['locale'] ?? app()->getLocale()));
-        $slug = $data['slug'];
+        $slug = trim((string) $data['slug']);
 
         // Use query builder — Eloquent update runs Sluggable, which sets slug via Astrotomic
         // and can INSERT a translation row with only slug (title has no DB default).
@@ -788,18 +792,31 @@ class WebinarController extends Controller
             'message_for_reviewer' => $data['message_for_reviewer'] ?? null,
             'status' => $data['status'],
             'updated_at' => time(),
-            // Mirror parent slug only for the default site locale.
-            ...(($locale === getDefaultLocaleCode()) ? ['slug' => $slug] : []),
         ]);
 
         $webinar->refresh();
 
+        // Write translation slug first (per-locale truth), then mirror parent for default locale.
         $webinar->saveLocaleTranslation($locale, [
             'title' => $data['title'],
             'slug' => $slug,
             'description' => $data['description'],
             'seo_description' => $data['seo_description'],
         ]);
+
+        if ($locale === getDefaultLocaleCode()) {
+            try {
+                DB::table('webinars')->where('id', $webinar->id)->update(['slug' => $slug]);
+            } catch (\Throwable $e) {
+                removeContentLocale();
+
+                return redirect(getAdminPanelUrl() . '/webinars/' . $webinar->id . '/edit?locale=' . $locale)
+                    ->withErrors([
+                        'slug' => 'Could not update the main course URL slug (it may already be used by another course). The locale translation slug was saved.',
+                    ])
+                    ->withInput();
+            }
+        }
 
         if ($publish) {
             sendNotification('course_approve', ['[c.title]' => $webinar->title], $webinar->teacher_id);
@@ -823,7 +840,14 @@ class WebinarController extends Controller
 
         removeContentLocale();
 
-        return redirect(getAdminPanelUrl() . '/webinars/' . $webinar->id . '/edit?locale=' . $locale);
+        return redirect(getAdminPanelUrl() . '/webinars/' . $webinar->id . '/edit?locale=' . $locale)
+            ->with([
+                'toast' => [
+                    'title' => trans('public.request_success'),
+                    'msg' => 'Saved. Slug (' . $locale . '): ' . $slug,
+                    'status' => 'success',
+                ],
+            ]);
     }
 
     public function destroy(Request $request, $id)
