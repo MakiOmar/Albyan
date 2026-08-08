@@ -252,16 +252,28 @@ class DiagnoseWebinarCommand extends Command
             $added = false;
 
             if ($titleHint !== '') {
-                $q->where('t.title', 'like', '%' . $titleHint . '%');
+                $variants = $this->arabicSearchVariants($titleHint);
+                $q->where(function ($inner) use ($variants) {
+                    foreach ($variants as $i => $variant) {
+                        $method = $i === 0 ? 'where' : 'orWhere';
+                        $inner->{$method}('t.title', 'like', '%' . $variant . '%');
+                    }
+                });
                 $added = true;
             }
 
             if ($slugHint !== '') {
                 $method = $added ? 'orWhere' : 'where';
-                $q->{$method}(function ($inner) use ($slugHint, $hasSlugCol) {
-                    $inner->where('w.slug', 'like', '%' . $slugHint . '%');
-                    if ($hasSlugCol) {
-                        $inner->orWhere('t.slug', 'like', '%' . $slugHint . '%');
+                $variants = $this->arabicSearchVariants($slugHint);
+                $q->{$method}(function ($inner) use ($variants, $hasSlugCol) {
+                    foreach ($variants as $i => $variant) {
+                        $m = $i === 0 ? 'where' : 'orWhere';
+                        $inner->{$m}(function ($slugQ) use ($variant, $hasSlugCol) {
+                            $slugQ->where('w.slug', 'like', '%' . $variant . '%');
+                            if ($hasSlugCol) {
+                                $slugQ->orWhere('t.slug', 'like', '%' . $variant . '%');
+                            }
+                        });
                     }
                 });
             }
@@ -310,6 +322,28 @@ class DiagnoseWebinarCommand extends Command
         } catch (\Throwable $e) {
             $this->warn("  /{$locale}/course/{$slug} → lookup error: " . $e->getMessage());
         }
+    }
+
+    /**
+     * Expand Arabic search text with Yeh/Alef variants so Persian ی matches ي.
+     *
+     * @return array<int, string>
+     */
+    private function arabicSearchVariants(string $text): array
+    {
+        $text = trim($text);
+        if ($text === '') {
+            return [];
+        }
+
+        $variants = [
+            $text,
+            str_replace(['ی', 'ى'], 'ي', $text),
+            str_replace('ي', 'ی', $text),
+            str_replace(['أ', 'إ', 'آ'], 'ا', $text),
+        ];
+
+        return array_values(array_unique(array_filter($variants)));
     }
 
     private function boolLabel($value): string
