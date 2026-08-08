@@ -9,19 +9,61 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * Diagnose why a webinar/course is missing from the admin list or front.
+ * Search by ID and/or title fragment.
  */
 class DiagnoseWebinarCommand extends Command
 {
     protected $signature = 'webinars:diagnose
-                            {id : Webinar / course ID}
-                            {--title= : Optional title fragment to search if ID row is missing}';
+                            {id? : Webinar / course ID (optional if --title is given)}
+                            {--title= : Title fragment to search (Arabic/English)}
+                            {--slug= : Slug fragment to search}
+                            {--limit=30 : Max search results}';
 
     protected $description = 'Explain why a webinar/course may be missing from the admin list or front';
 
     public function handle(): int
     {
-        $id = (int) $this->argument('id');
+        $idArg = $this->argument('id');
+        $id = ($idArg !== null && $idArg !== '') ? (int) $idArg : null;
         $titleHint = trim((string) $this->option('title'));
+        $slugHint = trim((string) $this->option('slug'));
+        $limit = max(1, (int) $this->option('limit'));
+
+        if (empty($id) && $titleHint === '' && $slugHint === '') {
+            $this->error('Provide an ID and/or --title=... and/or --slug=...');
+            $this->line('Examples:');
+            $this->line('  php artisan webinars:diagnose 2204');
+            $this->line('  php artisan webinars:diagnose --title="العلوم الامنية"');
+            $this->line('  php artisan webinars:diagnose --slug="Security-Sciences"');
+
+            return self::FAILURE;
+        }
+
+        // Title / slug search mode (also used when ID is missing or not found).
+        if ($titleHint !== '' || $slugHint !== '') {
+            $matches = $this->searchCourses($titleHint, $slugHint, $limit);
+
+            if ($matches->isEmpty()) {
+                $this->error('No courses matched the search.');
+                return self::FAILURE;
+            }
+
+            $this->info('Search results:');
+            $this->printSearchTable($matches);
+            $this->newLine();
+
+            if (empty($id)) {
+                if ($matches->count() === 1) {
+                    $id = (int) $matches->first()->id;
+                    $this->comment("Only one match — diagnosing #{$id}");
+                    $this->newLine();
+                } else {
+                    $this->comment('Multiple matches. Re-run with a specific ID, e.g.:');
+                    $this->line('  php artisan webinars:diagnose ' . $matches->first()->id);
+                    return self::SUCCESS;
+                }
+            }
+        }
 
         $this->info("Diagnosing webinar/course #{$id}");
         $this->newLine();
@@ -30,7 +72,9 @@ class DiagnoseWebinarCommand extends Command
 
         if (!$row) {
             $this->error("No row in webinars for id={$id}.");
-            $this->searchByTitle($titleHint ?: 'العلوم الامنية');
+            if ($titleHint === '' && $slugHint === '') {
+                $this->comment('Try: php artisan webinars:diagnose --title="..."');
+            }
 
             return self::FAILURE;
         }
@@ -76,16 +120,16 @@ class DiagnoseWebinarCommand extends Command
             $this->table(
                 $hasSlugCol ? ['id', 'locale', 'title', 'slug'] : ['id', 'locale', 'title'],
                 $translations->map(function ($t) use ($hasSlugCol) {
-                    $row = [
+                    $rowData = [
                         $t->id,
                         $t->locale,
                         mb_substr((string) $t->title, 0, 80),
                     ];
                     if ($hasSlugCol) {
-                        $row[] = (string) ($t->slug ?? '');
+                        $rowData[] = (string) ($t->slug ?? '');
                     }
 
-                    return $row;
+                    return $rowData;
                 })->all()
             );
 
@@ -113,11 +157,11 @@ class DiagnoseWebinarCommand extends Command
         }
 
         if ((string) $row->type !== 'webinar') {
-            $reasons[] = 'TYPE: admin "webinars" list defaults to type=webinar, but this row type="' . $row->type . '". Open Courses / Text lessons tab, or /admin/webinars?type=' . $row->type;
+            $reasons[] = 'TYPE: admin "webinars" list defaults to type=webinar, but this row type="' . $row->type . '". Open Courses tab, or /admin/webinars?type=' . $row->type;
         }
 
         if ((string) $row->status !== 'active') {
-            $reasons[] = 'STATUS: status="' . $row->status . '" (not active). Status filters / some badges may hide it; it still appears in the unfiltered type list.';
+            $reasons[] = 'STATUS: status="' . $row->status . '" (not active).';
         }
 
         if (!empty($row->private)) {
@@ -136,10 +180,13 @@ class DiagnoseWebinarCommand extends Command
             $reasons[] = 'CATEGORY: category_id=' . $row->category_id . ' missing from categories.';
         }
 
-        // Front /ar|en course lookup by localization.
         $this->newLine();
         $this->line('=== Front URL check ===');
         $hasSlugCol = Schema::hasColumn('webinar_translations', 'slug');
+        $slugCandidates = [];
+        if (!empty($row->slug)) {
+            $slugCandidates['parent'] = (string) $row->slug;
+        }
         foreach ($translations as $t) {
             $locale = mb_strtolower((string) $t->locale);
             $slug = $hasSlugCol ? (string) ($t->slug ?: $row->slug) : (string) ($row->slug ?? '');
@@ -147,39 +194,13 @@ class DiagnoseWebinarCommand extends Command
                 $this->warn("  /{$locale}/course/… — empty slug for locale {$t->locale}");
                 continue;
             }
-            try {
-                $found = Webinar::query()->whereLocalizedSlug($slug, $locale)->where('id', $id)->exists();
-                $this->line(sprintf(
-                    '  /%s/course/%s → %s',
-                    $locale,
-                    $slug,
-                    $found ? '<fg=green>resolves</>' : '<fg=red>does not resolve</>'
-                ));
-            } catch (\Throwable $e) {
-                $this->warn("  /{$locale}/course/{$slug} → lookup error: " . $e->getMessage());
-            }
+            $slugCandidates[$locale] = $slug;
+            $this->checkFrontSlug($id, $locale, $slug);
         }
 
-        if (Schema::hasTable('delete_requests') || Schema::hasTable('content_delete_requests')) {
-            $table = Schema::hasTable('content_delete_requests') ? 'content_delete_requests' : 'delete_requests';
-            $cols = Schema::getColumnListing($table);
-            if (in_array('webinar_id', $cols, true) || in_array('targetable_id', $cols, true)) {
-                $this->newLine();
-                $this->line("=== {$table} ===");
-                try {
-                    if (in_array('webinar_id', $cols, true)) {
-                        $reqs = DB::table($table)->where('webinar_id', $id)->get();
-                    } else {
-                        $reqs = DB::table($table)
-                            ->where('targetable_id', $id)
-                            ->where('targetable_type', 'like', '%Webinar%')
-                            ->get();
-                    }
-                    $this->line($reqs->isEmpty() ? '  none' : json_encode($reqs, JSON_UNESCAPED_UNICODE));
-                } catch (\Throwable $e) {
-                    $this->warn('  could not query: ' . $e->getMessage());
-                }
-            }
+        // Also try parent slug under default locale if not already checked.
+        if (!empty($row->slug) && !isset($slugCandidates['ar'])) {
+            $this->checkFrontSlug($id, 'ar', (string) $row->slug);
         }
 
         $this->newLine();
@@ -187,13 +208,14 @@ class DiagnoseWebinarCommand extends Command
         if (empty($reasons)) {
             $this->info('Row exists and should appear in the admin list for type="' . $row->type . '".');
             $this->line('If you still cannot see it, clear list filters (title / teacher / category / status) and check pagination.');
+            $this->line('After a slug change, old URLs 404 — use the current slug above.');
         } else {
             foreach ($reasons as $reason) {
                 $this->warn('• ' . $reason);
             }
+            $this->line('After a slug change, old URLs 404 — use the current slug listed above.');
         }
 
-        // Quick counts for list context.
         $this->newLine();
         $sameTypeCount = DB::table('webinars')->where('type', $row->type)->count();
         $this->line("Same type=\"{$row->type}\" count: {$sameTypeCount}");
@@ -201,45 +223,93 @@ class DiagnoseWebinarCommand extends Command
         return self::SUCCESS;
     }
 
-    private function searchByTitle(string $hint): void
+    /**
+     * @return \Illuminate\Support\Collection<int, object>
+     */
+    private function searchCourses(string $titleHint, string $slugHint, int $limit)
     {
-        if ($hint === '') {
-            return;
-        }
+        $hasSlugCol = Schema::hasColumn('webinar_translations', 'slug');
 
-        $this->newLine();
-        $this->line("Searching titles like %{$hint}% …");
-
-        $rows = DB::table('webinar_translations as t')
-            ->join('webinars as w', 'w.id', '=', 't.webinar_id')
-            ->where('t.title', 'like', '%' . $hint . '%')
-            ->orderByDesc('w.id')
-            ->limit(20)
-            ->get([
+        $query = DB::table('webinars as w')
+            ->leftJoin('webinar_translations as t', 't.webinar_id', '=', 'w.id')
+            ->select([
                 'w.id',
                 'w.type',
                 'w.status',
+                'w.private',
                 'w.slug as parent_slug',
                 't.locale',
                 't.title',
-            ]);
+            ])
+            ->orderByDesc('w.id')
+            ->limit($limit);
 
-        if ($rows->isEmpty()) {
-            $this->warn('No title matches.');
-            return;
+        if ($hasSlugCol) {
+            $query->addSelect('t.slug as translation_slug');
         }
 
+        $query->where(function ($q) use ($titleHint, $slugHint, $hasSlugCol) {
+            $added = false;
+
+            if ($titleHint !== '') {
+                $q->where('t.title', 'like', '%' . $titleHint . '%');
+                $added = true;
+            }
+
+            if ($slugHint !== '') {
+                $method = $added ? 'orWhere' : 'where';
+                $q->{$method}(function ($inner) use ($slugHint, $hasSlugCol) {
+                    $inner->where('w.slug', 'like', '%' . $slugHint . '%');
+                    if ($hasSlugCol) {
+                        $inner->orWhere('t.slug', 'like', '%' . $slugHint . '%');
+                    }
+                });
+            }
+        });
+
+        return $query->get();
+    }
+
+    private function printSearchTable($rows): void
+    {
+        $hasSlugCol = Schema::hasColumn('webinar_translations', 'slug');
+
         $this->table(
-            ['id', 'type', 'status', 'locale', 'title', 'parent_slug'],
-            $rows->map(fn ($r) => [
-                $r->id,
-                $r->type,
-                $r->status,
-                $r->locale,
-                mb_substr((string) $r->title, 0, 50),
-                (string) ($r->parent_slug ?? ''),
-            ])->all()
+            $hasSlugCol
+                ? ['id', 'type', 'status', 'private', 'locale', 'title', 't.slug', 'parent_slug']
+                : ['id', 'type', 'status', 'private', 'locale', 'title', 'parent_slug'],
+            collect($rows)->map(function ($r) use ($hasSlugCol) {
+                $row = [
+                    $r->id,
+                    $r->type,
+                    $r->status,
+                    $this->boolLabel($r->private ?? null),
+                    $r->locale ?? '',
+                    mb_substr((string) ($r->title ?? ''), 0, 50),
+                ];
+                if ($hasSlugCol) {
+                    $row[] = (string) ($r->translation_slug ?? '');
+                }
+                $row[] = (string) ($r->parent_slug ?? '');
+
+                return $row;
+            })->all()
         );
+    }
+
+    private function checkFrontSlug(int $id, string $locale, string $slug): void
+    {
+        try {
+            $found = Webinar::query()->whereLocalizedSlug($slug, $locale)->where('id', $id)->exists();
+            $this->line(sprintf(
+                '  /%s/course/%s → %s',
+                $locale,
+                $slug,
+                $found ? '<fg=green>resolves</>' : '<fg=red>does not resolve</>'
+            ));
+        } catch (\Throwable $e) {
+            $this->warn("  /{$locale}/course/{$slug} → lookup error: " . $e->getMessage());
+        }
     }
 
     private function boolLabel($value): string
