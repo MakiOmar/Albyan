@@ -2396,6 +2396,11 @@ function getAbandonedCartSettings($key = null)
     return App\Models\Setting::getAbandonedCartSettings($key);
 }
 
+function getDatabaseBackupSettings($key = null)
+{
+    return App\Models\Setting::getDatabaseBackupSettings($key);
+}
+
 
 function getAdminPanelUrlPrefix()
 {

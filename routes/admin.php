@@ -856,6 +856,7 @@ Route::group(['prefix' => $prefix, 'namespace' => 'Admin', 'middleware' => ['web
             // Full MySQL dump create / download / delete / restore (admin_settings)
             Route::get('/database-backup', 'DatabaseBackupController@index');
             Route::post('/database-backup', 'DatabaseBackupController@store');
+            Route::post('/database-backup/auto', 'DatabaseBackupController@updateAuto');
             Route::get('/database-backup/{file}/download', 'DatabaseBackupController@download')
                 ->where('file', '^[A-Za-z0-9._-]+\.sql$');
             Route::post('/database-backup/{file}/delete', 'DatabaseBackupController@destroy')

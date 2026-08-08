@@ -29,6 +29,8 @@ class DatabaseBackupController extends Controller
             'confirmPhrase' => $backupService->confirmPhrase(),
             'retention' => (int) config('database_backup.retention', 10),
             'backupPath' => $backupService->backupDirectory(),
+            'autoSettings' => $backupService->getAutoSettings(),
+            'autoIntervals' => config('database_backup.auto_intervals', []),
         ];
 
         return view('admin.tools.database_backup', $data);
@@ -47,6 +49,37 @@ class DatabaseBackupController extends Controller
                     'file' => $result['filename'],
                     'size' => $result['size_human'],
                 ]),
+                'status' => 'success',
+            ];
+        } catch (RuntimeException $e) {
+            $toastData = [
+                'title' => trans('public.request_failed'),
+                'msg' => $e->getMessage(),
+                'status' => 'error',
+            ];
+        }
+
+        return redirect(getAdminPanelUrl('/tools/database-backup'))->with(['toast' => $toastData]);
+    }
+
+    public function updateAuto(Request $request, DatabaseBackupService $backupService)
+    {
+        $this->authorize('admin_settings');
+
+        $data = $request->validate([
+            'enabled' => 'nullable',
+            'interval' => 'required|string|in:hourly,every_6h,daily,weekly',
+        ]);
+
+        try {
+            $backupService->saveAutoSettings([
+                'enabled' => !empty($data['enabled']),
+                'interval' => $data['interval'],
+            ]);
+
+            $toastData = [
+                'title' => trans('public.request_success'),
+                'msg' => trans('admin/main.database_backup_auto_saved'),
                 'status' => 'success',
             ];
         } catch (RuntimeException $e) {

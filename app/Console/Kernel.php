@@ -39,6 +39,11 @@ class Kernel extends ConsoleKernel
         
         // Generate sitemap daily at 2 AM
         $schedule->command('sitemap:generate all')->dailyAt('02:00');
+
+        // Full DB auto-backup: hourly tick; command decides based on admin interval settings.
+        $schedule->command('database:backup --scheduled')
+            ->hourly()
+            ->withoutOverlapping(120);
     }
 
     /**

@@ -33,6 +33,67 @@
                                 <div class="alert alert-danger">{{ $listError }}</div>
                             @endif
 
+                            {{-- Automatic backup schedule --}}
+                            <div class="border rounded p-3 mb-4">
+                                <h6 class="mb-2">{{ trans('admin/main.database_backup_auto_title') }}</h6>
+                                <p class="text-muted small mb-3">{{ trans('admin/main.database_backup_auto_hint') }}</p>
+
+                                <form method="post" action="{{ getAdminPanelUrl('/tools/database-backup/auto') }}" class="row align-items-end">
+                                    {{ csrf_field() }}
+
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group mb-md-0">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox"
+                                                       name="enabled"
+                                                       value="1"
+                                                       class="custom-control-input"
+                                                       id="js-database-backup-auto-enabled"
+                                                       {{ !empty($autoSettings['enabled']) ? 'checked' : '' }}>
+                                                <label class="custom-control-label" for="js-database-backup-auto-enabled">
+                                                    {{ trans('admin/main.database_backup_auto_enabled') }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group mb-md-0">
+                                            <label class="input-label" for="js-database-backup-auto-interval">
+                                                {{ trans('admin/main.database_backup_auto_interval') }}
+                                            </label>
+                                            <select name="interval" id="js-database-backup-auto-interval" class="form-control">
+                                                @foreach($autoIntervals as $value => $labelKey)
+                                                    <option value="{{ $value }}" {{ ($autoSettings['interval'] ?? '') === $value ? 'selected' : '' }}>
+                                                        {{ trans('admin/main.database_backup_interval_' . $value) }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <button type="submit" class="btn btn-primary btn-block">
+                                            {{ trans('admin/main.database_backup_auto_save') }}
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <div class="mt-3 small text-muted">
+                                    @if(!empty($autoSettings['last_run_human']))
+                                        <div>{{ trans('admin/main.database_backup_auto_last_run') }}: <strong>{{ $autoSettings['last_run_human'] }}</strong></div>
+                                    @else
+                                        <div>{{ trans('admin/main.database_backup_auto_never_run') }}</div>
+                                    @endif
+                                    @if(!empty($autoSettings['last_error']))
+                                        <div class="text-danger mt-1">{{ trans('admin/main.database_backup_auto_last_error') }}: {{ $autoSettings['last_error'] }}</div>
+                                    @endif
+                                    <div class="mt-2">
+                                        <code>* * * * * php {{ base_path('artisan') }} schedule:run >> /dev/null 2>&amp;1</code>
+                                    </div>
+                                </div>
+                            </div>
+
                             {{-- Create backup --}}
                             <form id="js-database-backup-create" method="post" action="{{ getAdminPanelUrl('/tools/database-backup') }}" class="mb-4">
                                 {{ csrf_field() }}

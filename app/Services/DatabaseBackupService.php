@@ -274,6 +274,159 @@ class DatabaseBackupService
     }
 
     /**
+     * Resolved auto-backup settings (Settings table with config defaults).
+     *
+     * @return array{enabled:bool,interval:string,last_run_at:?int,last_run_human:?string,last_error:?string}
+     */
+    public function getAutoSettings(): array
+    {
+        $stored = getDatabaseBackupSettings();
+        if (!is_array($stored)) {
+            $stored = [];
+        }
+
+        $intervals = array_keys(config('database_backup.auto_intervals', []));
+        $interval = (string) ($stored['interval'] ?? config('database_backup.auto_interval', 'daily'));
+        if (!in_array($interval, $intervals, true)) {
+            $interval = 'daily';
+        }
+
+        $lastRun = isset($stored['last_run_at']) ? (int) $stored['last_run_at'] : null;
+        if ($lastRun !== null && $lastRun <= 0) {
+            $lastRun = null;
+        }
+
+        return [
+            'enabled' => array_key_exists('enabled', $stored)
+                ? (bool) $stored['enabled']
+                : (bool) config('database_backup.auto_enabled', false),
+            'interval' => $interval,
+            'last_run_at' => $lastRun,
+            'last_run_human' => $lastRun ? date('Y-m-d H:i:s', $lastRun) : null,
+            'last_error' => !empty($stored['last_error']) ? (string) $stored['last_error'] : null,
+        ];
+    }
+
+    /**
+     * Persist enable + interval from admin UI.
+     *
+     * @param  array{enabled?:bool|int|string,interval?:string}  $input
+     * @return array{enabled:bool,interval:string,last_run_at:?int,last_run_human:?string,last_error:?string}
+     */
+    public function saveAutoSettings(array $input): array
+    {
+        $current = $this->getAutoSettings();
+        $intervals = array_keys(config('database_backup.auto_intervals', []));
+
+        $interval = (string) ($input['interval'] ?? $current['interval']);
+        if (!in_array($interval, $intervals, true)) {
+            throw new RuntimeException('Invalid auto-backup interval.');
+        }
+
+        $enabled = !empty($input['enabled']);
+
+        $payload = [
+            'enabled' => $enabled,
+            'interval' => $interval,
+            'last_run_at' => $current['last_run_at'],
+            'last_error' => $current['last_error'],
+        ];
+
+        $this->writeAutoSettingsPayload($payload);
+
+        return $this->getAutoSettings();
+    }
+
+    /**
+     * Whether the hourly scheduler tick should create a backup now.
+     */
+    public function shouldRunScheduledBackup(?\DateTimeInterface $now = null): bool
+    {
+        $auto = $this->getAutoSettings();
+        if (!$auto['enabled']) {
+            return false;
+        }
+
+        $now = $now ? \Carbon\Carbon::parse($now) : now();
+        $hour = (int) $now->format('G');
+        $dayOfWeek = (int) $now->format('N'); // 1 = Monday
+
+        return match ($auto['interval']) {
+            'hourly' => true,
+            'every_6h' => ($hour % 6) === 0,
+            'daily' => $hour === 2,
+            'weekly' => $dayOfWeek === 1 && $hour === 2,
+            default => $hour === 2,
+        };
+    }
+
+    /**
+     * Create a backup from the scheduler/CLI and record last run meta.
+     *
+     * @return array{filename:string,path:string,size:int,size_human:string}
+     */
+    public function runScheduledBackup(): array
+    {
+        try {
+            $result = $this->createBackup();
+            $this->recordAutoRunSuccess();
+            return $result;
+        } catch (\Throwable $e) {
+            $this->recordAutoRunFailure($e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function recordAutoRunSuccess(): void
+    {
+        $current = $this->getAutoSettings();
+        $this->writeAutoSettingsPayload([
+            'enabled' => $current['enabled'],
+            'interval' => $current['interval'],
+            'last_run_at' => time(),
+            'last_error' => null,
+        ]);
+    }
+
+    private function recordAutoRunFailure(string $message): void
+    {
+        $current = $this->getAutoSettings();
+        $this->writeAutoSettingsPayload([
+            'enabled' => $current['enabled'],
+            'interval' => $current['interval'],
+            'last_run_at' => $current['last_run_at'],
+            'last_error' => mb_substr($message, 0, 500),
+        ]);
+    }
+
+    private function writeAutoSettingsPayload(array $payload): void
+    {
+        $name = \App\Models\Setting::$databaseBackupSettingsName;
+        $locale = \App\Models\Setting::$defaultSettingsLocale;
+
+        $settings = \App\Models\Setting::updateOrCreate(
+            ['name' => $name],
+            [
+                'page' => 'other',
+                'updated_at' => time(),
+            ]
+        );
+
+        \App\Models\Translation\SettingTranslation::updateOrCreate(
+            [
+                'setting_id' => $settings->id,
+                'locale' => mb_strtolower($locale),
+            ],
+            [
+                'value' => json_encode($payload),
+            ]
+        );
+
+        cache()->forget('settings.' . $name);
+        \App\Models\Setting::$databaseBackupSettings = null;
+    }
+
+    /**
      * Delete oldest backups beyond retention limit.
      */
     public function enforceRetention(): void

@@ -45,4 +45,21 @@ return [
     */
     'filename_prefix' => 'albyan-backup-',
     'filename_regex' => '/^albyan-backup-\d{8}-\d{6}\.sql$/',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Automatic backups (Laravel scheduler)
+    |--------------------------------------------------------------------------
+    | Runtime toggle/interval live in Settings (admin UI). These are defaults
+    | used when no setting row exists yet. Requires: php artisan schedule:run
+    | via system cron every minute.
+    */
+    'auto_enabled' => (bool) env('DB_BACKUP_AUTO_ENABLED', false),
+    'auto_interval' => env('DB_BACKUP_AUTO_INTERVAL', 'daily'), // hourly|every_6h|daily|weekly
+    'auto_intervals' => [
+        'hourly' => 'Hourly',
+        'every_6h' => 'Every 6 hours',
+        'daily' => 'Daily (02:00)',
+        'weekly' => 'Weekly (Monday 02:00)',
+    ],
 ];

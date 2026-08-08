@@ -39,7 +39,7 @@ class Setting extends Model implements TranslatableContract
         $themeColors, $themeFonts, $forumHomeSection, $cookieSettings, $mobileAppSettings, $remindersSettings, $generalSecuritySettings, $advertisingModal,
         $othersPersonalization, $homeContentBlocks, $installmentsSettings, $installmentsTermsSettings, $registrationBonusSettings, $registrationBonusTermsSettings, $statisticsSettings,
         $maintenanceSettings, $restrictionSettings, $generalOptions, $giftsGeneralSettings, $aiContentsSettings, $certificateSettings, $abandonedCartSettings, $smsChannelsSettings,
-        $commissionSettings, $performanceSettings, $schemaSettings;
+        $commissionSettings, $performanceSettings, $schemaSettings, $databaseBackupSettings;
 
     // settings name , Using these keys, values are taken from the settings table
     static $seoMetasName = 'seo_metas';
@@ -97,6 +97,7 @@ class Setting extends Model implements TranslatableContract
     static $abandonedCartSettingsName = 'abandoned_cart_settings';
     static $certificateSettingsName = 'certificate_settings';
     static $smsChannelsSettingName = 'sms_channels';
+    static $databaseBackupSettingsName = 'database_backup';
 
     //statics
     static $pagesSeoMetas = ['home', 'search', 'tags', 'categories', 'classes', 'login', 'register', 'contact', 'blog', 'certificate_validation',
@@ -543,5 +544,10 @@ class Setting extends Model implements TranslatableContract
     static function getAbandonedCartSettings($key = null)
     {
         return self::getSetting(self::$abandonedCartSettings, self::$abandonedCartSettingsName, $key);
+    }
+
+    static function getDatabaseBackupSettings($key = null)
+    {
+        return self::getSetting(self::$databaseBackupSettings, self::$databaseBackupSettingsName, $key);
     }
 }
