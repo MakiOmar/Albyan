@@ -11,10 +11,11 @@ use Illuminate\Support\Str;
 trait HasLocalizedSlug
 {
     /**
-     * Translated slug for a locale (falls back to parent slug only).
+     * Translated slug for a locale.
      * Does not fall back to another language's translation slug.
+     * Parent slug is used only when $fallbackToParent is true (front / default locale).
      */
-    public function localizedSlug(?string $locale = null): string
+    public function localizedSlug(?string $locale = null, bool $fallbackToParent = true): string
     {
         $locale = mb_strtolower($locale ?: app()->getLocale());
 
@@ -24,15 +25,63 @@ trait HasLocalizedSlug
 
         $slug = DB::table($translationTable)
             ->where($foreignKey, $this->getKey())
-            ->where('locale', $locale)
+            ->whereRaw('LOWER(locale) = ?', [$locale])
             ->value('slug');
 
         if (!empty($slug)) {
             return (string) $slug;
         }
 
+        if (!$fallbackToParent) {
+            return '';
+        }
+
         // Parent column = default-locale mirror.
         return (string) ($this->getAttributes()['slug'] ?? $this->attributes['slug'] ?? '');
+    }
+
+    /**
+     * Whether this model has a translation row for the locale (case-insensitive).
+     */
+    public function hasLocaleTranslation(string $locale): bool
+    {
+        $locale = mb_strtolower($locale);
+        $translationTable = app()->make($this->getTranslationModelName())->getTable();
+        $foreignKey = $this->getTranslationRelationKey();
+
+        return DB::table($translationTable)
+            ->where($foreignKey, $this->getKey())
+            ->whereRaw('LOWER(locale) = ?', [$locale])
+            ->exists();
+    }
+
+    /**
+     * Upsert translated fields and normalize locale casing (AR → ar).
+     * Avoids duplicate rows under MySQL case-insensitive collations.
+     *
+     * @param  array<string, mixed>  $attributes
+     */
+    public function saveLocaleTranslation(string $locale, array $attributes): void
+    {
+        $locale = mb_strtolower($locale);
+        $translationTable = app()->make($this->getTranslationModelName())->getTable();
+        $foreignKey = $this->getTranslationRelationKey();
+
+        $existingId = DB::table($translationTable)
+            ->where($foreignKey, $this->getKey())
+            ->whereRaw('LOWER(locale) = ?', [$locale])
+            ->value('id');
+
+        $payload = array_merge($attributes, [
+            $foreignKey => $this->getKey(),
+            'locale' => $locale,
+        ]);
+
+        if ($existingId) {
+            DB::table($translationTable)->where('id', $existingId)->update($payload);
+        } else {
+            DB::table($translationTable)->insert($payload);
+        }
     }
 
     /**

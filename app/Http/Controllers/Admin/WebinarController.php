@@ -427,10 +427,7 @@ class WebinarController extends Controller
         $webinar->save();
 
         if ($webinar) {
-            WebinarTranslation::updateOrCreate([
-                'webinar_id' => $webinar->id,
-                'locale' => $locale,
-            ], [
+            $webinar->saveLocaleTranslation($locale, [
                 'title' => $data['title'],
                 'slug' => $slug,
                 'description' => $data['description'],
@@ -537,9 +534,17 @@ class WebinarController extends Controller
             abort(404);
         }
 
-        // Match the content-locale dropdown (uses app locale when ?locale= is missing).
-        // Previously defaulted to getDefaultLocale() (often AR), so EN admin saw Arabic fields.
-        $locale = $request->get('locale', app()->getLocale());
+        // Prefer admin UI locale when a translation exists; otherwise the site
+        // default (e.g. AR). Prevents saving EN slug while showing AR-only content.
+        $locale = $request->get('locale');
+        if ($locale === null || $locale === '') {
+            $uiLocale = mb_strtolower((string) app()->getLocale());
+            $locale = $webinar->hasLocaleTranslation($uiLocale)
+                ? $uiLocale
+                : getDefaultLocaleCode();
+        } else {
+            $locale = mb_strtolower((string) $locale);
+        }
         storeContentLocale($locale, $webinar->getTable(), $webinar->id);
 
         $categories = Category::where('parent_id', null)
@@ -571,6 +576,7 @@ class WebinarController extends Controller
             'webinarPartnerTeacher' => $webinar->webinarPartnerTeacher,
             'webinarTags' => $tags,
             'defaultLocale' => getDefaultLocale(),
+            'editLocale' => $locale,
         ];
 
         return view('admin.webinars.create', $data);
@@ -593,8 +599,19 @@ class WebinarController extends Controller
                 'nullable',
                 'max:255',
                 Rule::unique('webinar_translations', 'slug')
-                    ->where(fn ($q) => $q->where('locale', mb_strtolower((string) ($data['locale'] ?? app()->getLocale()))))
-                    ->ignore($webinar->id, 'webinar_id'),
+                    ->where(fn ($q) => $q->whereRaw(
+                        'LOWER(locale) = ?',
+                        [mb_strtolower((string) ($data['locale'] ?? app()->getLocale()))]
+                    ))
+                    ->ignore(
+                        WebinarTranslation::query()
+                            ->where('webinar_id', $webinar->id)
+                            ->whereRaw(
+                                'LOWER(locale) = ?',
+                                [mb_strtolower((string) ($data['locale'] ?? app()->getLocale()))]
+                            )
+                            ->value('id')
+                    ),
             ],
             'thumbnail' => 'required',
             'image_cover' => 'required',
@@ -777,10 +794,7 @@ class WebinarController extends Controller
 
         $webinar->refresh();
 
-        WebinarTranslation::updateOrCreate([
-            'webinar_id' => $webinar->id,
-            'locale' => $locale,
-        ], [
+        $webinar->saveLocaleTranslation($locale, [
             'title' => $data['title'],
             'slug' => $slug,
             'description' => $data['description'],
@@ -809,7 +823,7 @@ class WebinarController extends Controller
 
         removeContentLocale();
 
-        return back();
+        return redirect(getAdminPanelUrl() . '/webinars/' . $webinar->id . '/edit?locale=' . $locale);
     }
 
     public function destroy(Request $request, $id)

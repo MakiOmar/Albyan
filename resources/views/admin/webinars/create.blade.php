@@ -52,7 +52,7 @@
                                                     <label class="input-label">{{ trans('auth.language') }}</label>
                                                     <select name="locale" class="form-control {{ !empty($webinar) ? 'js-edit-content-locale' : '' }}">
                                                         @foreach($userLanguages as $lang => $language)
-                                                            <option value="{{ $lang }}" @if(mb_strtolower(request()->get('locale', app()->getLocale())) == mb_strtolower($lang)) selected @endif>{{ $language }}</option>
+                                                            <option value="{{ $lang }}" @if(mb_strtolower(!empty($editLocale) ? $editLocale : request()->get('locale', app()->getLocale())) == mb_strtolower($lang)) selected @endif>{{ $language }}</option>
                                                         @endforeach
                                                     </select>
                                                     @error('locale')

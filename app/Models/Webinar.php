@@ -53,6 +53,31 @@ class Webinar extends Model implements TranslatableContract
 
     public function getSlugAttribute()
     {
+        // During admin edit, never surface another locale's / parent slug when the
+        // selected content locale has no translation — that made EN edits on AR-only
+        // courses look like editing the Arabic slug, then "revert" on AR.
+        if (function_exists('isAdminUrl') && isAdminUrl() && function_exists('getContentLocale')) {
+            $contentLocale = getContentLocale();
+            if (
+                !empty($contentLocale)
+                && is_array($contentLocale)
+                && ($contentLocale['table'] ?? null) === $this->getTable()
+                && (int) ($contentLocale['item_id'] ?? 0) === (int) $this->id
+            ) {
+                $locale = mb_strtolower((string) ($contentLocale['locale'] ?? ''));
+                $translated = $this->localizedSlug($locale, false);
+                if ($translated !== '') {
+                    return $translated;
+                }
+
+                if ($locale === (function_exists('getDefaultLocaleCode') ? getDefaultLocaleCode() : 'ar')) {
+                    return $this->attributes['slug'] ?? '';
+                }
+
+                return '';
+            }
+        }
+
         $translated = getTranslateAttributeValue($this, 'slug');
         if (!empty($translated)) {
             return $translated;

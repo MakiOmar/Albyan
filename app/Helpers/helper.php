@@ -3109,7 +3109,7 @@ function storeContentLocale($locale, $table, $item_id)
     removeContentLocale();
 
     $data = [
-        'locale' => $locale,
+        'locale' => mb_strtolower((string) $locale),
         'table' => $table,
         'item_id' => $item_id
     ];
