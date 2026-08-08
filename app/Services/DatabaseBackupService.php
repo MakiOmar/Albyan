@@ -69,7 +69,7 @@ class DatabaseBackupService
                 'size' => $size,
                 'size_human' => $this->formatBytes($size),
                 'modified_at' => $mtime,
-                'modified_human' => date('Y-m-d H:i:s', $mtime),
+                'modified_human' => $this->formatAppDateTime($mtime),
             ];
         }
 
@@ -87,7 +87,8 @@ class DatabaseBackupService
     {
         $dir = $this->ensureBackupDirectory();
         $prefix = (string) config('database_backup.filename_prefix', 'albyan-backup-');
-        $filename = $prefix . date('Ymd-His') . '.sql';
+        // Filename stamp uses APP_TIMEZONE (via config('app.timezone')).
+        $filename = $prefix . now()->format('Ymd-His') . '.sql';
         $target = $dir . DIRECTORY_SEPARATOR . $filename;
 
         $connection = $this->mysqlConnection();
@@ -302,7 +303,7 @@ class DatabaseBackupService
                 : (bool) config('database_backup.auto_enabled', false),
             'interval' => $interval,
             'last_run_at' => $lastRun,
-            'last_run_human' => $lastRun ? date('Y-m-d H:i:s', $lastRun) : null,
+            'last_run_human' => $lastRun ? $this->formatAppDateTime($lastRun) : null,
             'last_error' => !empty($stored['last_error']) ? (string) $stored['last_error'] : null,
         ];
     }
@@ -531,5 +532,14 @@ class DatabaseBackupService
         }
 
         return round($bytes / 1073741824, 2) . ' GB';
+    }
+
+    /**
+     * Format a unix timestamp in the application timezone (APP_TIMEZONE).
+     */
+    private function formatAppDateTime(int $timestamp): string
+    {
+        return \Carbon\Carbon::createFromTimestamp($timestamp, config('app.timezone'))
+            ->format('Y-m-d H:i:s');
     }
 }
