@@ -38,6 +38,17 @@
                 <div class="col-12 ">
                     <div class="card">
                         <div class="card-body">
+                            {{-- Comment: show all validation errors (create often fails on hidden/required fields) --}}
+                            @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <strong>{{ trans('update.please_fix_the_error_fields_that_are_specified') }}</strong>
+                                    <ul class="mb-0 mt-2">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
 
                             <form method="post" action="{{ getAdminPanelUrl() }}/webinars/{{ !empty($webinar) ? $webinar->id.'/update' : 'store' }}" id="webinarForm" class="webinar-form" enctype="multipart/form-data">
                                 {{ csrf_field() }}
@@ -332,10 +343,10 @@
                                                                 </span>
                                                             </div>
 
-                                                            <input type="number" name="duration-hours" value="" class="form-control"/>
+                                                            <input type="number" name="duration-hours" value="{{ old('duration') !== null && old('duration') !== '' ? round(((float) old('duration')) / 60, 2) : (!empty($webinar) ? round($webinar->duration / 60, 2) : '') }}" class="form-control"/>
                                                             <input style="display:none" type="number" name="duration" value="{{ !empty($webinar) ? $webinar->duration : old('duration') }}" class="form-control @error('duration')  is-invalid @enderror"/>
                                                             @error('duration')
-                                                            <div class="invalid-feedback">
+                                                            <div class="invalid-feedback d-block">
                                                                 {{ $message }}
                                                             </div>
                                                             @enderror

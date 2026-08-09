@@ -338,11 +338,9 @@ class WebinarController extends Controller
         $this->validate($request, [
             'type' => 'required|in:webinar,course,text_lesson',
             'title' => 'required|max:255',
-            'slug' => [
-                'nullable',
-                'max:255',
-                Rule::unique('webinar_translations', 'slug')->where(fn ($q) => $q->where('locale', $locale)),
-            ],
+            // Slug uniqueness is enforced after validate via ensureUniqueLocalizedSlug /
+            // parent webinars.slug unique handling — auto-fill from title must not 422.
+            'slug' => 'nullable|max:255',
             'thumbnail' => 'required',
             'image_cover' => 'required',
             'description' => 'required',
@@ -383,9 +381,22 @@ class WebinarController extends Controller
             $data['start_date'] = $startDate->getTimestamp();
         }
 
-        $slug = !empty($data['slug'])
-            ? $data['slug']
-            : Webinar::makeLocalizedSlug($data['title'], $locale);
+        $desiredSlug = trim((string) ($data['slug'] ?? ''));
+        if ($desiredSlug === '') {
+            $slug = Webinar::makeLocalizedSlug($data['title'], $locale);
+        } else {
+            $slug = Webinar::ensureUniqueLocalizedSlug($desiredSlug, $locale);
+        }
+
+        // Parent webinars.slug is UNIQUE — avoid duplicate-key exception after translation uniquify.
+        $parentBase = $slug;
+        $parentSlug = $slug;
+        $parentIndex = 1;
+        while (DB::table('webinars')->where('slug', $parentSlug)->exists()) {
+            $parentSlug = $parentBase . '-' . $parentIndex;
+            $parentIndex++;
+        }
+        $slug = $parentSlug;
 
         $data = $this->handleVideoDemoData($request, $data, "course_demo_" . time());
 

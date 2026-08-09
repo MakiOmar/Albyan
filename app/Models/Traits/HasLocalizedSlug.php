@@ -204,6 +204,20 @@ trait HasLocalizedSlug
             $base = 'item';
         }
 
+        return static::ensureUniqueLocalizedSlug($base, $locale, $exceptModelId);
+    }
+
+    /**
+     * Ensure a desired slug is unique for the locale (appends -1, -2, … when taken).
+     */
+    public static function ensureUniqueLocalizedSlug(string $desired, string $locale, ?int $exceptModelId = null): string
+    {
+        $locale = mb_strtolower($locale);
+        $base = trim($desired);
+        if ($base === '') {
+            $base = 'item';
+        }
+
         $slug = $base;
         $i = 1;
 
