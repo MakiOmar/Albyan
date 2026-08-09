@@ -317,13 +317,20 @@ class WebinarController extends Controller
 
         removeContentLocale();
 
+        // Content locale for the form (titles, category labels). Same IDs; translated titles.
+        $locale = request()->get('locale');
+        $locale = mb_strtolower((string) (($locale !== null && $locale !== '') ? $locale : getDefaultLocaleCode()));
+
         $teachers = User::where('role_name', Role::$teacher)->get();
-        $categories = Category::where('parent_id', null)->get();
+        $categories = Category::where('parent_id', null)
+            ->with(['translations', 'subCategories.translations'])
+            ->get();
 
         $data = [
             'pageTitle' => trans('admin/main.webinar_new_page_title'),
             'teachers' => $teachers,
-            'categories' => $categories
+            'categories' => $categories,
+            'editLocale' => $locale,
         ];
 
         return view('admin.webinars.create', $data);
@@ -559,8 +566,9 @@ class WebinarController extends Controller
         $locale = mb_strtolower((string) (($locale !== null && $locale !== '') ? $locale : getDefaultLocaleCode()));
         storeContentLocale($locale, $webinar->getTable(), $webinar->id);
 
+        // Eager-load translations so the category dropdown can show EN titles when ?locale=en.
         $categories = Category::where('parent_id', null)
-            ->with('subCategories')
+            ->with(['translations', 'subCategories.translations'])
             ->get();
 
         $teacherQuizzes = Quiz::where('webinar_id', null)

@@ -61,9 +61,10 @@
                                             @if(!empty(getGeneralSettings('content_translate')))
                                                 <div class="form-group">
                                                     <label class="input-label">{{ trans('auth.language') }}</label>
-                                                    <select name="locale" class="form-control {{ !empty($webinar) ? 'js-edit-content-locale' : '' }}">
+                                                    <select name="locale"
+                                                            class="form-control js-edit-content-locale">
                                                         @foreach($userLanguages as $lang => $language)
-                                                            <option value="{{ $lang }}" @if(mb_strtolower(!empty($editLocale) ? $editLocale : request()->get('locale', app()->getLocale())) == mb_strtolower($lang)) selected @endif>{{ $language }}</option>
+                                                            <option value="{{ $lang }}" @if(mb_strtolower(!empty($editLocale) ? $editLocale : request()->get('locale', (!empty(getDefaultLocaleCode()) ? getDefaultLocaleCode() : app()->getLocale()))) == mb_strtolower($lang)) selected @endif>{{ $language }}</option>
                                                         @endforeach
                                                     </select>
                                                     @error('locale')
@@ -511,16 +512,33 @@
                                                 <label class="input-label">{{ trans('public.category') }}</label>
 
                                                 <select id="categories" class="custom-select @error('category_id')  is-invalid @enderror" name="category_id" required>
-                                                    <option {{ !empty($webinar) ? '' : 'selected' }} disabled>{{ trans('public.choose_category') }}</option>
+                                                    @php
+                                                        // Comment: show category titles in the content-edit locale (EN while translating EN).
+                                                        $categoryLabelLocale = mb_strtolower((string) (!empty($editLocale) ? $editLocale : request()->get('locale', getDefaultLocaleCode())));
+                                                        $selectedCategoryId = old('category_id', !empty($webinar) ? $webinar->category_id : null);
+                                                    @endphp
+                                                    <option {{ !empty($selectedCategoryId) ? '' : 'selected' }} disabled>{{ trans('public.choose_category') }}</option>
                                                     @foreach($categories as $category)
+                                                        @php
+                                                            $categoryLabel = getTranslateAttributeValue($category, 'title', $categoryLabelLocale);
+                                                            if ($categoryLabel === null || $categoryLabel === '') {
+                                                                $categoryLabel = $category->title;
+                                                            }
+                                                        @endphp
                                                         @if(!empty($category->subCategories) and count($category->subCategories))
-                                                            <optgroup label="{{  $category->title }}">
+                                                            <optgroup label="{{ $categoryLabel }}">
                                                                 @foreach($category->subCategories as $subCategory)
-                                                                    <option value="{{ $subCategory->id }}" {{ (!empty($webinar) and $webinar->category_id == $subCategory->id) ? 'selected' : '' }}>{{ $subCategory->title }}</option>
+                                                                    @php
+                                                                        $subLabel = getTranslateAttributeValue($subCategory, 'title', $categoryLabelLocale);
+                                                                        if ($subLabel === null || $subLabel === '') {
+                                                                            $subLabel = $subCategory->title;
+                                                                        }
+                                                                    @endphp
+                                                                    <option value="{{ $subCategory->id }}" {{ (string) $selectedCategoryId === (string) $subCategory->id ? 'selected' : '' }}>{{ $subLabel }}</option>
                                                                 @endforeach
                                                             </optgroup>
                                                         @else
-                                                            <option value="{{ $category->id }}" {{ (!empty($webinar) and $webinar->category_id == $category->id) ? 'selected' : '' }}>{{ $category->title }}</option>
+                                                            <option value="{{ $category->id }}" {{ (string) $selectedCategoryId === (string) $category->id ? 'selected' : '' }}>{{ $categoryLabel }}</option>
                                                         @endif
                                                     @endforeach
                                                 </select>
