@@ -86,6 +86,7 @@ return [
     'save_change' => 'Save Changes',
     'save' => 'Save',
     'save_and_publish' => 'Save and Publish',
+    'save_only' => 'Save only',
     'save_and_continue' => 'Save and Continue',
     'yes' => 'Yes',
     'no' => 'No',

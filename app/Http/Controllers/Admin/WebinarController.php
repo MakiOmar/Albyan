@@ -611,6 +611,8 @@ class WebinarController extends Controller
         $isDraft = (!empty($data['draft']) and $data['draft'] == 1);
         $reject = (!empty($data['draft']) and $data['draft'] == 'reject');
         $publish = (!empty($data['draft']) and $data['draft'] == 'publish');
+        // "Save only" — persist fields without changing publish/pending/etc. status.
+        $keepStatus = (!empty($data['draft']) and $data['draft'] == 'keep');
 
         $rules = [
             'type' => 'required|in:webinar,course,text_lesson',
@@ -695,7 +697,13 @@ class WebinarController extends Controller
             $data['slug'] = trim((string) $slugInput);
         }
 
-        $data['status'] = $publish ? Webinar::$active : ($reject ? Webinar::$inactive : ($isDraft ? Webinar::$isDraft : Webinar::$pending));
+        $data['status'] = $publish
+            ? Webinar::$active
+            : ($reject
+                ? Webinar::$inactive
+                : ($isDraft
+                    ? Webinar::$isDraft
+                    : ($keepStatus ? $webinar->status : Webinar::$pending)));
         $data['updated_at'] = time();
 
         if (!empty($data['start_date']) and $webinar->type == 'webinar') {

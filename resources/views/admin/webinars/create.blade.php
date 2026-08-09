@@ -875,6 +875,11 @@
 
                                 <div class="row">
                                     <div class="col-12">
+                                        {{-- Comment: save content only — do not change active/pending/rejected status --}}
+                                        @if(!empty($webinar))
+                                            <button type="button" id="saveOnly" class="btn btn-primary">{{ trans('admin/main.save_only') }}</button>
+                                        @endif
+
                                         <button type="button" id="saveAndPublish" class="btn btn-success">{{ !empty($webinar) ? trans('admin/main.save_and_publish') : trans('admin/main.save_and_continue') }}</button>
 
                                         @if(!empty($webinar))

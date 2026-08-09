@@ -84,6 +84,7 @@ return [
     'noticeboard' => 'لوحة الاشعارات',
     'save_change' => 'حفظ التغييرات',
     'save' => 'حفظ',
+    'save_only' => 'حفظ فقط',
     'save_and_publish' => 'حفظ ونشر',
     'save_and_continue' => 'حفظ واستمرار',
     'yes' => 'نعم',

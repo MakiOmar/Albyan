@@ -48,6 +48,13 @@
         $('#webinarForm').trigger('submit');
     });
 
+    // Persist form fields without changing active/pending/rejected status.
+    $('body').on('click', '#saveOnly', function (e) {
+        e.preventDefault();
+        $('#forDraft').val('keep');
+        $('#webinarForm').trigger('submit');
+    });
+
     $('body').on('click', '#saveAsDraft', function (e) {
         e.preventDefault();
         $('#forDraft').val(1);
