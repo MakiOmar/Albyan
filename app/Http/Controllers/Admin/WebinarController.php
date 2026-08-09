@@ -433,8 +433,11 @@ class WebinarController extends Controller
         $webinar->status = Webinar::$pending;
         $webinar->created_at = time();
         $webinar->updated_at = time();
-        // Parent slug is NOT NULL; bypass Astrotomic translation mapping.
-        $webinar->attributes['slug'] = $slug;
+        // Parent slug is UNIQUE; write via setRawAttributes so Astrotomic does not
+        // map slug onto translations (also avoids "Indirect modification of overloaded property").
+        $webinar->setRawAttributes(array_merge($webinar->getAttributes(), [
+            'slug' => $slug,
+        ]));
         $webinar->save();
 
         if ($webinar) {
@@ -445,9 +448,8 @@ class WebinarController extends Controller
                 'seo_description' => $data['seo_description'],
             ]);
 
-            if ($locale === getDefaultLocaleCode()) {
-                DB::table('webinars')->where('id', $webinar->id)->update(['slug' => $slug]);
-            }
+            // Always keep parent slug in sync (NOT NULL + unique on webinars.slug).
+            DB::table('webinars')->where('id', $webinar->id)->update(['slug' => $slug]);
         }
 
         $filters = $request->get('filters', null);
