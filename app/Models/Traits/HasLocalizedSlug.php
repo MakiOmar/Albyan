@@ -239,6 +239,7 @@ trait HasLocalizedSlug
 
     /**
      * Build a URL-safe slug string (keeps Arabic letters).
+     * Matches admin JS auto-fill (title focus-out) for consistency.
      */
     protected static function makeSlugSource(string $title): string
     {
@@ -247,25 +248,30 @@ trait HasLocalizedSlug
             return '';
         }
 
-        // Prefer package slugger against parent table when available.
+        // Unicode-preserving path first (Arabic titles keep letters).
+        $slug = preg_replace('/[\s_]+/u', '-', $title);
+        $slug = preg_replace('/[^\p{L}\p{N}\-]+/u', '', (string) $slug);
+        $slug = preg_replace('/-+/u', '-', (string) $slug);
+        $slug = trim((string) $slug, '-');
+        $slug = mb_strtolower($slug);
+
+        if ($slug !== '') {
+            return $slug;
+        }
+
+        // Fallback for edge cases the unicode path cannot handle.
         if (method_exists(static::class, 'makeSlug')) {
             try {
-                return static::makeSlug($title);
+                $packageSlug = static::makeSlug($title);
+                if (!empty($packageSlug)) {
+                    return (string) $packageSlug;
+                }
             } catch (\Throwable $e) {
                 // fall through
             }
         }
 
-        $slug = Str::slug($title, '-', null);
-        if ($slug !== '') {
-            return $slug;
-        }
-
-        // Arabic / non-ASCII: dash-separate words without stripping letters.
-        $slug = preg_replace('/\s+/u', '-', $title);
-        $slug = preg_replace('/[^\p{L}\p{N}\-_]+/u', '', $slug);
-
-        return trim((string) $slug, '-');
+        return (string) Str::slug($title, '-', null);
     }
 
     /**

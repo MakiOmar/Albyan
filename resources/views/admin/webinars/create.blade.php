@@ -83,7 +83,8 @@
 
                                             <div class="form-group mt-15">
                                                 <label class="input-label">{{ trans('public.title') }}</label>
-                                                <input type="text" name="title" value="{{ !empty($webinar) ? $webinar->title : old('title') }}" class="form-control @error('title')  is-invalid @enderror" placeholder=""/>
+                                                {{-- Comment: blur title → auto-fill empty slug --}}
+                                                <input type="text" name="title" value="{{ !empty($webinar) ? $webinar->title : old('title') }}" class="form-control js-auto-slug-title @error('title')  is-invalid @enderror" placeholder=""/>
                                                 @error('title')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
@@ -104,7 +105,7 @@
                                             <div class="form-group mt-15">
                                                 {{-- Comment: Class URL / slug field — value uses per-locale slug for the active edit locale --}}
                                                 <label class="input-label">{{ trans('admin/main.class_url') }}</label>
-                                                <input type="text" name="slug" value="{{ old('slug', !empty($webinar) ? $webinar->slug : '') }}" class="form-control @error('slug')  is-invalid @enderror" placeholder="" dir="auto"/>
+                                                <input type="text" name="slug" value="{{ old('slug', !empty($webinar) ? $webinar->slug : '') }}" class="form-control js-auto-slug-target @error('slug')  is-invalid @enderror" placeholder="" dir="auto"/>
                                                 <div class="text-muted text-small mt-1">{{ trans('admin/main.class_url_hint') }}</div>
                                                 @error('slug')
                                                 <div class="invalid-feedback">
@@ -934,4 +935,6 @@
 
     <script src="/assets/default/js/admin/quiz.min.js"></script>
     <script src="/assets/admin/js/webinar.min.js"></script>
+    {{-- Comment: auto-fill empty course slug from title on focus out --}}
+    <script src="/assets/admin/js/auto_slug_from_title.js"></script>
 @endpush

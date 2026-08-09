@@ -48,8 +48,9 @@
 
                                 <div class="form-group">
                                     <label>{{ trans('/admin/main.title') }}</label>
+                                    {{-- Comment: blur title → auto-fill empty category slug --}}
                                     <input type="text" name="title"
-                                           class="form-control  @error('title') is-invalid @enderror"
+                                           class="form-control js-auto-slug-title  @error('title') is-invalid @enderror"
                                            value="{{ !empty($category) ? $category->title : old('title') }}"
                                            placeholder="{{ trans('admin/main.choose_title') }}"/>
                                     @error('title')
@@ -77,7 +78,7 @@
                                 <div class="form-group">
                                     <label>{{ trans('admin/main.url') }}</label>
                                     <input type="text" name="slug"
-                                           class="form-control  @error('slug') is-invalid @enderror"
+                                           class="form-control js-auto-slug-target  @error('slug') is-invalid @enderror"
                                            value="{{ !empty($category) ? $category->slug : old('slug') }}"/>
                                     <div class="text-muted text-small mt-1">{{ trans('update.category_url_hint') }}</div>
                                     @error('slug')
@@ -163,7 +164,7 @@
                                             @foreach($subCategories as $key => $subCategory)
                                                 <li class="form-group list-group">
 
-                                                    <div class="p-2 border rounded-sm">
+                                                    <div class="p-2 border rounded-sm js-auto-slug-pair">
                                                         <div class="input-group">
                                                             <div class="input-group-prepend">
                                                                 <div class="input-group-text cursor-pointer move-icon">
@@ -172,7 +173,7 @@
                                                             </div>
 
                                                             <input type="text" name="sub_categories[{{ $subCategory->id }}][title]"
-                                                                   class="form-control w-auto flex-grow-1"
+                                                                   class="form-control w-auto flex-grow-1 js-auto-slug-title"
                                                                    value="{{ $subCategory->title }}"
                                                                    placeholder="{{ trans('admin/main.choose_title') }}"/>
 
@@ -188,7 +189,7 @@
 
                                                         <div class="input-group w-100 mt-1">
                                                             <input type="text" name="sub_categories[{{ $subCategory->id }}][slug]"
-                                                                   class="form-control w-auto flex-grow-1"
+                                                                   class="form-control w-auto flex-grow-1 js-auto-slug-target"
                                                                    value="{{ $subCategory->slug }}"
                                                                    placeholder="{{ trans('admin/main.choose_url') }}"/>
                                                         </div>
@@ -214,7 +215,7 @@
                             </form>
 
                             <li class="form-group main-row list-group d-none">
-                                <div class="p-2 border rounded-sm">
+                                <div class="p-2 border rounded-sm js-auto-slug-pair">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text cursor-pointer move-icon">
@@ -223,7 +224,7 @@
                                         </div>
 
                                         <input type="text" name="sub_categories[record][title]"
-                                               class="form-control w-auto flex-grow-1"
+                                               class="form-control w-auto flex-grow-1 js-auto-slug-title"
                                                placeholder="{{ trans('admin/main.choose_title') }}"/>
 
                                         <div class="input-group-append">
@@ -233,7 +234,7 @@
 
                                     <div class="input-group mt-1">
                                         <input type="text" name="sub_categories[record][slug]"
-                                               class="form-control w-auto flex-grow-1"
+                                               class="form-control w-auto flex-grow-1 js-auto-slug-target"
                                                placeholder="{{ trans('admin/main.choose_url') }}"/>
                                     </div>
 
@@ -260,4 +261,6 @@
     <script src="/assets/default/vendors/sortable/jquery-ui.min.js"></script>
 
     <script src="/assets/default/js/admin/categories.min.js"></script>
+    {{-- Comment: auto-fill empty category/subcategory slug from title on focus out --}}
+    <script src="/assets/admin/js/auto_slug_from_title.js"></script>
 @endpush
