@@ -88,7 +88,27 @@ class SettingsController extends Controller
         }
 
         if ($page == 'seo') {
-            $schemaLocale = mb_strtolower((string) $request->get('locale', app()->getLocale()));
+            $seoLocale = mb_strtolower((string) $request->get('locale', app()->getLocale()));
+            $data['seoLocale'] = $seoLocale;
+
+            // Load seo_metas JSON for the selected admin locale (not forced EN).
+            $seoSetting = Setting::where('name', Setting::$seoMetasName)->first();
+            $seoValues = [];
+            if (!empty($seoSetting)) {
+                $translation = SettingTranslation::where('setting_id', $seoSetting->id)
+                    ->whereRaw('LOWER(locale) = ?', [$seoLocale])
+                    ->orderByDesc('id')
+                    ->first();
+                if (!empty($translation) && !empty($translation->value)) {
+                    $decoded = json_decode($translation->value, true);
+                    if (is_array($decoded)) {
+                        $seoValues = $decoded;
+                    }
+                }
+            }
+            $data['seoMetasValues'] = $seoValues;
+
+            $schemaLocale = $seoLocale;
             $schemaValues = [];
             $schemaSetting = Setting::where('name', Setting::$schemaSettingsName)->first();
             if (!empty($schemaSetting)) {
@@ -256,20 +276,30 @@ class SettingsController extends Controller
         $this->authorize('admin_settings_seo');
 
         $data = $request->all();
-        $locale = $request->get('locale', Setting::$defaultSettingsLocale);
-        $newValues = $data['value'];
+        $locale = mb_strtolower((string) $request->get('locale', Setting::$defaultSettingsLocale));
+        $newValues = $data['value'] ?? [];
         $values = [];
         $settings = Setting::where('name', $name)->first();
 
-        if (!empty($settings) and !empty($settings->value)) {
-            $values = json_decode($settings->value);
+        // Load existing values for THIS locale (do not mix AR/EN JSON blobs).
+        if (!empty($settings)) {
+            $existingTranslation = SettingTranslation::where('setting_id', $settings->id)
+                ->whereRaw('LOWER(locale) = ?', [$locale])
+                ->orderByDesc('id')
+                ->first();
+            if (!empty($existingTranslation) && !empty($existingTranslation->value)) {
+                $decoded = json_decode($existingTranslation->value, true);
+                if (is_array($decoded)) {
+                    $values = $decoded;
+                }
+            }
         }
 
         if (!empty($newValues) and !empty($values)) {
             foreach ($newValues as $newKey => $newValue) {
                 foreach ($values as $key => $value) {
                     if ($key == $newKey) {
-                        $values->$key = $newValue;
+                        $values[$key] = $newValue;
                         unset($newValues[$key]);
                     }
                 }
@@ -277,7 +307,7 @@ class SettingsController extends Controller
         }
 
         if (!empty($newValues)) {
-            $values = array_merge((array)$values, $newValues);
+            $values = array_merge((array) $values, $newValues);
         }
 
         $settings = Setting::updateOrCreate(
@@ -291,7 +321,7 @@ class SettingsController extends Controller
         SettingTranslation::updateOrCreate(
             [
                 'setting_id' => $settings->id,
-                'locale' => mb_strtolower($locale)
+                'locale' => $locale,
             ],
             [
                 'value' => json_encode($values),
@@ -299,8 +329,22 @@ class SettingsController extends Controller
         );
 
         cache()->forget('settings.' . $name);
+        foreach (['en', 'ar', 'es'] as $loc) {
+            cache()->forget('settings.' . $name . '.locale.' . $loc);
+        }
+        // Bust all configured locale SEO caches (and home payloads that bake title/description).
+        try {
+            foreach (\App\Http\Controllers\Web\HomeController::homeCacheLocales() as $loc) {
+                cache()->forget('settings.' . $name . '.locale.' . mb_strtolower($loc));
+            }
+            \App\Http\Controllers\Web\HomeController::clearHomePageCache();
+        } catch (\Throwable $e) {
+            // Non-fatal if home locales cannot be resolved during install.
+        }
 
-        return back();
+        Setting::$seoMetas = null;
+
+        return redirect(getAdminPanelUrl() . '/settings/seo?locale=' . urlencode($locale));
     }
 
     public function storeSchemaSettings(Request $request)

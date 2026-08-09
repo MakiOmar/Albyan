@@ -118,8 +118,8 @@ class Setting extends Model implements TranslatableContract
 
     static function getSettingsWithDefaultLocal(): array
     {
+        // Note: seo_metas is intentionally locale-aware (AR home uses AR SEO copy).
         return [
-            self::$seoMetasName,
             self::$socialsName,
             self::$generalName,
             self::$financialName,
@@ -166,12 +166,82 @@ class Setting extends Model implements TranslatableContract
     }
 
     /**
-     * @param null $page => home, search, categories, login, register, about, contact
-     * @return array => [title, description]
+     * SEO metas for a page (title/description/robot), locale-aware with EN fallback.
+     *
+     * @param  string|null  $page  e.g. home, search, classes
+     * @return array|string|null
      */
     static function getSeoMetas($page = null)
     {
-        return self::getSetting(self::$seoMetas, self::$seoMetasName, $page);
+        $preferred = mb_strtolower((string) app()->getLocale());
+        $fallbacks = array_values(array_unique(array_filter([
+            $preferred,
+            mb_strtolower((string) (function_exists('getDefaultLocaleCode') ? getDefaultLocaleCode() : 'ar')),
+            self::$defaultSettingsLocale,
+        ])));
+
+        $merged = [];
+        // Lower-priority locales first; preferred last. Empty strings do not wipe richer fallbacks.
+        foreach (array_reverse($fallbacks) as $locale) {
+            $chunk = self::loadSeoMetasJsonForLocale($locale);
+            if (!is_array($chunk) || empty($chunk)) {
+                continue;
+            }
+            foreach ($chunk as $pageKey => $pageValue) {
+                if (!is_array($pageValue)) {
+                    if ($pageValue !== null && $pageValue !== '') {
+                        $merged[$pageKey] = $pageValue;
+                    }
+                    continue;
+                }
+                if (!isset($merged[$pageKey]) || !is_array($merged[$pageKey])) {
+                    $merged[$pageKey] = [];
+                }
+                foreach ($pageValue as $field => $fieldValue) {
+                    if ($fieldValue !== null && $fieldValue !== '') {
+                        $merged[$pageKey][$field] = $fieldValue;
+                    }
+                }
+            }
+        }
+
+        if (!empty($page)) {
+            return $merged[$page] ?? null;
+        }
+
+        return $merged;
+    }
+
+    /**
+     * Raw seo_metas JSON array for one settings translation locale.
+     */
+    protected static function loadSeoMetasJsonForLocale(string $locale): array
+    {
+        $locale = mb_strtolower($locale);
+        $cacheKey = 'settings.' . self::$seoMetasName . '.locale.' . $locale;
+
+        $json = cache()->remember($cacheKey, 30 * 24 * 60 * 60, function () use ($locale) {
+            $setting = self::where('name', self::$seoMetasName)->first();
+            if (empty($setting)) {
+                return null;
+            }
+
+            $row = \App\Models\Translation\SettingTranslation::query()
+                ->where('setting_id', $setting->id)
+                ->whereRaw('LOWER(locale) = ?', [$locale])
+                ->orderByDesc('id')
+                ->first();
+
+            return $row->value ?? null;
+        });
+
+        if (empty($json) || !is_string($json)) {
+            return [];
+        }
+
+        $decoded = json_decode($json, true);
+
+        return is_array($decoded) ? $decoded : [];
     }
 
     /**

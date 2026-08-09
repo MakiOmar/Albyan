@@ -46,12 +46,29 @@
                             </ul>
 
                             @php
-                                $itemValue = (!empty($settings) and !empty($settings['seo_metas'])) ? $settings['seo_metas']->value : '';
+                                // Prefer locale-specific SEO payload from the controller.
+                                $itemValue = $seoMetasValues ?? null;
+                                if (empty($itemValue) && !empty($settings) && !empty($settings['seo_metas'])) {
+                                    $itemValue = $settings['seo_metas']->value;
+                                }
 
                                 if (!empty($itemValue) and !is_array($itemValue)) {
                                     $itemValue = json_decode($itemValue, true);
                                 }
+                                $seoLocale = $seoLocale ?? app()->getLocale();
                             @endphp
+
+                            @if(!empty(getGeneralSettings('content_translate')))
+                                <div class="form-group col-12 col-md-4 px-0 mb-3">
+                                    <label class="input-label">{{ trans('auth.language') }}</label>
+                                    {{-- Comment: switch SEO content locale (AR homepage uses AR SEO title/description) --}}
+                                    <select class="form-control js-seo-metas-locale">
+                                        @foreach(getUserLanguagesLists() as $lang => $language)
+                                            <option value="{{ mb_strtolower($lang) }}" @if(mb_strtolower($seoLocale) == mb_strtolower($lang)) selected @endif>{{ $language }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
 
                             <div class="tab-content" id="myTabContent2">
 
@@ -60,6 +77,7 @@
                                         <div class="col-12 col-md-8">
                                             <form action="{{ getAdminPanelUrl() }}/settings/seo_metas/store" method="post">
                                             {{ csrf_field() }}
+                                            <input type="hidden" name="locale" value="{{ mb_strtolower($seoLocale) }}">
 
                                                 <div class="form-group">
                                                     <label>{{ trans('update.extra_meta_tags') }}</label>
@@ -210,10 +228,11 @@
                                             <div class="col-12 col-md-6">
                                                 <form action="{{ getAdminPanelUrl() }}/settings/seo_metas/store" method="post">
                                                     {{ csrf_field() }}
+                                                    <input type="hidden" name="locale" value="{{ mb_strtolower($seoLocale) }}">
 
                                                     <div class="form-group">
                                                         <label>{{ trans('admin/main.title') }}</label>
-                                                        <input type="text" name="value[{{ $page }}][title]" value="{{ (!empty($itemValue) and !empty($itemValue[$page])) ? $itemValue[$page]['title'] : old('title') }}" class="form-control  @error('title') is-invalid @enderror"/>
+                                                        <input type="text" name="value[{{ $page }}][title]" value="{{ (!empty($itemValue) and !empty($itemValue[$page])) ? ($itemValue[$page]['title'] ?? '') : old('title') }}" class="form-control  @error('title') is-invalid @enderror"/>
                                                         @error('title')
                                                         <div class="invalid-feedback">
                                                             {{ $message }}
@@ -223,7 +242,7 @@
 
                                                     <div class="form-group">
                                                         <label>{{ trans('public.description') }}</label>
-                                                        <textarea name="value[{{ $page }}][description]" rows="4" class="form-control  @error('description') is-invalid @enderror">{{ (!empty($itemValue) and !empty($itemValue[$page])) ? $itemValue[$page]['description'] : old('description') }}</textarea>
+                                                        <textarea name="value[{{ $page }}][description]" rows="4" class="form-control  @error('description') is-invalid @enderror">{{ (!empty($itemValue) and !empty($itemValue[$page])) ? ($itemValue[$page]['description'] ?? '') : old('description') }}</textarea>
                                                         @error('description')
                                                         <div class="invalid-feedback">
                                                             {{ $message }}
@@ -295,13 +314,17 @@
             }
 
             if (typeof $ !== 'undefined') {
-                $('body').on('change', '.js-schema-locale', function () {
+                $('body').on('change', '.js-schema-locale, .js-seo-metas-locale', function () {
                     var val = $(this).val();
                     if (!val) {
                         return;
                     }
-                    window.location.href = window.location.origin + window.location.pathname
-                        + '?locale=' + encodeURIComponent(val) + '#schema';
+                    var url = window.location.origin + window.location.pathname
+                        + '?locale=' + encodeURIComponent(val);
+                    if ($(this).hasClass('js-schema-locale')) {
+                        url += '#schema';
+                    }
+                    window.location.href = url;
                 });
             }
         })();
