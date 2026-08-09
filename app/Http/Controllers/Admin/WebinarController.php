@@ -433,22 +433,28 @@ class WebinarController extends Controller
         $webinar->status = Webinar::$pending;
         $webinar->created_at = time();
         $webinar->updated_at = time();
-        // Parent slug is UNIQUE; write via setRawAttributes so Astrotomic does not
-        // map slug onto translations (also avoids "Indirect modification of overloaded property").
+
+        // Parent webinars.slug is NOT NULL + UNIQUE. Put it on the parent row only.
+        // Eloquent save() with slug in attributes fires Astrotomic/Sluggable and can
+        // INSERT webinar_translations with only slug (title has no DB default) — even
+        // when the admin already submitted a title. Skip model events, then write the
+        // full translation (title/slug/description) via the query-builder helper.
         $webinar->setRawAttributes(array_merge($webinar->getAttributes(), [
             'slug' => $slug,
         ]));
-        $webinar->save();
 
-        if ($webinar) {
+        Webinar::withoutEvents(function () use ($webinar) {
+            $webinar->save();
+        });
+
+        if ($webinar && $webinar->id) {
             $webinar->saveLocaleTranslation($locale, [
                 'title' => $data['title'],
                 'slug' => $slug,
                 'description' => $data['description'],
-                'seo_description' => $data['seo_description'],
+                'seo_description' => $data['seo_description'] ?? null,
             ]);
 
-            // Always keep parent slug in sync (NOT NULL + unique on webinars.slug).
             DB::table('webinars')->where('id', $webinar->id)->update(['slug' => $slug]);
         }
 
