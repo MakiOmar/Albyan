@@ -278,10 +278,14 @@ class SettingsController extends Controller
         $data = $request->all();
         $locale = mb_strtolower((string) $request->get('locale', Setting::$defaultSettingsLocale));
         $newValues = $data['value'] ?? [];
+        if (!is_array($newValues)) {
+            $newValues = [];
+        }
         $values = [];
         $settings = Setting::where('name', $name)->first();
 
-        // Load existing values for THIS locale (do not mix AR/EN JSON blobs).
+        // Load existing values for THIS locale only (never copy from another locale).
+        $existingTranslation = null;
         if (!empty($settings)) {
             $existingTranslation = SettingTranslation::where('setting_id', $settings->id)
                 ->whereRaw('LOWER(locale) = ?', [$locale])
@@ -295,19 +299,9 @@ class SettingsController extends Controller
             }
         }
 
-        if (!empty($newValues) and !empty($values)) {
-            foreach ($newValues as $newKey => $newValue) {
-                foreach ($values as $key => $value) {
-                    if ($key == $newKey) {
-                        $values[$key] = $newValue;
-                        unset($newValues[$key]);
-                    }
-                }
-            }
-        }
-
-        if (!empty($newValues)) {
-            $values = array_merge((array) $values, $newValues);
+        // Deep-merge only submitted page keys into this locale's JSON.
+        foreach ($newValues as $newKey => $newValue) {
+            $values[$newKey] = $newValue;
         }
 
         $settings = Setting::updateOrCreate(
@@ -318,15 +312,27 @@ class SettingsController extends Controller
             ]
         );
 
-        SettingTranslation::updateOrCreate(
-            [
-                'setting_id' => $settings->id,
-                'locale' => $locale,
-            ],
-            [
-                'value' => json_encode($values),
-            ]
-        );
+        // Update one locale row only; normalize casing and drop duplicate locale variants.
+        if (!empty($existingTranslation) && (int) $existingTranslation->setting_id === (int) $settings->id) {
+            $existingTranslation->locale = $locale;
+            $existingTranslation->value = json_encode($values, JSON_UNESCAPED_UNICODE);
+            $existingTranslation->save();
+
+            SettingTranslation::where('setting_id', $settings->id)
+                ->whereRaw('LOWER(locale) = ?', [$locale])
+                ->where('id', '!=', $existingTranslation->id)
+                ->delete();
+        } else {
+            SettingTranslation::updateOrCreate(
+                [
+                    'setting_id' => $settings->id,
+                    'locale' => $locale,
+                ],
+                [
+                    'value' => json_encode($values, JSON_UNESCAPED_UNICODE),
+                ]
+            );
+        }
 
         cache()->forget('settings.' . $name);
         foreach (['en', 'ar', 'es'] as $loc) {

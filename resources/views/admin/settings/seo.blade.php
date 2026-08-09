@@ -46,27 +46,27 @@
                             </ul>
 
                             @php
-                                // Prefer locale-specific SEO payload from the controller.
-                                $itemValue = $seoMetasValues ?? null;
-                                if (empty($itemValue) && !empty($settings) && !empty($settings['seo_metas'])) {
-                                    $itemValue = $settings['seo_metas']->value;
-                                }
-
+                                // Strictly the selected admin locale — never fall back to another locale's values.
+                                $itemValue = $seoMetasValues ?? [];
                                 if (!empty($itemValue) and !is_array($itemValue)) {
                                     $itemValue = json_decode($itemValue, true);
+                                }
+                                if (!is_array($itemValue)) {
+                                    $itemValue = [];
                                 }
                                 $seoLocale = $seoLocale ?? app()->getLocale();
                             @endphp
 
-                            @if(!empty(getGeneralSettings('content_translate')))
+                            @if(count(getUserLanguagesLists()) > 1)
                                 <div class="form-group col-12 col-md-4 px-0 mb-3">
                                     <label class="input-label">{{ trans('auth.language') }}</label>
-                                    {{-- Comment: switch SEO content locale (AR homepage uses AR SEO title/description) --}}
+                                    {{-- Comment: switch SEO content locale; save writes only this locale --}}
                                     <select class="form-control js-seo-metas-locale">
                                         @foreach(getUserLanguagesLists() as $lang => $language)
                                             <option value="{{ mb_strtolower($lang) }}" @if(mb_strtolower($seoLocale) == mb_strtolower($lang)) selected @endif>{{ $language }}</option>
                                         @endforeach
                                     </select>
+                                    <small class="text-muted d-block mt-1">{{ mb_strtoupper($seoLocale) }} SEO copy is saved separately from other languages.</small>
                                 </div>
                             @endif
 
@@ -123,7 +123,7 @@
                                             <form action="{{ getAdminPanelUrl() }}/settings/schema_settings/store" method="post">
                                                 {{ csrf_field() }}
 
-                                                @if(!empty(getGeneralSettings('content_translate')))
+                                                @if(count(getUserLanguagesLists()) > 1)
                                                     <div class="form-group">
                                                         <label class="input-label">{{ trans('auth.language') }}</label>
                                                         <select name="locale" class="form-control js-schema-locale">

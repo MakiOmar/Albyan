@@ -166,7 +166,9 @@ class Setting extends Model implements TranslatableContract
     }
 
     /**
-     * SEO metas for a page (title/description/robot), locale-aware with EN fallback.
+     * SEO metas for a page (title/description/robot), locale-aware.
+     * Uses the preferred locale wholesale; falls back to another locale only when
+     * that page key is missing/empty in the preferred locale (no field-level mix).
      *
      * @param  string|null  $page  e.g. home, search, classes
      * @return array|string|null
@@ -180,36 +182,59 @@ class Setting extends Model implements TranslatableContract
             self::$defaultSettingsLocale,
         ])));
 
+        if (!empty($page)) {
+            foreach ($fallbacks as $locale) {
+                $chunk = self::loadSeoMetasJsonForLocale($locale);
+                if (!is_array($chunk) || !array_key_exists($page, $chunk)) {
+                    continue;
+                }
+                $pageValue = $chunk[$page];
+                if (self::seoMetaEntryHasContent($pageValue)) {
+                    return $pageValue;
+                }
+            }
+
+            return null;
+        }
+
+        // Prefer current locale per page key; do not splice fields across locales.
         $merged = [];
-        // Lower-priority locales first; preferred last. Empty strings do not wipe richer fallbacks.
-        foreach (array_reverse($fallbacks) as $locale) {
+        foreach ($fallbacks as $locale) {
             $chunk = self::loadSeoMetasJsonForLocale($locale);
             if (!is_array($chunk) || empty($chunk)) {
                 continue;
             }
             foreach ($chunk as $pageKey => $pageValue) {
-                if (!is_array($pageValue)) {
-                    if ($pageValue !== null && $pageValue !== '') {
-                        $merged[$pageKey] = $pageValue;
-                    }
+                if (array_key_exists($pageKey, $merged)) {
                     continue;
                 }
-                if (!isset($merged[$pageKey]) || !is_array($merged[$pageKey])) {
-                    $merged[$pageKey] = [];
-                }
-                foreach ($pageValue as $field => $fieldValue) {
-                    if ($fieldValue !== null && $fieldValue !== '') {
-                        $merged[$pageKey][$field] = $fieldValue;
-                    }
+                if (self::seoMetaEntryHasContent($pageValue)) {
+                    $merged[$pageKey] = $pageValue;
                 }
             }
         }
 
-        if (!empty($page)) {
-            return $merged[$page] ?? null;
+        return $merged;
+    }
+
+    /**
+     * Whether a seo_metas page/global entry has usable content.
+     *
+     * @param  mixed  $pageValue
+     */
+    protected static function seoMetaEntryHasContent($pageValue): bool
+    {
+        if (is_array($pageValue)) {
+            foreach ($pageValue as $fieldValue) {
+                if ($fieldValue !== null && $fieldValue !== '') {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
-        return $merged;
+        return $pageValue !== null && $pageValue !== '';
     }
 
     /**
@@ -587,7 +612,8 @@ class Setting extends Model implements TranslatableContract
      * @return array|string|null
      */
     /**
-     * Schema (JSON-LD) copy for the current (or given) locale, with EN/default fallback.
+     * Schema (JSON-LD) copy for the current (or given) locale.
+     * Preferred locale first; only fall back wholesale when that locale row is empty.
      *
      * @param  string|null  $key
      * @param  string|null  $locale
@@ -602,25 +628,30 @@ class Setting extends Model implements TranslatableContract
             self::$defaultSettingsLocale,
         ])));
 
-        $merged = [];
-        // Lower-priority locales first; preferred last. Empty strings do not wipe richer fallbacks.
-        foreach (array_reverse($fallbacks) as $loc) {
+        $chosen = [];
+        foreach ($fallbacks as $loc) {
             $chunk = self::loadSchemaSettingsJsonForLocale($loc);
             if (!is_array($chunk) || empty($chunk)) {
                 continue;
             }
-            foreach ($chunk as $field => $fieldValue) {
+            $hasContent = false;
+            foreach ($chunk as $fieldValue) {
                 if ($fieldValue !== null && $fieldValue !== '') {
-                    $merged[$field] = $fieldValue;
+                    $hasContent = true;
+                    break;
                 }
+            }
+            if ($hasContent) {
+                $chosen = $chunk;
+                break;
             }
         }
 
         if (!empty($key)) {
-            return $merged[$key] ?? null;
+            return $chosen[$key] ?? null;
         }
 
-        return $merged;
+        return $chosen;
     }
 
     /**
