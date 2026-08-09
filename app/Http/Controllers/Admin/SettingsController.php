@@ -18,6 +18,7 @@ use App\Models\UserBank;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class SettingsController extends Controller
@@ -107,6 +108,14 @@ class SettingsController extends Controller
                 }
             }
             $data['seoMetasValues'] = $seoValues;
+
+            // Temporary live debug: raw DB snapshot for every locale (not cached / not merged).
+            $data['seoMetasDebug'] = $this->buildSeoMetasDebugSnapshot($seoSetting?->id, [
+                'source' => 'admin_seo_page',
+                'selected_locale' => $seoLocale,
+                'app_locale' => app()->getLocale(),
+                'form_locale_hidden_will_be' => $seoLocale,
+            ]);
 
             $schemaLocale = $seoLocale;
             $schemaValues = [];
@@ -284,6 +293,17 @@ class SettingsController extends Controller
         $values = [];
         $settings = Setting::where('name', $name)->first();
 
+        $before = $this->buildSeoMetasDebugSnapshot($settings?->id, [
+            'source' => 'storeSeoMetas_before',
+            'request_locale' => $locale,
+            'app_locale' => app()->getLocale(),
+            'submitted_keys' => array_keys($newValues),
+            'submitted_home' => $newValues['home'] ?? null,
+            'raw_locale_param' => $request->input('locale'),
+            'all_locale_inputs' => $request->input('locale'),
+        ]);
+        Log::warning('[SEO_METAS_DEBUG] before save', $before);
+
         // Load existing values for THIS locale only (never copy from another locale).
         $existingTranslation = null;
         if (!empty($settings)) {
@@ -312,18 +332,23 @@ class SettingsController extends Controller
             ]
         );
 
+        $touchedTranslationId = null;
+        $writeMode = null;
+
         // Update one locale row only; normalize casing and drop duplicate locale variants.
         if (!empty($existingTranslation) && (int) $existingTranslation->setting_id === (int) $settings->id) {
             $existingTranslation->locale = $locale;
             $existingTranslation->value = json_encode($values, JSON_UNESCAPED_UNICODE);
             $existingTranslation->save();
+            $touchedTranslationId = $existingTranslation->id;
+            $writeMode = 'update_existing_row';
 
             SettingTranslation::where('setting_id', $settings->id)
                 ->whereRaw('LOWER(locale) = ?', [$locale])
                 ->where('id', '!=', $existingTranslation->id)
                 ->delete();
         } else {
-            SettingTranslation::updateOrCreate(
+            $row = SettingTranslation::updateOrCreate(
                 [
                     'setting_id' => $settings->id,
                     'locale' => $locale,
@@ -332,6 +357,8 @@ class SettingsController extends Controller
                     'value' => json_encode($values, JSON_UNESCAPED_UNICODE),
                 ]
             );
+            $touchedTranslationId = $row->id;
+            $writeMode = 'update_or_create';
         }
 
         cache()->forget('settings.' . $name);
@@ -350,7 +377,78 @@ class SettingsController extends Controller
 
         Setting::$seoMetas = null;
 
+        $after = $this->buildSeoMetasDebugSnapshot($settings->id, [
+            'source' => 'storeSeoMetas_after',
+            'request_locale' => $locale,
+            'app_locale' => app()->getLocale(),
+            'write_mode' => $writeMode,
+            'touched_translation_id' => $touchedTranslationId,
+            'submitted_keys' => array_keys($newValues),
+            'submitted_home' => $newValues['home'] ?? null,
+        ]);
+        Log::warning('[SEO_METAS_DEBUG] after save', $after);
+
+        // Detect accidental cross-locale home title changes for the flash panel.
+        $changedLocales = [];
+        $beforeByLocale = [];
+        foreach (($before['rows'] ?? []) as $row) {
+            $beforeByLocale[mb_strtolower((string) $row['locale'])] = $row['home_title'] ?? null;
+        }
+        foreach (($after['rows'] ?? []) as $row) {
+            $loc = mb_strtolower((string) $row['locale']);
+            $prev = $beforeByLocale[$loc] ?? null;
+            $next = $row['home_title'] ?? null;
+            if ($prev !== $next) {
+                $changedLocales[] = $loc . ' (id ' . $row['id'] . ')';
+            }
+        }
+
+        session()->flash('seo_metas_debug', [
+            'target_locale' => $locale,
+            'write_mode' => $writeMode,
+            'touched_translation_id' => $touchedTranslationId,
+            'changed_locales' => $changedLocales,
+            'before' => $before,
+            'after' => $after,
+        ]);
+
         return redirect(getAdminPanelUrl() . '/settings/seo?locale=' . urlencode($locale));
+    }
+
+    /**
+     * Temporary live debug helper: dump every seo_metas translation row home title/desc.
+     */
+    protected function buildSeoMetasDebugSnapshot(?int $settingId, array $meta = []): array
+    {
+        $rows = [];
+        if (!empty($settingId)) {
+            $translations = SettingTranslation::where('setting_id', $settingId)
+                ->orderBy('locale')
+                ->orderBy('id')
+                ->get(['id', 'locale', 'value']);
+
+            foreach ($translations as $translation) {
+                $decoded = json_decode((string) $translation->value, true);
+                $home = is_array($decoded) ? ($decoded['home'] ?? null) : null;
+                $rows[] = [
+                    'id' => $translation->id,
+                    'locale' => $translation->locale,
+                    'home_title' => is_array($home) ? (string) ($home['title'] ?? '') : null,
+                    'home_description' => is_array($home)
+                        ? mb_substr((string) ($home['description'] ?? ''), 0, 120)
+                        : null,
+                    'json_bytes' => strlen((string) $translation->value),
+                    'page_keys' => is_array($decoded) ? array_keys($decoded) : [],
+                ];
+            }
+        }
+
+        return array_merge($meta, [
+            'setting_id' => $settingId,
+            'row_count' => count($rows),
+            'rows' => $rows,
+            'at' => now()->toDateTimeString(),
+        ]);
     }
 
     public function storeSchemaSettings(Request $request)
@@ -398,15 +496,28 @@ class SettingsController extends Controller
             ]
         );
 
-        SettingTranslation::updateOrCreate(
-            [
+        // Comment: write only the selected locale row; normalize casing / drop duplicates.
+        $existingTranslation = SettingTranslation::where('setting_id', $settings->id)
+            ->whereRaw('LOWER(locale) = ?', [$locale])
+            ->orderByDesc('id')
+            ->first();
+
+        if (!empty($existingTranslation)) {
+            $existingTranslation->locale = $locale;
+            $existingTranslation->value = json_encode($values, JSON_UNESCAPED_UNICODE);
+            $existingTranslation->save();
+
+            SettingTranslation::where('setting_id', $settings->id)
+                ->whereRaw('LOWER(locale) = ?', [$locale])
+                ->where('id', '!=', $existingTranslation->id)
+                ->delete();
+        } else {
+            SettingTranslation::create([
                 'setting_id' => $settings->id,
                 'locale' => $locale,
-            ],
-            [
                 'value' => json_encode($values, JSON_UNESCAPED_UNICODE),
-            ]
-        );
+            ]);
+        }
 
         cache()->forget('settings.' . $name);
         foreach (['en', 'ar', 'es'] as $loc) {

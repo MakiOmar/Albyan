@@ -14,6 +14,43 @@
 
         <div class="section-body">
 
+            {{-- Temporary SEO locale debug (remove after live test) --}}
+            @php
+                $seoDebugFlash = session('seo_metas_debug');
+                $seoDebugLive = $seoMetasDebug ?? null;
+            @endphp
+            @if(!empty($seoDebugFlash) || !empty($seoDebugLive))
+                <div class="alert alert-warning mb-3" style="font-family: monospace; font-size: 12px; white-space: pre-wrap;">
+                    <strong>SEO_METAS_DEBUG</strong>
+                    @if(!empty($seoDebugFlash))
+                        <div class="mt-2"><strong>Last save</strong>
+                            target={{ $seoDebugFlash['target_locale'] ?? '-' }}
+                            | mode={{ $seoDebugFlash['write_mode'] ?? '-' }}
+                            | touched_id={{ $seoDebugFlash['touched_translation_id'] ?? '-' }}
+                            | changed_locales={{ !empty($seoDebugFlash['changed_locales']) ? implode(', ', $seoDebugFlash['changed_locales']) : '(none)' }}
+                        </div>
+                        <div class="mt-1"><strong>Before:</strong>
+                            @foreach(($seoDebugFlash['before']['rows'] ?? []) as $row)
+                                [id={{ $row['id'] }} {{ $row['locale'] }}] title={{ $row['home_title'] ?: '(empty)' }}{{ "\n" }}
+                            @endforeach
+                        </div>
+                        <div class="mt-1"><strong>After:</strong>
+                            @foreach(($seoDebugFlash['after']['rows'] ?? []) as $row)
+                                [id={{ $row['id'] }} {{ $row['locale'] }}] title={{ $row['home_title'] ?: '(empty)' }}{{ "\n" }}
+                            @endforeach
+                        </div>
+                    @endif
+                    @if(!empty($seoDebugLive))
+                        <div class="mt-2"><strong>DB now</strong> (selected={{ $seoDebugLive['selected_locale'] ?? '-' }}, app={{ $seoDebugLive['app_locale'] ?? '-' }}):
+                            @foreach(($seoDebugLive['rows'] ?? []) as $row)
+                                [id={{ $row['id'] }} {{ $row['locale'] }}] title={{ $row['home_title'] ?: '(empty)' }} | desc={{ $row['home_description'] ?: '(empty)' }}{{ "\n" }}
+                            @endforeach
+                        </div>
+                    @endif
+                    <div class="text-muted mt-1">Also logged as [SEO_METAS_DEBUG] in storage/logs/laravel.log</div>
+                </div>
+            @endif
+
             <div class="row">
                 <div class="col-12">
                     <div class="card">
