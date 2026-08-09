@@ -586,9 +586,73 @@ class Setting extends Model implements TranslatableContract
      * @param string|null $key
      * @return array|string|null
      */
-    static function getSchemaSettings($key = null)
+    /**
+     * Schema (JSON-LD) copy for the current (or given) locale, with EN/default fallback.
+     *
+     * @param  string|null  $key
+     * @param  string|null  $locale
+     * @return array|string|null
+     */
+    static function getSchemaSettings($key = null, $locale = null)
     {
-        return self::getSetting(self::$schemaSettings, self::$schemaSettingsName, $key);
+        $preferred = mb_strtolower((string) ($locale ?: app()->getLocale()));
+        $fallbacks = array_values(array_unique(array_filter([
+            $preferred,
+            mb_strtolower((string) (function_exists('getDefaultLocaleCode') ? getDefaultLocaleCode() : 'ar')),
+            self::$defaultSettingsLocale,
+        ])));
+
+        $merged = [];
+        // Lower-priority locales first; preferred last. Empty strings do not wipe richer fallbacks.
+        foreach (array_reverse($fallbacks) as $loc) {
+            $chunk = self::loadSchemaSettingsJsonForLocale($loc);
+            if (!is_array($chunk) || empty($chunk)) {
+                continue;
+            }
+            foreach ($chunk as $field => $fieldValue) {
+                if ($fieldValue !== null && $fieldValue !== '') {
+                    $merged[$field] = $fieldValue;
+                }
+            }
+        }
+
+        if (!empty($key)) {
+            return $merged[$key] ?? null;
+        }
+
+        return $merged;
+    }
+
+    /**
+     * Raw schema_settings JSON array for one settings translation locale.
+     */
+    protected static function loadSchemaSettingsJsonForLocale(string $locale): array
+    {
+        $locale = mb_strtolower($locale);
+        $cacheKey = 'settings.' . self::$schemaSettingsName . '.locale.' . $locale;
+
+        $json = cache()->remember($cacheKey, 30 * 24 * 60 * 60, function () use ($locale) {
+            $setting = self::where('name', self::$schemaSettingsName)->first();
+            if (empty($setting)) {
+                return null;
+            }
+
+            $row = \App\Models\Translation\SettingTranslation::query()
+                ->where('setting_id', $setting->id)
+                ->whereRaw('LOWER(locale) = ?', [$locale])
+                ->orderByDesc('id')
+                ->first();
+
+            return $row->value ?? null;
+        });
+
+        if (empty($json) || !is_string($json)) {
+            return [];
+        }
+
+        $decoded = json_decode($json, true);
+
+        return is_array($decoded) ? $decoded : [];
     }
 
     static function getSMSChannelsSettings($key = null)

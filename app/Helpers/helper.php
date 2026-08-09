@@ -1504,9 +1504,9 @@ function getSeoMetas($page = null)
  * @param string|null $key
  * @return array|string|null
  */
-function getSchemaSettings($key = null)
+function getSchemaSettings($key = null, $locale = null)
 {
-    return App\Models\Setting::getSchemaSettings($key);
+    return App\Models\Setting::getSchemaSettings($key, $locale);
 }
 
 /**

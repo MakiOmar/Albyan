@@ -403,9 +403,20 @@ class SettingsController extends Controller
         );
 
         cache()->forget('settings.' . $name);
+        foreach (['en', 'ar', 'es'] as $loc) {
+            cache()->forget('settings.' . $name . '.locale.' . $loc);
+        }
+        try {
+            foreach (\App\Http\Controllers\Web\HomeController::homeCacheLocales() as $loc) {
+                cache()->forget('settings.' . $name . '.locale.' . mb_strtolower($loc));
+            }
+        } catch (\Throwable $e) {
+            // Non-fatal during install if home locales cannot be resolved.
+        }
         cache()->forget('llms_txt.ar');
         cache()->forget('llms_txt.en');
         cache()->forget('llms_txt.es');
+        Setting::$schemaSettings = null;
 
         return redirect(getAdminPanelUrl() . '/settings/seo?locale=' . urlencode($locale) . '#schema');
     }

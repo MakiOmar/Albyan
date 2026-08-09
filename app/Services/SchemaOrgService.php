@@ -20,7 +20,8 @@ class SchemaOrgService
 
         $stored = [];
         try {
-            $stored = getSchemaSettings() ?: [];
+            // Comment: load dashboard schema copy for the same locale as schema.inLanguage
+            $stored = getSchemaSettings(null, $locale) ?: [];
         } catch (\Throwable $e) {
             $stored = [];
         }
