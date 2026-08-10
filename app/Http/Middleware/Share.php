@@ -52,6 +52,12 @@ class Share
         $cartDiscount = CartDiscount::query()->where('enable', true)->count();
         view()->share('userCartDiscount', $cartDiscount);
 
+        // Locale must be applied before getGeneralSettings() so site_name is locale-aware.
+        if (!Session::has('locale')) {
+            Session::put('locale', mb_strtolower(getDefaultLocale()));
+        }
+        App::setLocale(session('locale'));
+
         $generalSettings = getGeneralSettings();
         view()->share('generalSettings', $generalSettings);
 
@@ -68,12 +74,6 @@ class Share
             }
         }
 
-
-        // locale config
-        if (!Session::has('locale')) {
-            Session::put('locale', mb_strtolower(getDefaultLocale()));
-        }
-        App::setLocale(session('locale'));
 
         // Used by the language switcher to reliably redirect back to the current page.
         // Without this, some pages (like home) may not include `previous_url`, causing redirects to stay on `/`.

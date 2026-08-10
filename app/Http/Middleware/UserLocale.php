@@ -43,7 +43,10 @@ class UserLocale
             $locale = $defaultLocale;
         }
 
-        \Session::put('locale', mb_strtolower($locale));
+        $normalized = mb_strtolower($locale);
+        \Session::put('locale', $normalized);
+        // Apply immediately so later middleware/views resolve locale-aware settings (e.g. site_name).
+        app()->setLocale($normalized);
 
         return $next($request);
     }
