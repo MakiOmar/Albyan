@@ -125,18 +125,10 @@
                         <span class="text-warning real font-14">{{ $webinar->points }} {{ trans('update.points') }}</span>
                     @elseif(!empty($webinar->price) and $webinar->price > 0)
                         @if($webinar->bestTicket() < $webinar->price)
-                        @php
-                        $bestTicket = str_replace('د.إ','درهم/إماراتي', handlePrice($webinar->bestTicket(), true, true, false, null, true) );
-                        $price = str_replace('د.إ','درهم/إماراتي', handlePrice($webinar->price, true, true, false, null, true) );
-                        @endphp
-                            <span class="real">{{ $bestTicket }}</span>
-                            <span class="off ml-10">{{ $price }}</span>
+                            <span class="real">{{ handlePrice($webinar->bestTicket(), true, true, false, null, true) }}</span>
+                            <span class="off ml-10">{{ handlePrice($webinar->price, true, true, false, null, true) }}</span>
                         @else
-                        @php
-                        $unformatedPrice = handlePrice($webinar->price, true, true, false, null, true);
-                        $price = preg_replace('/د\.\s*[^\d]+/u', ' درهم/إماراتي', $unformatedPrice);
-                        @endphp
-                            <span class="real">{{ $price }}</span>
+                            <span class="real">{{ handlePrice($webinar->price, true, true, false, null, true) }}</span>
                         @endif
                     @else
                         <span class="real font-14">{{ trans('public.free') }}</span>

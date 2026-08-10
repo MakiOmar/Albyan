@@ -1773,6 +1773,8 @@ return [
 "exchange_rate" => "سعر الصرف",
 "insert_the_selected_currency_exchange_rate_to_the_default_currency" => "أدخل سعر صرف العملة المحددة إلى العملة الافتراضية (:sign)",
 "currency" => "العملة",
+"currency_sign_AED" => "درهم إماراتي",
+"currency_sign_SAR" => "ريال سعودي",
 "disabled_payment_gateways" => "بوابات دفع معطلة",
 "disabled_payment_gateways_hint" => "لا يمكنك معالجة دفعاتك باستخدام البوابات التالية لأنها لا تدعم العملة المحددة. يرجى تغيير العملة إذا كنت تريد الدفع باستخدامها.",
 "access_denied" => "تم الرفض!",

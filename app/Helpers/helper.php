@@ -764,68 +764,56 @@ function currencySign($currency = null)
         $currency = currency();
     }
 
+    // Prefer locale lang strings when defined (e.g. AED → "AED" / "درهم إماراتي").
+    $translationKey = 'update.currency_sign_' . $currency;
+    $translated = trans($translationKey);
+    if (is_string($translated) && $translated !== $translationKey && $translated !== '') {
+        return $translated;
+    }
+
     switch ($currency) {
         case 'USD':
             return '$';
-            break;
         case 'EUR':
             return '€';
-            break;
         case 'JPY':
         case 'CNY':
             return '¥';
-            break;
         case 'AED':
-            return 'د.إ';
-            break;
+            // Fallback if translation file missing for a locale
+            return mb_strtolower((string) app()->getLocale()) === 'ar' ? 'درهم إماراتي' : 'AED';
         case 'SAR':
-            return 'ر.س';
-            break;
+            return mb_strtolower((string) app()->getLocale()) === 'ar' ? 'ر.س' : 'SAR';
         case 'KRW':
             return '₩';
-            break;
         case 'INR':
             return '₹';
-            break;
         case 'RUB':
             return '₽';
-            break;
         case 'Lek':
             return 'Lek';
-            break;
         case 'AFN':
             return '؋';
-            break;
         case 'ARS':
             return '$';
-            break;
         case 'AWG':
             return 'ƒ';
-            break;
         case 'AUD':
             return '$';
-            break;
         case 'AZN':
             return '₼';
-            break;
         case 'BSD':
             return '$';
-            break;
         case 'BBD':
             return '$';
-            break;
         case 'BDT':
             return '৳';
-            break;
         case 'BYN':
             return 'Br';
-            break;
         case 'BZD':
             return 'BZ$';
-            break;
         case 'BMD':
             return '$';
-            break;
         case 'BOB':
             return '$b';
             break;

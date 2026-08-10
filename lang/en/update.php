@@ -1773,6 +1773,8 @@ return [
 "exchange_rate" => "Exchange Rate",
 "insert_the_selected_currency_exchange_rate_to_the_default_currency" => "Insert the selected currency exchange rate to the default currency (:sign)",
 "currency" => "Currency",
+"currency_sign_AED" => "AED",
+"currency_sign_SAR" => "SAR",
 "disabled_payment_gateways" => "Disabled payment gateways",
 "disabled_payment_gateways_hint" => "You can not process your payment using the following gateways because they don't support your selected currency. Please change the currency if you want to make payments using them.",
 "access_denied" => "Access Denied!",
