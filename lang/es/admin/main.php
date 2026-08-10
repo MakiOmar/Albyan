@@ -655,6 +655,7 @@ return [
     'settings_main' => 'Main Settings',
     'main_general' => 'General',
     'site_name' => 'Platform Title',
+    'site_name_locale_hint' => 'El título de la plataforma se guarda por idioma. El resto de ajustes básicos son compartidos.',
     'site_email' => 'Platform Email',
     'site_phone' => 'Platform Phone',
     'site_language' => 'Default Front Language',

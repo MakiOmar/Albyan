@@ -87,7 +87,7 @@ class SettingsController extends Controller
             }
         }
 
-        if ($page == 'seo') {
+            if ($page == 'seo') {
             $seoLocale = mb_strtolower((string) $request->get('locale', app()->getLocale()));
             $data['seoLocale'] = $seoLocale;
 
@@ -126,6 +126,19 @@ class SettingsController extends Controller
             $data['schemaLocale'] = $schemaLocale;
             $data['schemaDefaults'] = config('schema.defaults.' . $schemaLocale)
                 ?? config('schema.defaults.en', []);
+        }
+
+        if ($page == 'general') {
+            $generalLocale = mb_strtolower((string) $request->get('locale', app()->getLocale()));
+            $data['generalLocale'] = $generalLocale;
+
+            // Overlay locale-specific Platform Title onto the EN-backed general settings form.
+            if (!empty($settings['general']) && is_array($settings['general']->value)) {
+                $localizedSiteName = Setting::resolveLocalizedSiteName($generalLocale);
+                $generalValue = $settings['general']->value;
+                $generalValue['site_name'] = $localizedSiteName ?? ($generalValue['site_name'] ?? '');
+                $settings['general']->value = $generalValue;
+            }
         }
 
         return view('admin.settings.' . $page, $data);
@@ -189,9 +202,10 @@ class SettingsController extends Controller
 
         $tmpValues = $request->get('value', null);
         $adminPanelUrl = (!empty($tmpValues) and !empty($tmpValues['admin_panel_url'])) ? $tmpValues['admin_panel_url'] : null;
+        $locale = mb_strtolower((string) $request->get('locale', Setting::$defaultSettingsLocale));
 
         if (!empty($tmpValues)) {
-            $locale = $request->get('locale', Setting::$defaultSettingsLocale); // default is "en"
+            $locale = mb_strtolower((string) $request->get('locale', Setting::$defaultSettingsLocale)); // default is "en"
 
             $values = [];
             foreach ($tmpValues as $key => $val) {
@@ -219,9 +233,6 @@ class SettingsController extends Controller
                 }
             }
 
-            $values = json_encode($values);
-            $values = str_replace('record', rand(1, 600), $values);
-
             $settings = Setting::updateOrCreate(
                 ['name' => $name],
                 [
@@ -230,17 +241,37 @@ class SettingsController extends Controller
                 ]
             );
 
-            SettingTranslation::updateOrCreate(
-                [
-                    'setting_id' => $settings->id,
-                    'locale' => mb_strtolower($locale)
-                ],
-                [
-                    'value' => $values,
-                ]
-            );
+            if ($name === Setting::$generalName) {
+                $this->storeGeneralSettingsWithLocalizedSiteName($settings, $values, $locale);
+            } else {
+                $encoded = json_encode($values);
+                $encoded = str_replace('record', rand(1, 600), $encoded);
+
+                SettingTranslation::updateOrCreate(
+                    [
+                        'setting_id' => $settings->id,
+                        'locale' => $locale,
+                    ],
+                    [
+                        'value' => $encoded,
+                    ]
+                );
+            }
 
             cache()->forget('settings.' . $name);
+            if ($name === Setting::$generalName) {
+                foreach (['en', 'ar', 'es'] as $loc) {
+                    cache()->forget('settings.' . $name . '.locale.' . $loc);
+                }
+                try {
+                    foreach (\App\Http\Controllers\Web\HomeController::homeCacheLocales() as $loc) {
+                        cache()->forget('settings.' . $name . '.locale.' . mb_strtolower($loc));
+                    }
+                } catch (\Throwable $e) {
+                    // Non-fatal during install.
+                }
+                Setting::$general = null;
+            }
 
             if ($name === Setting::$generalOptionsName) {
                 Cache::forget('rss-blog.xml');
@@ -266,7 +297,81 @@ class SettingsController extends Controller
             return redirect($url);
         }
 
+        if ($name === Setting::$generalName) {
+            return redirect(getAdminPanelUrl() . '/settings/general?locale=' . urlencode($locale));
+        }
+
         return back();
+    }
+
+    /**
+     * Persist general settings on the EN defaults row, and Platform Title per selected locale.
+     */
+    protected function storeGeneralSettingsWithLocalizedSiteName(Setting $settings, array $values, string $locale): void
+    {
+        $locale = mb_strtolower($locale);
+        $defaultLocale = mb_strtolower(Setting::$defaultSettingsLocale);
+        $siteName = array_key_exists('site_name', $values) ? trim((string) $values['site_name']) : '';
+
+        $defaultValues = Setting::loadGeneralSettingsJsonForLocale($defaultLocale);
+        if (empty($defaultValues)) {
+            // Fallback to any existing translation (Astrotomic / forced EN path).
+            if (!empty($settings->value)) {
+                $decoded = is_array($settings->value) ? $settings->value : json_decode((string) $settings->value, true);
+                if (is_array($decoded)) {
+                    $defaultValues = $decoded;
+                }
+            }
+        }
+
+        $mergedDefault = array_merge($defaultValues, $values);
+        if ($locale !== $defaultLocale) {
+            // Editing AR/etc must not overwrite EN Platform Title.
+            if (array_key_exists('site_name', $defaultValues)) {
+                $mergedDefault['site_name'] = $defaultValues['site_name'];
+            } else {
+                unset($mergedDefault['site_name']);
+            }
+        } else {
+            $mergedDefault['site_name'] = $siteName;
+        }
+
+        $encodedDefault = json_encode($mergedDefault);
+        $encodedDefault = str_replace('record', rand(1, 600), $encodedDefault);
+
+        SettingTranslation::updateOrCreate(
+            [
+                'setting_id' => $settings->id,
+                'locale' => $defaultLocale,
+            ],
+            [
+                'value' => $encodedDefault,
+            ]
+        );
+
+        // Selected locale Platform Title (skip second write when already saved as default locale).
+        if ($locale === $defaultLocale) {
+            return;
+        }
+
+        $localeValues = Setting::loadGeneralSettingsJsonForLocale($locale);
+        if (empty($localeValues)) {
+            $localeValues = $mergedDefault;
+        }
+        $localeValues['site_name'] = $siteName;
+
+        $encodedLocale = json_encode($localeValues);
+        $encodedLocale = str_replace('record', rand(1, 600), $encodedLocale);
+
+        SettingTranslation::updateOrCreate(
+            [
+                'setting_id' => $settings->id,
+                'locale' => $locale,
+            ],
+            [
+                'value' => $encodedLocale,
+            ]
+        );
     }
 
     public function storeSeoMetas(Request $request)

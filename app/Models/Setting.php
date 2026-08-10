@@ -292,7 +292,77 @@ class Setting extends Model implements TranslatableContract
      */
     static function getGeneralSettings($key = null)
     {
-        return self::getSetting(self::$general, self::$generalName, $key);
+        $value = self::getSetting(self::$general, self::$generalName, null);
+        if (!is_array($value)) {
+            $value = [];
+        }
+
+        // Platform Title is locale-aware; other general keys stay on the EN defaults row.
+        $localizedSiteName = self::resolveLocalizedSiteName();
+        if ($localizedSiteName !== null && $localizedSiteName !== '') {
+            $value['site_name'] = $localizedSiteName;
+        }
+
+        if (!empty($key)) {
+            return array_key_exists($key, $value) ? $value[$key] : null;
+        }
+
+        return $value;
+    }
+
+    /**
+     * Resolve Platform Title (site_name) for the current app locale with fallbacks.
+     */
+    public static function resolveLocalizedSiteName(?string $locale = null): ?string
+    {
+        $preferred = mb_strtolower((string) ($locale ?: app()->getLocale()));
+        $fallbacks = array_values(array_unique(array_filter([
+            $preferred,
+            mb_strtolower((string) (function_exists('getDefaultLocaleCode') ? getDefaultLocaleCode() : 'ar')),
+            self::$defaultSettingsLocale,
+        ])));
+
+        foreach ($fallbacks as $loc) {
+            $chunk = self::loadGeneralSettingsJsonForLocale($loc);
+            $siteName = is_array($chunk) ? trim((string) ($chunk['site_name'] ?? '')) : '';
+            if ($siteName !== '') {
+                return $siteName;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Raw general settings JSON for one translation locale.
+     */
+    public static function loadGeneralSettingsJsonForLocale(string $locale): array
+    {
+        $locale = mb_strtolower($locale);
+        $cacheKey = 'settings.' . self::$generalName . '.locale.' . $locale;
+
+        $json = cache()->remember($cacheKey, 30 * 24 * 60 * 60, function () use ($locale) {
+            $setting = self::where('name', self::$generalName)->first();
+            if (empty($setting)) {
+                return null;
+            }
+
+            $row = \App\Models\Translation\SettingTranslation::query()
+                ->where('setting_id', $setting->id)
+                ->whereRaw('LOWER(locale) = ?', [$locale])
+                ->orderByDesc('id')
+                ->first();
+
+            return $row->value ?? null;
+        });
+
+        if (empty($json) || !is_string($json)) {
+            return [];
+        }
+
+        $decoded = json_decode($json, true);
+
+        return is_array($decoded) ? $decoded : [];
     }
 
     /**

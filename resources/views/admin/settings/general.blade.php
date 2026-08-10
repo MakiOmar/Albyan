@@ -78,4 +78,17 @@
 @push('scripts_bottom')
 
     <script src="/assets/default/js/admin/settings/general.min.js"></script>
+    <script>
+        (function ($) {
+            // Comment: reload General settings with selected Platform Title locale
+            $('body').on('change', '.js-general-site-name-locale', function () {
+                var val = $(this).val();
+                if (!val) {
+                    return;
+                }
+                window.location.href = window.location.origin + window.location.pathname
+                    + '?locale=' + encodeURIComponent(val);
+            });
+        })(jQuery);
+    </script>
 @endpush

@@ -11,9 +11,27 @@
                 {{ csrf_field() }}
                 <input type="hidden" name="page" value="general">
                 <input type="hidden" name="name" value="general">
+                @php
+                    $generalLocale = mb_strtolower((string) ($generalLocale ?? request()->get('locale', app()->getLocale())));
+                @endphp
+
+                @if(count(getUserLanguagesLists()) > 1)
+                    <div class="form-group">
+                        <label class="input-label">{{ trans('auth.language') }}</label>
+                        {{-- Comment: Platform Title is saved per locale; other basic fields stay on EN defaults --}}
+                        <select name="locale" class="form-control js-general-site-name-locale">
+                            @foreach(getUserLanguagesLists() as $lang => $language)
+                                <option value="{{ mb_strtolower($lang) }}" @if(mb_strtolower($generalLocale) == mb_strtolower($lang)) selected @endif>{{ $language }}</option>
+                            @endforeach
+                        </select>
+                        <div class="text-muted text-small mt-1">{{ trans('admin/main.site_name_locale_hint') }}</div>
+                    </div>
+                @else
+                    <input type="hidden" name="locale" value="{{ mb_strtolower($generalLocale) }}">
+                @endif
 
                 <div class="form-group">
-                    <label>{{ trans('admin/main.site_name') }}</label>
+                    <label>{{ trans('admin/main.site_name') }} ({{ mb_strtoupper($generalLocale) }})</label>
                     <input type="text" name="value[site_name]" value="{{ (!empty($itemValue) and !empty($itemValue['site_name'])) ? $itemValue['site_name'] : old('site_name') }}" class="form-control "/>
                 </div>
 
