@@ -36,12 +36,17 @@
                                     <div class="col-12 col-lg-6">
                                         <div class="form-group">
                                             <label class="input-label">{{ trans('admin/main.page_search_replace_replace') }}</label>
-                                            <input type="text" name="replace" class="form-control" placeholder="{{ trans('admin/main.page_search_replace_replace_placeholder') }}" />
+                                            <input type="text" name="replace" class="form-control" id="js-db-replace-input" placeholder="{{ trans('admin/main.page_search_replace_replace_placeholder') }}" />
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="form-group d-flex flex-wrap">
+                                    {{-- Comment: Dry run searches without writing any replacements --}}
+                                    <div class="custom-control custom-checkbox mr-4 mb-2">
+                                        <input type="checkbox" name="dry_run" value="1" class="custom-control-input" id="db-dry-run" checked />
+                                        <label class="custom-control-label" for="db-dry-run">{{ trans('admin/main.db_search_replace_dry_run') }}</label>
+                                    </div>
                                     <div class="custom-control custom-checkbox mr-4 mb-2">
                                         <input type="checkbox" name="case_sensitive" value="1" class="custom-control-input" id="db-case-sensitive" checked />
                                         <label class="custom-control-label" for="db-case-sensitive">{{ trans('admin/main.page_search_replace_case_sensitive') }}</label>
@@ -51,10 +56,11 @@
                                         <label class="custom-control-label" for="db-whole-word">{{ trans('admin/main.page_search_replace_whole_word') }}</label>
                                     </div>
                                 </div>
+                                <p class="text-muted text-small mb-3" id="js-db-dry-run-hint">{{ trans('admin/main.db_search_replace_dry_run_hint') }}</p>
 
                                 <div class="d-flex flex-wrap">
                                     <button type="button" class="btn btn-primary mb-2" id="js-db-search-replace-preview">
-                                        {{ trans('admin/main.page_search_replace_preview') }}
+                                        {{ trans('admin/main.db_search_replace_search_button') }}
                                     </button>
                                 </div>
                             </form>
@@ -64,9 +70,12 @@
                     <div class="card d-none" id="js-db-search-replace-results-card">
                         <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
                             <h4 class="mb-2 mb-md-0">{{ trans('admin/main.page_search_replace_results') }}</h4>
-                            <button type="button" class="btn btn-danger btn-sm mb-2 mb-md-0" id="js-db-search-replace-apply" disabled>
-                                {{ trans('admin/main.page_search_replace_apply_selected') }}
-                            </button>
+                            <div class="d-flex flex-wrap align-items-center">
+                                <span class="badge badge-info mb-2 mb-md-0 mr-2 d-none" id="js-db-dry-run-badge">{{ trans('admin/main.db_search_replace_dry_run_badge') }}</span>
+                                <button type="button" class="btn btn-danger btn-sm mb-2 mb-md-0 d-none" id="js-db-search-replace-apply" disabled>
+                                    {{ trans('admin/main.page_search_replace_apply_selected') }}
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <p class="font-weight-bold mb-1" id="js-db-search-replace-summary"></p>
@@ -75,7 +84,7 @@
                                 <table class="table table-striped font-14">
                                     <thead>
                                         <tr>
-                                            <th class="text-center" style="width: 40px;">
+                                            <th class="text-center js-db-select-col" style="width: 40px;">
                                                 <div class="custom-control custom-checkbox">
                                                     <input type="checkbox" class="custom-control-input" id="js-db-select-all" />
                                                     <label class="custom-control-label" for="js-db-select-all"></label>
@@ -111,6 +120,11 @@
             var $truncated = $('#js-db-search-replace-truncated');
             var $applyBtn = $('#js-db-search-replace-apply');
             var $selectAll = $('#js-db-select-all');
+            var $dryRun = $('#db-dry-run');
+            var $replaceInput = $('#js-db-replace-input');
+            var $dryRunBadge = $('#js-db-dry-run-badge');
+            var $selectCol = $('.js-db-select-col');
+            var $previewBtn = $('#js-db-search-replace-preview');
             var previewUrl = '{{ getAdminPanelUrl() }}/tools/database-search-replace/preview';
             var applyUrl = '{{ getAdminPanelUrl() }}/tools/database-search-replace/apply';
             var summaryTemplate = @json(trans('admin/main.db_search_replace_summary'));
@@ -121,11 +135,33 @@
             var applyConfirm = @json(trans('admin/main.page_search_replace_apply_confirm'));
             var cancelText = @json(trans('public.cancel'));
             var selectRequiredText = @json(trans('admin/main.page_search_replace_select_required'));
+            var dryRunBlockedText = @json(trans('admin/main.db_search_replace_dry_run_apply_blocked'));
+            var searchButtonText = @json(trans('admin/main.db_search_replace_search_button'));
+            var previewButtonText = @json(trans('admin/main.page_search_replace_preview'));
+
+            function isDryRun() {
+                return $dryRun.is(':checked');
+            }
+
+            function syncDryRunUi() {
+                var dry = isDryRun();
+                $replaceInput.prop('disabled', dry);
+                $previewBtn.text(dry ? searchButtonText : previewButtonText);
+                $dryRunBadge.toggleClass('d-none', !dry);
+                $applyBtn.toggleClass('d-none', dry);
+                $selectCol.toggleClass('d-none', dry);
+                if (dry) {
+                    $applyBtn.prop('disabled', true);
+                    $selectAll.prop('checked', false);
+                }
+            }
 
             function getFormPayload() {
+                var dry = isDryRun();
                 return {
                     search: $form.find('[name="search"]').val(),
-                    replace: $form.find('[name="replace"]').val(),
+                    replace: dry ? '' : $form.find('[name="replace"]').val(),
+                    dry_run: dry ? 1 : 0,
                     case_sensitive: $form.find('[name="case_sensitive"]').is(':checked') ? 1 : 0,
                     whole_word: $form.find('[name="whole_word"]').is(':checked') ? 1 : 0,
                     _token: $form.find('[name="_token"]').val(),
@@ -164,6 +200,10 @@
             }
 
             function syncApplyButton() {
+                if (isDryRun()) {
+                    $applyBtn.prop('disabled', true);
+                    return;
+                }
                 $applyBtn.prop('disabled', getSelectedMatches().length === 0);
             }
 
@@ -176,10 +216,12 @@
             }
 
             function renderResults(data) {
+                var dry = isDryRun();
                 $resultsBody.empty();
                 $truncated.addClass('d-none').text('');
                 $selectAll.prop('checked', false);
                 $applyBtn.prop('disabled', true);
+                syncDryRunUi();
 
                 if (!data.matches || !data.matches.length) {
                     $summary.text(noMatchesText);
@@ -206,21 +248,27 @@
                     var checkboxId = 'db-match-' + index;
 
                     // Skip rows without a primary key — they cannot be applied safely.
-                    if (recordId === '') {
+                    if (!dry && recordId === '') {
                         return;
                     }
 
+                    var checkboxCell = dry
+                        ? '<td class="text-center js-db-select-col d-none"></td>'
+                        : (
+                            '<td class="text-center js-db-select-col">' +
+                            '<div class="custom-control custom-checkbox">' +
+                            '<input type="checkbox" class="custom-control-input js-db-match-check" id="' + checkboxId + '" ' +
+                            'data-table="' + $('<div>').text(match.table).html() + '" ' +
+                            'data-column="' + $('<div>').text(match.column).html() + '" ' +
+                            'data-primary-key="' + $('<div>').text(String(recordId)).html() + '" />' +
+                            '<label class="custom-control-label" for="' + checkboxId + '"></label>' +
+                            '</div>' +
+                            '</td>'
+                        );
+
                     $resultsBody.append(
                         '<tr>' +
-                        '<td class="text-center">' +
-                        '<div class="custom-control custom-checkbox">' +
-                        '<input type="checkbox" class="custom-control-input js-db-match-check" id="' + checkboxId + '" ' +
-                        'data-table="' + $('<div>').text(match.table).html() + '" ' +
-                        'data-column="' + $('<div>').text(match.column).html() + '" ' +
-                        'data-primary-key="' + $('<div>').text(String(recordId)).html() + '" />' +
-                        '<label class="custom-control-label" for="' + checkboxId + '"></label>' +
-                        '</div>' +
-                        '</td>' +
+                        checkboxCell +
                         '<td>' + $('<div>').text(match.table).html() + '</td>' +
                         '<td>' + $('<div>').text(match.column).html() + '</td>' +
                         '<td>' + $('<div>').text(String(recordId)).html() + '</td>' +
@@ -232,6 +280,13 @@
 
                 $resultsCard.removeClass('d-none');
             }
+
+            syncDryRunUi();
+
+            $dryRun.on('change', function () {
+                syncDryRunUi();
+                resetPreviewState();
+            });
 
             $form.find('[name="search"], [name="replace"], [name="case_sensitive"], [name="whole_word"]').on('change input', function () {
                 resetPreviewState();
@@ -249,7 +304,7 @@
                 syncApplyButton();
             });
 
-            $('#js-db-search-replace-preview').on('click', function () {
+            $previewBtn.on('click', function () {
                 var payload = getFormPayload();
 
                 if (!validateForm(payload)) {
@@ -285,6 +340,19 @@
             });
 
             $applyBtn.on('click', function () {
+                if (isDryRun()) {
+                    $.toast({
+                        heading: @json(trans('public.request_failed')),
+                        text: dryRunBlockedText,
+                        bgColor: '#f63c3c',
+                        textColor: 'white',
+                        hideAfter: 5000,
+                        position: 'bottom-right',
+                        icon: 'error'
+                    });
+                    return;
+                }
+
                 var payload = getFormPayload();
                 var selections = getSelectedMatches();
 
@@ -333,7 +401,7 @@
                             });
 
                             // Refresh preview so applied rows disappear from results.
-                            $('#js-db-search-replace-preview').trigger('click');
+                            $previewBtn.trigger('click');
                         })
                         .fail(function (xhr) {
                             var message = xhr.responseJSON && xhr.responseJSON.message

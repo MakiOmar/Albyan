@@ -103,6 +103,14 @@ class ToolsController extends Controller
     {
         $this->authorize('admin_settings');
 
+        // Hard block accidental writes while dry-run is still enabled in the form.
+        if ($request->boolean('dry_run')) {
+            return response()->json([
+                'success' => false,
+                'message' => trans('admin/main.db_search_replace_dry_run_apply_blocked'),
+            ], 422);
+        }
+
         $data = $this->validateDatabaseSearchReplaceApplyRequest($request);
 
         $result = $searchReplaceService->apply(
